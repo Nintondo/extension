@@ -88,6 +88,6 @@ export const SATS_DOMAIN = ".sats";
 
 export const CHANNEL = "chrome";
 
-export const BELLS_API_URL = "https://bells.quark.blue/api";
+export const BELLS_API_URL = "https://bells.quark.blue";
 export const TEST_API_URL = "http://65.109.171.29:3000";
-export const BELLS_MAINNET_PATH = "";
+export const BELLS_MAINNET_PATH = "/api";

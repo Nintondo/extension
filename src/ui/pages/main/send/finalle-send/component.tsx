@@ -11,7 +11,7 @@ const FinalleSend = () => {
   const onClick = () => {
     browserTabsCreate({
       active: true,
-      url: `https://belscan.io/tx/${txId}`,
+      url: `https://bells.quark.blue/tx/${txId}`,
     });
   };
 

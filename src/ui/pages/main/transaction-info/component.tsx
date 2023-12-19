@@ -25,7 +25,7 @@ const TransactionInfo = () => {
 
   const onOpenExplorer = async () => {
     await browserTabsCreate({
-      url: `https://belscan.io/tx/${transaction.txid}`,
+      url: `https://bells.quark.blue/tx/${transaction.txid}`,
       active: true,
     });
   };

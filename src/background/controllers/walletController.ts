@@ -6,7 +6,7 @@ import { DecryptedSecrets } from "../services/storage/types";
 import { SimpleKeyring } from "@unisat/bitcoin-simple-keyring";
 import { HdKeyring } from "@unisat/bitcoin-hd-keyring";
 import * as bip39 from "bip39";
-import { AddressType } from "bellhdw";
+import { AddressType, Keyring } from "bellhdw";
 
 class WalletController implements IWalletController {
   async isVaultEmpty() {
@@ -64,9 +64,7 @@ class WalletController implements IWalletController {
     walletId: number,
     accounts: IAccount[]
   ): Promise<IAccount[]> {
-    const wallet = keyringService.keyrings[walletId] as unknown as
-      | HdKeyring
-      | SimpleKeyring;
+    const wallet = keyringService.keyrings[walletId] as unknown as Keyring<JSON>;
 
     const addresses = wallet.getAccounts();
 

@@ -95,20 +95,14 @@ const buildOptions: BuildOptions = {
         to: ["."],
       },
     }),
-    copy({
-      assets: {
-        from: ["./node_modules/rust-falcon/dist/falcon.wasm"],
-        to: ["."],
-      },
-    }),
     nodeModulesPolyfillPlugin({
       globals: {
         Buffer: true,
       },
       modules: {
-        crypto: true,
         buffer: true,
-        stream: true,
+        crypto: true,
+        stream: true
       },
     }),
     mergeManifests(),
