@@ -2,7 +2,14 @@ import { browserTabsCreate } from "@/shared/utils/browser";
 import s from "./styles.module.scss";
 import { useAppState } from "@/ui/states/appState";
 
-import { UserIcon, KeyIcon, ArrowsPointingOutIcon, ArrowLeftOnRectangleIcon, PuzzlePieceIcon, LanguageIcon } from "@heroicons/react/24/solid";
+import {
+  UserIcon,
+  KeyIcon,
+  ArrowsPointingOutIcon,
+  ArrowLeftOnRectangleIcon,
+  PuzzlePieceIcon,
+  LanguageIcon,
+} from "@heroicons/react/24/solid";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
 
@@ -42,12 +49,12 @@ const Settings = () => {
     {
       icon: <PuzzlePieceIcon className={ICON_CN} />,
       label: t("settings.connected_sites"),
-      link: "/pages/connected-sites"
+      link: "/pages/connected-sites",
     },
     {
       icon: <LanguageIcon className={ICON_CN} />,
       label: t("settings.language"),
-      link: "/pages/language"
+      link: "/pages/language",
     },
     {
       icon: <ArrowLeftOnRectangleIcon className={ICON_CN} />,
@@ -64,7 +71,18 @@ const Settings = () => {
         ))}
       </div>
       <div className={s.version}>
-        Version <span>{config.version}</span>
+        Version <span>{config.version}</span> | By{" "}
+        <a
+          href="#"
+          onClick={() => {
+            browserTabsCreate({
+              url: `https://nintondo.io`,
+              active: true,
+            });
+          }}
+        >
+          Nintondo team
+        </a>
       </div>
     </div>
   );
