@@ -34,7 +34,7 @@ const Card: FC<Props> = ({ menuItems, selected, onClick, name, address }) => {
           <button className={s.action} onClick={onMenuClick}>
             <Bars3Icon
               className={cn("w-8 h-8", {
-                "text-green-300": selected,
+                "text-yellow-300": selected,
                 "text-text": !selected,
               })}
             />
