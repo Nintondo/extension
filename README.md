@@ -17,3 +17,7 @@ To run extention in FireFox make sure to give it a permission:
 Access your data for all websites
 
 Learn more about FireFox permissions here: https://support.mozilla.org/en-US/kb/permission-request-messages-firefox-extensions
+
+
+TODO: 
+1. Wallet reset function
