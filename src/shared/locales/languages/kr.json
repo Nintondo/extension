@@ -1,0 +1,191 @@
+{
+  "wallet_page": {
+    "transactions": "거래",
+    "no_transactions": "거래 없음",
+    "receive": "받기",
+    "send": "보내기"
+  },
+  "settings": {
+    "language": "언어",
+    "logout": "로그아웃",
+    "connected_sites": "연결된 사이트",
+    "expand_view": "보기 확대",
+    "change_password": "비밀번호 변경",
+    "address_type": "주소 유형"
+  },
+  "components": {
+    "layout": {
+      "create_new_wallet": "새 지갑 만들기",
+      "send": "보내기",
+      "connected_sites": "연결된 사이트",
+      "change_language": "언어 변경",
+      "switch_account": "계정 전환",
+      "change_address_type": "주소 유형 변경",
+      "create_new_account": "새 계정 생성",
+      "change_password": "비밀번호 변경",
+      "receive_bel": "BEL 받기",
+      "switch_wallet": "지갑 전환",
+      "transaction_info": "거래 정보",
+      "settings": "설정",
+      "show_mnemonic": "니모닉 표시",
+      "show_private_key": "비밀 키 표시",
+      "restore_from_mnemonic": "니모닉에서 복원",
+      "restore_from_private_key": "개인 키에서 복원"
+    },
+    "check_password": {
+      "incorrect_password_error": "잘못된 비밀번호",
+      "password": "비밀번호",
+      "continue": "계속"
+    },
+    "password_input": {
+      "should_be_more_than_1_symbol": "1 이상의 기호여야 합니다"
+    },
+    "rename": {
+      "enter_new_name": "새 이름 입력",
+      "minimum_length": "최소 길이는 1입니다",
+      "maximum_length": "최대 길이는 16입니다",
+      "name_is_required": "이름이 필요합니다",
+      "save": "저장",
+      "rename": "이름 변경"
+    },
+    "card": {
+      "close": "닫기"
+    }
+  },
+  "change_password": {
+    "old_password": "이전 비밀번호",
+    "new_password": "새 비밀번호",
+    "confirm_password": "비밀번호 확인",
+    "change_password": "비밀번호 변경"
+  },
+  "connected_sites": {
+    "no_sites_message": "아직 사이트에 연결하지 않았습니다"
+  },
+  "create_password": {
+    "password": "비밀번호",
+    "confirm_password": "비밀번호 확인",
+    "create_password": "비밀번호 생성"
+  },
+  "login": {
+    "password": "비밀번호",
+    "login": "로그인"
+  },
+  "new_account": {
+    "max_length_error": "이름의 최대 길이는 16입니다",
+    "name_taken_error": "이 계정의 이름은 이미 사용 중입니다",
+    "account_created_message": "새 계정 생성",
+    "enter_name_label": "이름 입력:",
+    "create_new_account": "계정 만들기"
+  },
+  "new_wallet": {
+    "new_mnemonic_label": "새로운 니모닉",
+    "restore_mnemonic_label": "니모닉 복원",
+    "restore_from_private_key_label": "비밀 키로 복원",
+    "step_1": "1단계",
+    "step_2": "2단계",
+    "continue": "계속",
+    "new_mnemonic": {
+      "error_phrase_blank": "니모닉 구절이 비어있습니다",
+      "warning": "이 단어를 잃어버리면 계정을 복구할 수 없습니다",
+      "i_saved_this_phrase": "이 구절을 저장했습니다",
+      "copy": "복사"
+    },
+    "restore_mnemonic": {
+      "incomplete_phrase_error": "모든 단어를 입력해 주세요",
+      "invalid_words_error": "단어가 유효하지 않습니다"
+    },
+    "restore_private": {
+      "private_key": "비밀 키",
+      "recover": "복구",
+      "invalid_private_key_error": "유효하지 않은 비밀 키"
+    }
+  },
+  "receive": {
+    "click_to_copy": "클릭하여 복사",
+    "copy_address": "주소 복사"
+  },
+  "send": {
+    "confirm_send": {
+      "to_addrses": "받는 주소",
+      "from_address": "보내는 주소",
+      "amount": "금액",
+      "fee": "수수료",
+      "included": "포함",
+      "not_included": "포함되지 않음",
+      "confirm": "확인"
+    },
+    "create_send": {
+      "minimum_amount_error": "최소 금액은 0.01 BEL입니다",
+      "address_error": "수신자의 주소 입력",
+      "not_enough_money_error": "계정에 잔액이 부족합니다",
+      "not_enough_fee_error": "수수료를 늘려주세요",
+      "fee_is_text_error": "수수료는 정수여야 합니다",
+      "default_error": "오류가 발생했습니다",
+      "address": "주소",
+      "amount": "금액",
+      "amount_to_send": "보낼 금액",
+      "max_amount": "최대",
+      "fee_label": "수수료:",
+      "include_fee_in_the_amount_label": "금액에 수수료 포함",
+      "save_address_for_the_next_payments_label": "다음 결제를 위해 주소 저장",
+      "continue": "계속",
+      "fee_input": {
+        "fast": "빠르게",
+        "slow": "느리게",
+        "custom": "사용자 지정"
+      },
+      "address_input": {
+        "address_book": "주소록"
+      },
+      "address_book": {
+        "address_book": "주소록",
+        "no_addresses": "여기에 주소가 없습니다"
+      }
+    },
+    "finalle_send": {
+      "success": "성공",
+      "explorer": "탐색기",
+      "back": "뒤로"
+    }
+  },
+  "switch_account": {
+    "name_already_taken_error": "이 이름은 이미 사용중입니다",
+    "copy_address": "주소 복사",
+    "rename_account": "계정 이름 변경",
+    "export_private_key": "비밀 키 내보내기",
+    "show_pk": {
+      "copy": "복사"
+    }
+  },
+  "switch_wallet": {
+    "rename_wallet": "지갑 이름 변경",
+    "show_mnemonic_private_key": "니모닉 비밀 키 표시",
+    "last_wallet_error": "마지막 지갑을 삭제할 수 없습니다",
+    "remove_wallet": "지갑 제거",
+    "are_you_sure": "정말로 삭제하시겠습니까?",
+    "yes": "예",
+    "no": "아니오",
+    "copy": "복사"
+  },
+  "transaction_info": {
+    "txid": "TxId",
+    "confirmations_label": "확인:",
+    "fee_label": "수수료:",
+    "value_label": "값:",
+    "open_in_explorer": "탐색기에서 열기",
+    "copied": "복사됨",
+    "inputs": "입력",
+    "outputs": "출력",
+    "details": "세부 사항"
+  },
+  "hooks": {
+    "transaction": {
+      "insufficient_balance_0": "잔액이 부족합니다. 비등기 잔액",
+      "insufficient_balance_1": "BEL)는 다음보다 낮습니다",
+      "insufficient_balance_2": "BEL"
+    },
+    "wallet": {
+      "last_wallet_error": "마지막 지갑을 삭제할 수 없습니다"
+    }
+  }
+}

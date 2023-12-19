@@ -1,0 +1,65 @@
+.walletDiv {
+  @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6;
+
+  .accPanel {
+    @apply flex flex-col mt-8 gap-4;
+
+    * {
+      @apply m-0;
+    }
+
+    .balance {
+      @apply flex text-3xl gap-1 items-end;
+    }
+
+    .accPubAddress {
+      @apply gap-2 cursor-pointer flex;
+
+      color: rgb(158, 158, 158);
+    }
+
+    .receiveSendBtns {
+      @apply w-full gap-4 pt-4 flex items-center justify-between;
+
+      .btn {
+        @apply border transition-colors border-text text-text gap-4 text-lg pr-4 px-3 py-1.5 hover:bg-text hover:text-bg rounded-xl w-full text-center;
+
+        .icon {
+          @apply w-6;
+        }
+      }
+    }
+  }
+}
+
+.center {
+  @apply rounded-xl flex justify-center items-center;
+}
+
+.transactions {
+  @apply text-lg ml-2 mt-6 font-medium mb-4;
+}
+
+.transactionsDiv {
+  @apply max-h-full flex flex-col items-center overflow-y-auto;
+}
+
+.transaction {
+  @apply flex justify-between items-center w-full p-2 rounded-sm my-1 cursor-pointer;
+}
+
+.noTransactions {
+  @apply w-full h-full items-center flex justify-center py-16;
+}
+
+.value {
+  @apply font-medium text-lg;
+}
+
+.accountsIcon {
+  @apply w-8 h-8 rounded-xl p-1 border border-text transition-colors hover:bg-text hover:text-bg cursor-pointer;
+}
+
+.change {
+  @apply font-medium text-sm;
+}

@@ -1,0 +1,52 @@
+.newMnemonic {
+  @apply w-full h-full flex flex-col items-center gap-4 md:gap-8 text-base p-4;
+}
+
+.phrase {
+  @apply grid grid-cols-3 text-sm gap-x-2 gap-y-6;
+}
+
+.stepTitle {
+  @apply flex justify-between w-1/2;
+}
+
+.active {
+  @apply text-orange-600 font-medium;
+}
+
+.word {
+  @apply flex justify-between items-center gap-2;
+
+  .wordWord {
+    @apply bg-input-bg rounded-lg flex justify-center w-full py-2;
+  }
+}
+
+.savePhrase,
+.saveToClipboard {
+  @apply flex items-center w-full justify-center mb-4 cursor-pointer select-none;
+}
+
+.continueWrapper {
+  @apply w-full flex justify-center py-4;
+}
+
+.warning {
+  @apply w-full flex justify-center text-red-400 text-opacity-70 mb-5 text-sm text-center;
+}
+
+.step {
+  @apply h-full flex flex-col justify-between w-full;
+}
+
+.savePhraseWrapper {
+  @apply flex flex-col gap-7 mt-6;
+}
+
+.savePhrase {
+  @apply flex items-center gap-4;
+}
+
+.wordIndex {
+  @apply w-4 text-end;
+}

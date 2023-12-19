@@ -1,0 +1,8 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+	<defs>
+		<image aria-label="T"  width="114" height="164" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHIAAACkBAMAAAC5lGd8AAAAAXNSR0IB2cksfwAAACdQTFRF////////////////////////////////////////AAAA////////rIi9jwAAAA10Uk5TV4BMr/+ZgsDXcgDsXGBj0GoAAABbSURBVHic7cuxCYAwEEDRywg6iyMoWLiHI0hWsnbA1IGrgk3g/fq/KMtYa2z7WAdJkiRJ/irvJ6mfzmyp8WZ9nbzShyRJkiRJkiRJkiRJkiRJkiRJkiRJkpxLNoddn1odyq9YAAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+	</style>
+	<use id="T" href="#img1" x="43" y="18"/>
+</svg>

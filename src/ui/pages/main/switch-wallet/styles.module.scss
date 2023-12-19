@@ -1,0 +1,27 @@
+.switchWalletDiv {
+  @apply flex justify-items-start flex-col items-center w-full h-full;
+}
+
+.wallets {
+  @apply flex flex-col gap-4 pt-4 p-4 w-full;
+}
+
+.mainWallet {
+  @apply relative overflow-hidden border border-text rounded-xl cursor-pointer;
+}
+
+.manageWalletButton {
+  @apply bg-transparent border-0 rounded-full p-2 py-3 cursor-pointer;
+}
+
+.walletInfo {
+  @apply flex items-center gap-2 w-full font-medium text-base cursor-pointer;
+}
+
+.wallet {
+  @apply flex p-2 pl-4 justify-between;
+}
+
+.selected {
+  @apply border-green-300;
+}

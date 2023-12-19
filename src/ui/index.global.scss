@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+* {
+  @apply m-0 p-0 outline-none;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  @apply mx-auto bg-bg text-text md:max-w-2xl md:py-6 min-w-[350px] min-h-[600px];
+
+  font-family: "Montserrat", sans-serif;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.form {
+  @apply w-full flex flex-col gap-6 px-6;
+}
+
+.form-title {
+  @apply p-0 mx-auto text-xl md:pt-5;
+}
+
+.form-field {
+  @apply w-full flex flex-col gap-1;
+
+  .input {
+    @apply text-sm;
+  }
+}
+
+.btn {
+  @apply px-7 py-2 text-sm rounded-xl font-medium cursor-pointer shadow-sm text-center;
+
+  &:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+}
+
+.primary {
+  @apply text-text border border-text transition-colors hover:bg-text hover:text-bg leading-tight;
+}
+
+.secondary {
+  @apply bg-secondary;
+}
+
+.input {
+  @apply py-2 pl-5 pr-10 text-base text-text bg-input-bg rounded-xl md:bg-bg;
+}
+
+.react-loading {
+  display: flex;
+}
+
+.app {
+  @apply h-full min-h-screen flex justify-center items-center w-full md:bg-input-bg md:rounded-2xl md:overflow-hidden md:min-h-max md:pb-6 max-md:max-w-[350px];
+
+  .main-route {
+    @apply w-full flex justify-center;
+  }
+
+  .toast {
+    @apply bg-black text-text text-sm border border-green-600 rounded-2xl;
+
+    &.success {
+      @apply border-green-600;
+    }
+    &.error {
+      @apply border-red-600;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.2rem;
+  height: 0.2rem;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

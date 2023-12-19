@@ -1,0 +1,19 @@
+.menu {
+  @apply flex justify-center gap-6 items-center absolute z-10 top-0 left-full bottom-0 transition-all duration-200 w-full bg-text rounded-xl;
+}
+
+.active {
+  @apply left-0;
+}
+
+.item {
+  @apply cursor-pointer px-3 py-5;
+
+  svg {
+    @apply transition-all;
+  }
+
+  &:hover svg {
+    @apply scale-110;
+  }
+}

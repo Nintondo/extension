@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["DOM", "ESNext", "DOM.Iterable"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "noImplicitAny": false,
+    "types": ["chrome", "react", "react-dom"],
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "isolatedModules": false,
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ],
+    "experimentalDecorators": true
+  },
+  "exclude": ["../node_modules"],
+  "include": ["./**/*"]
+}

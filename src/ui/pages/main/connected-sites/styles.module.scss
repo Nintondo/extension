@@ -1,0 +1,15 @@
+.sites {
+    @apply w-full h-full flex flex-col gap-4 py-4 items-center;
+}
+
+.site {
+    @apply bg-input-bg p-4 rounded-xl w-11/12 flex justify-between items-center;
+}
+
+.icon {
+    @apply w-5 h-5;
+
+    &:hover {
+        @apply cursor-pointer;
+    }
+}

@@ -1,0 +1,40 @@
+{
+  "short_name": "Bells",
+  "author": "Bells",
+  "manifest_version": 3,
+  "name": "Bells",
+  "icons": {
+    "16": "/icon.png",
+    "32": "/icon.png",
+    "48": "/icon.png",
+    "128": "/icon.png"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open the popup",
+    "default_icon": {
+      "16": "/icon.png",
+      "32": "/icon.png",
+      "48": "/icon.png",
+      "128": "/icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["pageProvider.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "permissions": ["storage", "unlimitedStorage", "activeTab"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

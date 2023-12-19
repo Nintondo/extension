@@ -1,0 +1,43 @@
+.showMnemonic {
+  @apply w-full h-full flex justify-center items-center md:mt-10;
+
+  .phraseDiv {
+    @apply px-6 w-full md:mt-10;
+
+    .phrase {
+      @apply bg-input-bg text-xl w-full;
+    }
+
+    .copyDiv {
+      @apply flex w-full justify-center gap-4 items-center text-lg pt-8 cursor-pointer select-none;
+    }
+  }
+}
+
+.phraseWrapper {
+  @apply grid grid-cols-2 text-sm gap-x-2 gap-y-6;
+}
+
+.word {
+  @apply flex justify-between items-center gap-2;
+
+  .wordWord {
+    @apply bg-input-bg p-2 rounded-lg w-4/5 flex justify-center;
+  }
+}
+
+.privKeyWrapper {
+  @apply w-full;
+}
+
+.secret {
+  @apply break-all h-1/2 overflow-y-scroll bg-input-bg rounded-lg p-2;
+}
+
+.wordIdx {
+  @apply w-4 text-end;
+}
+
+.copyWrapper {
+  @apply flex w-full justify-center mt-10;
+}

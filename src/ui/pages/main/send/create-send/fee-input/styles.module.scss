@@ -1,0 +1,35 @@
+.card {
+  @apply bg-input-bg flex flex-col gap-0.5 px-5 py-2 rounded-xl justify-center w-full select-none cursor-pointer;
+
+  &Wrapper {
+    @apply flex gap-2 w-full;
+  }
+
+  &Selected {
+    @apply bg-gray-500;
+  }
+}
+
+.description {
+  @apply text-gray-300 text-xs;
+}
+
+.title {
+  @apply font-medium text-lg;
+}
+
+.container {
+  @apply flex flex-col gap-2;
+}
+
+.locked {
+  @apply opacity-50;
+
+  * {
+    @apply cursor-not-allowed;
+  }
+}
+
+.russian {
+  @apply text-sm;
+}

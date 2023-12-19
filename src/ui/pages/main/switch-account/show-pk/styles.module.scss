@@ -1,0 +1,19 @@
+.showPk {
+  @apply w-full h-full p-4 flex flex-col items-center break-all md:mt-10;
+}
+
+.showPkDiv {
+  @apply h-full flex flex-col items-center pt-8 gap-8;
+}
+
+.secret {
+  @apply break-all overflow-y-auto pr-1 max-h-full;
+
+  &Container {
+    @apply bg-input-bg rounded-lg p-2 max-h-96;
+  }
+}
+
+.copySecret {
+  @apply flex items-center justify-center gap-4;
+}

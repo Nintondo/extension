@@ -1,0 +1,191 @@
+{
+  "wallet_page": {
+    "transactions": "Транзакции",
+    "no_transactions": "Нет транзакций",
+    "receive": "Получить",
+    "send": "Оправить"
+  },
+  "settings": {
+    "language": "Язык",
+    "logout": "Выйти",
+    "connected_sites": "Подключенные сайты",
+    "expand_view": "Развернуть обзор",
+    "change_password": "Сменить пароль",
+    "address_type": "Тип адреса"
+  },
+  "components": {
+    "layout": {
+      "create_new_wallet": "Создать новый кошелек",
+      "send": "Отправить",
+      "connected_sites": "Подключенные сайты",
+      "change_language": "Сменить язык",
+      "switch_account": "Переключить аккаунт",
+      "change_address_type": "Сменить тип адреса",
+      "create_new_account": "Создать новый аккаунт",
+      "change_password": "Сменить пароль",
+      "receive_bel": "Получить BEL",
+      "switch_wallet": "Переключить кошелек",
+      "transaction_info": "Информация о транзакции",
+      "settings": "Настройки",
+      "show_mnemonic": "Показать мнемонику",
+      "show_private_key": "Показать приватный ключ",
+      "restore_from_mnemonic": "Восстановить из мнемоника",
+      "restore_from_private_key": "Восстановить кошелек"
+    },
+    "check_password": {
+      "incorrect_password_error": "Неверный пароль",
+      "password": "Пароль",
+      "continue": "Продолжить"
+    },
+    "password_input": {
+      "should_be_more_than_1_symbol": "Должен быть более 1 символа"
+    },
+    "rename": {
+      "enter_new_name": "Введите новое имя",
+      "minimum_length": "Минимальная длина - 1",
+      "maximum_length": "Максимальная длина - 16",
+      "name_is_required": "Требуется имя",
+      "save": "Сохранить",
+      "rename": "Переименовать"
+    },
+    "card": {
+      "close": "Закрыть"
+    }
+  },
+  "change_password": {
+    "old_password": "Старый пароль",
+    "new_password": "Новый пароль",
+    "confirm_password": "Подтвердить пароль",
+    "change_password": "Сменить пароль"
+  },
+  "connected_sites": {
+    "no_sites_message": "Вы еще не подключили ни одного сайта"
+  },
+  "create_password": {
+    "password": "Пароль",
+    "confirm_password": "Подтвердить пароль",
+    "create_password": "Создать пароль"
+  },
+  "login": {
+    "password": "Пароль",
+    "login": "Войти"
+  },
+  "new_account": {
+    "max_length_error": "Максимальная длина имени - 16",
+    "name_taken_error": "Имя для этого аккаунта уже занято",
+    "account_created_message": "Новый аккаунт создан",
+    "enter_name_label": "Введите имя:",
+    "create_new_account": "Создать аккаунт"
+  },
+  "new_wallet": {
+    "new_mnemonic_label": "Новая мнемоника",
+    "restore_mnemonic_label": "Восстановить мнемонику",
+    "restore_from_private_key_label": "Восстановить с помощью приватного ключа",
+    "step_1": "Шаг 1",
+    "step_2": "Шаг 2",
+    "continue": "Продолжить",
+    "new_mnemonic": {
+      "error_phrase_blank": "Мнемоника пуста",
+      "warning": "Если вы потеряете эти слова, вы никогда не сможете восстановить свой аккаунт",
+      "i_saved_this_phrase": "Я сохранил эту фразу",
+      "copy": "Копировать"
+    },
+    "restore_mnemonic": {
+      "incomplete_phrase_error": "Пожалуйста, вставьте все слова",
+      "invalid_words_error": "Слова недействительны"
+    },
+    "restore_private": {
+      "private_key": "Приватный ключ",
+      "recover": "Восстановить",
+      "invalid_private_key_error": "Некорректный приватный ключ"
+    }
+  },
+  "receive": {
+    "click_to_copy": "Кликните, чтобы скопировать",
+    "copy_address": "Копировать адрес"
+  },
+  "send": {
+    "confirm_send": {
+      "to_addrses": "На адрес",
+      "from_address": "С адреса",
+      "amount": "Сумма",
+      "fee": "Сбор",
+      "included": "включено",
+      "not_included": "не включено",
+      "confirm": "Подтвердить"
+    },
+    "create_send": {
+      "minimum_amount_error": "Минимальная сумма - 0.01 BEL",
+      "address_error": "Введите адрес получателя",
+      "not_enough_money_error": "На вашем счету недостаточно средств",
+      "not_enough_fee_error": "Увеличьте сбор",
+      "fee_is_text_error": "Сбор должен быть числом",
+      "default_error": "Произошла ошибка",
+      "address": "Адрес",
+      "amount": "Сумма",
+      "amount_to_send": "Сумма к отправке",
+      "max_amount": "МАКС",
+      "fee_label": "Сбор:",
+      "include_fee_in_the_amount_label": "Включить сбор в сумму",
+      "save_address_for_the_next_payments_label": "Сохранить адрес для следующих платежей",
+      "continue": "Продолжить",
+      "fee_input": {
+        "fast": "Быстро",
+        "slow": "Медленно",
+        "custom": "Свой вариант"
+      },
+      "address_input": {
+        "address_book": "Адресная книга"
+      },
+      "address_book": {
+        "address_book": "Адресная книга",
+        "no_addresses": "Адресов пока нет"
+      }
+    },
+    "finalle_send": {
+      "success": "Успешно",
+      "explorer": "Обзор",
+      "back": "Назад"
+    }
+  },
+  "switch_account": {
+    "name_already_taken_error": "Это имя уже занято",
+    "copy_address": "Копировать адрес",
+    "rename_account": "Переименовать аккаунт",
+    "export_private_key": "Экспортировать приватный ключ",
+    "show_pk": {
+      "copy": "Копировать"
+    }
+  },
+  "switch_wallet": {
+    "rename_wallet": "Переименовать кошелек",
+    "show_mnemonic_private_key": "Показать мнемонический приватный ключ",
+    "last_wallet_error": "Вы не можете удалить ваш последний кошелек",
+    "remove_wallet": "Удалить кошелек",
+    "are_you_sure": "Вы уверены, что хотите удалить?",
+    "yes": "Да",
+    "no": "Нет",
+    "copy": "Копировать"
+  },
+  "transaction_info": {
+    "txid": "TxId",
+    "confirmations_label": "Подтверждения:",
+    "fee_label": "Сбор:",
+    "value_label": "Значение:",
+    "open_in_explorer": "Открыть в обозревателе",
+    "copied": "Скопировано",
+    "inputs": "Входы",
+    "outputs": "Выходы",
+    "details": "Подробнее"
+  },
+  "hooks": {
+    "transaction": {
+      "insufficient_balance_0": "Недостаточный баланс. Неинскрибированный баланс",
+      "insufficient_balance_1": "BEL) ниже чем",
+      "insufficient_balance_2": "BEL"
+    },
+    "wallet": {
+      "last_wallet_error": "Вы не можете удалить ваш последний кошелек"
+    }
+  }
+}

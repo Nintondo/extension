@@ -1,0 +1,61 @@
+.transactionInfoDiv {
+  @apply h-full w-full flex items-center justify-center break-all px-6 pt-6 flex-col;
+
+  .transaction {
+    @apply flex flex-col w-full break-all h-full;
+  }
+}
+
+.group {
+  @apply mb-4;
+
+  .transactionP {
+    @apply break-all text-sm font-light block mb-2;
+  }
+
+  span {
+    @apply text-sm block px-4 py-2 bg-input-bg rounded-xl;
+  }
+}
+
+.explorerBtn {
+  @apply px-5 py-2 rounded-xl font-medium bg-text text-bg text-sm mb-6 max-md:w-full;
+}
+
+.summary {
+  @apply list-none cursor-pointer text-sm flex gap-2 mt-1;
+}
+
+.details {
+  @apply mt-2;
+}
+
+.table {
+  &Group {
+    @apply flex gap-2 w-full items-center;
+  }
+
+  &First {
+    @apply break-all bg-input-bg rounded-xl px-3 py-2 w-4/5 text-sm text-center select-none cursor-pointer;
+  }
+
+  &Second {
+    @apply text-sm font-medium;
+  }
+
+  &List {
+    @apply flex flex-col gap-3;
+  }
+
+  > h3 {
+    @apply text-sm mb-4 font-medium pl-2;
+  }
+
+  &Container {
+    @apply flex flex-col gap-5 pt-5;
+  }
+}
+
+.active {
+  @apply bg-green-300 text-bg;
+}

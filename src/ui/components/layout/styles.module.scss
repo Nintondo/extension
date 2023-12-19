@@ -1,0 +1,29 @@
+.layout {
+  @apply w-full h-screen grid md:h-max;
+
+  grid-template-rows: minmax(4rem, max-content) 1fr;
+}
+
+.header {
+  @apply flex justify-between items-center text-sm px-4 py-5 sticky top-0 bg-bg z-10 min-h-[4rem] md:bg-transparent;
+}
+
+.controlElem {
+  @apply flex justify-between items-center;
+}
+
+.contentDiv {
+  @apply flex items-center justify-center h-full flex-col md:justify-between;
+}
+
+.back {
+  @apply cursor-pointer select-none;
+}
+
+.title {
+  @apply absolute left-1/2 -translate-x-1/2 font-medium text-base whitespace-nowrap;
+}
+
+.addNew {
+  @apply cursor-pointer;
+}

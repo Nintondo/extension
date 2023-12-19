@@ -1,0 +1,27 @@
+.allTypes {
+  @apply w-full h-full grid grid-rows-2 grid-cols-2 gap-3 pt-8 max-h-60;
+}
+
+.addressType {
+  @apply py-4 pl-4 flex items-center gap-2 relative text-base rounded-xl border border-text;
+
+  &:hover {
+    @apply bg-text text-bg cursor-pointer;
+  }
+}
+
+.selected {
+  @apply border-green-300;
+}
+
+.title {
+  @apply text-xs;
+}
+
+.value {
+  @apply font-medium text-sm;
+}
+
+.wrapper {
+  @apply flex flex-col gap-2;
+}

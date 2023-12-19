@@ -1,0 +1,27 @@
+.card {
+  @apply border border-text rounded-xl relative overflow-hidden cursor-pointer;
+}
+
+.wrapper {
+  @apply flex items-center justify-between p-2 pl-4;
+}
+
+.action {
+  @apply border-none p-2 bg-transparent;
+}
+
+.name {
+  @apply font-medium text-base cursor-pointer w-full;
+}
+
+.selected {
+  @apply border-green-300;
+}
+
+.address {
+  @apply text-xs text-gray-400;
+}
+
+.right {
+  @apply flex gap-2 items-center;
+}

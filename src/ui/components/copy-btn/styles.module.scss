@@ -1,0 +1,7 @@
+.btn {
+  @apply flex gap-2 border border-text rounded-xl px-3 py-1.5 font-medium text-lg items-center justify-center cursor-pointer transition-colors;
+
+  &:hover {
+    @apply bg-text text-bg;
+  }
+}

@@ -1,0 +1,19 @@
+.address {
+  @apply px-4 py-2 rounded-xl bg-input-bg select-none hover:bg-gray-500 transition-colors;
+}
+
+.remove {
+  @apply p-2 rounded-xl bg-input-bg hover:bg-red-500 transition-colors;
+}
+
+.empty {
+  @apply pt-8 text-base;
+}
+
+.items {
+  @apply flex flex-col gap-3 mt-6;
+}
+
+.item {
+  @apply cursor-pointer flex gap-1;
+}

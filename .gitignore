@@ -1,0 +1,7 @@
+node_modules
+.vscode
+build
+bun.lockb
+dist
+.idea
+package-lock.json

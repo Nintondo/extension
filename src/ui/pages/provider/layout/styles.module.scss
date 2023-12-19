@@ -1,0 +1,27 @@
+.container {
+  @apply flex flex-col justify-between px-6 w-full h-full max-md:min-h-screen;
+}
+
+.content {
+  @apply flex justify-center items-center w-full h-full gap-5 flex-col;
+}
+
+.btnContainer {
+  @apply flex gap-3 w-full py-6;
+
+  > button {
+    @apply py-2 font-medium text-sm rounded-xl w-full transition-colors;
+  }
+}
+
+.reject {
+  @apply bg-bg border border-text hover:bg-red-500 hover:border-red-500;
+}
+
+.origin {
+  @apply px-5 py-2 rounded-xl bg-input-bg text-gray-300;
+
+  &Wrapper {
+    @apply flex justify-center w-full mt-4;
+  }
+}

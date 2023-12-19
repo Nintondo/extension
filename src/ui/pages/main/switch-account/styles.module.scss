@@ -1,0 +1,47 @@
+.switchAccDiv {
+  @apply flex justify-items-start flex-col items-center w-full h-full;
+}
+
+.accounts {
+  @apply flex flex-col gap-4 p-4 w-full;
+}
+
+.mainAcc {
+  @apply relative overflow-hidden rounded-xl border border-text p-2 pl-4 cursor-pointer;
+}
+
+.account {
+  @apply flex justify-between items-center;
+}
+
+.manageAccButton {
+  @apply bg-transparent border-0 rounded-full p-2 py-3 cursor-pointer;
+}
+
+.active {
+  @apply left-0;
+}
+
+.accInfo {
+  @apply flex flex-col gap-2 w-full;
+}
+
+.name {
+  @apply flex items-center gap-2 font-medium text-base;
+}
+
+.icon {
+  @apply w-6;
+}
+
+.copy {
+  @apply select-none cursor-pointer px-3 py-5 hover:scale-110;
+}
+
+.address {
+  @apply text-xs text-gray-400;
+}
+
+.selected {
+  @apply border-green-300;
+}

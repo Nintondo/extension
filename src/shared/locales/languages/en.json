@@ -1,0 +1,192 @@
+{
+  "wallet_page": {
+    "transactions": "Transactions",
+    "no_transactions": "No transactions",
+    "receive": "Receive",
+    "send": "Send"
+  },
+  "settings": {
+    "language": "Language",
+    "logout": "Logout",
+    "connected_sites": "Connected Sites",
+    "expand_view": "Expand View",
+    "change_password": "Change Password",
+    "address_type": "Address Type"
+  },
+  "components": {
+    "layout": {
+      "create_new_wallet": "Create New Wallet",
+      "send": "Send",
+      "connected_sites": "Connected Sites",
+      "change_language": "Change Language",
+      "switch_account": "Switch Account",
+      "change_address_type": "Change Address Type",
+      "create_new_account": "Create New Account",
+      "change_password": "Change Password",
+      "receive_bel": "Receive BEL",
+      "switch_wallet": "Switch Wallet",
+      "transaction_info": "Transaction Info",
+      "settings": "Settings",
+      "show_mnemonic": "Show Mnemonic",
+      "show_private_key": "Show Private Key",
+      "restore_from_mnemonic": "Restore from mnemonic",
+      "restore_from_private_key": "Restore from private key"
+    },
+    "check_password": {
+      "incorrect_password_error": "Incorrect password",
+      "password": "Password",
+      "continue": "Continue"
+    },
+    "password_input": {
+      "should_be_more_than_1_symbol": "Should be more than 1 symbol"
+    },
+    "rename": {
+      "enter_new_name": "Enter new name",
+      "minimum_length": "Miniumum length is 1",
+      "maximum_length": "Maximum length is 16",
+      "name_is_required": "Name is required",
+      "save": "Save",
+      "rename": "Rename"
+    },
+    "card": {
+      "close": "Close"
+    }
+  },
+  "change_password": {
+    "old_password": "Old password",
+    "new_password": "New password",
+    "confirm_password": "Confirm password",
+    "change_password": "Change password"
+  },
+  "connected_sites": {
+    "no_sites_message": "You didn't connect any sites yet"
+  },
+  "create_password": {
+    "password": "Password",
+    "confirm_password": "Confirm password",
+    "create_password": "Create password"
+  },
+  "login": {
+    "password": "Password",
+    "login": "Login",
+    "welcome_back": "Welcome back"
+  },
+  "new_account": {
+    "max_length_error": "Maximum name length is 16",
+    "name_taken_error": "Name for this account is already taken",
+    "account_created_message": "Created new account",
+    "enter_name_label": "Enter the name:",
+    "create_new_account": "Create an account"
+  },
+  "new_wallet": {
+    "new_mnemonic_label": "New mnemonic",
+    "restore_mnemonic_label": "Restore mnemonic",
+    "restore_from_private_key_label": "Restore from private key",
+    "step_1": "Step 1",
+    "step_2": "Step 2",
+    "continue": "Continue",
+    "new_mnemonic": {
+      "error_phrase_blank": "Mnemonic phrase blank",
+      "warning": "If you lose these words, you will never be able to recover your lost account",
+      "i_saved_this_phrase": "I saved this phrase",
+      "copy": "Copy"
+    },
+    "restore_mnemonic": {
+      "incomplete_phrase_error": "Please insert all the words",
+      "invalid_words_error": "Words are invalid"
+    },
+    "restore_private": {
+      "private_key": "Private key",
+      "recover": "Recover",
+      "invalid_private_key_error": "Invalid private key"
+    }
+  },
+  "receive": {
+    "click_to_copy": "Click to copy",
+    "copy_address": "Copy address"
+  },
+  "send": {
+    "confirm_send": {
+      "to_addrses": "To address",
+      "from_address": "From address",
+      "amount": "Amount",
+      "fee": "Fee",
+      "included": "included",
+      "not_included": "not included",
+      "confirm": "Confirm"
+    },
+    "create_send": {
+      "minimum_amount_error": "Minimum amount is 0.01 BEL",
+      "address_error": "Insert the addresss of receiver",
+      "not_enough_money_error": "There's not enough money in your account",
+      "not_enough_fee_error": "Increase the fee",
+      "fee_is_text_error": "Fee should be integer",
+      "default_error": "Error has occurred",
+      "address": "Address",
+      "amount": "Amount",
+      "amount_to_send": "Amount to send",
+      "max_amount": "MAX",
+      "fee_label": "Fee:",
+      "include_fee_in_the_amount_label": "Include fee in the amount",
+      "save_address_for_the_next_payments_label": "Save address for the next payments",
+      "continue": "Continue",
+      "fee_input": {
+        "fast": "Fast",
+        "slow": "Slow",
+        "custom": "Custom"
+      },
+      "address_input": {
+        "address_book": "Address book"
+      },
+      "address_book": {
+        "address_book": "Address book",
+        "no_addresses": "No any addresses here"
+      }
+    },
+    "finalle_send": {
+      "success": "Success",
+      "explorer": "Explorer",
+      "back": "Back"
+    }
+  },
+  "switch_account": {
+    "name_already_taken_error": "This name is already taken",
+    "copy_address": "Copy address",
+    "rename_account": "Rename account",
+    "export_private_key": "Export private key",
+    "show_pk": {
+      "copy": "Copy"
+    }
+  },
+  "switch_wallet": {
+    "rename_wallet": "Rename wallet",
+    "show_mnemonic_private_key": "Show mnemonic private key",
+    "last_wallet_error": "You cannot delete your last wallet",
+    "remove_wallet": "Remove wallet",
+    "are_you_sure": "Are you sure you want to delete?",
+    "yes": "Yes",
+    "no": "No",
+    "copy": "Copy"
+  },
+  "transaction_info": {
+    "txid": "TxId",
+    "confirmations_label": "Confirmations:",
+    "fee_label": "Fee:",
+    "value_label": "Value:",
+    "open_in_explorer": "Open in explorer",
+    "copied": "Copied",
+    "inputs": "Inputs",
+    "outputs": "Outputs",
+    "details": "Details"
+  },
+  "hooks": {
+    "transaction": {
+      "insufficient_balance_0": "Insufficient balance. Non-Inscription balance",
+      "insufficient_balance_1": "BEL) is lower than",
+      "insufficient_balance_2": "BEL"
+    },
+    "wallet": {
+      "last_wallet_error": "You cannot delete your last wallet"
+    }
+  }
+}

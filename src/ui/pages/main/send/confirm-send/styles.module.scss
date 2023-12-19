@@ -1,0 +1,23 @@
+.input {
+  @apply break-all bg-input-bg rounded-xl font-medium px-4 py-2 text-sm;
+}
+
+.item {
+  @apply w-full;
+}
+
+.label {
+  @apply mb-1.5 ml-1 text-gray-400 text-xs;
+}
+
+.wrapper {
+  @apply h-full py-4 flex items-center justify-center px-4;
+}
+
+.container {
+  @apply h-full flex flex-col items-center gap-4;
+}
+
+.confirmBtn {
+  @apply w-full;
+}

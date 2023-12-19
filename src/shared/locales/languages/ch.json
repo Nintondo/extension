@@ -1,0 +1,191 @@
+{
+  "wallet_page": {
+    "transactions": "交易",
+    "no_transactions": "没有交易",
+    "receive": "接收",
+    "send": "发送"
+  },
+  "settings": {
+    "language": "语言",
+    "logout": "登出",
+    "connected_sites": "已连接的网站",
+    "expand_view": "扩大视图",
+    "change_password": "更改密码",
+    "address_type": "地址类型"
+  },
+  "components": {
+    "layout": {
+      "create_new_wallet": "创建新的钱包",
+      "send": "发送",
+      "connected_sites": "已连接的网站",
+      "change_language": "更改语言",
+      "switch_account": "切换账户",
+      "change_address_type": "更改地址类型",
+      "create_new_account": "创建新的账户",
+      "change_password": "更改密码",
+      "receive_bel": "接收 BEL",
+      "switch_wallet": "切换钱包",
+      "transaction_info": "交易信息",
+      "settings": "设置",
+      "show_mnemonic": "显示助记词",
+      "show_private_key": "显示私钥",
+      "restore_from_mnemonic": "从助记词恢复",
+      "restore_from_private_key": "从私钥恢复"
+    },
+    "check_password": {
+      "incorrect_password_error": "密码错误",
+      "password": "密码",
+      "continue": "继续"
+    },
+    "password_input": {
+      "should_be_more_than_1_symbol": "应该超过1个符号"
+    },
+    "rename": {
+      "enter_new_name": "输入新的名称",
+      "minimum_length": "最小长度 - 1",
+      "maximum_length": "最大长度 - 16",
+      "name_is_required": "需要名称",
+      "save": "保存",
+      "rename": "重命名"
+    },
+    "card": {
+      "close": "关闭"
+    }
+  },
+  "change_password": {
+    "old_password": "旧密码",
+    "new_password": "新密码",
+    "confirm_password": "确认密码",
+    "change_password": "更改密码"
+  },
+  "connected_sites": {
+    "no_sites_message": "你还没有连接任何网站"
+  },
+  "create_password": {
+    "password": "密码",
+    "confirm_password": "确认密码",
+    "create_password": "创建密码"
+  },
+  "login": {
+    "password": "密码",
+    "login": "登录"
+  },
+  "new_account": {
+    "max_length_error": "名称的最大长度 - 16",
+    "name_taken_error": "此账户的名称已被占用",
+    "account_created_message": "新的账户已创建",
+    "enter_name_label": "输入名称：",
+    "create_new_account": "创建新的账户"
+  },
+  "new_wallet": {
+    "new_mnemonic_label": "新的助记词",
+    "restore_mnemonic_label": "恢复助记词",
+    "restore_from_private_key_label": "通过私钥恢复",
+    "step_1": "步骤 1",
+    "step_2": "步骤 2",
+    "continue": "继续",
+    "new_mnemonic": {
+      "error_phrase_blank": "助记词为空",
+      "warning": "如果你丢失了这些单词，你将无法恢复你的账户",
+      "i_saved_this_phrase": "我已保存这个短语",
+      "copy": "复制"
+    },
+    "restore_mnemonic": {
+      "incomplete_phrase_error": "请插入所有的单词",
+      "invalid_words_error": "单词无效"
+    },
+    "restore_private": {
+      "private_key": "私密钥",
+      "recover": "恢复",
+      "invalid_private_key_error": "私钥错误"
+    }
+  },
+  "receive": {
+    "click_to_copy": "点击复制",
+    "copy_address": "复制地址"
+  },
+  "send": {
+    "confirm_send": {
+      "to_addresses": "送达地址",
+      "from_address": "来自地址",
+      "amount": "金额",
+      "fee": "费用",
+      "included": "已包括",
+      "not_included": "未包括",
+      "confirm": "确认"
+    },
+    "create_send": {
+      "minimum_amount_error": "最小金额 - 0.01 BEL",
+      "address_error": "请输入收件人地址",
+      "not_enough_money_error": "你的账户资金不足",
+      "not_enough_fee_error": "请提升费用",
+      "fee_is_text_error": "费用必须是数字",
+      "default_error": "出现错误",
+      "address": "地址",
+      "amount": "金额",
+      "amount_to_send": "发送金额",
+      "max_amount": "最大值",
+      "fee_label": "费用:",
+      "include_fee_in_the_amount_label": "金额中包括费用",
+      "save_address_for_the_next_payments_label": "为下次支付保存此地址",
+      "continue": "继续",
+      "fee_input": {
+        "fast": "快",
+        "slow": "慢",
+        "custom": "自定义"
+      },
+      "address_input": {
+        "address_book": "地址簿"
+      },
+      "address_book": {
+        "address_book": "地址簿",
+        "no_addresses": "还没有地址"
+      }
+    },
+    "final_send": {
+      "success": "成功",
+      "explorer": "查找器",
+      "back": "返回"
+    }
+  },
+  "switch_account": {
+    "name_already_taken_error": "名称已占用",
+    "copy_address": "复制地址",
+    "rename_account": "重命名账户",
+    "export_private_key": "导出私钥",
+    "show_pk": {
+      "copy": "复制"
+    }
+  },
+  "switch_wallet": {
+    "rename_wallet": "重命名钱包",
+    "show_mnemonic_private_key": "显示助记词私钥",
+    "last_wallet_error": "你不能删除你的最后一个钱包",
+    "remove_wallet": "移除钱包",
+    "are_you_sure": "你确定吗?",
+    "yes": "是",
+    "no": "否",
+    "copy": "复制"
+  },
+  "transaction_info": {
+    "txid": "TxId",
+    "confirmations_label": "确认：",
+    "fee_label": "费用：",
+    "value_label": "价值：",
+    "open_in_explorer": "在查找器中打开",
+    "copied": "已复制",
+    "inputs": "输入",
+    "outputs": "输出",
+    "details": "详细"
+  },
+  "hooks": {
+    "transaction": {
+      "insufficient_balance_0": "余额不足. 非注册余额",
+      "insufficient_balance_1": "BEL) 小于",
+      "insufficient_balance_2": "BEL"
+    },
+    "wallet": {
+      "last_wallet_error": "你不能删除你的最后一个钱包"
+    }
+  }
+}

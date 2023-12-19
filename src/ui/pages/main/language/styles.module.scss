@@ -1,0 +1,7 @@
+.languages {
+    @apply flex justify-center py-8 flex-col items-center gap-4;
+
+    .langBtn {
+        @apply w-40;
+    }
+}

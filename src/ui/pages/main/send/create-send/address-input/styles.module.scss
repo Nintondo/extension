@@ -1,0 +1,7 @@
+.addressbookoptions {
+  @apply absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-input-bg py-1 text-sm outline-none;
+}
+
+.addressbookoption {
+  @apply cursor-pointer pl-2;
+}

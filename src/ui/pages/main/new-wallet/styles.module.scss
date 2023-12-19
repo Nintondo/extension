@@ -1,0 +1,15 @@
+.container {
+  @apply w-full h-full flex items-center justify-center;
+}
+
+.choice {
+  @apply grid grid-cols-2 grid-rows-2 text-base gap-2 w-full px-6;
+
+  .choiceDiv {
+    @apply w-full flex justify-center flex-col items-center;
+
+    .variant {
+      @apply border-none transition-colors hover:bg-text hover:text-bg pl-5 py-4 cursor-pointer w-full;
+    }
+  }
+}
