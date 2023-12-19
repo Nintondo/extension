@@ -28,11 +28,11 @@ const CreateTx = () => {
     },
     {
       label: "Amount",
-      value: `${psbt.amount} TDC`,
+      value: `${psbt.amount} BEL`,
     },
     {
       label: "Fee Rate",
-      value: `${psbt.feeRate} tid/Vb`,
+      value: `${psbt.feeRate} sat/Vb`,
     },
   ];
 

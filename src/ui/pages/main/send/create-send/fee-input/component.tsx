@@ -2,7 +2,7 @@ import cn from "classnames";
 import { FC, useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { t } from "i18next";
-import { useAppState } from "../../../../../states/appState";
+import { useAppState } from "@/ui/states/appState";
 
 interface Props {
   onChange: (value: number) => void;
@@ -15,13 +15,13 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
   const cards = [
     {
       title: t("send.create_send.fee_input.slow"),
-      description: "1 tid/Vb",
-      value: 1,
+      description: "10 sat/Vb",
+      value: 10,
     },
     {
       title: t("send.create_send.fee_input.fast"),
-      description: "2 tid/Vb",
-      value: 2,
+      description: "20 sat/Vb",
+      value: 20,
     },
     {
       title: t("send.create_send.fee_input.custom"),
@@ -49,8 +49,9 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
         ))}
       </div>
       <input
+        type="number"
         className={cn("input", { hidden: selected !== 3 })}
-        placeholder="tid/Vb"
+        placeholder="sat/Vb"
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
       />
