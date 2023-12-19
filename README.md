@@ -1,3 +1,7 @@
+Nintondo Wallet
+
+Browser extension.
+
 How to test extension yourself:
 
     1. Build react app
@@ -8,7 +12,8 @@ How to test extension yourself:
     6. Test
 
 
-Tasks:
-    8. Integrate extension in websites 
-    9. Swap between tdc and doge
-    10. add other cryptocurrencies to the extension
+To run extention in FireFox make sure to give it a permission:
+
+Access your data for all websites
+
+Learn more about FireFox permissions here: https://support.mozilla.org/en-US/kb/permission-request-messages-firefox-extensions
