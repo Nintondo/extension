@@ -29,7 +29,6 @@ const RestorePrivKey = () => {
       await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
     } catch (e) {
-      console.error(e);
       toast.error(t("new_wallet.restore_private.invalid_private_key_error"));
     }
   };

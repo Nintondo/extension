@@ -1,4 +1,4 @@
-import { CHAINS, BELLS_API_URL, BELLS_MAINNET_PATH, TEST_API_URL } from "@/shared/constant";
+import { CHAINS, BELLS_API_URL, BELLS_MAINNET_PATH } from "@/shared/constant";
 import browser from "./browser";
 import BroadcastChannelMessage from "./message/broadcastChannelMessage";
 import PortMessage from "./message/portMessage";
@@ -35,7 +35,7 @@ interface fetchProps extends RequestInit {
 }
 
 export const fetchTDCMainnet = async <T>({ path, json = true, ...props }: fetchProps): Promise<T | undefined> => {
-  const url = new URL(BELLS_MAINNET_PATH.concat(path), TEST_API_URL);
+  const url = new URL(BELLS_MAINNET_PATH.concat(path), BELLS_API_URL);
   if (props.params) {
     Object.entries(props.params).forEach((v) => url.searchParams.set(...v));
   }
