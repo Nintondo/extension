@@ -69,8 +69,7 @@ class ApiController implements IApiController {
   ): Promise<ITransaction[] | undefined> {
     try {
       return await fetchTDCMainnet<ITransaction[]>({
-        path: `/adress/${address}/txs/chain/${txid}`,
-        // path: `/address/TSofqS7nm8Vnk1fk8jU7YgqQcGuWA7wtnK/txs/chain/${txid}`
+        path: `/address/${address}/txs/chain/${txid}`,
       });
     } catch (e) {
       return undefined;
