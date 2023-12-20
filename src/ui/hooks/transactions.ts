@@ -52,7 +52,8 @@ export function useCreateTidecoinTxCallback() {
         feeRate,
       });
       const psbt = Psbt.fromHex(psbtHex);
-      const rawtx = psbt.extractTransaction().toHex();
+      const tx = psbt.extractTransaction();
+      const rawtx = tx.toHex();
       return {
         rawtx,
         fee: psbt.getFee(),

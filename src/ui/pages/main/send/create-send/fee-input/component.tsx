@@ -10,7 +10,7 @@ interface Props {
 }
 
 const FeeInput: FC<Props> = ({ onChange, value }) => {
-  const [selected, setSelected] = useState<1 | 2 | 3>(value === 1 || value === 2 ? value : 3);
+  const [selected, setSelected] = useState<10 | 20 | 3>(value === 10 || value === 20 ? value : 3);
 
   const cards = [
     {

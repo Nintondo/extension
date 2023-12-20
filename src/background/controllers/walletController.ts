@@ -3,8 +3,6 @@ import type { IAccount, IWallet, IWalletController } from "@/shared/interfaces";
 import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
 import { DecryptedSecrets } from "../services/storage/types";
-import { SimpleKeyring } from "@unisat/bitcoin-simple-keyring";
-import { HdKeyring } from "@unisat/bitcoin-hd-keyring";
 import * as bip39 from "bip39";
 import { AddressType, Keyring } from "bellhdw";
 

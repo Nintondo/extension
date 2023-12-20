@@ -43,7 +43,7 @@ const CreateTx = () => {
       resolveBtnText="Send"
     >
       <>
-        <KeyIcon className="w-10 h-10 text-yellow-500" />
+        <KeyIcon className="w-10 h-10 text-orange-500" />
         <h4 className="text-xl font-medium mb-6">Send bells</h4>
         <div className="flex flex-col gap-4 w-full">
           {fields.map((i) => (

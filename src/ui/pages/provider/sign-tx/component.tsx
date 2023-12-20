@@ -40,11 +40,11 @@ const SignTransaction = () => {
   return (
     <Layout
       documentTitle="Sign transaction"
-      resolveBtnClassName="bg-text text-bg hover:bg-yellow-500 hover:text-bg"
+      resolveBtnClassName="bg-text text-bg hover:bg-orange-500 hover:text-bg"
       resolveBtnText="Sign"
     >
       <>
-        <KeyIcon className="w-10 h-10 text-yellow-500" />
+        <KeyIcon className="w-10 h-10 text-orange-500" />
         <h4 className="text-xl font-medium mb-6">Sign transaction</h4>
         <div className="flex flex-col gap-4 w-full">
           {fields.map((i) => (

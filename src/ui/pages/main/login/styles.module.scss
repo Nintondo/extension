@@ -1,5 +1,5 @@
 .form {
-  @apply w-4/5 flex flex-col gap-8;
+  @apply w-full flex flex-col gap-8 mx-6;
 
   .formTitle {
     @apply text-center text-lg;

@@ -5,7 +5,7 @@ import { AddressUserToSignInput, Hex, Json, PublicKeyUserToSignInput, SendTDC, S
 import { storageService } from "@/background/services";
 import { Psbt, networks, Transaction, address as PsbtAddress } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
-import { createSendBTC } from "@unisat/ord-utils";
+import { createSendBEL } from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import { Keyring } from "bellhdw/src/hd/types";
@@ -221,7 +221,7 @@ class KeyringService {
 
     const publicKey = this.exportPublicKey(account.address);
 
-    const psbt = await createSendBTC({
+    const psbt = await createSendBEL({
       utxos: data.utxos.map((v) => {
         return {
           txId: v.txid,

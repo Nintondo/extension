@@ -43,7 +43,7 @@ const PasswordInput = <T extends FieldValues>({
           className="input w-full"
           placeholder={showSeparateLabel ? "" : label}
         />
-        <button
+        <div
           className={s.hideBtn}
           onClick={(e) => {
             e.preventDefault();
@@ -55,7 +55,7 @@ const PasswordInput = <T extends FieldValues>({
           ) : (
             <EyeSlashIcon className={s.icon} />
           )}
-        </button>
+        </div>
       </div>
     </div>
   );

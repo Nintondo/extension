@@ -28,7 +28,7 @@ const CreateSend = () => {
     address: "",
     amount: "",
     includeFeeInAmount: false,
-    feeAmount: 1,
+    feeAmount: 10,
   });
   const [includeFeeLocked, setIncludeFeeLocked] = useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();

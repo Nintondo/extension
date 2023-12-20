@@ -21,11 +21,11 @@ const Sign = () => {
   return (
     <Layout
       documentTitle="Sign message"
-      resolveBtnClassName="bg-text text-bg hover:bg-yellow-500 hover:text-bg"
+      resolveBtnClassName="bg-text text-bg hover:bg-orange-500 hover:text-bg"
       resolveBtnText="Sign"
     >
       <>
-        <KeyIcon className="w-10 h-10 text-yellow-500" />
+        <KeyIcon className="w-10 h-10 text-orange-500" />
         <h4 className="text-xl font-medium">Sign request</h4>
         <div className="text-sm text-gray-400">You are signing</div>
         <div className="p-2 bg-input-bg rounded-xl max-h-full">
