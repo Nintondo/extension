@@ -1,5 +1,5 @@
 import { browserRuntimeConnect } from "../browser";
-import Message from "./index";
+import Message from "./message";
 
 class PortMessage extends Message {
   port: any | null = null;

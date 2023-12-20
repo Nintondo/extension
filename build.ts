@@ -51,9 +51,9 @@ function mergeManifests(): Plugin {
 
 console.log(
   `\n🔨 Building extension... \n` +
-    `💻 Browser: ${chrome ? "Chrome" : "Firefox"}\n` +
-    `💡 Version: ${process.env.npm_package_version}\n` +
-    `♻️  Environment: ${isDev ? "Development" : "Production"}`
+  `💻 Browser: ${chrome ? "Chrome" : "Firefox"}\n` +
+  `💡 Version: ${process.env.npm_package_version}\n` +
+  `♻️  Environment: ${isDev ? "Development" : "Production"}`
 );
 
 const buildOptions: BuildOptions = {

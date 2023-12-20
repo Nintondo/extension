@@ -1,4 +1,4 @@
-import Message from ".";
+import Message from "./message";
 
 export default class BroadcastChannelMessage extends Message {
   private _channel: BroadcastChannel;

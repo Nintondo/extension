@@ -7,7 +7,7 @@ import BroadcastChannelMessage from "@/shared/utils/message/broadcastChannelMess
 import PushEventHandlers from "./pushEventHandlers";
 import ReadyPromise from "./readyPromise";
 import { $, domReadyCall } from "./utils";
-import { SendTDC } from "@/background/services/keyring/types";
+import type { SendTDC } from "@/background/services/keyring/types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = (event, ...args) => {

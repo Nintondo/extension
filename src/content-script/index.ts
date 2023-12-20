@@ -1,4 +1,4 @@
-import { Message } from "@/shared/utils";
+import { Message } from "@/shared/utils/message";
 
 function injectScript() {
   try {

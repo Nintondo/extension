@@ -1,6 +1,6 @@
 import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
-import { Message } from "@/shared/utils";
+import { Message } from "@/shared/utils/message";
 import { IWalletController } from "@/shared/interfaces";
 import { IStateController } from "@/shared/interfaces/stateController";
 import { useControllersState } from "../states/controllerState";

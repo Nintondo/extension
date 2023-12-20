@@ -1,6 +1,6 @@
 import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
-import { Message } from "@/shared/utils";
+import { Message } from "@/shared/utils/message";
 import { sessionService } from "@/background/services";
 import { browserRuntimeOnConnect, browserRuntimeOnInstalled } from "@/shared/utils/browser";
 import walletController from "./controllers/walletController";
