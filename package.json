@@ -1,6 +1,6 @@
 {
   "name": "bells-extension",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "scripts": {
     "dev": "bun build.ts --watch",
@@ -36,7 +36,7 @@
     "@unisat/bitcoin-hd-keyring": "^1.2.0",
     "@unisat/bitcoinjs-wallet": "^0.1.0",
     "@unisat/ord-utils": "^0.4.0",
-    "bellhdw": "^0.2.3",
+    "bellhdw": "^0.2.6",
     "big.js": "^6.2.1",
     "bip39": "^3.1.0",
     "browser-passworder": "^2.0.3",
