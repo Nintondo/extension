@@ -1,9 +1,9 @@
 import { ethErrors } from "eth-rpc-errors";
 
-import { TidecoinProvider } from "./index";
+import { BellsProvider } from "./index";
 
 class PushEventHandlers {
-  provider: TidecoinProvider;
+  provider: BellsProvider;
 
   constructor(provider) {
     this.provider = provider;

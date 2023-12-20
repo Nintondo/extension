@@ -9,16 +9,6 @@ import ReadyPromise from "./readyPromise";
 import { $, domReadyCall } from "./utils";
 import type { SendTDC } from "@/background/services/keyring/types";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const log = (event, ...args) => {
-  // if (process.env.NODE_ENV !== "production") {
-  //   console.log(
-  //     `%c [tidecoin] (${new Date().toTimeString().slice(0, 8)}) ${event}`,
-  //     "font-weight: 600; background-color: #7d6ef9; color: white;",
-  //     ...args
-  //   );
-  // }
-};
 const script = document.currentScript;
 const channelName = script?.getAttribute("channel") || "TIDEWALLET";
 
@@ -35,7 +25,7 @@ interface StateProvider {
   isPermanentlyDisconnected: boolean;
 }
 
-export class TidecoinProvider extends EventEmitter {
+export class BellsProvider extends EventEmitter {
   _selectedAddress: string | null = null;
   _network: string | null = null;
   _isConnected = false;
@@ -136,17 +126,12 @@ export class TidecoinProvider extends EventEmitter {
   };
 
   private _handleBackgroundMessage = ({ event, data }) => {
-    log("[push event]", event, data);
     if (this._pushEventHandlers[event]) {
       return this._pushEventHandlers[event](data);
     }
 
     this.emit(event, data);
   };
-  // TODO: support multi request!
-  // request = async (data) => {
-  //   return this._request(data);
-  // };
 
   _request = async (data) => {
     if (!data) {
@@ -156,15 +141,12 @@ export class TidecoinProvider extends EventEmitter {
     this._requestPromiseCheckVisibility();
 
     return this._requestPromise.call(() => {
-      log("[request]", JSON.stringify(data, null, 2));
       return this._bcm
         .request(data)
         .then((res) => {
-          log("[request: success]", data.method, res);
           return res;
         })
         .catch((err) => {
-          log("[request: error]", data.method, serializeError(err));
           throw serializeError(err);
         });
     });
@@ -277,105 +259,15 @@ export class TidecoinProvider extends EventEmitter {
     });
   };
 
-  // sendBitcoin = async (toAddress: string, satoshis: number, options?: { feeRate: number }) => {
-  //   return this._request({
-  //     method: "sendBitcoin",
-  //     params: {
-  //       toAddress,
-  //       satoshis,
-  //       feeRate: options?.feeRate,
-  //       type: TxType.SEND_BITCOIN,
-  //     },
-  //   });
-  // };
-
-  // sendInscription = async (toAddress: string, inscriptionId: string, options?: { feeRate: number }) => {
-  //   return this._request({
-  //     method: "sendInscription",
-  //     params: {
-  //       toAddress,
-  //       inscriptionId,
-  //       feeRate: options?.feeRate,
-  //       type: TxType.SEND_INSCRIPTION,
-  //     },
-  //   });
-  // };
-
-  // // signTx = async (rawtx: string) => {
-  // //   return this._request({
-  // //     method: 'signTx',
-  // //     params: {
-  // //       rawtx
-  // //     }
-  // //   });
-  // // };
-
-  // /**
-  //  * push transaction
-  //  */
-  // pushTx = async (rawtx: string) => {
-  //   return this._request({
-  //     method: "pushTx",
-  //     params: {
-  //       rawtx,
-  //     },
-  //   });
-  // };
-
-  // signPsbt = async (psbtHex: string, options?: any) => {
-  //   return this._request({
-  //     method: "signPsbt",
-  //     params: {
-  //       psbtHex,
-  //       type: TxType.SIGN_TX,
-  //       options,
-  //     },
-  //   });
-  // };
-
-  // signPsbts = async (psbtHexs: string[], options?: any[]) => {
-  //   return this._request({
-  //     method: "multiSignPsbt",
-  //     params: {
-  //       psbtHexs,
-  //       options,
-  //     },
-  //   });
-  // };
-
-  // pushPsbt = async (psbtHex: string) => {
-  //   return this._request({
-  //     method: "pushPsbt",
-  //     params: {
-  //       psbtHex,
-  //     },
-  //   });
-  // };
-
-  // inscribeTransfer = async (ticker: string, amount: string) => {
-  //   return this._request({
-  //     method: "inscribeTransfer",
-  //     params: {
-  //       ticker,
-  //       amount,
-  //     },
-  //   });
-  // };
 }
 
 declare global {
   interface Window {
-    tidecoin: TidecoinProvider;
+    bells: BellsProvider;
   }
 }
 
-const provider = new TidecoinProvider();
-
-if (!window.tidecoin) {
-  window.tidecoin = new Proxy(provider, {
-    deleteProperty: () => true,
-  });
-}
+const provider = new BellsProvider();
 
 Object.defineProperty(window, "bells", {
   value: new Proxy(provider, {
