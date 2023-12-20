@@ -5,6 +5,7 @@ Nintondo Wallet for Bells - A New Horizon for Your Crypto Adventures!
 🍃 Welcome to Nintondo Wallet! 🍃
 
 We're thrilled to introduce Nintondo Wallet, your newest companion in the whimsical world of Bells cryptocurrency. Inspired by the beloved universe of Animal Crossing, our wallet is more than just a tool; it's a delightful journey into the heart of a community where fun meets finance.
+
 🌸 Key Features:
 
 - Village Marketplace: Just like your favorite Animal Crossing marketplace, trade and manage your Bells with ease and charm.
