@@ -1,6 +1,6 @@
 Nintondo Wallet for Bells - A New Horizon for Your Crypto Adventures!
 
-🌿 Version 0.0.7 - Bringing the Charm of Animal Crossing to Cryptocurrency
+🌿 Version 0.1.0 - Bringing the Charm of Animal Crossing to Cryptocurrency
 
 🍃 Welcome to Nintondo Wallet! 🍃
 
@@ -14,7 +14,7 @@ We're thrilled to introduce Nintondo Wallet, your newest companion in the whimsi
 - Nook Miles Rewards: Earn Nook Miles for every transaction, adding an exciting twist to your cryptocurrency journey.
 - Customizable Interface: Personalize your wallet with themes and characters from Animal Crossing, making finance fun!
 
-🍂 What's New in 0.0.7:
+🍂 What's New in 0.1.0:
 
 - Launch of Nintondo Wallet: A fresh start with a familiar feel for all Bells enthusiasts and Animal Crossing fans.
 - Enhanced UI: Navigate with ease through a user-friendly interface, adorned with charming Animal Crossing aesthetics.
