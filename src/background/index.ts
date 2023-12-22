@@ -2,7 +2,10 @@ import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
 import { Message } from "@/shared/utils/message";
 import { sessionService } from "@/background/services";
-import { browserRuntimeOnConnect, browserRuntimeOnInstalled } from "@/shared/utils/browser";
+import {
+  browserRuntimeOnConnect,
+  browserRuntimeOnInstalled,
+} from "@/shared/utils/browser";
 import walletController from "./controllers/walletController";
 import apiController from "./controllers/apiController";
 import stateController from "./controllers/stateController";
@@ -14,7 +17,11 @@ const { PortMessage } = Message;
 
 // for page provider
 browserRuntimeOnConnect((port: any) => {
-  if (port.name === "popup" || port.name === "notification" || port.name === "tab") {
+  if (
+    port.name === "popup" ||
+    port.name === "notification" ||
+    port.name === "tab"
+  ) {
     const pm = new PortMessage(port);
     pm.listen((data: any) => {
       if (!data.method) return;
@@ -34,7 +41,9 @@ browserRuntimeOnConnect((port: any) => {
             return notificationController[data.method].apply(null, data.params);
           default:
             if (!walletController[data.method])
-              throw new Error(`Method ${data.method} is not founded in the walletController`);
+              throw new Error(
+                `Method ${data.method} is not founded in the walletController`
+              );
             return walletController[data.method].apply(null, data.params);
         }
       }
@@ -85,29 +94,3 @@ browserRuntimeOnInstalled((details) => {
     addAppInstalledEvent();
   }
 });
-
-const INTERNAL_STAYALIVE_PORT = "CT_Internal_port_alive";
-let alivePort: any = null;
-
-setInterval(() => {
-  if (alivePort == null) {
-    alivePort = chrome.runtime.connect({ name: INTERNAL_STAYALIVE_PORT });
-    alivePort.onDisconnect.addListener(() => {
-      if (chrome.runtime.lastError) {
-        //   // Handle error
-      } else {
-        //   // Handle successful disconnect
-      }
-      alivePort = null;
-    });
-  }
-
-  if (alivePort) {
-    alivePort.postMessage({ content: "keep alive~" });
-    if (chrome.runtime.lastError) {
-      // Handle error
-    } else {
-      // Handle successful postMessage
-    }
-  }
-}, 5000);

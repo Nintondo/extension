@@ -1,4 +1,3 @@
-// this script is injected into webpage's context
 import { ethErrors, serializeError } from "eth-rpc-errors";
 import { EventEmitter } from "events";
 
@@ -74,9 +73,6 @@ export class BellsProvider extends EventEmitter {
         method: "tabCheckin",
         params: { icon, name, origin },
       });
-
-      // Do not force to tabCheckin
-      // this._requestPromise.check(2);
     });
 
     try {
@@ -100,21 +96,6 @@ export class BellsProvider extends EventEmitter {
       this._state.initialized = true;
       this.emit("_initialized");
     }
-
-    this.keepAlive();
-  };
-
-  /**
-   * Sending a message to the extension to receive will keep the service worker alive.
-   */
-  private keepAlive = async () => {
-    await this._request({
-      method: "keepAlive",
-      params: {},
-    });
-    return setTimeout(() => {
-      this.keepAlive();
-    }, 1000);
   };
 
   private _requestPromiseCheckVisibility = () => {
@@ -198,49 +179,6 @@ export class BellsProvider extends EventEmitter {
     });
   };
 
-  // getNetwork = async () => {
-  //   return this._request({
-  //     method: "getNetwork",
-  //   });
-  // };
-
-  // switchNetwork = async (network: string) => {
-  //   return this._request({
-  //     method: "switchNetwork",
-  //     params: {
-  //       network,
-  //     },
-  //   });
-  // };
-
-  // getAccounts = async () => {
-  //   return this._request({
-  //     method: "getAccounts",
-  //   });
-  // };
-
-  // getPublicKey = async () => {
-  //   return this._request({
-  //     method: "getPublicKey",
-  //   });
-  // };
-
-  // getBalance = async () => {
-  //   return this._request({
-  //     method: "getBalance",
-  //   });
-  // };
-
-  // getInscriptions = async (cursor = 0, size = 20) => {
-  //   return this._request({
-  //     method: "getInscriptions",
-  //     params: {
-  //       cursor,
-  //       size,
-  //     },
-  //   });
-  // };
-
   signMessage = async (text: string) => {
     return this._request({
       method: "signMessage",
@@ -258,7 +196,6 @@ export class BellsProvider extends EventEmitter {
       },
     });
   };
-
 }
 
 declare global {
