@@ -4,6 +4,7 @@ import { CheckIcon } from "@heroicons/react/24/solid";
 
 import s from "./styles.module.scss";
 import { t } from "i18next";
+import { BELLS_API_URL } from "@/shared/constant";
 
 const FinalleSend = () => {
   const { txId } = useParams();
@@ -11,7 +12,7 @@ const FinalleSend = () => {
   const onClick = () => {
     browserTabsCreate({
       active: true,
-      url: `https://bells.quark.blue/tx/${txId}`,
+      url: `${BELLS_API_URL}/tx/${txId}`,
     });
   };
 

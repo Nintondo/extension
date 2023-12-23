@@ -1,21 +1,17 @@
 {
-  "short_name": "Bells",
-  "author": "Bells",
+  "short_name": "Nintondo Wallet",
+  "author": "Nintondo",
   "manifest_version": 3,
-  "name": "Bells",
+  "name": "Nintondo Wallet",
   "icons": {
-    "16": "/icon.png",
-    "32": "/icon.png",
-    "48": "/icon.png",
+    "48": "/icon-48.png",
     "128": "/icon.png"
   },
   "action": {
     "default_popup": "index.html",
     "default_title": "Open the popup",
     "default_icon": {
-      "16": "/icon.png",
-      "32": "/icon.png",
-      "48": "/icon.png",
+      "48": "/icon-48.png",
       "128": "/icon.png"
     }
   },

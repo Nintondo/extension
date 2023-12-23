@@ -25,7 +25,7 @@ class ProviderController {
 
   @Reflect.metadata("SAFE", true)
   getNetwork = async () => {
-    return "BELLS";
+    return "NINTONDO";
   };
 
   @Reflect.metadata("SAFE", true)

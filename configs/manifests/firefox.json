@@ -4,15 +4,12 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "bellsext@aivavpn.xyz",
+      "id": "nintondo@quark.blue",
       "strict_min_version": "113.0"
     },
     "gecko_android": {
       "strict_min_version": "113.0"
     }
   },
-  "host_permissions": [
-    "https://nonkyc.io/*",
-    "https://bells.quark.blue/*"
-  ]
+  "host_permissions": ["https://nonkyc.io/*", "https://bells.quark.blue/*"]
 }

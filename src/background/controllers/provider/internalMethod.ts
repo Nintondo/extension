@@ -12,11 +12,6 @@ export const tabCheckin = ({
 };
 
 export const getProviderState = async (req) => {
-  const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    session: { origin },
-  } = req;
-
   const isUnlocked = storageService.appState.isUnlocked;
   const accounts: string[] = [];
   if (isUnlocked) {
@@ -26,7 +21,7 @@ export const getProviderState = async (req) => {
     }
   }
   return {
-    network: "BELLS",
+    network: "NINTONDO",
     isUnlocked,
     accounts,
   };

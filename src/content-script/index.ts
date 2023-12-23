@@ -28,7 +28,7 @@ function injectScript() {
       pm.dispose();
     });
   } catch (error) {
-    console.error("Bells: Provider injection failed.", error);
+    console.error("Nintondo: Provider injection failed.", error);
   }
 }
 

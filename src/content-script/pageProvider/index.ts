@@ -24,7 +24,7 @@ interface StateProvider {
   isPermanentlyDisconnected: boolean;
 }
 
-export class BellsProvider extends EventEmitter {
+export class NintondoProvider extends EventEmitter {
   _selectedAddress: string | null = null;
   _network: string | null = null;
   _isConnected = false;
@@ -200,17 +200,17 @@ export class BellsProvider extends EventEmitter {
 
 declare global {
   interface Window {
-    bells: BellsProvider;
+    nintondo: NintondoProvider;
   }
 }
 
-const provider = new BellsProvider();
+const provider = new NintondoProvider();
 
-Object.defineProperty(window, "bells", {
+Object.defineProperty(window, "nintondo", {
   value: new Proxy(provider, {
     deleteProperty: () => true,
   }),
   writable: false,
 });
 
-window.dispatchEvent(new Event("bells#initialized"));
+window.dispatchEvent(new Event("nintondo#initialized"));
