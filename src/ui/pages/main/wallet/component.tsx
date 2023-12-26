@@ -79,7 +79,7 @@ const Wallet = () => {
   useEffect(() => {
     (async () => {
       const data = await apiController.getBELPrice();
-      setCurrentPrice(Number(data.last_price));
+      setCurrentPrice(data.bellscoin.usd);
       await updateLastBlock();
     })();
   }, [updateLastBlock, apiController]);

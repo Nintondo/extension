@@ -14,7 +14,7 @@ export interface IApiController {
     address: string,
     txid: string
   ): Promise<ITransaction[] | undefined>;
-  getBELPrice(): Promise<{ last_price: string }>;
+  getBELPrice(): Promise<{ bellscoin: {usd :number} }>;
   getLastBlockBEL(): Promise<number>;
 }
 
@@ -85,8 +85,8 @@ class ApiController implements IApiController {
   }
 
   async getBELPrice() {
-    const res = await fetch("https://nonkyc.io/api/v2/ticker/BEL_USDT");
-    return (await res.json()) as { last_price: string };
+    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bellscoin&vs_currencies=usd");
+    return (await res.json()) as { bellscoin: {usd :number} };
   }
 }
 
