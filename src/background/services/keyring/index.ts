@@ -41,9 +41,6 @@ class KeyringService {
       let wallet: HDPrivateKey | SimpleKey;
       if (i.data.seed) {
         wallet = HDPrivateKey.deserialize(i.data);
-        if (i.accounts.length > 1) {
-          wallet.addAccounts(i.accounts.length - 1);
-        }
       } else {
         wallet = HDSimpleKey.deserialize(i.data) as any as HDSimpleKey;
       }
