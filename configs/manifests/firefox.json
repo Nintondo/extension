@@ -10,6 +10,5 @@
     "gecko_android": {
       "strict_min_version": "113.0"
     }
-  },
-  "host_permissions": ["https://nonkyc.io/*", "https://bells.quark.blue/*"]
+  }
 }
