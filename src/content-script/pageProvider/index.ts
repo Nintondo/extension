@@ -9,7 +9,7 @@ import { $, domReadyCall } from "./utils";
 import type { SendTDC } from "@/background/services/keyring/types";
 
 const script = document.currentScript;
-const channelName = script?.getAttribute("channel") || "TIDEWALLET";
+const channelName = script?.getAttribute("channel") || "NINTONDOWALLET";
 
 export interface Interceptor {
   onRequest?: (data: any) => any;

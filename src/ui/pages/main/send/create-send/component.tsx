@@ -1,4 +1,4 @@
-import { useCreateTidecoinTxCallback } from "@/ui/hooks/transactions";
+import { useCreateBellsTxCallback } from "@/ui/hooks/transactions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { useCallback, useEffect, useState, ChangeEventHandler, MouseEventHandler, useId } from "react";
 import s from "./styles.module.scss";
@@ -32,7 +32,7 @@ const CreateSend = () => {
   });
   const [includeFeeLocked, setIncludeFeeLocked] = useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
-  const createTx = useCreateTidecoinTxCallback();
+  const createTx = useCreateBellsTxCallback();
   const navigate = useNavigate();
   const location = useLocation();
 

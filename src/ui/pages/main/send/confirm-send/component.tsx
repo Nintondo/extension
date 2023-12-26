@@ -1,4 +1,4 @@
-import { usePushTidecoinTxCallback } from "@/ui/hooks/transactions";
+import { usePushBellsTxCallback } from "@/ui/hooks/transactions";
 import s from "./styles.module.scss";
 import cn from "classnames";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import { t } from "i18next";
 
 const ConfirmSend = () => {
   const location = useLocation();
-  const pushTx = usePushTidecoinTxCallback();
+  const pushTx = usePushBellsTxCallback();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const updateAddressBook = useUpdateAddressBook();

@@ -11,7 +11,7 @@ export interface IKeyringController {
     payload: string
   ): Promise<string | undefined>;
   exportAccount(address: Hex): Promise<string>;
-  signTransaction(tideTx: Psbt, address: string): Promise<void>;
+  signTransaction(bellTx: Psbt, address: string): Promise<void>;
   signMessage(msgParams: { from: string; data: string }): Promise<string>;
   signPersonalMessage(msgParams: {
     from: string;
@@ -60,11 +60,11 @@ class KeyringController implements IKeyringController {
 
   /**
    * Method should be used to sign a new transaction before broadcasting it
-   * @param {Psbt} tideTx Psbt builded transaction with inputs that should be signed
+   * @param {Psbt} bellTx Psbt builded transaction with inputs that should be signed
    * @returns {Promise<void>} Method mutate input transaction and with that returns nothing
    */
-  async signTransaction(tideTx: Psbt): Promise<void> {
-    return keyringService.signTransaction(tideTx);
+  async signTransaction(bellTx: Psbt): Promise<void> {
+    return keyringService.signTransaction(bellTx);
   }
 
   async signMessage(msgParams: { from: string; data: string }) {

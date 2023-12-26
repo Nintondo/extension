@@ -6,7 +6,7 @@ import { Psbt } from "belcoinjs-lib";
 import { Hex } from "@/background/services/keyring/types";
 import { t } from "i18next";
 
-export function useCreateTidecoinTxCallback() {
+export function useCreateBellsTxCallback() {
   const currentAccount = useGetCurrentAccount();
   const { selectedAccount, selectedWallet } = useWalletState((v) => ({
     selectedAccount: v.selectedAccount,
@@ -69,7 +69,7 @@ export function useCreateTidecoinTxCallback() {
   );
 }
 
-export function usePushTidecoinTxCallback() {
+export function usePushBellsTxCallback() {
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
   }));
