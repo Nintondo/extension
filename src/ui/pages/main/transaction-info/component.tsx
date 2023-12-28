@@ -104,7 +104,11 @@ const TransactionInfo = () => {
               </div>
             </Modal>
           </div>
-          <button className={s.explorerBtn} onClick={onOpenExplorer}>
+          <button
+            className={s.explorerBtn}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={onOpenExplorer}
+          >
             {t("transaction_info.open_in_explorer")}
           </button>
         </>
@@ -148,8 +152,9 @@ const TableItem: FC<ITableItem> = ({ items, currentAddress, label }) => {
                 },
                 s.tableFirst
               )}
-              onClick={() => {
-                navigator.clipboard.writeText(i.scriptpubkey_address);
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={async () => {
+                await navigator.clipboard.writeText(i.scriptpubkey_address);
                 toast.success(t("transaction_info.copied"));
               }}
               title={i.scriptpubkey_address}

@@ -40,7 +40,11 @@ const CreatePassword = () => {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit(createPassword)}>
+    <form
+      className="form"
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onSubmit={handleSubmit(createPassword)}
+    >
       <p className="form-title">{t("create_password.create_password")}</p>
       {formFields.map((i, f) => (
         <PasswordInput

@@ -13,11 +13,19 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   title?: string;
 }
 
-const CopyBtn: FC<Props> = ({ label, value, className, iconClassName, title, ...props }) => {
+const CopyBtn: FC<Props> = ({
+  label,
+  value,
+  className,
+  iconClassName,
+  title,
+  ...props
+}) => {
   return (
     <button
       title={title}
       className={className ? className : s.btn}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         if (!value) return;
         await navigator.clipboard.writeText(value);

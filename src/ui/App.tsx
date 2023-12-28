@@ -51,7 +51,7 @@ export default function App() {
     await stateController.init();
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
-    i18n.changeLanguage(appState.language ?? "en");
+    await i18n.changeLanguage(appState.language ?? "en");
 
     if (
       appState.isReady &&
@@ -80,6 +80,7 @@ export default function App() {
   // const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (!isReady) setupApp();
     else if (isReady && isUnlocked) setRouter(authenticatedRouter);
     else setRouter(guestRouter);

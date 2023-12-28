@@ -86,8 +86,9 @@ const SwitchAccount = () => {
               },
             ]}
             name={acc.name}
-            onClick={() => {
-              switchAccount(acc.id);
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={async () => {
+              await switchAccount(acc.id);
             }}
             selected={currentAccount.id === acc.id}
             address={shortAddress(acc.address, 7)}
@@ -101,6 +102,7 @@ const SwitchAccount = () => {
           if (renameId === undefined) return "";
           return currentWallet.accounts[renameId].name;
         })()}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         handler={onRename}
         onClose={() => setRenameId(undefined)}
       />

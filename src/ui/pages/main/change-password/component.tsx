@@ -46,11 +46,19 @@ const ChangePassword = () => {
     walletController: v.walletController,
   }));
 
-  const executeChangePassword = async ({ confirmPassword, oldPassword, password }: FormType) => {
-    if (appPassword === oldPassword && password === confirmPassword && password !== appPassword) {
+  const executeChangePassword = async ({
+    confirmPassword,
+    oldPassword,
+    password,
+  }: FormType) => {
+    if (
+      appPassword === oldPassword &&
+      password === confirmPassword &&
+      password !== appPassword
+    ) {
       await walletController.saveWallets(undefined, password);
       await updateAppState({ password });
-      logout();
+      await logout();
     } else {
       reset();
       toast.error("Try again");
@@ -58,7 +66,11 @@ const ChangePassword = () => {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit(executeChangePassword)}>
+    <form
+      className="form"
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onSubmit={handleSubmit(executeChangePassword)}
+    >
       {formFields.map((i) => (
         <PasswordInput key={i.name} register={register} {...i} />
       ))}

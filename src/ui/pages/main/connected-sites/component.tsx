@@ -16,6 +16,7 @@ const ConnectedSites = () => {
   }, [notificationController, setConnectedSites]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateConnectedSites();
   }, [updateConnectedSites]);
 
@@ -38,6 +39,7 @@ const ConnectedSites = () => {
               <XMarkIcon
                 className={s.icon}
                 onClick={() => {
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   removeSite(f.origin);
                 }}
               />

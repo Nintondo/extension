@@ -20,8 +20,8 @@ const AddressBookModal: FC<Props> = ({ isOpen, onClose, setFormData }) => {
     updateAppState: v.updateAppState,
   }));
 
-  const onRemove = (address: string) => {
-    updateAppState({
+  const onRemove = async (address: string) => {
+    await updateAppState({
       addressBook: addressBook.filter((i) => i !== address),
     });
   };
@@ -32,13 +32,27 @@ const AddressBookModal: FC<Props> = ({ isOpen, onClose, setFormData }) => {
   };
 
   return (
-    <Modal onClose={onClose} open={isOpen} title={t("send.create_send.address_book.address_book")}>
-      {!addressBook.length && <div className={s.empty}>{t("send.create_send.address_book.no_addresses")}</div>}
+    <Modal
+      onClose={onClose}
+      open={isOpen}
+      title={t("send.create_send.address_book.address_book")}
+    >
+      {!addressBook.length && (
+        <div className={s.empty}>
+          {t("send.create_send.address_book.no_addresses")}
+        </div>
+      )}
       <div className={s.items}>
         {addressBook.map((i, idx) => (
           <div key={`ab-${idx}`} className={s.item}>
-            <div onClick={() => onSelect(i)} className={s.address}>{shortAddress(i, 17)}</div>
-            <div className={s.remove} onClick={() => onRemove(i)}>
+            <div onClick={() => onSelect(i)} className={s.address}>
+              {shortAddress(i, 17)}
+            </div>
+            <div
+              className={s.remove}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={() => onRemove(i)}
+            >
               <MinusCircleIcon className="w-5 h-5" />
             </div>
           </div>

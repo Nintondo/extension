@@ -17,8 +17,11 @@ const ShowPk = () => {
   const [secret, setSecret] = useState("");
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
-      setSecret(await keyringController.exportAccount(currentAccount?.address ?? ""));
+      setSecret(
+        await keyringController.exportAccount(currentAccount?.address ?? "")
+      );
     })();
   }, [setSecret, keyringController, currentAccount, accId]);
 

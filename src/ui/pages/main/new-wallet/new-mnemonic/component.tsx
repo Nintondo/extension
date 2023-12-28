@@ -57,6 +57,7 @@ const NewMnemonic = () => {
 
   useEffect(() => {
     if (mnemonicPhrase) return;
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     init();
   }, [mnemonicPhrase, init]);
 
@@ -141,6 +142,7 @@ const NewMnemonic = () => {
           />
           <div className={s.continueWrapper}>
             <button
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={onCreate}
               className={cn(s.continue, "btn", "primary")}
             >

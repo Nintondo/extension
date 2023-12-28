@@ -1,6 +1,13 @@
 import { useCreateBellsTxCallback } from "@/ui/hooks/transactions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
-import { useCallback, useEffect, useState, ChangeEventHandler, MouseEventHandler, useId } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  ChangeEventHandler,
+  MouseEventHandler,
+  useId,
+} from "react";
 import s from "./styles.module.scss";
 import cn from "classnames";
 import toast from "react-hot-toast";
@@ -36,7 +43,12 @@ const CreateSend = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const send = async ({ address, amount, feeAmount, includeFeeInAmount }: FormType) => {
+  const send = async ({
+    address,
+    amount,
+    feeAmount,
+    includeFeeInAmount,
+  }: FormType) => {
     if (Number(amount) < 0.01) {
       return toast.error(t("send.create_send.minimum_amount_error"));
     }
@@ -54,7 +66,12 @@ const CreateSend = () => {
     }
 
     try {
-      const { fee, rawtx } = await createTx(address, Number(amount) * 10 ** 8, feeAmount, includeFeeInAmount);
+      const { fee, rawtx } = await createTx(
+        address,
+        Number(amount) * 10 ** 8,
+        feeAmount,
+        includeFeeInAmount
+      );
 
       navigate("/pages/confirm-send", {
         state: {
@@ -85,7 +102,8 @@ const CreateSend = () => {
       if (location.state.save) {
         setIsSaveAddress(true);
       }
-      if (currentAccount.balance <= location.state.amount) setIncludeFeeLocked(true);
+      if (currentAccount.balance <= location.state.amount)
+        setIncludeFeeLocked(true);
     }
   }, [location.state, setFormData, currentAccount.balance]);
 
@@ -120,9 +138,10 @@ const CreateSend = () => {
       <form
         id={formId}
         className={cn("form", s.send)}
-        onSubmit={(e) => {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onSubmit={async (e) => {
           e.preventDefault();
-          send(formData);
+          await send(formData);
         }}
       >
         <div className={s.inputs}>
@@ -153,22 +172,31 @@ const CreateSend = () => {
 
         <div className={s.feeDiv}>
           <div className={cn("form-field", s.amountInput)}>
-            <span className="input-span">{t("send.create_send.fee_label")}</span>
+            <span className="input-span">
+              {t("send.create_send.fee_label")}
+            </span>
             <FeeInput
-              onChange={useCallback((v) => setFormData((prev) => ({ ...prev, feeAmount: v })), [setFormData])}
+              onChange={useCallback(
+                (v) => setFormData((prev) => ({ ...prev, feeAmount: v })),
+                [setFormData]
+              )}
               value={formData.feeAmount}
             />
           </div>
 
           <Switch
             label={t("send.create_send.include_fee_in_the_amount_label")}
-            onChange={(v) => setFormData((prev) => ({ ...prev, includeFeeInAmount: v }))}
+            onChange={(v) =>
+              setFormData((prev) => ({ ...prev, includeFeeInAmount: v }))
+            }
             value={formData.includeFeeInAmount}
             locked={includeFeeLocked}
           />
 
           <Switch
-            label={t("send.create_send.save_address_for_the_next_payments_label")}
+            label={t(
+              "send.create_send.save_address_for_the_next_payments_label"
+            )}
             value={isSaveAddress}
             onChange={setIsSaveAddress}
             locked={false}
@@ -176,11 +204,19 @@ const CreateSend = () => {
         </div>
       </form>
 
-      <button type="submit" className={"btn primary mx-4 mb-4 md:m-6 md:mb-3"} form={formId}>
+      <button
+        type="submit"
+        className={"btn primary mx-4 mb-4 md:m-6 md:mb-3"}
+        form={formId}
+      >
         {t("send.create_send.continue")}
       </button>
 
-      <AddressBookModal isOpen={isOpenModal} onClose={() => setOpenModal(false)} setFormData={setFormData} />
+      <AddressBookModal
+        isOpen={isOpenModal}
+        onClose={() => setOpenModal(false)}
+        setFormData={setFormData}
+      />
     </div>
   );
 };

@@ -19,7 +19,10 @@ const ShowMnemonic = () => {
 
   const onLogin = useCallback(
     async (password: string) => {
-      setPhrase((await stateController.getWalletPhrase(Number(walletId), password)) ?? "");
+      setPhrase(
+        (await stateController.getWalletPhrase(Number(walletId), password)) ??
+          ""
+      );
       setWalletType(wallets[Number(walletId)].type);
       setUnlocked(true);
     },
@@ -29,7 +32,10 @@ const ShowMnemonic = () => {
   if (!unlocked) {
     return (
       <div className={s.showMnemonic}>
-        <CheckPassword handler={onLogin} />
+        <CheckPassword
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          handler={onLogin}
+        />
       </div>
     );
   }
@@ -41,7 +47,8 @@ const ShowMnemonic = () => {
           <div className={s.phraseWrapper}>
             {phrase.split(" ").map((word, index) => (
               <div key={index} className={s.word}>
-                <span className={s.wordIdx}>{index + 1}</span> <p className={s.wordWord}>{word}</p>
+                <span className={s.wordIdx}>{index + 1}</span>{" "}
+                <p className={s.wordWord}>{word}</p>
               </div>
             ))}
           </div>

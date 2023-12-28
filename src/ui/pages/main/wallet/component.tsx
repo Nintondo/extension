@@ -77,6 +77,7 @@ const Wallet = () => {
   }, [apiController]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const data = await apiController.getBELPrice();
       setCurrentPrice(data.bellscoin.usd);
@@ -85,17 +86,19 @@ const Wallet = () => {
   }, [updateLastBlock, apiController]);
 
   const updateAll = useCallback(async () => {
-    updateAccountBalance();
-    udpateTransactions();
+    await Promise.all([updateAccountBalance(), udpateTransactions()]);
   }, [updateAccountBalance, udpateTransactions]);
 
   const trottledUpdate = useDebounceCall(updateAll, 300);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      updateAccountBalance();
-      udpateTransactions();
-      updateLastBlock();
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    const interval = setInterval(async () => {
+      await Promise.all([
+        updateAccountBalance(),
+        updateLastBlock(),
+        udpateTransactions(),
+      ]);
     }, 5000);
     return () => {
       clearInterval(interval);
@@ -113,6 +116,7 @@ const Wallet = () => {
   }, [trottledUpdate, currentAccount]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const pending = await stateController.getPendingWallet();
       if (pending) {
@@ -137,6 +141,7 @@ const Wallet = () => {
   }, [getPaginatedTransactions, transactions]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (inView) loadMore();
   }, [inView, loadMore]);
 

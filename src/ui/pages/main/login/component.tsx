@@ -69,7 +69,11 @@ const Login = () => {
   };
 
   return (
-    <form className={cn(s.form, "mt-5")} onSubmit={handleSubmit(login)}>
+    <form
+      className={cn(s.form, "mt-5")}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onSubmit={handleSubmit(login)}
+    >
       <div className="w-full justify-center flex text-lg">
         {t("login.welcome_back")}
       </div>

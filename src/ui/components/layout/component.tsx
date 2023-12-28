@@ -27,68 +27,71 @@ export default function PagesLayout() {
   const navigate = useNavigate();
   const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
 
-  const defaultTitles: IRouteTitle[] = useMemo(() => [
-    {
-      route: "/pages/switch-account",
-      title: t("components.layout.switch_account"),
-      action: {
-        icon: <PlusCircleIcon className="w-8 h-8" />,
-        link: "/pages/create-new-account",
+  const defaultTitles: IRouteTitle[] = useMemo(
+    () => [
+      {
+        route: "/pages/switch-account",
+        title: t("components.layout.switch_account"),
+        action: {
+          icon: <PlusCircleIcon className="w-8 h-8" />,
+          link: "/pages/create-new-account",
+        },
       },
-    },
-    {
-      route: "/pages/change-addr-type",
-      title: t("components.layout.change_address_type"),
-    },
-    {
-      route: "/pages/create-new-account",
-      title: t("components.layout.create_new_account"),
-    },
-    {
-      route: "/pages/change-password",
-      title: t("components.layout.change_password"),
-    },
-    {
-      route: "/pages/receive",
-      title: t("components.layout.receive_bel"),
-    },
-    {
-      route: "/pages/switch-wallet",
-      title: t("components.layout.switch_wallet"),
-      action: {
-        icon: <PlusCircleIcon className="w-8 h-8" />,
-        link: "/pages/create-new-wallet",
+      {
+        route: "/pages/change-addr-type",
+        title: t("components.layout.change_address_type"),
       },
-    },
-    {
-      route: "/pages/restore-mnemonic",
-      title: t("components.layout.restore_from_mnemonic"),
-    },
-    {
-      route: "/pages/restore-priv-key",
-      title: t("components.layout.restore_from_private_key"),
-    },
-    {
-      route: "/pages/send",
-      title: t("components.layout.send"),
-    },
-    {
-      route: "/pages/transaction-info/@",
-      title: t("components.layout.transaction_info"),
-    },
-    {
-      route: "/pages/settings",
-      title: t("components.layout.settings"),
-    },
-    {
-      route: "/pages/show-mnemonic/@",
-      title: t("components.layout.show_mnemonic"),
-    },
-    {
-      route: "/pages/show-pk/@",
-      title: t("components.layout.show_private_key"),
-    },
-  ], []);
+      {
+        route: "/pages/create-new-account",
+        title: t("components.layout.create_new_account"),
+      },
+      {
+        route: "/pages/change-password",
+        title: t("components.layout.change_password"),
+      },
+      {
+        route: "/pages/receive",
+        title: t("components.layout.receive_bel"),
+      },
+      {
+        route: "/pages/switch-wallet",
+        title: t("components.layout.switch_wallet"),
+        action: {
+          icon: <PlusCircleIcon className="w-8 h-8" />,
+          link: "/pages/create-new-wallet",
+        },
+      },
+      {
+        route: "/pages/restore-mnemonic",
+        title: t("components.layout.restore_from_mnemonic"),
+      },
+      {
+        route: "/pages/restore-priv-key",
+        title: t("components.layout.restore_from_private_key"),
+      },
+      {
+        route: "/pages/send",
+        title: t("components.layout.send"),
+      },
+      {
+        route: "/pages/transaction-info/@",
+        title: t("components.layout.transaction_info"),
+      },
+      {
+        route: "/pages/settings",
+        title: t("components.layout.settings"),
+      },
+      {
+        route: "/pages/show-mnemonic/@",
+        title: t("components.layout.show_mnemonic"),
+      },
+      {
+        route: "/pages/show-pk/@",
+        title: t("components.layout.show_private_key"),
+      },
+    ],
+    []
+  );
 
   const routeTitles = useMemo(
     () =>
@@ -102,6 +105,7 @@ export default function PagesLayout() {
         {
           route: "/pages/new-mnemonic",
           title: t("components.layout.create_new_wallet"),
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           backAction: async () => {
             if (await stateController.getPendingWallet()) {
               await stateController.clearPendingWallet();
@@ -142,20 +146,27 @@ export default function PagesLayout() {
           title: t("components.layout.change_language"),
         },
       ] as IRouteTitle[],
-    [navigate, stateController, currentRoute.state, wallets.length, defaultTitles]
+    [
+      navigate,
+      stateController,
+      currentRoute.state,
+      wallets.length,
+      defaultTitles,
+    ]
   );
 
   const currentRouteTitle = useMemo(
     () =>
       routeTitles.find((i) => {
         if (i.route.includes("@")) {
-          return currentRoute.pathname.includes(i.route.slice(0, i.route.length - 1));
+          return currentRoute.pathname.includes(
+            i.route.slice(0, i.route.length - 1)
+          );
         }
         return currentRoute.pathname === i.route;
       }),
     [currentRoute, routeTitles]
   );
-
 
   return (
     <div className={s.layout}>
@@ -165,7 +176,8 @@ export default function PagesLayout() {
             <div
               className={cn(s.controlElem, s.back)}
               onClick={() => {
-                if (currentRouteTitle?.backAction) currentRouteTitle.backAction();
+                if (currentRouteTitle?.backAction)
+                  currentRouteTitle.backAction();
                 else navigate(-1);
               }}
             >
@@ -173,10 +185,15 @@ export default function PagesLayout() {
             </div>
           )}
 
-          <div className={cn(s.controlElem, s.title)}>{currentRouteTitle?.title}</div>
+          <div className={cn(s.controlElem, s.title)}>
+            {currentRouteTitle?.title}
+          </div>
 
           {currentRouteTitle?.action && (
-            <Link className={cn(s.controlElem, s.addNew)} to={currentRouteTitle.action.link}>
+            <Link
+              className={cn(s.controlElem, s.addNew)}
+              to={currentRouteTitle.action.link}
+            >
               {currentRouteTitle.action.icon}
             </Link>
           )}

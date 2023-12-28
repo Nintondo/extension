@@ -14,6 +14,7 @@ const SignTransaction = () => {
   }));
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
       setPsbt(Psbt.fromHex(approval.params.data.hex as SignTransactionProps));

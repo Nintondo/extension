@@ -9,8 +9,8 @@ import { BELLS_API_URL } from "@/shared/constant";
 const FinalleSend = () => {
   const { txId } = useParams();
 
-  const onClick = () => {
-    browserTabsCreate({
+  const onClick = async () => {
+    await browserTabsCreate({
       active: true,
       url: `${BELLS_API_URL}/tx/${txId}`,
     });
@@ -29,7 +29,11 @@ const FinalleSend = () => {
         <Link to={"/home"} className="btn primary w-full">
           {t("send.finalle_send.back")}
         </Link>
-        <button className={s.btn} onClick={onClick}>
+        <button
+          className={s.btn}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={onClick}
+        >
           {t("send.finalle_send.explorer")}
         </button>
       </div>

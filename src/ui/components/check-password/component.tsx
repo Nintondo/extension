@@ -21,16 +21,28 @@ const CheckPassword: FC<Props> = ({ handler }) => {
   const { register, handleSubmit } = useForm<FormType>();
 
   const checkPassword = ({ password }: FormType) => {
-    if (password !== appPassword) return toast.error(t("components.check_password.incorrect_password_error"));
+    if (password !== appPassword)
+      return toast.error(
+        t("components.check_password.incorrect_password_error")
+      );
     handler(password);
   };
 
   return (
-    <form className={s.form} onSubmit={handleSubmit(checkPassword)}>
+    <form
+      className={s.form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onSubmit={handleSubmit(checkPassword)}
+    >
       <label htmlFor={pwdId} className={s.formTitle}>
         {t("components.check_password.password")}
       </label>
-      <input id={pwdId} type="password" className="input" {...register("password")} />
+      <input
+        id={pwdId}
+        type="password"
+        className="input"
+        {...register("password")}
+      />
       <button className="btn primary" type="submit">
         {t("components.check_password.continue")}
       </button>

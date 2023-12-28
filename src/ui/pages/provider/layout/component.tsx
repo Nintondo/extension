@@ -10,7 +10,12 @@ interface Props {
   resolveBtnClassName: string;
 }
 
-const Layout: FC<Props> = ({ children, documentTitle, resolveBtnClassName, resolveBtnText }) => {
+const Layout: FC<Props> = ({
+  children,
+  documentTitle,
+  resolveBtnClassName,
+  resolveBtnText,
+}) => {
   const [origin, setOrigin] = useState<string>("test");
 
   const { notificationController } = useControllersState((v) => ({
@@ -19,6 +24,7 @@ const Layout: FC<Props> = ({ children, documentTitle, resolveBtnClassName, resol
 
   useEffect(() => {
     document.title = documentTitle;
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
       setOrigin(approval.params.session.origin);
@@ -33,12 +39,12 @@ const Layout: FC<Props> = ({ children, documentTitle, resolveBtnClassName, resol
     );
   }
 
-  const onResolve = () => {
-    notificationController.resolveApproval();
+  const onResolve = async () => {
+    await notificationController.resolveApproval();
   };
 
-  const onReject = () => {
-    notificationController.rejectApproval();
+  const onReject = async () => {
+    await notificationController.rejectApproval();
   };
 
   return (
@@ -48,10 +54,18 @@ const Layout: FC<Props> = ({ children, documentTitle, resolveBtnClassName, resol
       </div>
       <div className={s.content}>{children}</div>
       <div className={s.btnContainer}>
-        <button className={resolveBtnClassName} onClick={onResolve}>
+        <button
+          className={resolveBtnClassName}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={onResolve}
+        >
           {resolveBtnText ?? "Resolve"}
         </button>
-        <button className={s.reject} onClick={onReject}>
+        <button
+          className={s.reject}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={onReject}
+        >
           Reject
         </button>
       </div>

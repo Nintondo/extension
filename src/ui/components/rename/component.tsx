@@ -35,11 +35,21 @@ const Rename: FC<Props> = ({ handler, active, onClose, currentName }) => {
     }
   };
 
-  useEffect(() => { setValue("name", currentName) }, [currentName, setValue])
+  useEffect(() => {
+    setValue("name", currentName);
+  }, [currentName, setValue]);
 
   return (
-    <Modal open={active} onClose={onClose} title={t("components.rename.rename")}>
-      <form className={s.form} onSubmit={handleSubmit(onRename)}>
+    <Modal
+      open={active}
+      onClose={onClose}
+      title={t("components.rename.rename")}
+    >
+      <form
+        className={s.form}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onSubmit={handleSubmit(onRename)}
+      >
         <div>
           <label htmlFor={renameId} className={s.label}>
             {t("components.rename.enter_new_name")}

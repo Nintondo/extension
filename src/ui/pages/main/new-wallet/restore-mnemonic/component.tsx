@@ -91,6 +91,7 @@ const RestoreMnemonic = () => {
               selectedType={addressType}
             />
             <button
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={onRestore}
               className={cn(s.continue, "btn", "primary")}
             >

@@ -24,8 +24,8 @@ const Settings = () => {
     logout: v.logout,
   }));
 
-  const expandView = () => {
-    browserTabsCreate({
+  const expandView = async () => {
+    await browserTabsCreate({
       url: "index.html",
     });
   };
@@ -44,6 +44,7 @@ const Settings = () => {
     {
       icon: <ArrowsPointingOutIcon className={ICON_CN} />,
       label: t("settings.expand_view"),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick: expandView,
     },
     {
@@ -59,6 +60,7 @@ const Settings = () => {
     {
       icon: <ArrowLeftOnRectangleIcon className={ICON_CN} />,
       label: t("settings.logout"),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick: logout,
     },
   ];
@@ -74,8 +76,9 @@ const Settings = () => {
         Version <span>{config.version}</span> | By{" "}
         <a
           href="#"
-          onClick={() => {
-            browserTabsCreate({
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={async () => {
+            await browserTabsCreate({
               url: `https://nintondo.io`,
               active: true,
             });

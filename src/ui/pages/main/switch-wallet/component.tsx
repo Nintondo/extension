@@ -31,10 +31,11 @@ const SwitchWallet = () => {
   };
 
   const onRename = async (name: string) => {
-    if (wallets.map((i) => i.name).includes(name)) return toast.error(t("switch_account.name_already_taken_error"));
+    if (wallets.map((i) => i.name).includes(name))
+      return toast.error(t("switch_account.name_already_taken_error"));
 
     await updateWalletState({
-      wallets: wallets.with(renameId, { ...(wallets[renameId]), name }),
+      wallets: wallets.with(renameId, { ...wallets[renameId], name }),
     });
     setRenameId(undefined);
   };
@@ -51,32 +52,53 @@ const SwitchWallet = () => {
                 action: () => {
                   setRenameId(wallet.id);
                 },
-                icon: <TagIcon title={t("switch_wallet.rename_wallet")} className="w-8 h-8 cursor-pointer text-bg" />,
+                icon: (
+                  <TagIcon
+                    title={t("switch_wallet.rename_wallet")}
+                    className="w-8 h-8 cursor-pointer text-bg"
+                  />
+                ),
               },
               {
                 action: () => {
                   navigate(`/pages/show-mnemonic/${i}`);
                 },
-                icon: <KeyIcon title={t("switch_wallet.show_mnemonic_private_key")} className="w-8 h-8 cursor-pointer text-bg" />,
+                icon: (
+                  <KeyIcon
+                    title={t("switch_wallet.show_mnemonic_private_key")}
+                    className="w-8 h-8 cursor-pointer text-bg"
+                  />
+                ),
               },
               {
                 action: () => {
-                  if (wallets.length <= 1) toast.error(t("switch_wallet.last_wallet_error"));
+                  if (wallets.length <= 1)
+                    toast.error(t("switch_wallet.last_wallet_error"));
                   else setDeleteWalletId(i);
                 },
-                icon: <TrashIcon title={t("switch_wallet.remove_wallet")} className="w-8 h-8 cursor-pointer text-bg" />,
+                icon: (
+                  <TrashIcon
+                    title={t("switch_wallet.remove_wallet")}
+                    className="w-8 h-8 cursor-pointer text-bg"
+                  />
+                ),
               },
             ]}
             name={wallet.name}
-            onClick={() => {
-              switchWallet(i);
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={async () => {
+              await switchWallet(i);
               navigate("/home");
             }}
             selected={wallet.id === currentWallet.id}
           />
         ))}
       </div>
-      <Modal onClose={() => setDeleteWalletId(undefined)} open={deleteWalletId !== undefined} title={"Confirmation"}>
+      <Modal
+        onClose={() => setDeleteWalletId(undefined)}
+        open={deleteWalletId !== undefined}
+        title={"Confirmation"}
+      >
         <div className="text-base text-text py-5 px-4 flex flex-col items-center">
           <div className="text-sm">{t("switch_wallet.are_you_sure")}</div>
           <span className="text-teal-200 block mt-5">
@@ -84,18 +106,31 @@ const SwitchWallet = () => {
           </span>
         </div>
         <div className="flex justify-center gap-4">
-          <button className="btn w-full hover:bg-red-500" onClick={onDelete}>
+          <button
+            className="btn w-full hover:bg-red-500"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={onDelete}
+          >
             {t("switch_wallet.yes")}
           </button>
-          <button className="btn w-full hover:bg-text hover:text-bg" onClick={() => setDeleteWalletId(undefined)}>
+          <button
+            className="btn w-full hover:bg-text hover:text-bg"
+            onClick={() => setDeleteWalletId(undefined)}
+          >
             {t("switch_wallet.no")}
           </button>
         </div>
       </Modal>
-      <Rename active={renameId !== undefined} currentName={(() => {
-        if (renameId === undefined) return "";
-        return wallets[renameId].name
-      })()} handler={onRename} onClose={() => setRenameId(undefined)} />
+      <Rename
+        active={renameId !== undefined}
+        currentName={(() => {
+          if (renameId === undefined) return "";
+          return wallets[renameId].name;
+        })()}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        handler={onRename}
+        onClose={() => setRenameId(undefined)}
+      />
     </div>
   );
 };
