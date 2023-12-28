@@ -17,7 +17,14 @@ interface Props {
   address?: string;
 }
 
-const Card: FC<Props> = ({ menuItems, selected, onClick, name, address }) => {
+const Card: FC<Props> = ({
+  menuItems,
+  selected,
+  onClick,
+  name,
+  address,
+  id,
+}) => {
   const [active, setActive] = useState(false);
 
   const onMenuClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -26,7 +33,11 @@ const Card: FC<Props> = ({ menuItems, selected, onClick, name, address }) => {
   };
 
   return (
-    <div className={cn(s.card, { [s.selected]: selected })} onClick={onClick}>
+    <div
+      id={String(id)}
+      className={cn(s.card, { [s.selected]: selected })}
+      onClick={onClick}
+    >
       <div className={s.wrapper}>
         <div className={cn(s.name)}>{name}</div>
         <div className={s.right}>
@@ -49,7 +60,12 @@ const Card: FC<Props> = ({ menuItems, selected, onClick, name, address }) => {
             action: () => {
               setActive(false);
             },
-            icon: <XMarkIcon title={t("components.card.close")} className="w-8 h-8 cursor-pointer text-bg" />,
+            icon: (
+              <XMarkIcon
+                title={t("components.card.close")}
+                className="w-8 h-8 cursor-pointer text-bg"
+              />
+            ),
           },
         ]}
       />

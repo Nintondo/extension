@@ -1,14 +1,17 @@
 import { TagIcon, KeyIcon } from "@heroicons/react/24/outline";
 import s from "./styles.module.scss";
 import { shortAddress } from "@/shared/utils/transactions";
-import { useGetCurrentAccount, useGetCurrentWallet } from "@/ui/states/walletState";
+import {
+  useGetCurrentAccount,
+  useGetCurrentWallet,
+} from "@/ui/states/walletState";
 import cn from "classnames";
 import CopyBtn from "@/ui/components/copy-btn";
 import { useSwitchAccount, useUpdateCurrentWallet } from "@/ui/hooks/wallet";
 import { useNavigate } from "react-router-dom";
 import Card from "@/ui/components/card";
 import Rename from "@/ui/components/rename";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { t } from "i18next";
 
@@ -30,9 +33,16 @@ const SwitchAccount = () => {
     setRenameId(undefined);
 
     await updateCurrentWallet({
-      accounts: currentWallet.accounts.with(renameId, { ...currentWallet.accounts[renameId], name }),
+      accounts: currentWallet.accounts.with(renameId, {
+        ...currentWallet.accounts[renameId],
+        name,
+      }),
     });
   };
+
+  useEffect(() => {
+    document.getElementById(String(currentAccount.id)).scrollIntoView();
+  }, [currentAccount]);
 
   return (
     <div className={s.switchAccDiv}>
@@ -56,13 +66,23 @@ const SwitchAccount = () => {
                 action: () => {
                   setRenameId(acc.id);
                 },
-                icon: <TagIcon title={t("switch_account.rename_account")} className="w-8 h-8 cursor-pointer text-bg" />,
+                icon: (
+                  <TagIcon
+                    title={t("switch_account.rename_account")}
+                    className="w-8 h-8 cursor-pointer text-bg"
+                  />
+                ),
               },
               {
                 action: () => {
                   navigate(`/pages/show-pk/${acc.id}`);
                 },
-                icon: <KeyIcon title={t("switch_account.rename_account")} className="w-8 h-8 cursor-pointer text-bg" />,
+                icon: (
+                  <KeyIcon
+                    title={t("switch_account.rename_account")}
+                    className="w-8 h-8 cursor-pointer text-bg"
+                  />
+                ),
               },
             ]}
             name={acc.name}
@@ -75,10 +95,15 @@ const SwitchAccount = () => {
         ))}
       </div>
 
-      <Rename active={renameId !== undefined} currentName={(() => {
-        if (renameId === undefined) return "";
-        return currentWallet.accounts[renameId].name
-      })()} handler={onRename} onClose={() => setRenameId(undefined)} />
+      <Rename
+        active={renameId !== undefined}
+        currentName={(() => {
+          if (renameId === undefined) return "";
+          return currentWallet.accounts[renameId].name;
+        })()}
+        handler={onRename}
+        onClose={() => setRenameId(undefined)}
+      />
     </div>
   );
 };
