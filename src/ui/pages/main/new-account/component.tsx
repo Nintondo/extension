@@ -4,6 +4,8 @@ import { useCreateNewAccount } from "@/ui/hooks/wallet";
 import { useGetCurrentWallet } from "@/ui/states/walletState";
 import { useForm } from "react-hook-form";
 import { t } from "i18next";
+import { useState } from "react";
+import Loading from "react-loading";
 
 interface FormType {
   name: string;
@@ -19,19 +21,28 @@ const NewAccount = () => {
 
   const createNewAccount = useCreateNewAccount();
   const currentWallet = useGetCurrentWallet();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const nameAlreadyExists = (name: string) => {
-    return currentWallet?.accounts.find((f) => f.name?.trim() === name.trim()) !== undefined;
+    return (
+      currentWallet?.accounts.find((f) => f.name?.trim() === name.trim()) !==
+      undefined
+    );
   };
 
   const createNewAcc = async ({ name }: FormType) => {
     if (name.length > 16) return toast.error(t("new_account.max_length_error"));
-    if (nameAlreadyExists(name)) return toast.error(t("new_account.name_taken_error"));
-
+    if (nameAlreadyExists(name))
+      return toast.error(t("new_account.name_taken_error"));
+    setLoading(true);
     await createNewAccount(name);
     toast.success(t("new_account.account_created_message"));
     navigate("/home");
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <form className="form" onSubmit={handleSubmit(createNewAcc)}>
