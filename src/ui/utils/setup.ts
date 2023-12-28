@@ -16,26 +16,37 @@ function setupPm() {
   const portMessageChannel = new PortMessage();
   portMessageChannel.connect("popup");
 
-  portMessageChannel.listen((data: { method: string; params: any[]; type: string }) => {
-    if (data.type === "broadcast") {
-      eventBus.emit(data.method, data.params);
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  portMessageChannel.listen(
+    (data: { method: string; params: any[]; type: string }) => {
+      if (data.type === "broadcast") {
+        eventBus.emit(data.method, data.params);
+      }
     }
-  });
+  );
 
-  eventBus.addEventListener(EVENTS.broadcastToBackground, async (data: { method: string; data: any }) => {
-    await portMessageChannel.request({
-      type: "broadcast",
-      method: data.method,
-      params: data.data,
-    });
-  });
+  eventBus.addEventListener(
+    EVENTS.broadcastToBackground,
+    async (data: { method: string; data: any }) => {
+      await portMessageChannel.request({
+        type: "broadcast",
+        method: data.method,
+        params: data.data,
+      });
+    }
+  );
 
   return portMessageChannel;
 }
 
 const portMessageChannel = setupPm();
 
-type AvailableType = "controller" | "openapi" | "state" | "keyring" | "notification";
+type AvailableType =
+  | "controller"
+  | "openapi"
+  | "state"
+  | "keyring"
+  | "notification";
 
 function setupProxy<T>(type: AvailableType): T {
   const wallet: Record<string, any> = new Proxy(
@@ -76,7 +87,9 @@ export function setupNotificationProxy() {
 }
 
 export function useSyncStorages() {
-  const { stateController } = useControllersState((v) => ({ stateController: v.stateController }));
+  const { stateController } = useControllersState((v) => ({
+    stateController: v.stateController,
+  }));
   const { updateAppState } = useAppState((v) => ({
     updateAppState: v.updateAppState,
   }));

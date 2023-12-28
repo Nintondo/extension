@@ -11,7 +11,7 @@ export const tabCheckin = ({
   session.name = name;
 };
 
-export const getProviderState = async (req) => {
+export const getProviderState = async () => {
   const isUnlocked = storageService.appState.isUnlocked;
   const accounts: string[] = [];
   if (isUnlocked) {

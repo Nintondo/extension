@@ -47,6 +47,7 @@ export class NintondoProvider extends EventEmitter {
   constructor({ maxListeners = 100 } = {}) {
     super();
     this.setMaxListeners(maxListeners);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.initialize();
     this._pushEventHandlers = new PushEventHandlers(this);
   }
@@ -58,7 +59,7 @@ export class NintondoProvider extends EventEmitter {
     );
 
     this._bcm.connect().on("message", this._handleBackgroundMessage);
-    domReadyCall(() => {
+    domReadyCall(async () => {
       const origin = window.top?.location.origin;
       const icon =
         ($('head > link[rel~="icon"]') as HTMLLinkElement)?.href ||
@@ -69,7 +70,7 @@ export class NintondoProvider extends EventEmitter {
         ($('head > meta[name="title"]') as HTMLMetaElement)?.content ||
         origin;
 
-      this._bcm.request({
+      await this._bcm.request({
         method: "tabCheckin",
         params: { icon, name, origin },
       });

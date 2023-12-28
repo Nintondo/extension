@@ -3,6 +3,8 @@ import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
 import { useMemo } from "react";
 
+const proxy = setupStateProxy();
+
 export const useWalletState = create<IWalletState>()((set) => ({
   wallets: [],
   vaultIsEmpty: true,
@@ -10,9 +12,8 @@ export const useWalletState = create<IWalletState>()((set) => ({
   selectedWallet: undefined,
 
   updateWalletState: async (state: Partial<IWalletState>) => {
-    const proxy = setupStateProxy();
-    await proxy.updateWalletState(state);
     set(state);
+    await proxy.updateWalletState(state);
   },
 }));
 
@@ -24,7 +25,8 @@ export const useGetCurrentAccount = () => {
   }));
 
   return useMemo(() => {
-    if (selectedWallet === undefined || selectedAccount === undefined) return undefined;
+    if (selectedWallet === undefined || selectedAccount === undefined)
+      return undefined;
     return wallets[selectedWallet]?.accounts[selectedAccount];
   }, [selectedAccount, selectedWallet, wallets]);
 };

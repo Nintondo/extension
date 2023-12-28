@@ -114,7 +114,7 @@ export const useCreateNewAccount = () => {
 
       await updateCurrentWallet(updatedWallet);
       await walletController.saveWallets();
-      updateWalletState({
+      await updateWalletState({
         selectedAccount: createdAccount.id,
       });
     },
@@ -166,7 +166,7 @@ export const useSwitchAccount = () => {
 
   return useCallback(
     async (id: number) => {
-      updateWalletState({
+      await updateWalletState({
         selectedAccount: id,
       });
 

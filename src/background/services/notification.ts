@@ -3,7 +3,11 @@ import { EthereumProviderError } from "eth-rpc-errors/dist/classes";
 import Events from "events";
 import { event, remove, openNotification } from "../webapi";
 import { IS_CHROME, IS_LINUX } from "@/shared/constant";
-import { Approval, ApprovalData, OpenNotificationProps } from "@/shared/interfaces/notification";
+import {
+  Approval,
+  ApprovalData,
+  OpenNotificationProps,
+} from "@/shared/interfaces/notification";
 
 // something need user approval in window
 // should only open one window, unfocus will close the current notification
@@ -18,6 +22,7 @@ class NotificationService extends Events {
     event.on("windowRemoved", (winId: number) => {
       if (winId === this.notifiWindowId) {
         this.notifiWindowId = 0;
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.rejectApproval();
       }
     });
@@ -37,7 +42,7 @@ class NotificationService extends Events {
     return { ...this.approval.data };
   };
 
-  resolveApproval = (data?: any, forceReject = false) => {
+  resolveApproval = async (data?: any, forceReject = false) => {
     let connectedSite = false;
     if (forceReject) {
       this.approval?.reject(new EthereumProviderError(4001, "User Cancel"));
@@ -47,7 +52,7 @@ class NotificationService extends Events {
     }
     this.approval = null;
     this.emit("resolve", data);
-    this.clear();
+    await this.clear();
     return connectedSite;
   };
 
@@ -64,7 +69,10 @@ class NotificationService extends Events {
   };
 
   // currently it only support one approval at the same time
-  requestApproval = async (data?: any, winProps?: OpenNotificationProps): Promise<any> => {
+  requestApproval = async (
+    data?: any,
+    winProps?: OpenNotificationProps
+  ): Promise<any> => {
     // if (preferenceService.getPopupOpen()) {
     //   this.approval = null;
     //   throw ethErrors.provider.userRejectedRequest('please request after user close current popup');
@@ -78,6 +86,7 @@ class NotificationService extends Events {
         reject,
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.openNotification(winProps);
     });
   };
@@ -102,7 +111,7 @@ class NotificationService extends Events {
     // if (this.isLocked) return;
     // this.lock();
     if (this.notifiWindowId) {
-      remove(this.notifiWindowId);
+      await remove(this.notifiWindowId);
       this.notifiWindowId = 0;
     }
     const winId = await openNotification(winProps);

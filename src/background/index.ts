@@ -23,6 +23,7 @@ browserRuntimeOnConnect((port: any) => {
     port.name === "tab"
   ) {
     const pm = new PortMessage(port);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     pm.listen((data: any) => {
       if (!data.method) return;
 
@@ -49,8 +50,8 @@ browserRuntimeOnConnect((port: any) => {
       }
     });
 
-    const broadcastCallback = (data: any) => {
-      pm.request({
+    const broadcastCallback = async (data: any) => {
+      await pm.request({
         type: "broadcast",
         method: data.method,
         params: data.params,
@@ -66,6 +67,7 @@ browserRuntimeOnConnect((port: any) => {
   }
 
   const pm = new PortMessage(port);
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   pm.listen(async (data) => {
     const sessionId = port.sender?.tab?.id;
     const session = sessionService.getOrCreateSession(sessionId);

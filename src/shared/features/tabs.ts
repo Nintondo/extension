@@ -29,6 +29,7 @@ export const useExtensionIsInTab = () => {
       const inTab = await extensionIsInTab();
       setIsInTab(inTab);
     };
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     init();
   }, []);
   return isInTab;

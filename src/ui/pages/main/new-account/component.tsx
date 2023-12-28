@@ -45,6 +45,7 @@ const NewAccount = () => {
   }
 
   return (
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <form className="form" onSubmit={handleSubmit(createNewAcc)}>
       <p className="form-title">{t("new_account.enter_name_label")}</p>
       <input

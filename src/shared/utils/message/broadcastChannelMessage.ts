@@ -13,11 +13,11 @@ export default class BroadcastChannelMessage extends Message {
   }
 
   connect = () => {
-    this._channel.onmessage = ({ data: { type, data } }) => {
+    this._channel.onmessage = async ({ data: { type, data } }) => {
       if (type === "message") {
         this.emit("message", data);
       } else if (type === "response") {
-        this.onResponse(data);
+        await this.onResponse(data);
       }
     };
 
@@ -27,9 +27,9 @@ export default class BroadcastChannelMessage extends Message {
   listen = (listenCallback: CallableFunction) => {
     this.listenCallback = listenCallback;
 
-    this._channel.onmessage = ({ data: { type, data } }) => {
+    this._channel.onmessage = async ({ data: { type, data } }) => {
       if (type === "request") {
-        this.onRequest(data);
+        await this.onRequest(data);
       }
     };
 
