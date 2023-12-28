@@ -9,7 +9,7 @@ import postcss from "postcss";
 
 async function readJsonFile(path: string) {
   const file = Bun.file(path);
-  return await file.json();
+  return JSON.parse(await file.text());
 }
 
 const chrome = !Bun.argv.includes("--firefox");
@@ -51,9 +51,9 @@ function mergeManifests(): Plugin {
 
 console.log(
   `\n🔨 Building extension... \n` +
-  `💻 Browser: ${chrome ? "Chrome" : "Firefox"}\n` +
-  `💡 Version: ${process.env.npm_package_version}\n` +
-  `♻️  Environment: ${isDev ? "Development" : "Production"}`
+    `💻 Browser: ${chrome ? "Chrome" : "Firefox"}\n` +
+    `💡 Version: ${process.env.npm_package_version}\n` +
+    `♻️  Environment: ${isDev ? "Development" : "Production"}`
 );
 
 const buildOptions: BuildOptions = {
@@ -69,6 +69,7 @@ const buildOptions: BuildOptions = {
   logLevel: "info",
   define: {
     "import.meta.url": '""',
+    "process.browser": "false",
   },
   plugins: [
     svgPlugin({
@@ -102,7 +103,7 @@ const buildOptions: BuildOptions = {
       modules: {
         buffer: true,
         crypto: true,
-        stream: true
+        stream: true,
       },
     }),
     mergeManifests(),
