@@ -62,7 +62,9 @@ class WalletController implements IWalletController {
     walletId: number,
     accounts: IAccount[]
   ): Promise<IAccount[]> {
-    const wallet = keyringService.keyrings[walletId] as unknown as Keyring<JSON>;
+    const wallet = keyringService.keyrings[
+      walletId
+    ] as unknown as Keyring<JSON>;
 
     const addresses = wallet.getAccounts();
 

@@ -9,5 +9,6 @@
     "noUnusedLocals": false,
     "noImplicitAny": true
   },
-  "exclude": ["./src/**/*", "./node_modules/**/*"]
+  "exclude": ["./src/**/*", "./node_modules/**/*"],
+  "include": ["./build.ts"]
 }

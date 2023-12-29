@@ -66,7 +66,6 @@ class KeyringService {
     }
     keyring.addressType =
       typeof addressType === "number" ? addressType : AddressType.P2PKH;
-    console.log();
     this.keyrings.push(keyring);
     return keyring.getAddress(keyring.publicKey);
   }
@@ -194,8 +193,8 @@ class KeyringService {
 
   signMessage(msgParams: { from: string; data: string }) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
-    const randomSeed = crypto.getRandomValues(new Uint8Array(48));
-    return keyring.signMessage(msgParams.from, msgParams.data, randomSeed);
+    (globalThis as any).kg = keyring;
+    return keyring.signMessage(msgParams.from, msgParams.data);
   }
 
   signPersonalMessage(msgParams: { from: string; data: string }) {
@@ -204,13 +203,7 @@ class KeyringService {
       throw new Error(KeyringServiceError.UnsupportedSignPersonalMessage);
     }
 
-    const randomSeed = crypto.getRandomValues(new Uint8Array(48));
-
-    return keyring.signPersonalMessage(
-      msgParams.from,
-      msgParams.data,
-      randomSeed
-    );
+    return keyring.signPersonalMessage(msgParams.from, msgParams.data);
   }
 
   private async _signTransactionMultisig() {

@@ -1,5 +1,8 @@
-import { browserStorageLocalGet, browserStorageLocalSet } from "@/shared/utils/browser";
-import * as encryptorUtils from "@metamask/browser-passworder";
+import {
+  browserStorageLocalGet,
+  browserStorageLocalSet,
+} from "@/shared/utils/browser";
+import * as encryptorUtils from "nintondo-browser-passworder";
 import { IAccount, IPrivateWallet, IWallet } from "@/shared/interfaces";
 import { DecryptedSecrets, StorageInterface } from "./types";
 import { IAppStateBase, IWalletStateBase } from "@/shared/interfaces";
@@ -38,9 +41,14 @@ class StorageService {
   }
 
   get currentAccount(): IAccount | undefined {
-    if (this._walletState.selectedWallet === undefined || this._walletState.selectedAccount === undefined)
+    if (
+      this._walletState.selectedWallet === undefined ||
+      this._walletState.selectedAccount === undefined
+    )
       return undefined;
-    return this._walletState.wallets[this._walletState.selectedWallet].accounts[this._walletState.selectedAccount];
+    return this._walletState.wallets[this._walletState.selectedWallet].accounts[
+      this._walletState.selectedAccount
+    ];
   }
 
   async init() {
@@ -66,13 +74,19 @@ class StorageService {
   async updateWalletState(state: Partial<IWalletStateBase>) {
     this._walletState = { ...this._walletState, ...state };
 
-    if (state.selectedAccount !== undefined || state.selectedWallet !== undefined || state.wallets !== undefined) {
+    if (
+      state.selectedAccount !== undefined ||
+      state.selectedWallet !== undefined ||
+      state.wallets !== undefined
+    ) {
       const localState = await this.getLocalValues();
       const cache: StorageInterface["cache"] = {
         ...localState.cache,
       };
-      if (state.selectedAccount !== undefined) cache.selectedAccount = state.selectedAccount;
-      if (state.selectedWallet !== undefined) cache.selectedWallet = state.selectedWallet;
+      if (state.selectedAccount !== undefined)
+        cache.selectedAccount = state.selectedAccount;
+      if (state.selectedWallet !== undefined)
+        cache.selectedWallet = state.selectedWallet;
       if (state.wallets !== undefined)
         cache.wallets = state.wallets.map((f) => ({
           addressType: f.addressType,
@@ -101,8 +115,10 @@ class StorageService {
         ...localState.cache,
       };
 
-      if (state.addressBook !== undefined) cache.addressBook = state.addressBook;
-      if (state.pendingWallet !== undefined) cache.pendingWallet = state.pendingWallet;
+      if (state.addressBook !== undefined)
+        cache.addressBook = state.addressBook;
+      if (state.pendingWallet !== undefined)
+        cache.pendingWallet = state.pendingWallet;
 
       const payload: StorageInterface = {
         cache: cache,
@@ -155,7 +171,10 @@ class StorageService {
       data: keyringService.serializeById(i.id),
       phrase: payload?.find((d) => d.id === i.id)?.phrase,
     }));
-    const encrypted = await encryptorUtils.encrypt(newPassword ?? password, JSON.stringify(keyringsToSave));
+    const encrypted = await encryptorUtils.encrypt(
+      newPassword ?? password,
+      JSON.stringify(keyringsToSave)
+    );
 
     const data: StorageInterface = {
       enc: JSON.parse(encrypted),
@@ -173,7 +192,10 @@ class StorageService {
 
   private async getSecrets(encrypted: StorageInterface, password: string) {
     if (!encrypted.enc) return undefined;
-    const loaded = (await encryptorUtils.decrypt(password, JSON.stringify(encrypted.enc))) as string | undefined;
+    const loaded = (await encryptorUtils.decrypt(
+      password,
+      JSON.stringify(encrypted.enc)
+    )) as string | undefined;
     return JSON.parse(loaded) as DecryptedSecrets | undefined;
   }
 
