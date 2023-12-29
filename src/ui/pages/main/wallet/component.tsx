@@ -68,7 +68,8 @@ const Wallet = () => {
           ...receivedTransactions.slice(0, oldTxidIndex),
           ...transactions,
         ]);
-      } else setTransactions(receivedTransactions);
+      } else if (transactions.length <= 0)
+        setTransactions(receivedTransactions);
     }
   }, [updateAccountTransactions, transactions]);
 
@@ -129,16 +130,23 @@ const Wallet = () => {
     })();
   }, [stateController, navigate]);
 
+  const [txIds, setTxIds] = useState<string[]>([]);
   const { ref, inView } = useInView();
   const loadMore = useCallback(async () => {
-    if (!transactions.length) return;
+    if (
+      !transactions.length ||
+      txIds.includes(transactions[transactions.length - 1].txid)
+    )
+      return;
     const additionalTransactions = await getPaginatedTransactions(
       transactions[transactions.length - 1].txid ?? ""
     );
     if (!additionalTransactions) return;
-    if (additionalTransactions.length > 0)
+    if (additionalTransactions.length > 0) {
+      setTxIds([...txIds, transactions[transactions.length - 1].txid]);
       setTransactions((prev) => [...prev, ...additionalTransactions]);
-  }, [getPaginatedTransactions, transactions]);
+    }
+  }, [getPaginatedTransactions, transactions, txIds, setTxIds]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
