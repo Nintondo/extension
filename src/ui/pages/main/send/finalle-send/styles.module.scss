@@ -9,7 +9,7 @@
     @apply flex items-center gap-3 w-full;
 
     > * {
-      @apply w-full px-0;
+      @apply px-0 w-full;
     }
   }
 }

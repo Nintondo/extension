@@ -7,6 +7,7 @@ import { t } from "i18next";
 import { BELLS_API_URL } from "@/shared/constant";
 import { usePushBellsTxCallback } from "@/ui/hooks/transactions";
 import toast from "react-hot-toast";
+import { ArrowPathRoundedSquareIcon } from "@heroicons/react/24/outline";
 
 const FinalleSend = () => {
   const { txId } = useParams();
@@ -24,7 +25,7 @@ const FinalleSend = () => {
   const rebroadcastTransaction = async () => {
     try {
       const txId = (await pushTx(location.state.hex)).txid;
-      if (txId) toast(t("successfully_rebroadcasted"));
+      if (txId) toast(t("send.finalle_send.successfully_rebroadcasted"));
     } catch (e) {
       toast.error(e.message);
       console.error(e);
@@ -42,24 +43,22 @@ const FinalleSend = () => {
       </div>
 
       <div className={s.btnContainer}>
-        <Link to={"/home"} className="btn primary w-full">
+        <Link to={"/home"} className="btn primary flex-3">
           {t("send.finalle_send.back")}
         </Link>
-        <div className="flex w-full justify-center">
-          <button
-            className={s.btn}
+        <button
+          className="btn primary flex-3"
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={onClick}
+        >
+          {t("send.finalle_send.explorer")}
+        </button>
+        <div className="flex-1">
+          <ArrowPathRoundedSquareIcon
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={rebroadcastTransaction}
-          >
-            {t("send.finalle_send.rebroadcast_transaction")}
-          </button>
-          <button
-            className={s.btn}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={onClick}
-          >
-            {t("send.finalle_send.explorer")}
-          </button>
+            className="cursor-pointer w-8 h-8"
+          />
         </div>
       </div>
     </div>
