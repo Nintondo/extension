@@ -1,4 +1,4 @@
-import { BELLS_API_URL, BELLS_MAINNET_PATH } from "@/shared/constant";
+import { TEST_API_URL, BELLS_TESTNET_PATH } from "@/shared/constant";
 import browser from "./browser";
 
 export const t = (name: string) => browser.i18n.getMessage(name);
@@ -21,7 +21,7 @@ export const fetchTDCMainnet = async <T>({
   json = true,
   ...props
 }: fetchProps): Promise<T | undefined> => {
-  const url = new URL(BELLS_MAINNET_PATH.concat(path), BELLS_API_URL);
+  const url = new URL(BELLS_TESTNET_PATH.concat(path), TEST_API_URL);
   if (props.params) {
     Object.entries(props.params).forEach((v) => url.searchParams.set(...v));
   }

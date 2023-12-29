@@ -146,7 +146,9 @@
     "finalle_send": {
       "success": "Success",
       "explorer": "Explorer",
-      "back": "Back"
+      "back": "Back",
+      "rebroadcast_transaction": "Rebroadcast transaction",
+      "successfully_rebroadcasted": "Successfully rebroadcasted transaction"
     }
   },
   "switch_account": {
