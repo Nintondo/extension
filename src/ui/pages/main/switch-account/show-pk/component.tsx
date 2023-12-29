@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import CheckPassword from "@/ui/components/check-password";
 import { useParams } from "react-router-dom";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
+import { useGetCurrentWallet } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import CopyBtn from "@/ui/components/copy-btn";
 import { t } from "i18next";
@@ -10,7 +10,7 @@ import { t } from "i18next";
 const ShowPk = () => {
   const [unlocked, setUnlocked] = useState(false);
   const { accId } = useParams();
-  const currentAccount = useGetCurrentAccount();
+  const currentWallet = useGetCurrentWallet();
   const { keyringController } = useControllersState((v) => ({
     keyringController: v.keyringController,
   }));
@@ -19,11 +19,10 @@ const ShowPk = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
-      setSecret(
-        await keyringController.exportAccount(currentAccount?.address ?? "")
-      );
+      const address = currentWallet.accounts[Number(accId)].address;
+      setSecret(await keyringController.exportAccount(address ?? ""));
     })();
-  }, [setSecret, keyringController, currentAccount, accId]);
+  }, [setSecret, keyringController, accId, currentWallet]);
 
   return (
     <div className={s.showPk}>
