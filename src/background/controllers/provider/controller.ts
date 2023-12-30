@@ -9,7 +9,7 @@ import { SendTDC } from "@/background/services/keyring/types";
 class ProviderController {
   connect = async () => {
     if (storageService.currentWallet === undefined) return undefined;
-    const _account = await storageService.currentWallet.accounts[0];
+    const _account = storageService.currentWallet.accounts[0];
     const account = _account ? _account.address : "";
     sessionService.broadcastEvent("accountsChanged", account);
     return account;
@@ -106,15 +106,15 @@ class ProviderController {
       // console.log(req);
     },
   ])
-  createTx = async (data) => {
+  createTx = async (data: any) => {
     const account = storageService.currentAccount;
     if (!account) return;
     const utxos = await fetchTDCMainnet<ApiUTXO[]>({
       path: `/address/${account.address}/utxo`,
     });
-    const transactionData = { ...(data as any).data.params, utxos } as SendTDC;
+    const transactionData = { ...data.data.params, utxos } as SendTDC;
     transactionData.amount = transactionData.amount * 10 ** 8;
-    const tx = await keyringService.sendTDC(transactionData);
+    const tx = keyringService.sendTDC(transactionData);
     const psbt = Psbt.fromHex(tx);
     return psbt.extractTransaction().toHex();
   };

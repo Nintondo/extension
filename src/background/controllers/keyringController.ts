@@ -81,7 +81,7 @@ class KeyringController implements IKeyringController {
    * @returns {Promise<string>} Hex of transaction to push transaction to the blockchain with
    */
   async sendTDC(data: SendTDC): Promise<string> {
-    return await keyringService.sendTDC(data);
+    return keyringService.sendTDC(data);
   }
 
   async exportPublicKey(address: string): Promise<string> {

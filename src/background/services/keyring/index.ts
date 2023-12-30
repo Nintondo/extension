@@ -1,22 +1,9 @@
 // forked from https://github.com/MetaMask/KeyringController/blob/main/src/KeyringController.ts
 
 import { KeyringServiceError } from "./consts";
-import {
-  AddressUserToSignInput,
-  Hex,
-  Json,
-  PublicKeyUserToSignInput,
-  SendTDC,
-  SignPsbtOptions,
-  ToSignInput,
-} from "./types";
+import { Hex, Json, SendTDC } from "./types";
 import { storageService } from "@/background/services";
-import {
-  Psbt,
-  networks,
-  Transaction,
-  address as PsbtAddress,
-} from "belcoinjs-lib";
+import { Psbt, networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
 import { createSendBEL } from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
@@ -102,98 +89,25 @@ class KeyringService {
 
   signPsbt(psbt: Psbt) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
-    keyring.signPsbt(psbt, this.formatOptionsToSignInputs(psbt));
+    const publicKey = this.exportPublicKey(
+      storageService.currentAccount.address
+    );
+    keyring.signPsbt(
+      psbt,
+      psbt.data.inputs.map((v, index) => ({
+        index,
+        publicKey,
+        sighashTypes: v.sighashType ? [v.sighashType] : undefined,
+      }))
+    );
   }
 
   signTransaction(psbt: Psbt) {
-    const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
-    keyring.signPsbt(psbt, this.formatOptionsToSignInputs(psbt));
-  }
-
-  private formatOptionsToSignInputs(
-    _psbt: string | Psbt,
-    options?: SignPsbtOptions
-  ) {
-    const account = storageService.currentAccount;
-    const pubKey = this.exportPublicKey(account.address);
-    if (!account) throw null;
-
-    let toSignInputs: ToSignInput[] = [];
-    if (options && options.toSignInputs) {
-      // We expect userToSignInputs objects to be similar to ToSignInput interface,
-      // but we allow address to be specified in addition to publicKey for convenience.
-      toSignInputs = options.toSignInputs.map((input) => {
-        const index = Number(input.index);
-        if (isNaN(index)) throw new Error("invalid index in toSignInput");
-
-        if (
-          !(input as AddressUserToSignInput).address &&
-          !(input as PublicKeyUserToSignInput).publicKey
-        ) {
-          throw new Error("no address or public key in toSignInput");
-        }
-
-        if (
-          (input as AddressUserToSignInput).address &&
-          (input as AddressUserToSignInput).address != account.address
-        ) {
-          throw new Error("invalid address in toSignInput");
-        }
-
-        if (
-          (input as PublicKeyUserToSignInput).publicKey &&
-          (input as PublicKeyUserToSignInput).publicKey != pubKey
-        ) {
-          throw new Error("invalid public key in toSignInput");
-        }
-
-        const sighashTypes = input.sighashTypes?.map(Number);
-        if (sighashTypes?.some(isNaN))
-          throw new Error("invalid sighash type in toSignInput");
-
-        return {
-          index,
-          publicKey: pubKey,
-          sighashTypes,
-          disableTweakSigner: input.disableTweakSigner,
-        };
-      });
-    } else {
-      const psbt =
-        typeof _psbt === "string"
-          ? Psbt.fromHex(_psbt as string, { network: networks.bitcoin })
-          : (_psbt as Psbt);
-      psbt.data.inputs.forEach((v, index) => {
-        let script: any = null;
-        if (v.witnessUtxo) {
-          script = v.witnessUtxo.script;
-        } else if (v.nonWitnessUtxo) {
-          const tx = Transaction.fromBuffer(v.nonWitnessUtxo);
-          const output = tx.outs[psbt.txInputs[index].index];
-          script = output.script;
-        }
-        const isSigned = v.finalScriptSig || v.finalScriptWitness;
-        if (script && !isSigned) {
-          const address = PsbtAddress.fromOutputScript(
-            script,
-            networks.bitcoin
-          );
-          if (account.address === address) {
-            toSignInputs.push({
-              index,
-              publicKey: pubKey,
-              sighashTypes: v.sighashType ? [v.sighashType] : undefined,
-            });
-          }
-        }
-      });
-    }
-    return toSignInputs;
+    this.signPsbt(psbt);
   }
 
   signMessage(msgParams: { from: string; data: string }) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
-    (globalThis as any).kg = keyring;
     return keyring.signMessage(msgParams.from, msgParams.data);
   }
 
@@ -206,23 +120,12 @@ class KeyringService {
     return keyring.signPersonalMessage(msgParams.from, msgParams.data);
   }
 
-  private async _signTransactionMultisig() {
-    throw new Error("Unimplemented");
-
-    // TODO It's a base to develop multisign wallets
-    // const keyring = await this.getKeyringByIndex("");
-    // const addresses = await keyring.getAccounts();
-    // const utxos = (await Promise.all(addresses.map(apiController.getUtxos)))
-    //   .filter((i) => i !== undefined)
-    //   .reduce((prev, cur) => prev?.concat(...(cur ?? [])), []) as ApiUTXO[];
-  }
-
   exportPublicKey(address: Hex) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     return keyring.exportPublicKey(address);
   }
 
-  async sendTDC(data: SendTDC) {
+  sendTDC(data: SendTDC) {
     const account = storageService.currentAccount;
     const wallet = storageService.currentWallet;
     if (!account || !account.address)
@@ -230,7 +133,7 @@ class KeyringService {
 
     const publicKey = this.exportPublicKey(account.address);
 
-    const psbt = await createSendBEL({
+    const psbt = createSendBEL({
       utxos: data.utxos.map((v) => {
         return {
           txId: v.txid,
@@ -247,7 +150,7 @@ class KeyringService {
       }),
       toAddress: data.to,
       toAmount: data.amount,
-      wallet: this,
+      signTransaction: this.signPsbt,
       network: networks.bitcoin,
       changeAddress: account.address,
       receiverToPayFee: data.receiverToPayFee,
