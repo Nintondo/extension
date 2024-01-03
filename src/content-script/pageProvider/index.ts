@@ -197,6 +197,15 @@ export class NintondoProvider extends EventEmitter {
       },
     });
   };
+
+  calculateFee = async (hex: string) => {
+    return this._request({
+      method: "calculateFee",
+      params: {
+        hex,
+      },
+    });
+  };
 }
 
 declare global {

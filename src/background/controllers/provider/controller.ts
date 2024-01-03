@@ -71,6 +71,19 @@ class ProviderController {
   };
 
   @Reflect.metadata("SAFE", true)
+  calculateFee = async ({
+    session: { origin },
+    data: {
+      params: { hex },
+    },
+  }) => {
+    if (!permission.siteIsConnected(origin)) return undefined;
+    const psbt = Psbt.fromHex(hex);
+    keyringService.signPsbt(psbt);
+    return psbt.getFee();
+  };
+
+  @Reflect.metadata("SAFE", true)
   getPublicKey = async ({ session: { origin } }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
     const _account = storageService.currentWallet.accounts[0];
