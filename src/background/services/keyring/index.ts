@@ -125,7 +125,7 @@ class KeyringService {
     return keyring.exportPublicKey(address);
   }
 
-  sendTDC(data: SendTDC) {
+  async sendTDC(data: SendTDC) {
     const account = storageService.currentAccount;
     const wallet = storageService.currentWallet;
     if (!account || !account.address)
@@ -133,7 +133,7 @@ class KeyringService {
 
     const publicKey = this.exportPublicKey(account.address);
 
-    const psbt = createSendBEL({
+    const psbt = await createSendBEL({
       utxos: data.utxos.map((v) => {
         return {
           txId: v.txid,

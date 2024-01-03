@@ -81,9 +81,7 @@ class ProviderController {
   @Reflect.metadata("APPROVAL", [
     "SignText",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (req: any) => {
-      // console.log(req);
-    },
+    (_req: any) => {},
   ])
   signMessage = async ({
     data: {
@@ -102,9 +100,7 @@ class ProviderController {
   @Reflect.metadata("APPROVAL", [
     "CreateTx",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (req: any) => {
-      // console.log(req);
-    },
+    (_req: any) => {},
   ])
   createTx = async (data: any) => {
     const account = storageService.currentAccount;
@@ -114,7 +110,7 @@ class ProviderController {
     });
     const transactionData = { ...data.data.params, utxos } as SendTDC;
     transactionData.amount = transactionData.amount * 10 ** 8;
-    const tx = keyringService.sendTDC(transactionData);
+    const tx = await keyringService.sendTDC(transactionData);
     const psbt = Psbt.fromHex(tx);
     return psbt.extractTransaction().toHex();
   };
@@ -122,9 +118,7 @@ class ProviderController {
   @Reflect.metadata("APPROVAL", [
     "SignTx",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (req: any) => {
-      // console.log(req);
-    },
+    (_req: any) => {},
   ])
   signTx = async ({
     data: {

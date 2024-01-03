@@ -101,15 +101,14 @@ const INTERNAL_STAYALIVE_PORT = "CT_Internal_port_alive";
 let alivePort: any = null;
 
 setInterval(() => {
-  // console.log('Highlander', Date.now());
   if (alivePort == null) {
     alivePort = chrome.runtime.connect({ name: INTERNAL_STAYALIVE_PORT });
 
     alivePort.onDisconnect.addListener(() => {
       if (chrome.runtime.lastError) {
-        // console.log('(DEBUG Highlander) Expected disconnect (on error). SW should be still running.');
+        //
       } else {
-        // console.log('(DEBUG Highlander): port disconnected');
+        //
       }
 
       alivePort = null;
@@ -120,9 +119,9 @@ setInterval(() => {
     alivePort.postMessage({ content: "keep alive~" });
 
     if (chrome.runtime.lastError) {
-      // console.log(`(DEBUG Highlander): postMessage error: ${chrome.runtime.lastError.message}`);
+      //
     } else {
-      // console.log(`(DEBUG Highlander): sent through ${alivePort.name} port`);
+      //
     }
   }
 }, 5000);
