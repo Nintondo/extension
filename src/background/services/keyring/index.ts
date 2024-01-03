@@ -150,7 +150,7 @@ class KeyringService {
       }),
       toAddress: data.to,
       toAmount: data.amount,
-      signTransaction: this.signPsbt,
+      signTransaction: this.signPsbt.bind(this),
       network: networks.bitcoin,
       changeAddress: account.address,
       receiverToPayFee: data.receiverToPayFee,

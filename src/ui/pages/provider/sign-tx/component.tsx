@@ -34,7 +34,7 @@ const SignTransaction = () => {
     },
     {
       label: "Fee",
-      value: `${psbt.getFee() / 10 ** 8} BEL`,
+      value: `${1 / 10 ** 8} BEL`,
     },
   ];
 
