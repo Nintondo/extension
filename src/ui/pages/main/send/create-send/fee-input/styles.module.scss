@@ -1,5 +1,5 @@
 .card {
-  @apply bg-input-bg flex flex-col gap-0.5 px-5 py-2 rounded-xl justify-center w-full select-none cursor-pointer;
+  @apply bg-input-bg flex flex-col gap-0.5 p-3 rounded-xl justify-center w-full select-none cursor-pointer;
 
   &Wrapper {
     @apply flex gap-2 w-full;
@@ -15,7 +15,7 @@
 }
 
 .title {
-  @apply font-medium text-lg;
+  @apply font-medium text-base;
 }
 
 .container {

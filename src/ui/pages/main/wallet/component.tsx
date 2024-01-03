@@ -81,7 +81,9 @@ const Wallet = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const data = await apiController.getBELPrice();
-      setCurrentPrice(data.bellscoin.usd);
+      if (data.bellscoin) {
+        setCurrentPrice(data.bellscoin.usd);
+      }
       await updateLastBlock();
     })();
   }, [updateLastBlock, apiController]);
@@ -266,9 +268,7 @@ const Wallet = () => {
                     {getConfirmationsCount(lastBlock, t.status.block_height)}
                   </div>
                 </div>
-                <div className={s.transactionInfo}>
-                  <div className={s.address}>{shortAddress(t.txid)}</div>
-                </div>
+                <div>{shortAddress(t.txid)}</div>
               </div>
               <div
                 className={cn(s.value, {

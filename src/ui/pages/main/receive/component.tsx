@@ -19,11 +19,11 @@ const qrCode = new QRCode({
       rotation: 45,
       colorStops: [
         {
-          color: "#C6FFDD",
+          color: "#E48F45",
           offset: 0,
         },
         {
-          color: "#FBD786",
+          color: "#F5CCA0",
           offset: 5,
         },
       ],

@@ -14,8 +14,9 @@ export interface IApiController {
     address: string,
     txid: string
   ): Promise<ITransaction[] | undefined>;
-  getBELPrice(): Promise<{ bellscoin: {usd :number} }>;
+  getBELPrice(): Promise<{ bellscoin?: { usd: number } }>;
   getLastBlockBEL(): Promise<number>;
+  getFees(): Promise<{ fast: number; slow: number }>;
 }
 
 class ApiController implements IApiController {
@@ -39,6 +40,16 @@ class ApiController implements IApiController {
       path: `/address/${address}/utxo`,
     });
     return data;
+  }
+
+  async getFees() {
+    const data = await fetchTDCMainnet({
+      path: "/fee-estimates",
+    });
+    return {
+      slow: Number((data["6"] as number).toFixed(0)),
+      fast: Number((data["2"] as number).toFixed(0)),
+    };
   }
 
   async pushTx(rawTx: string) {
@@ -85,8 +96,10 @@ class ApiController implements IApiController {
   }
 
   async getBELPrice() {
-    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bellscoin&vs_currencies=usd");
-    return (await res.json()) as { bellscoin: {usd :number} };
+    const res = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=bellscoin&vs_currencies=usd"
+    );
+    return (await res.json()) as { bellscoin?: { usd: number } };
   }
 }
 
