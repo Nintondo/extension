@@ -74,13 +74,22 @@ class ProviderController {
   calculateFee = async ({
     session: { origin },
     data: {
-      params: { hex },
+      params: { hex, feeRate },
     },
   }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
     const psbt = Psbt.fromHex(hex);
+    (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = true;
+
     keyringService.signPsbt(psbt);
-    return psbt.getFee();
+    let txSize = psbt.extractTransaction(true).toBuffer().length;
+    psbt.data.inputs.forEach((v) => {
+      if (v.finalScriptWitness) {
+        txSize -= v.finalScriptWitness.length * 0.75;
+      }
+    });
+    const fee = Math.ceil(txSize * feeRate);
+    return fee;
   };
 
   @Reflect.metadata("SAFE", true)

@@ -198,11 +198,12 @@ export class NintondoProvider extends EventEmitter {
     });
   };
 
-  calculateFee = async (hex: string) => {
+  calculateFee = async (hex: string, feeRate: number) => {
     return this._request({
       method: "calculateFee",
       params: {
         hex,
+        feeRate,
       },
     });
   };

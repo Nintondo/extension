@@ -9,12 +9,9 @@ import { Psbt } from "belcoinjs-lib";
 const SignTransaction = () => {
   const [psbt, setPsbt] = useState<Psbt>();
 
-  const { notificationController, keyringController } = useControllersState(
-    (v) => ({
-      notificationController: v.notificationController,
-      keyringController: v.keyringController,
-    })
-  );
+  const { notificationController } = useControllersState((v) => ({
+    notificationController: v.notificationController,
+  }));
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -23,11 +20,9 @@ const SignTransaction = () => {
       const psbt = Psbt.fromHex(
         approval.params.data.hex as SignTransactionProps
       );
-
-      await keyringController.signTransaction(psbt);
       setPsbt(psbt);
     })();
-  }, [notificationController, keyringController]);
+  }, [notificationController]);
 
   if (!psbt) return <></>;
 
@@ -42,7 +37,7 @@ const SignTransaction = () => {
     },
     {
       label: "Fee",
-      value: `${psbt.getFee() / 10 ** 8} BEL`,
+      value: `${100000 / 10 ** 8} BEL`,
     },
   ];
 
