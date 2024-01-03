@@ -135,7 +135,7 @@ export const useSwitchWallet = () => {
   );
 
   return useCallback(
-    async (key: number) => {
+    async (key: number, accKey?: number) => {
       const wallet = wallets.find((f) => f.id === key);
       if (!wallet) return;
       if (!wallet.accounts[0].address) {
@@ -147,7 +147,7 @@ export const useSwitchWallet = () => {
       await updateWalletState({
         selectedWallet: wallet.id,
         wallets: wallets.with(key, wallet),
-        selectedAccount: 0,
+        selectedAccount: accKey ?? 0,
       });
       await notificationController.changedAccount();
     },
@@ -221,6 +221,7 @@ export const useDeleteWallet = () => {
   const currentWallet = useGetCurrentWallet();
   const currentAccount = useGetCurrentAccount();
   const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
+  const switchWallet = useSwitchWallet();
 
   return useCallback(
     async (id: number) => {
@@ -231,9 +232,11 @@ export const useDeleteWallet = () => {
       if (currentWallet?.id === undefined) throw new Error("Unreachable");
       const newWalletId =
         currentWallet.id > id ? currentWallet.id - 1 : currentWallet.id;
+      await switchWallet(
+        id === currentWallet.id ? 0 : newWalletId,
+        id === currentWallet.id ? 0 : currentAccount?.id ?? 0
+      );
       await updateWalletState({
-        selectedWallet: id === currentWallet.id ? 0 : newWalletId,
-        selectedAccount: currentWallet?.id === id ? 0 : currentAccount?.id,
         wallets: await walletController.deleteWallet(id),
       });
     },
@@ -241,8 +244,9 @@ export const useDeleteWallet = () => {
       currentWallet,
       walletController,
       updateWalletState,
-      currentAccount?.id,
       wallets.length,
+      switchWallet,
+      currentAccount.id,
     ]
   );
 };
