@@ -210,7 +210,7 @@ class StorageService {
 
   async getLocalValues() {
     const data = await browserStorageLocalGet<StorageInterface>(undefined);
-    if (data.enc === undefined) {
+    if (data.cache === undefined) {
       return {
         cache: {
           addressBook: [],
