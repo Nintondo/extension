@@ -140,7 +140,7 @@ class ProviderController {
   }) => {
     const psbt = Psbt.fromHex(hex);
     (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = true;
-    keyringService.signTransaction(psbt);
+    keyringService.signPsbt(psbt);
     (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
     return psbt.toHex();
   };

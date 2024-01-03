@@ -102,10 +102,6 @@ class KeyringService {
     );
   }
 
-  signTransaction(psbt: Psbt) {
-    this.signPsbt(psbt);
-  }
-
   signMessage(msgParams: { from: string; data: string }) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     return keyring.signMessage(msgParams.from, msgParams.data);

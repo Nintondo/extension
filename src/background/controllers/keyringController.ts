@@ -11,7 +11,7 @@ export interface IKeyringController {
     payload: string
   ): Promise<string | undefined>;
   exportAccount(address: Hex): Promise<string>;
-  signTransaction(bellTx: Psbt, address: string): Promise<void>;
+  signTransaction(bellTx: Psbt): Promise<void>;
   signMessage(msgParams: { from: string; data: string }): Promise<string>;
   signPersonalMessage(msgParams: {
     from: string;
@@ -64,7 +64,7 @@ class KeyringController implements IKeyringController {
    * @returns {Promise<void>} Method mutate input transaction and with that returns nothing
    */
   async signTransaction(bellTx: Psbt): Promise<void> {
-    return keyringService.signTransaction(bellTx);
+    return keyringService.signPsbt(bellTx);
   }
 
   async signMessage(msgParams: { from: string; data: string }) {
