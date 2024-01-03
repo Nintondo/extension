@@ -3,7 +3,11 @@ import { EthereumProviderError } from "eth-rpc-errors";
 
 export interface INotificationController {
   getApproval(): Promise<ApprovalData>;
-  rejectApproval(err?: string, stay?: boolean, isInternal?: boolean): Promise<void>;
+  rejectApproval(
+    err?: string,
+    stay?: boolean,
+    isInternal?: boolean
+  ): Promise<void>;
   resolveApproval(data?: any, forceReject?: boolean): Promise<void>;
   changedAccount(): Promise<void>;
   getConnectedSites(): Promise<ConnectedSite[]>;
@@ -36,8 +40,6 @@ export interface Params {
   data: any;
   session: Session;
 }
-
-export type SignTransactionProps = string;
 
 export interface CreateTxProps {
   to: string;

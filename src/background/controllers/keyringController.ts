@@ -11,7 +11,7 @@ export interface IKeyringController {
     payload: string
   ): Promise<string | undefined>;
   exportAccount(address: Hex): Promise<string>;
-  signTransaction(bellTx: Psbt): Promise<void>;
+  signTransaction(txHex: string): Promise<string>;
   signMessage(msgParams: { from: string; data: string }): Promise<string>;
   signPersonalMessage(msgParams: {
     from: string;
@@ -60,11 +60,15 @@ class KeyringController implements IKeyringController {
 
   /**
    * Method should be used to sign a new transaction before broadcasting it
-   * @param {Psbt} bellTx Psbt builded transaction with inputs that should be signed
-   * @returns {Promise<void>} Method mutate input transaction and with that returns nothing
+   * @param {string} txHex Psbt builded transaction with inputs that should be signed and hexed
+   * @returns {Promise<string>} Method mutate input transaction and with that returns nothing
    */
-  async signTransaction(bellTx: Psbt): Promise<void> {
-    return keyringService.signPsbt(bellTx);
+  async signTransaction(txHex: string): Promise<string> {
+    const psbt = Psbt.fromHex(txHex);
+    (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = true;
+    keyringService.signPsbt(psbt);
+    (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+    return psbt.toHex();
   }
 
   async signMessage(msgParams: { from: string; data: string }) {
