@@ -214,7 +214,7 @@ const Wallet = () => {
             <p>{currentAccount.name}</p>
             <CopyBtn
               title={currentAccount?.address}
-              className={cn(s.accPubAddress)}
+              className={s.accPubAddress}
               label={shortAddress(currentAccount?.address, 9)}
               value={currentAccount?.address}
             />

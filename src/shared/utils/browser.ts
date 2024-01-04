@@ -4,11 +4,16 @@ export async function browserWindowsGetCurrent(params?: any) {
   return await browser.windows.getCurrent(params);
 }
 
-export async function browserWindowsCreate(params?: chrome.windows.CreateData): Promise<chrome.windows.Window> {
+export async function browserWindowsCreate(
+  params?: chrome.windows.CreateData
+): Promise<chrome.windows.Window> {
   return await browser.windows.create(params);
 }
 
-export async function browserWindowsUpdate(windowId: number, updateInfo: chrome.windows.UpdateInfo) {
+export async function browserWindowsUpdate(
+  windowId: number,
+  updateInfo: chrome.windows.UpdateInfo
+) {
   return await browser.windows.update(windowId, updateInfo);
 }
 
@@ -41,11 +46,15 @@ export async function browserTabsUpdate(tabId: number, params: any) {
 }
 
 export function browserWindowsOnFocusChanged(listener: any) {
-  browser.windows.onFocusChanged.addListener(listener);
+  if (browser.windows && browser.windows.onFocusChanged) {
+    browser.windows.onFocusChanged.addListener(listener);
+  }
 }
 
 export function browserWindowsOnRemoved(listener: any) {
-  browser.windows.onRemoved.addListener(listener);
+  if (browser.windows && browser.windows.onFocusChanged) {
+    browser.windows.onRemoved.addListener(listener);
+  }
 }
 
 export function browserTabsOnUpdated(listener: any) {

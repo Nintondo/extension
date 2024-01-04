@@ -32,7 +32,11 @@ const CopyBtn: FC<Props> = ({
         toast.success(t("transaction_info.copied"));
       }}
     >
-      {label && <div {...props}>{label}</div>}
+      {label && (
+        <div {...props} className="text-xs">
+          {label}
+        </div>
+      )}
 
       <DocumentDuplicateIcon className={cn("w-4 h-4", iconClassName)} />
     </button>
