@@ -138,6 +138,7 @@ const Wallet = () => {
     if (
       !transactions.length ||
       txIds.includes(transactions[transactions.length - 1].txid)
+      || transactions.length < 50
     )
       return;
     const additionalTransactions = await getPaginatedTransactions(
