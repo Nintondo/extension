@@ -9,6 +9,7 @@ import SwitchAddressType from "@/ui/components/switch-address-type";
 import SelectWithHint from "@/ui/components/select-hint/component";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
+import Loading from "react-loading";
 
 const RestoreMnemonic = () => {
   const [step, setStep] = useState(1);
@@ -21,6 +22,7 @@ const RestoreMnemonic = () => {
   );
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const setMnemonic = useCallback(
     (v: string, index: number) => {
@@ -41,6 +43,7 @@ const RestoreMnemonic = () => {
   };
 
   const onRestore = async () => {
+    setLoading(true);
     try {
       await createNewWallet(mnemonicPhrase.join(" "), "root", addressType);
       await updateWalletState({ vaultIsEmpty: false });
@@ -48,8 +51,10 @@ const RestoreMnemonic = () => {
     } catch (e) {
       toast.error(t("new_wallet.restore_mnemonic.invalid_words_error"));
       setStep(1);
-    }
+    }finally { setLoading(false) }
   };
+
+  if(loading) return <Loading />
 
   return (
     <div className={s.restoreMnemonic}>
