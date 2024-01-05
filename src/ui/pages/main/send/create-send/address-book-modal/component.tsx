@@ -37,11 +37,11 @@ const AddressBookModal: FC<Props> = ({ isOpen, onClose, setFormData }) => {
       open={isOpen}
       title={t("send.create_send.address_book.address_book")}
     >
-      {!addressBook.length && (
+      {!addressBook.length ? (
         <div className={s.empty}>
           {t("send.create_send.address_book.no_addresses")}
         </div>
-      )}
+      ) : undefined}
       <div className={s.items}>
         {addressBook.map((i, idx) => (
           <div key={`ab-${idx}`} className={s.item}>

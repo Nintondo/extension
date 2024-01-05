@@ -33,16 +33,22 @@ const SwitchAccount = () => {
     setRenameId(undefined);
 
     await updateCurrentWallet({
-      accounts: currentWallet.accounts.with(renameId, {
-        ...currentWallet.accounts[renameId],
-        name,
+      accounts: currentWallet.accounts.map((i, idx) => {
+        if (idx === renameId) {
+          return {
+            ...i,
+            name,
+          };
+        } else {
+          return i;
+        }
       }),
     });
   };
 
   useEffect(() => {
     document.getElementById(String(currentAccount.id)).scrollIntoView();
-  }, [currentAccount]);
+  }, [currentAccount, currentWallet]);
 
   return (
     <div className={s.switchAccDiv}>
@@ -79,7 +85,7 @@ const SwitchAccount = () => {
                 },
                 icon: (
                   <KeyIcon
-                    title={t("switch_account.rename_account")}
+                    title={t("switch_account.export_private_key")}
                     className="w-8 h-8 cursor-pointer text-bg"
                   />
                 ),
@@ -90,10 +96,14 @@ const SwitchAccount = () => {
             onClick={async () => {
               await switchAccount(acc.id);
             }}
-            exclamation={{
-              description: t("switch_account.account_warning"),
-              aggressive: !currentWallet.hideRoot,
-            }}
+            exclamation={
+              !currentWallet.hideRoot && acc.id === 0
+                ? {
+                    description: t("switch_account.account_warning"),
+                    aggressive: true,
+                  }
+                : undefined
+            }
             selected={currentAccount.id === acc.id}
             address={shortAddress(acc.address, 7)}
           />

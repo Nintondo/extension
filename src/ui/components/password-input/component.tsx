@@ -21,11 +21,11 @@ const PasswordInput = <T extends FieldValues>({
 
   return (
     <div className="form-field">
-      {showSeparateLabel && (
+      {showSeparateLabel ? (
         <label className="input-span" htmlFor={name}>
           {label}
         </label>
-      )}
+      ) : undefined}
       <div className={s.inputWrapper}>
         <input
           tabIndex={tabIndex ?? 0}

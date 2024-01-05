@@ -44,11 +44,11 @@ const Card: FC<Props> = ({
       className={cn(s.card, { [s.selected]: selected, [s.aggressive]: isRoot })}
       onClick={onClick}
     >
-      <div className={s.wrapper} title={(address ? isRoot : true) && exclamation?.description}>
+      <div className={s.wrapper} title={(address ? isRoot : true) ? exclamation?.description: undefined}>
         <div className={cn(s.name)}>{isRoot ? t('components.card.root_account') : name}</div>
         <div className={s.right}>
-          {(!address ? exclamation : isRoot) && <ExclamationCircleIcon className={cn('w-7 h-7', {'text-white': isRoot, 'text-red-400' : !isRoot})} />}
-          {address && !isRoot ? <div className={s.address}>{address}</div> : ""}
+          {(!address ? exclamation : isRoot) ? <ExclamationCircleIcon className={cn('w-7 h-7', {'text-white': isRoot, 'text-red-400' : !isRoot})} /> : undefined}
+          {address ? !isRoot ? <div className={s.address}>{address}</div> : undefined : undefined}
           <button className={s.action} onClick={onMenuClick}>
             <Bars3Icon
               className={cn("w-8 h-8", {

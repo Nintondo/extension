@@ -48,6 +48,7 @@ class KeyringService {
       keyring = await HDPrivateKey.fromMnemonic({
         mnemonic: payload,
         hideRoot,
+        addressType: addressType,
       });
     } else {
       keyring = HDSimpleKey.deserialize({
@@ -58,7 +59,7 @@ class KeyringService {
     keyring.addressType =
       typeof addressType === "number" ? addressType : AddressType.P2PKH;
     this.keyrings.push(keyring);
-    return keyring.getAddress(keyring.publicKey);
+    return keyring.getAccounts()[0];
   }
 
   exportAccount(address: Hex) {
@@ -181,10 +182,9 @@ class KeyringService {
     return wallets;
   }
 
-  async toogleRootAcc(password: string) {
+  async toogleRootAcc() {
     const currentWallet = storageService.currentWallet.id;
     this.keyrings[currentWallet].toggleHideRoot();
-    return await this.init(password);
   }
 }
 

@@ -6,6 +6,7 @@ import {
   Cog6ToothIcon,
   ChevronDownIcon,
   CheckIcon,
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import s from "./styles.module.scss";
 import { shortAddress } from "@/shared/utils/transactions";
@@ -14,7 +15,7 @@ import {
   useGetCurrentWallet,
 } from "@/ui/states/walletState";
 import cn from "classnames";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useUpdateCurrentAccountBalance } from "@/ui/hooks/wallet";
 import ReactLoading from "react-loading";
 import { ITransaction } from "@/shared/interfaces/api";
@@ -29,9 +30,12 @@ import { Circle } from "rc-progress";
 import { useDebounceCall } from "@/ui/hooks/debounce";
 import { t } from "i18next";
 import { useInView } from "react-intersection-observer";
+import { Transition } from "@headlessui/react";
+import Loading from "react-loading";
 
 const Wallet = () => {
   const navigate = useNavigate();
+  const [openTip, setOpenTip] = useState(false);
   const [lastBlock, setLastBlock] = useState<number>(0);
   const currentWallet = useGetCurrentWallet();
 
@@ -156,9 +160,41 @@ const Wallet = () => {
     if (inView) loadMore();
   }, [inView, loadMore]);
 
+  if (!currentAccount) return <Loading />;
+
   return (
     <div className={s.walletDiv}>
       <div className="flex justify-between mt-2 items-center mb-4">
+        <Transition
+          appear
+          show={openTip}
+          as={Fragment}
+          unmount
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div
+            onMouseLeave={() => setOpenTip(false)}
+            className="mt-4 absolute top-0 left-3 right-3 text-white font-medium bg-red-600 rounded-2xl p-3"
+          >
+            {t("switch_wallet.warn.description")}
+          </div>
+        </Transition>
+        {!currentWallet.hideRoot ? (
+          <div
+            onMouseEnter={() => {
+              if (currentWallet.hideRoot) return;
+              setOpenTip(true);
+            }}
+            className="cursor-pointer"
+          >
+            <ExclamationTriangleIcon className="w-6 h-6 fill-red-500 text-bg" />
+          </div>
+        ) : undefined}
         <Link
           className="flex gap-3 items-center select-none cursor-pointer"
           to={"/pages/switch-wallet"}
@@ -179,12 +215,6 @@ const Wallet = () => {
         </Link>
       </div>
 
-      {!currentWallet.hideRoot && (
-        <div className="mt-3 text-white font-medium bg-red-600 rounded-2xl p-3">
-          {t("switch_wallet.warn.description")}
-        </div>
-      )}
-
       <div className={s.accPanel}>
         <div className="flex gap-2 pb-2">
           <div className={s.balance}>
@@ -201,22 +231,23 @@ const Wallet = () => {
             )}
             <span className="text-xl pb-0.5 text-slate-300">BEL</span>
           </div>
-          {currentAccount?.balance !== undefined &&
-            currentPrice !== undefined && (
+          {currentAccount?.balance !== undefined ? (
+            currentPrice !== undefined ? (
               <div className="text-gray-500 text-sm">
                 ~{(currentAccount.balance * currentPrice).toFixed(3)}$
               </div>
-            )}
+            ) : undefined
+          ) : undefined}
         </div>
         <div className="flex gap-3 items-center">
-          {currentWallet?.type === "root" && (
+          {currentWallet?.type === "root" ? (
             <Link to={"/pages/switch-account"}>
               <ListBulletIcon
                 title={"Switch account"}
                 className={s.accountsIcon}
               />
             </Link>
-          )}
+          ) : undefined}
           <div>
             <p>
               {currentAccount.id === 0 && !currentWallet.hideRoot

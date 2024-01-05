@@ -4,7 +4,7 @@ import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
 import { DecryptedSecrets } from "../services/storage/types";
 import * as bip39 from "bip39";
-import { AddressType, Keyring } from "bellhdw";
+import { AddressType } from "bellhdw";
 
 class WalletController implements IWalletController {
   async isVaultEmpty() {
@@ -43,6 +43,7 @@ class WalletController implements IWalletController {
       addressType:
         typeof addressType === "number" ? addressType : AddressType.P2PKH,
       accounts: [account],
+      hideRoot: hideRoot,
     };
   }
 
@@ -64,9 +65,7 @@ class WalletController implements IWalletController {
     walletId: number,
     accounts: IAccount[]
   ): Promise<IAccount[]> {
-    const wallet = keyringService.keyrings[
-      walletId
-    ] as unknown as Keyring<JSON>;
+    const wallet = keyringService.getKeyringByIndex(walletId);
 
     const addresses = wallet.getAccounts();
 
@@ -103,8 +102,22 @@ class WalletController implements IWalletController {
     return keyringService.deleteWallet(id);
   }
 
-  async toogleRootAccount(password: string): Promise<IWallet[]> {
-    return await keyringService.toogleRootAcc(password);
+  async toogleRootAccount(): Promise<void> {
+    return await keyringService.toogleRootAcc();
+  }
+
+  async getAccounts(): Promise<string[]> {
+    const keyring = keyringService.getKeyringByIndex(
+      storageService.currentWallet.id
+    );
+    return keyring.getAccounts();
+  }
+
+  async getCurrentAccountHideRootState(): Promise<boolean> {
+    const keyring = keyringService.getKeyringByIndex(
+      storageService.currentWallet.id
+    );
+    return keyring.hideRoot;
   }
 }
 

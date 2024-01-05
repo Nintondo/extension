@@ -15,7 +15,7 @@ export const getProviderState = async () => {
   const isUnlocked = storageService.appState.isUnlocked;
   const accounts: string[] = [];
   if (isUnlocked) {
-    const currentAccount = await storageService.currentAccount;
+    const currentAccount = storageService.currentAccount;
     if (currentAccount) {
       accounts.push(currentAccount.address);
     }

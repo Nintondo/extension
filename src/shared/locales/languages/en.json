@@ -199,6 +199,6 @@
     }
   },
   "advanced": {
-    "root_acc_warning": "Show root acccount"
+    "root_acc_warning": "Hide root acccount"
   }
 }

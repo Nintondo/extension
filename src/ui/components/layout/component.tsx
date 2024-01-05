@@ -176,7 +176,7 @@ export default function PagesLayout() {
     <div className={s.layout}>
       {
         <div className={s.header}>
-          {!currentRouteTitle?.disableBack && (
+          {!currentRouteTitle?.disableBack ? (
             <div
               className={cn(s.controlElem, s.back)}
               onClick={() => {
@@ -187,20 +187,20 @@ export default function PagesLayout() {
             >
               <ChevronLeftIcon className="w-6 h-6" />
             </div>
-          )}
+          ) : undefined}
 
           <div className={cn(s.controlElem, s.title)}>
             {currentRouteTitle?.title}
           </div>
 
-          {currentRouteTitle?.action && (
+          {currentRouteTitle?.action ? (
             <Link
               className={cn(s.controlElem, s.addNew)}
               to={currentRouteTitle.action.link}
             >
               {currentRouteTitle.action.icon}
             </Link>
-          )}
+          ) : undefined}
         </div>
       }
       <div className={s.contentDiv}>
