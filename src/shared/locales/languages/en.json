@@ -160,7 +160,7 @@
     "show_pk": {
       "copy": "Copy"
     },
-    "account_warning": "This account is root, you should create new wallet with new mnemonic, transfer your tokens and remove this one for security reasons"
+    "account_warning": "This account is root you should create new wallet with new mnemonic transfer your tokens and remove this one for security reasons"
   },
   "switch_wallet": {
     "rename_wallet": "Rename wallet",
@@ -172,7 +172,7 @@
     "no": "No",
     "copy": "Copy",
     "warn": {
-      "description": "This wallet has root account, you should create new wallet, transfer your tokens and remove this one for security reasons"
+      "description": "This wallet has root account you should create new wallet transfer your tokens and remove this one for security reasons"
     }
   },
   "transaction_info": {

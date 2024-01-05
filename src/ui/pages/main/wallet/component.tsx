@@ -216,7 +216,7 @@ const Wallet = () => {
             </Link>
           )}
           <div>
-            <p>{currentAccount.name}</p>
+            <p>{currentAccount.id === 0 && !currentWallet.hideRoot ? "Root account" : currentAccount.name}</p>
             <CopyBtn
               title={currentAccount?.address}
               className={s.accPubAddress}
