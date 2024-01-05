@@ -102,17 +102,17 @@ const CreateSend = () => {
       if (location.state.save) {
         setIsSaveAddress(true);
       }
-      if (currentAccount.balance <= location.state.amount)
+      if (currentAccount?.balance <= location.state.amount)
         setIncludeFeeLocked(true);
     }
-  }, [location.state, setFormData, currentAccount.balance]);
+  }, [location.state, setFormData, currentAccount?.balance]);
 
   const onAmountChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFormData((prev) => ({
       ...prev,
       amount: normalizeAmount(e.target.value),
     }));
-    if (currentAccount.balance > Number(e.target.value)) {
+    if (currentAccount?.balance > Number(e.target.value)) {
       setIncludeFeeLocked(false);
     } else {
       setIncludeFeeLocked(true);
@@ -127,7 +127,7 @@ const CreateSend = () => {
     e.preventDefault();
     setFormData((prev) => ({
       ...prev,
-      amount: currentAccount.balance.toString(),
+      amount: currentAccount?.balance.toString(),
       includeFeeInAmount: true,
     }));
     setIncludeFeeLocked(true);

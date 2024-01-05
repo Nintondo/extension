@@ -4,11 +4,11 @@ import { useAppState } from "@/ui/states/appState";
 
 import {
   UserIcon,
-  KeyIcon,
   ArrowsPointingOutIcon,
   ArrowLeftOnRectangleIcon,
   PuzzlePieceIcon,
   LanguageIcon,
+  ShieldCheckIcon,
 } from "@heroicons/react/24/solid";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
@@ -37,9 +37,9 @@ const Settings = () => {
       link: "/pages/change-addr-type",
     },
     {
-      icon: <KeyIcon className={ICON_CN} />,
-      label: t("settings.change_password"),
-      link: "/pages/change-password",
+      icon: <ShieldCheckIcon className={ICON_CN} />,
+      label: t("settings.security_settings"),
+      link: "/pages/security",
     },
     {
       icon: <ArrowsPointingOutIcon className={ICON_CN} />,

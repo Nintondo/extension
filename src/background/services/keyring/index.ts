@@ -180,6 +180,12 @@ class KeyringService {
     wallets = wallets.map((f, i) => ({ ...f, id: i }));
     return wallets;
   }
+
+  async toogleRootAcc(password: string) {
+    const currentWallet = storageService.currentWallet.id;
+    this.keyrings[currentWallet].toggleHideRoot();
+    return await this.init(password);
+  }
 }
 
 export default new KeyringService();

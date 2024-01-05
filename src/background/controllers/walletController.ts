@@ -102,6 +102,10 @@ class WalletController implements IWalletController {
   async deleteWallet(id: number): Promise<IWallet[]> {
     return keyringService.deleteWallet(id);
   }
+
+  async toogleRootAccount(password: string): Promise<IWallet[]> {
+    return await keyringService.toogleRootAcc(password);
+  }
 }
 
 export default new WalletController();

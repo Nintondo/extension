@@ -73,6 +73,7 @@ const NewMnemonic = () => {
       phrase: mnemonicPhrase,
       walletType: "root",
       addressType,
+      hideRoot: true,
     });
     await updateWalletState({ vaultIsEmpty: false });
     await stateController.clearPendingWallet();

@@ -50,6 +50,10 @@ export default function PagesLayout() {
         title: t("components.layout.change_password"),
       },
       {
+        route: "/pages/security",
+        title: t("components.layout.security"),
+      },
+      {
         route: "/pages/receive",
         title: t("components.layout.receive_bel"),
       },

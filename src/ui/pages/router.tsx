@@ -7,7 +7,7 @@ import CreatePassword from "@/ui/pages/main/create-password";
 import CreateNewAccount from "@/ui/pages/main/new-account";
 import SwitchAccount from "@/ui/pages/main/switch-account";
 import PagesLayout from "@/ui/components/layout";
-import ChangePassword from "./main/change-password";
+import ChangePassword from "./main/security/change-password";
 import Receive from "./main/receive";
 import SwitchWallet from "./main/switch-wallet";
 import NewWallet from "./main/new-wallet";
@@ -28,6 +28,8 @@ import SignTx from "./provider/sign-tx";
 import CreateTx from "./provider/create-tx/component";
 import ConnectedSites from "./main/connected-sites";
 import Language from "./main/language";
+import Security from "./main/security";
+import Advanced from "./main/security/advanced";
 
 export const guestRouter = createHashRouter([
   {
@@ -64,7 +66,9 @@ export const authenticatedRouter = createHashRouter([
       { path: "create-send", element: <CreateSend /> },
       { path: "confirm-send", element: <ConfirmSend /> },
       { path: "connected-sites", element: <ConnectedSites /> },
-      { path: "language", element: <Language /> }
+      { path: "language", element: <Language /> },
+      { path: "security", element: <Security /> },
+      { path: "advanced", element: <Advanced /> },
     ],
   },
   {

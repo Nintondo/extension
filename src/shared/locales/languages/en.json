@@ -10,7 +10,7 @@
     "logout": "Logout",
     "connected_sites": "Connected Sites",
     "expand_view": "Expand View",
-    "change_password": "Change Password",
+    "security_settings": "Security Settings",
     "address_type": "Address Type"
   },
   "components": {
@@ -30,7 +30,9 @@
       "show_mnemonic": "Show Mnemonic",
       "show_private_key": "Show Private Key",
       "restore_from_mnemonic": "Restore from mnemonic",
-      "restore_from_private_key": "Restore from private key"
+      "restore_from_private_key": "Restore from private key",
+      "security": "Security",
+      "advanced": "Advanced"
     },
     "check_password": {
       "incorrect_password_error": "Incorrect password",
@@ -195,5 +197,8 @@
     "wallet": {
       "last_wallet_error": "You cannot delete your last wallet"
     }
+  },
+  "advanced": {
+    "root_acc_warning": "Show root acccount"
   }
 }

@@ -137,8 +137,8 @@ const Wallet = () => {
   const loadMore = useCallback(async () => {
     if (
       !transactions.length ||
-      txIds.includes(transactions[transactions.length - 1].txid)
-      || transactions.length < 50
+      txIds.includes(transactions[transactions.length - 1].txid) ||
+      transactions.length < 50
     )
       return;
     const additionalTransactions = await getPaginatedTransactions(
@@ -180,7 +180,9 @@ const Wallet = () => {
       </div>
 
       {!currentWallet.hideRoot && (
-        <div className="mt-3 text-white font-medium bg-red-600 rounded-2xl p-3">{t('switch_wallet.warn.description')}</div>
+        <div className="mt-3 text-white font-medium bg-red-600 rounded-2xl p-3">
+          {t("switch_wallet.warn.description")}
+        </div>
       )}
 
       <div className={s.accPanel}>
@@ -199,10 +201,10 @@ const Wallet = () => {
             )}
             <span className="text-xl pb-0.5 text-slate-300">BEL</span>
           </div>
-          {currentAccount.balance !== undefined &&
+          {currentAccount?.balance !== undefined &&
             currentPrice !== undefined && (
               <div className="text-gray-500 text-sm">
-                ~{(currentAccount?.balance * currentPrice).toFixed(3)}$
+                ~{(currentAccount.balance * currentPrice).toFixed(3)}$
               </div>
             )}
         </div>
@@ -216,7 +218,11 @@ const Wallet = () => {
             </Link>
           )}
           <div>
-            <p>{currentAccount.id === 0 && !currentWallet.hideRoot ? "Root account" : currentAccount.name}</p>
+            <p>
+              {currentAccount.id === 0 && !currentWallet.hideRoot
+                ? "Root account"
+                : currentAccount.name}
+            </p>
             <CopyBtn
               title={currentAccount?.address}
               className={s.accPubAddress}

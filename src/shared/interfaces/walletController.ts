@@ -18,4 +18,5 @@ export interface IWalletController {
   createNewAccount(name?: string): Promise<IAccount>;
   generateMnemonicPhrase(): Promise<string>;
   deleteWallet(id: number): Promise<IWallet[]>;
+  toogleRootAccount(password: string): Promise<IWallet[]>;
 }
