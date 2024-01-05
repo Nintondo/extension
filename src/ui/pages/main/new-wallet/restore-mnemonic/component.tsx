@@ -23,6 +23,7 @@ const RestoreMnemonic = () => {
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
+  const [showRootAcc, setShowRootAcc] = useState<boolean>(false);
 
   const setMnemonic = useCallback(
     (v: string, index: number) => {
@@ -45,16 +46,27 @@ const RestoreMnemonic = () => {
   const onRestore = async () => {
     setLoading(true);
     try {
-      await createNewWallet(mnemonicPhrase.join(" "), "root", addressType);
+      await createNewWallet({
+        phrase: mnemonicPhrase.join(" "),
+        walletType: "root",
+        addressType,
+        hideRoot: !showRootAcc,
+      });
       await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
     } catch (e) {
       toast.error(t("new_wallet.restore_mnemonic.invalid_words_error"));
       setStep(1);
-    }finally { setLoading(false) }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if(loading) return <Loading />
+  const onSwitch = () => {
+    setShowRootAcc((p) => !p);
+  };
+
+  if (loading) return <Loading />;
 
   return (
     <div className={s.restoreMnemonic}>
@@ -85,6 +97,14 @@ const RestoreMnemonic = () => {
               >
                 {t("new_wallet.continue")}
               </button>
+            </div>
+          </div>
+          <div className={s.savePhraseWrapper}>
+            <div className="flex flex-col gap-7 mt-6">
+              <label className="cursor-pointer" htmlFor="save-phrases">
+                {t("new_wallet.restore_mnemonic.show_root_acc")}
+              </label>
+              <input id="save-phrases" type="checkbox" onChange={onSwitch} />
             </div>
           </div>
         </div>

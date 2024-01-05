@@ -29,15 +29,17 @@ const RestorePrivKey = () => {
   const recoverWallet = async ({ privKey }: FormType) => {
     setLoading(true);
     try {
-      await createNewWallet(privKey, "simple");
+      await createNewWallet({ phrase: privKey, walletType: "simple" });
       await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
     } catch (e) {
       toast.error(t("new_wallet.restore_private.invalid_private_key_error"));
-    }finally { setLoading(false) }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if(loading) return <Loading />
+  if (loading) return <Loading />;
 
   return (
     <form

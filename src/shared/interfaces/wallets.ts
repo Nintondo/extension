@@ -25,3 +25,11 @@ export interface IWalletStateBase {
 export interface IWalletState extends IWalletStateBase {
   updateWalletState: (state: Partial<IWalletState>) => Promise<void>;
 }
+
+export interface INewWalletProps {
+  phrase: string;
+  walletType: "simple" | "root";
+  addressType?: AddressType;
+  name?: string;
+  hideRoot?: boolean;
+}

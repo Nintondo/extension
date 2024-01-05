@@ -1,4 +1,4 @@
-import { IAccount, IWallet } from "@/shared/interfaces";
+import { IAccount, INewWalletProps, IWallet } from "@/shared/interfaces";
 import { useControllersState } from "../states/controllerState";
 import {
   useGetCurrentAccount,
@@ -9,7 +9,6 @@ import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
-import { AddressType } from "bellhdw";
 
 export const useCreateNewWallet = () => {
   const { wallets, updateWalletState } = useWalletState((v) => ({
@@ -22,13 +21,13 @@ export const useCreateNewWallet = () => {
   }));
 
   return useCallback(
-    async (
-      phrase: string,
-      walletType: "simple" | "root",
-      addressType?: AddressType,
-      name?: string,
-      hideRoot?: boolean
-    ) => {
+    async ({
+      phrase,
+      walletType,
+      addressType,
+      name,
+      hideRoot,
+    }: INewWalletProps) => {
       const wallet = await walletController.createNewWallet(
         phrase,
         walletType,
