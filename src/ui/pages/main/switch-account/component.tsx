@@ -90,6 +90,10 @@ const SwitchAccount = () => {
             onClick={async () => {
               await switchAccount(acc.id);
             }}
+            exclamation={{
+              description: t("switch_account.account_warning"),
+              aggressive: !currentWallet.hideRoot,
+            }}
             selected={currentAccount.id === acc.id}
             address={shortAddress(acc.address, 7)}
           />

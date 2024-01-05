@@ -18,6 +18,10 @@
   @apply border-orange-300;
 }
 
+.aggressive {
+  @apply border-red-600 bg-red-600;
+}
+
 .address {
   @apply text-xs text-gray-400;
 }

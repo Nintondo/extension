@@ -2,7 +2,7 @@
   @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6;
 
   .accPanel {
-    @apply flex flex-col mt-8 gap-4;
+    @apply flex flex-col mt-4 gap-4;
 
     * {
       @apply m-0;

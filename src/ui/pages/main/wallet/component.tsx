@@ -158,7 +158,7 @@ const Wallet = () => {
 
   return (
     <div className={s.walletDiv}>
-      <div className="flex justify-between mt-2 items-center">
+      <div className="flex justify-between mt-2 items-center mb-4">
         <Link
           className="flex gap-3 items-center select-none cursor-pointer"
           to={"/pages/switch-wallet"}
@@ -178,6 +178,10 @@ const Wallet = () => {
           <Cog6ToothIcon className="w-6 h-6 hover:rotate-90 transition-transform" />
         </Link>
       </div>
+
+      {!currentWallet.hideRoot && (
+        <div className="mt-3 text-white font-medium bg-red-600 rounded-2xl p-3">{t('switch_wallet.warn.description')}</div>
+      )}
 
       <div className={s.accPanel}>
         <div className="flex gap-2 pb-2">
