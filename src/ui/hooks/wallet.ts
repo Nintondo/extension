@@ -26,13 +26,15 @@ export const useCreateNewWallet = () => {
       phrase: string,
       walletType: "simple" | "root",
       addressType?: AddressType,
-      name?: string
+      name?: string,
+      hideRoot?: boolean
     ) => {
       const wallet = await walletController.createNewWallet(
         phrase,
         walletType,
         addressType,
-        name
+        name,
+        hideRoot
       );
       await updateWalletState({
         selectedAccount: 0,

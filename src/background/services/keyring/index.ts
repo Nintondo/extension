@@ -40,11 +40,15 @@ class KeyringService {
   async newKeyring(
     type: "simple" | "root",
     payload: string,
-    addressType: AddressType = AddressType.P2PKH
+    addressType: AddressType = AddressType.P2PKH,
+    hideRoot?: boolean
   ) {
     let keyring: HDPrivateKey | HDSimpleKey;
     if (type === "root") {
-      keyring = await HDPrivateKey.fromMnemonic(payload);
+      keyring = await HDPrivateKey.fromMnemonic({
+        mnemonic: payload,
+        hideRoot,
+      });
     } else {
       keyring = HDSimpleKey.deserialize({
         privateKey: payload,

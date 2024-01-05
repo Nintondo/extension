@@ -16,13 +16,15 @@ class WalletController implements IWalletController {
     phrase: string,
     walletType: "simple" | "root",
     addressType?: AddressType,
-    name?: string
+    name?: string,
+    hideRoot?: boolean
   ): Promise<IWallet> {
     const exportedWallets = storageService.walletState.wallets;
     const address = await keyringService.newKeyring(
       walletType,
       phrase,
-      addressType
+      addressType,
+      hideRoot
     );
     const account: IAccount = {
       id: 0,

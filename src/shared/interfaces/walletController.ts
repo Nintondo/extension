@@ -8,7 +8,8 @@ export interface IWalletController {
     phrase: string,
     walletType: "simple" | "root",
     addressType?: AddressType,
-    name?: string
+    name?: string,
+    hideRoot?: boolean
   ): Promise<IWallet>;
   saveWallets(phrases?: DecryptedSecrets, newPassword?: string): Promise<void>;
   isVaultEmpty(): Promise<boolean>;

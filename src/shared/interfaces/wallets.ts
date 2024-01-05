@@ -7,6 +7,7 @@ export interface IWallet {
   name: string;
   addressType: AddressType;
   type: "simple" | "root";
+  hideRoot?: boolean;
 }
 
 export interface IPrivateWallet extends IWallet {

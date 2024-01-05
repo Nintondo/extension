@@ -1,15 +1,12 @@
-import { AddressType } from "bellhdw";
 import { ConnectedSite } from "../permission";
+import { IWallet } from "@/shared/interfaces";
 
 interface StorageAccountItem {
   id: number;
   name: string;
 }
 
-interface StorageWalletItem {
-  name: string;
-  addressType: AddressType;
-  type: "simple" | "root";
+interface StorageWalletItem extends Omit<IWallet, 'accounts' | 'id'> {
   accounts: StorageAccountItem[];
 }
 

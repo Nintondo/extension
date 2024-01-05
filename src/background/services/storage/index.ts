@@ -96,6 +96,7 @@ class StorageService {
             id: j.id,
             name: j.name,
           })),
+          hideRoot: f.hideRoot
         }));
 
       const payload: StorageInterface = {
@@ -163,6 +164,7 @@ class StorageService {
           id: account.id,
           name: account.name ?? "",
         })),
+        hideRoot: wallet.hideRoot
       };
     });
 
