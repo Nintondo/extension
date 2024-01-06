@@ -135,7 +135,7 @@ const NewMnemonic = () => {
           </div>
         </div>
       ) : (
-        <div className={cn(s.stepTwo, s.step)}>
+        <div className={s.step}>
           <SwitchAddressType
             handler={setAddressType}
             selectedType={addressType}
@@ -144,7 +144,7 @@ const NewMnemonic = () => {
             <button
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={onCreate}
-              className={cn(s.continue, "btn", "primary")}
+              className="btn primary w-full"
             >
               {t("new_wallet.continue")}
             </button>

@@ -92,11 +92,11 @@ class StorageService {
           addressType: f.addressType,
           name: f.name,
           type: f.type,
-          accounts: f.accounts.map((j) => ({
-            id: j.id,
+          accounts: f.accounts.map((j, idx) => ({
+            id: idx,
             name: j.name,
           })),
-          hideRoot: f.hideRoot
+          hideRoot: f.hideRoot,
         }));
 
       const payload: StorageInterface = {
@@ -160,11 +160,11 @@ class StorageService {
         name: wallet.name,
         addressType: wallet.addressType,
         type: wallet.type,
-        accounts: wallet.accounts.map((account) => ({
-          id: account.id,
+        accounts: wallet.accounts.map((account, idx) => ({
+          id: idx,
           name: account.name ?? "",
         })),
-        hideRoot: wallet.hideRoot
+        hideRoot: wallet.hideRoot,
       };
     });
 

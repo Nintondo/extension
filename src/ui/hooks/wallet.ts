@@ -110,13 +110,17 @@ export const useCreateNewAccount = () => {
       const createdAccount = await walletController.createNewAccount(name);
       const updatedWallet: IWallet = {
         ...currentWallet,
-        accounts: [...currentWallet.accounts, createdAccount],
+        accounts: [...currentWallet.accounts, createdAccount].map((f, i) => ({
+          ...f,
+          id: i,
+        })),
       };
 
       await updateCurrentWallet(updatedWallet);
       await walletController.saveWallets();
       await updateWalletState({
-        selectedAccount: createdAccount.id,
+        selectedAccount:
+          updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
       });
     },
     [currentWallet, updateCurrentWallet, walletController, updateWalletState]

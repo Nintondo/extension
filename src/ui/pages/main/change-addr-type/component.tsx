@@ -37,8 +37,9 @@ const ChangeAddrType = () => {
       await udpateCurrentWallet({
         ...currentWallet,
         addressType: type,
-        accounts: currentWallet?.accounts.map((f) => ({
+        accounts: currentWallet?.accounts.map((f, idx) => ({
           ...f,
+          id: idx,
           address: addresses[f.id],
         })),
       });

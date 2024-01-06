@@ -26,28 +26,21 @@ const Advanced = () => {
       await updateWalletState({
         wallets: await Promise.all(
           wallets.map(async (i) => {
-            let accounts = await walletController.getAccounts();
-            console.log("WALLET ADDRESSES", accounts);
+            const accounts = await walletController.getAccounts();
             let newAccounts = i.accounts;
             if (await walletController.getCurrentAccountHideRootState()) {
-              console.log("HIDING ROOT ACCOUNT");
-              const newAddresses = newAccounts
-                .map((a) => a.address)
-                .filter((i) => !!i);
-              accounts = accounts.filter((i) => !newAddresses.includes(i));
               accounts.forEach((account) => {
-                newAccounts.push({
-                  id: newAccounts.length + 1,
-                  name: `Account ${newAccounts.length + 1}`,
-                  address: account,
-                  balance: 0,
-                });
+                if (!newAccounts.find((f) => f.address === account)) {
+                  newAccounts.push({
+                    id: newAccounts.length + 1,
+                    name: `Account ${newAccounts.length + 1}`,
+                    address: account,
+                    balance: 0,
+                  });
+                }
               });
-              newAccounts = newAccounts
-                .slice(1)
-                .map((i, idx) => ({ ...i, id: idx + 0 }));
+              newAccounts = newAccounts.slice(1);
             } else {
-              console.log("SHOWING ROOT ACCOUNT");
               newAccounts = [
                 {
                   id: 0,
@@ -55,10 +48,9 @@ const Advanced = () => {
                   address: accounts[0],
                   balance: 0,
                 },
-                ...newAccounts.map((i, idx) => ({ ...i, id: idx + 1 })),
+                ...newAccounts,
               ];
             }
-            console.log("NEW ACCOUNTS", newAccounts);
             const result = {
               ...i,
               hideRoot: i.id === currentWallet.id ? !i.hideRoot : i.hideRoot,
@@ -67,7 +59,6 @@ const Advanced = () => {
                 newAccounts
               ),
             };
-            console.log("RESULT", result.accounts);
             return result;
           })
         ),

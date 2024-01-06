@@ -69,8 +69,9 @@ class WalletController implements IWalletController {
 
     const addresses = wallet.getAccounts();
 
-    return accounts.map((i) => ({
+    return accounts.map((i, idx) => ({
       ...i,
+      id: idx,
       address: addresses[i.id],
     }));
   }

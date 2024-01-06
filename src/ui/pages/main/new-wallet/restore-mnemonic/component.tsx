@@ -103,20 +103,18 @@ const RestoreMnemonic = () => {
           </div>
         </div>
       ) : (
-        <div className={s.step}>
-          <div className={s.continueWrapper}>
-            <SwitchAddressType
-              handler={setAddressType}
-              selectedType={addressType}
-            />
-            <button
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={onRestore}
-              className="btn primary"
-            >
-              {t("new_wallet.continue")}
-            </button>
-          </div>
+        <div className={cn(s.step, "justify-between")}>
+          <SwitchAddressType
+            handler={setAddressType}
+            selectedType={addressType}
+          />
+          <button
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={onRestore}
+            className="btn primary"
+          >
+            {t("new_wallet.continue")}
+          </button>
         </div>
       )}
     </div>
