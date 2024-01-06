@@ -26,6 +26,7 @@ const Advanced = () => {
       await updateWalletState({
         wallets: await Promise.all(
           wallets.map(async (i) => {
+            if (i.id !== currentWallet.id) return i;
             const accounts = await walletController.getAccounts();
             let newAccounts = i.accounts;
             if (await walletController.getCurrentAccountHideRootState()) {
