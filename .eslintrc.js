@@ -19,7 +19,7 @@ module.exports = {
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
       ],
-      files: ["src/**/*.{ts,tsx}"],
+      files: ["src/**/*.{ts,tsx}", "./build.ts"],
       parser: "@typescript-eslint/parser",
       parserOptions: {
         ecmaVersion: "latest",
@@ -39,6 +39,30 @@ module.exports = {
         "@typescript-eslint/no-misused-promises": "error",
       },
     },
+    {
+      env: {
+        browser: true
+      },
+      files: ["./build.ts"],
+      parser: "@typescript-eslint/parser",
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        project: "./tsconfig.json",
+      },
+      rules: {
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
+        "@typescript-eslint/no-unused-vars": ["warn"],
+        "@typescript-eslint/no-floating-promises": [
+          "error",
+          { ignoreVoid: false, ignoreIIFE: false },
+        ],
+        "@typescript-eslint/no-misused-promises": "error",
+      },
+    }
   ],
   settings: {
     react: {
