@@ -103,7 +103,7 @@ const RestoreMnemonic = () => {
           </div>
         </div>
       ) : (
-        <div className={cn(s.step, "justify-between")}>
+        <div className={cn(s.step, "justify-between pb-2")}>
           <SwitchAddressType
             handler={setAddressType}
             selectedType={addressType}
