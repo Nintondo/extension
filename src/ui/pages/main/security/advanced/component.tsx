@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useControllersState } from "@/ui/states/controllerState";
 import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
+import { IAccount } from "@/shared/interfaces";
 
 const Advanced = () => {
   const currentWallet = useGetCurrentWallet();
@@ -23,46 +24,29 @@ const Advanced = () => {
     try {
       setLoading(true);
       await walletController.toogleRootAccount();
+      const accounts = await walletController.getAccounts();
       await updateWalletState({
-        wallets: await Promise.all(
-          wallets.map(async (i) => {
-            if (i.id !== currentWallet.id) return i;
-            const accounts = await walletController.getAccounts();
-            let newAccounts = i.accounts;
-            if (await walletController.getCurrentAccountHideRootState()) {
-              accounts.forEach((account) => {
-                if (!newAccounts.find((f) => f.address === account)) {
-                  newAccounts.push({
-                    id: newAccounts.length + 1,
-                    name: `Account ${newAccounts.length + 1}`,
-                    address: account,
-                    balance: 0,
-                  });
-                }
-              });
-              newAccounts = newAccounts.slice(1);
-            } else {
-              newAccounts = [
-                {
-                  id: 0,
-                  name: "Root Account",
-                  address: accounts[0],
-                  balance: 0,
-                },
-                ...newAccounts,
-              ];
-            }
-            const result = {
-              ...i,
-              hideRoot: i.id === currentWallet.id ? !i.hideRoot : i.hideRoot,
-              accounts: await walletController.loadAccountsData(
-                i.id,
-                newAccounts
-              ),
-            };
-            return result;
-          })
-        ),
+        wallets: wallets.map((i) => {
+          if (i.id !== currentWallet.id) return i;
+          const newAccounts = accounts.map(
+            (a, idx) =>
+              ({
+                id: idx,
+                address: a,
+                balance: i.accounts.find((i) => i.address === a)?.balance ?? 0,
+                name:
+                  i.accounts.find((i) => i.address === a)?.name ??
+                  `Account ${idx + 1}`,
+              } as IAccount)
+          );
+
+          const result = {
+            ...i,
+            hideRoot: i.id === currentWallet.id ? !i.hideRoot : i.hideRoot,
+            accounts: newAccounts,
+          };
+          return result;
+        }),
         selectedAccount: 0,
       });
       navigate("/");
