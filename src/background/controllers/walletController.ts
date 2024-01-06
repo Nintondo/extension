@@ -68,12 +68,22 @@ class WalletController implements IWalletController {
     const wallet = keyringService.getKeyringByIndex(walletId);
 
     const addresses = wallet.getAccounts();
+    const prevAccs: string[] = [];
 
-    return accounts.map((i, idx) => ({
-      ...i,
-      id: idx,
-      address: addresses[i.id],
-    }));
+    return accounts
+      .map((i, idx) => ({
+        ...i,
+        id: idx,
+        address: addresses[i.id],
+      }))
+      .filter((i) => {
+        if (prevAccs.includes(i.address)) {
+          return false;
+        } else {
+          prevAccs.push(i.address);
+        }
+        return i.address !== undefined;
+      });
   }
 
   async createNewAccount(name?: string): Promise<IAccount> {
