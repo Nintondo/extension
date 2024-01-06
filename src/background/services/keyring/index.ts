@@ -27,7 +27,11 @@ class KeyringService {
     for (const i of wallets) {
       let wallet: HDPrivateKey | SimpleKey;
       if (i.data.seed) {
-        wallet = HDPrivateKey.deserialize(i.data);
+        wallet = HDPrivateKey.deserialize({
+          ...i.data,
+          hideRoot: i.hideRoot,
+          addressType: i.data.addressType ?? i.addressType,
+        });
       } else {
         wallet = HDSimpleKey.deserialize(i.data) as any as HDSimpleKey;
       }

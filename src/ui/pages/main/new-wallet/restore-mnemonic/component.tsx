@@ -10,6 +10,7 @@ import SelectWithHint from "@/ui/components/select-hint/component";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Loading from "react-loading";
+import Switch from "@/ui/components/switch";
 
 const RestoreMnemonic = () => {
   const [step, setStep] = useState(1);
@@ -75,41 +76,34 @@ const RestoreMnemonic = () => {
         <p className={step === 2 ? s.active : ""}>{t("new_wallet.step_2")}</p>
       </div>
       {step === 1 ? (
-        <div className={cn(s.stepOneWrapper, s.step)}>
-          <div className={cn(s.stepOne, s.step)}>
-            <div>
-              <div className={s.phrase}>
-                {new Array(12).fill("").map((_, index) => (
-                  <div key={index} className={s.word}>
-                    <p className="w-6">{index + 1}.</p>
-                    <SelectWithHint
-                      selected={mnemonicPhrase[index]}
-                      setSelected={(v) => setMnemonic(v, index)}
-                    />
-                  </div>
-                ))}
+        <div className={cn(s.step, "justify-between")}>
+          <div className={s.phrase}>
+            {new Array(12).fill("").map((_, index) => (
+              <div key={index} className={s.word}>
+                <p className="w-6">{index + 1}.</p>
+                <SelectWithHint
+                  selected={mnemonicPhrase[index]}
+                  setSelected={(v) => setMnemonic(v, index)}
+                />
               </div>
-            </div>
-            <div className={s.continueWrapper}>
-              <button
-                className={cn(s.continue, "btn", "primary")}
-                onClick={onNextStep}
-              >
-                {t("new_wallet.continue")}
-              </button>
-            </div>
+            ))}
           </div>
-          <div className={s.savePhraseWrapper}>
-            <div className="flex flex-col gap-7 mt-6">
-              <label className="cursor-pointer" htmlFor="save-phrases">
-                {t("new_wallet.restore_mnemonic.show_root_acc")}
-              </label>
-              <input id="save-phrases" type="checkbox" onChange={onSwitch} />
-            </div>
+          <div className="w-full flex justify-center">
+            <Switch
+              label={t("new_wallet.restore_mnemonic.show_root_acc")}
+              value={showRootAcc}
+              onChange={onSwitch}
+              className="flex gap-2 items-center"
+            />
+          </div>
+          <div className={s.continueWrapper}>
+            <button className="btn primary" onClick={onNextStep}>
+              {t("new_wallet.continue")}
+            </button>
           </div>
         </div>
       ) : (
-        <div className={cn(s.stepTwo, s.step)}>
+        <div className={s.step}>
           <div className={s.continueWrapper}>
             <SwitchAddressType
               handler={setAddressType}
@@ -118,7 +112,7 @@ const RestoreMnemonic = () => {
             <button
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={onRestore}
-              className={cn(s.continue, "btn", "primary")}
+              className="btn primary"
             >
               {t("new_wallet.continue")}
             </button>

@@ -7,13 +7,20 @@ interface Props {
   value: boolean;
   onChange: (value: boolean) => void;
   label: string;
+  className?: string;
 }
 
-const SwitchComponent: FC<Props> = ({ locked, onChange, value, label }) => {
+const SwitchComponent: FC<Props> = ({
+  locked,
+  onChange,
+  value,
+  label,
+  className,
+}) => {
   return (
     <Switch.Group>
       <div
-        className={cn("flex gap-2 items-center mt-4", {
+        className={cn(className ?? "flex gap-2 items-center mt-4", {
           "opacity-50": locked,
         })}
       >
@@ -32,7 +39,9 @@ const SwitchComponent: FC<Props> = ({ locked, onChange, value, label }) => {
             pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
           />
         </Switch>
-        <Switch.Label className="mr-4 cursor-pointer text-xs">{label}</Switch.Label>
+        <Switch.Label className="mr-4 cursor-pointer text-xs">
+          {label}
+        </Switch.Label>
       </div>
     </Switch.Group>
   );

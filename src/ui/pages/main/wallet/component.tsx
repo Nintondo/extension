@@ -113,6 +113,7 @@ const Wallet = () => {
   }, [updateAccountBalance, udpateTransactions, updateLastBlock]);
 
   useEffect(() => {
+    if (!currentAccount) return;
     setPrevAcc((prev) => {
       if (typeof prev === "undefined" || prev !== currentAccount.address) {
         trottledUpdate();

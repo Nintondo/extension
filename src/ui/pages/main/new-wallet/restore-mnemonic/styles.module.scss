@@ -1,5 +1,5 @@
 .restoreMnemonic {
-  @apply w-full h-full flex flex-col items-center gap-8 text-base p-4;
+  @apply w-full h-full flex flex-col items-center gap-6 text-base p-4 pb-0;
 }
 
 .phrase {
@@ -23,7 +23,7 @@
 }
 
 .continueWrapper {
-  @apply w-full flex justify-between py-4 flex-col h-full;
+  @apply w-full flex justify-between pt-4 pb-2 flex-col;
 }
 
 .step {

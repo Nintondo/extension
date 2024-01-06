@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import SwitchAddressType from "@/ui/components/switch-address-type";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
+import Switch from "@/ui/components/switch";
 
 const NewMnemonic = () => {
   const location = useLocation();
@@ -100,43 +101,37 @@ const NewMnemonic = () => {
         </p>
       </div>
       {step === 1 ? (
-        <div className={cn(s.stepOneWrapper, s.step)}>
-          <div className={cn(s.stepOne, s.step)}>
-            <div>
-              <p className={s.warning}>
-                {t("new_wallet.new_mnemonic.warning")}
-              </p>
-              <div className={s.phrase}>
-                {mnemonicPhrase.split(" ").map((word, index) => (
-                  <div key={index} className={s.word}>
-                    <span className={s.wordIndex}>{index + 1}.</span>
-                    <p className={s.wordWord}>{word}</p>
-                  </div>
-                ))}
-              </div>
+        <div className={cn(s.step, "justify-between")}>
+          <div>
+            <p className={s.warning}>{t("new_wallet.new_mnemonic.warning")}</p>
+            <div className={s.phrase}>
+              {mnemonicPhrase.split(" ").map((word, index) => (
+                <div key={index} className={s.word}>
+                  <span className={s.wordIndex}>{index + 1}.</span>
+                  <p className={s.wordWord}>{word}</p>
+                </div>
+              ))}
             </div>
-            <div className={s.savePhraseWrapper}>
-              <CopyBtn
-                label={t("new_wallet.new_mnemonic.copy")}
-                value={mnemonicPhrase}
-                className="mx-auto flex items-center gap-1"
-              />
-              <div className={s.savePhrase}>
-                <label className="cursor-pointer" htmlFor="save-phrases">
-                  {t("new_wallet.new_mnemonic.i_saved_this_phrase")}
-                </label>
-                <input id="save-phrases" type="checkbox" onChange={onSwitch} />
-              </div>
-            </div>
-            <div className={s.continueWrapper}>
-              <button
-                className="btn primary"
-                onClick={() => setStep(2)}
-                disabled={!savedPhrase}
-              >
-                {t("new_wallet.continue")}
-              </button>
-            </div>
+          </div>
+          <CopyBtn
+            label={t("new_wallet.new_mnemonic.copy")}
+            value={mnemonicPhrase}
+            className="mx-auto flex items-center gap-1"
+          />
+          <Switch
+            label={t("new_wallet.new_mnemonic.i_saved_this_phrase")}
+            onChange={onSwitch}
+            value={savedPhrase}
+            className={s.savePhrase}
+          />
+          <div className={s.continueWrapper}>
+            <button
+              className="btn primary w-full"
+              onClick={() => setStep(2)}
+              disabled={!savedPhrase}
+            >
+              {t("new_wallet.continue")}
+            </button>
           </div>
         </div>
       ) : (

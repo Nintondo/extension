@@ -96,7 +96,8 @@
     },
     "restore_mnemonic": {
       "incomplete_phrase_error": "Please insert all the words",
-      "invalid_words_error": "Words are invalid"
+      "invalid_words_error": "Words are invalid",
+      "show_root_acc": "Show root account"
     },
     "restore_private": {
       "private_key": "Private key",
