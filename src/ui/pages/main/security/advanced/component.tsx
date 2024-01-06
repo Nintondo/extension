@@ -28,30 +28,25 @@ const Advanced = () => {
       await updateWalletState({
         wallets: wallets.map((i) => {
           if (i.id !== currentWallet.id) return i;
-          const newAccounts = accounts.map(
-            (a, idx) =>
-              ({
+          return {
+            ...i,
+            hideRoot: !i.hideRoot,
+            accounts: accounts.map((a, idx) => {
+              const prevAcc = i.accounts.find((i) => i.address === a);
+              return {
                 id: idx,
                 address: a,
-                balance: i.accounts.find((i) => i.address === a)?.balance ?? 0,
-                name:
-                  i.accounts.find((i) => i.address === a)?.name ??
-                  `Account ${idx + 1}`,
-              } as IAccount)
-          );
-
-          const result = {
-            ...i,
-            hideRoot: i.id === currentWallet.id ? !i.hideRoot : i.hideRoot,
-            accounts: newAccounts,
+                balance: prevAcc?.balance ?? 0,
+                name: prevAcc?.name ?? `Account ${idx + 1}`,
+              };
+            }),
           };
-          return result;
         }),
         selectedAccount: 0,
       });
       navigate("/");
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       setLoading(false);
     }
