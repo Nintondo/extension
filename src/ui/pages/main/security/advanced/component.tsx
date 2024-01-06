@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useControllersState } from "@/ui/states/controllerState";
 import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
-import { IAccount } from "@/shared/interfaces";
 
 const Advanced = () => {
   const currentWallet = useGetCurrentWallet();
