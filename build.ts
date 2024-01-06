@@ -71,6 +71,8 @@ const buildOptions: BuildOptions = {
     "import.meta.url": '""',
     "process.browser": "false",
   },
+  target: ["es2016"],
+  platform: "browser",
   plugins: [
     svgPlugin({
       typescript: true,
@@ -102,7 +104,6 @@ const buildOptions: BuildOptions = {
       },
       modules: {
         buffer: true,
-        crypto: true,
         stream: true,
       },
     }),
