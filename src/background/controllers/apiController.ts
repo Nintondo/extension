@@ -48,7 +48,7 @@ class ApiController implements IApiController {
     });
     return {
       slow: Number((data["6"] as number).toFixed(0)),
-      fast: Number((data["2"] as number).toFixed(0)),
+      fast: Number((data["2"] as number).toFixed(0)) + 1,
     };
   }
 
