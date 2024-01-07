@@ -111,10 +111,32 @@ const buildOptions: BuildOptions = {
   ],
 };
 
+const makeArchive = () => {
+  Bun.spawnSync({
+    cmd: [
+      "zip",
+      "-r",
+      `../${chrome ? "chrome" : "firefox"}-${
+        process.env.npm_package_version
+      }.zip`,
+      ".",
+    ],
+    cwd: `./dist/${chrome ? "chrome" : "firefox"}`,
+  });
+
+  Bun.spawnSync({
+    cmd: ["rm", "-rf", `./${chrome ? "chrome" : "firefox"}`],
+    cwd: "./dist",
+  });
+};
+
 if (isDev) {
   console.log("");
   const ctx = await context(buildOptions);
   await ctx.watch();
 } else {
   await build(buildOptions);
+  if (Bun.argv.includes("--compress") || Bun.argv.includes("-c")) {
+    makeArchive();
+  }
 }
