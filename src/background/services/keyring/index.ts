@@ -1,14 +1,13 @@
-// forked from https://github.com/MetaMask/KeyringController/blob/main/src/KeyringController.ts
-
 import { KeyringServiceError } from "./consts";
-import { Hex, Json, SendTDC } from "./types";
+import type { Hex, Json, SendTDC } from "./types";
 import { storageService } from "@/background/services";
-import { Psbt, networks } from "belcoinjs-lib";
+import type { Psbt } from "belcoinjs-lib";
+import { networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
 import { createSendBEL } from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
-import { Keyring } from "bellhdw/src/hd/types";
+import type { Keyring } from "bellhdw/src/hd/types";
 
 export const KEYRING_SDK_TYPES = {
   SimpleKey,

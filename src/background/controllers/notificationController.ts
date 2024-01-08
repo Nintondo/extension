@@ -1,4 +1,4 @@
-import {
+import type {
   ApprovalData,
   INotificationController,
 } from "@/shared/interfaces/notification";
@@ -8,7 +8,7 @@ import {
   sessionService,
   storageService,
 } from "../services";
-import { ConnectedSite } from "../services/permission";
+import type { ConnectedSite } from "../services/permission";
 
 class NotificationController implements INotificationController {
   async getApproval(): Promise<ApprovalData> {

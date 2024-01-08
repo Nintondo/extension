@@ -1,4 +1,4 @@
-import { ConnectedSite } from "@/background/services/permission";
+import type { ConnectedSite } from "@/background/services/permission";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useCallback, useEffect, useState } from "react";
 import s from "./styles.module.scss";

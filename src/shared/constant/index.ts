@@ -1,7 +1,4 @@
-/* eslint-disable quotes */
-
-/* constants pool */
-import { AddressType } from "bellhdw";
+import { AddressType } from "bellhdw/src/hd/types";
 
 export const KEYRING_TYPE = {
   HdKeyring: "HD Key Tree",

@@ -1,4 +1,4 @@
-import { IAppStateBase, IWalletStateBase } from "@/shared/interfaces";
+import type { IAppStateBase, IWalletStateBase } from "@/shared/interfaces";
 
 export function emptyWalletState(): IWalletStateBase {
   return {

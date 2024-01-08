@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { KeyIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
-import { CreateTxProps } from "@/shared/interfaces/notification";
+import type { CreateTxProps } from "@/shared/interfaces/notification";
 
 const CreateTx = () => {
   const [psbt, setPsbt] = useState<CreateTxProps>();

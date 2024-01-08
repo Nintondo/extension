@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
-import { IAppState } from "@/shared/interfaces";
+import type { IAppState } from "@/shared/interfaces";
 
 const proxy = setupStateProxy();
 

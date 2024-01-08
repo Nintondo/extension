@@ -1,6 +1,6 @@
 import { ethErrors } from "eth-rpc-errors";
 
-import { NintondoProvider } from "./index";
+import type { NintondoProvider } from "./index";
 
 class PushEventHandlers {
   provider: NintondoProvider;

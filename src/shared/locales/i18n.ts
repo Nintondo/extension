@@ -3,7 +3,6 @@ import ru from "./languages/ru.json";
 import ch from "./languages/ch.json";
 import kr from "./languages/kr.json";
 import i18n from "i18next";
-// import { reactI18nextModule } from 'react-i18next';
 
 export const defaultNS = "  ";
 

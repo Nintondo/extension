@@ -2,7 +2,7 @@ import { storageService } from "@/background/services";
 import type { IAccount, IWallet, IWalletController } from "@/shared/interfaces";
 import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
-import { DecryptedSecrets } from "../services/storage/types";
+import type { DecryptedSecrets } from "../services/storage/types";
 import * as bip39 from "bip39";
 import { AddressType } from "bellhdw";
 

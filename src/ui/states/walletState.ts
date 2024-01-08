@@ -1,4 +1,4 @@
-import { IWalletState } from "@/shared/interfaces";
+import type { IWalletState } from "@/shared/interfaces";
 import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
 import { useMemo } from "react";

@@ -1,10 +1,10 @@
 import { Psbt } from "belcoinjs-lib";
 import { keyringService, sessionService, storageService } from "../../services";
 import "reflect-metadata";
-import { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
+import type { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
 import { fetchTDCMainnet } from "@/shared/utils";
 import permission from "@/background/services/permission";
-import { SendTDC } from "@/background/services/keyring/types";
+import type { SendTDC } from "@/background/services/keyring/types";
 
 class ProviderController {
   connect = async () => {

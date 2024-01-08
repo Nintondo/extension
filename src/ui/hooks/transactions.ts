@@ -3,7 +3,7 @@ import { useGetCurrentAccount, useWalletState } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
 import { tidoshisToAmount } from "@/shared/utils/transactions";
 import { Psbt } from "belcoinjs-lib";
-import { Hex } from "@/background/services/keyring/types";
+import type { Hex } from "@/background/services/keyring/types";
 import { t } from "i18next";
 
 export function useCreateBellsTxCallback() {

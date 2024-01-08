@@ -1,4 +1,4 @@
-import { IAppStateBase, IWalletState, IWalletStateBase } from ".";
+import type { IAppStateBase, IWalletState, IWalletStateBase } from ".";
 
 export interface IStateController {
   init(): Promise<void>;

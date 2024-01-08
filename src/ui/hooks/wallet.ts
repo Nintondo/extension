@@ -1,4 +1,4 @@
-import { IAccount, INewWalletProps, IWallet } from "@/shared/interfaces";
+import type { IAccount, INewWalletProps, IWallet } from "@/shared/interfaces";
 import { useControllersState } from "../states/controllerState";
 import {
   useGetCurrentAccount,

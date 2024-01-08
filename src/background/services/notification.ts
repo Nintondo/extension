@@ -3,7 +3,7 @@ import { EthereumProviderError } from "eth-rpc-errors/dist/classes";
 import Events from "events";
 import { event, remove, openNotification } from "../webapi";
 import { IS_CHROME, IS_LINUX } from "@/shared/constant";
-import {
+import type {
   Approval,
   ApprovalData,
   OpenNotificationProps,

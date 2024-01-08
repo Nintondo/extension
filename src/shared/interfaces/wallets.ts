@@ -1,5 +1,5 @@
-import { AddressType } from "bellhdw";
-import { IAccount } from "./accounts";
+import type { AddressType } from "bellhdw/src/hd/types";
+import type { IAccount } from "./accounts";
 
 export interface IWallet {
   id: number;

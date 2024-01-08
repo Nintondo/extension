@@ -1,15 +1,15 @@
 import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
 import { Message } from "@/shared/utils/message";
-import { IWalletController } from "@/shared/interfaces";
-import { IStateController } from "@/shared/interfaces/stateController";
+import type { IWalletController } from "@/shared/interfaces";
+import type { IStateController } from "@/shared/interfaces/stateController";
 import { useControllersState } from "../states/controllerState";
 import { useCallback } from "react";
 import { useAppState } from "../states/appState";
 import { useWalletState } from "../states/walletState";
-import { INotificationController } from "@/shared/interfaces/notification";
-import { IApiController } from "@/background/controllers/apiController";
-import { IKeyringController } from "@/background/controllers/keyringController";
+import type { INotificationController } from "@/shared/interfaces/notification";
+import type { IApiController } from "@/background/controllers/apiController";
+import type { IKeyringController } from "@/background/controllers/keyringController";
 
 function setupPm() {
   const { PortMessage } = Message;

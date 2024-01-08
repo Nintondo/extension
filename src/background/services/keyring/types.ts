@@ -1,8 +1,7 @@
-import { ApiUTXO } from "@/shared/interfaces/api";
+import type { ApiUTXO } from "@/shared/interfaces/api";
 
 export type Json = any;
 export type Hex = string;
-
 
 export type Eip1024EncryptedData = {
   version: string;
@@ -34,7 +33,6 @@ export interface PublicKeyUserToSignInput extends BaseUserToSignInput {
 }
 
 export type UserToSignInput = AddressUserToSignInput | PublicKeyUserToSignInput;
-
 
 export interface SignPsbtOptions {
   autoFinalized: boolean;

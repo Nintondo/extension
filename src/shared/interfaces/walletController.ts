@@ -1,7 +1,7 @@
-import { DecryptedSecrets } from "@/background/services/storage/types";
-import { IAccount } from "./accounts";
-import { IPrivateWallet, IWallet } from "./wallets";
-import { AddressType } from "bellhdw";
+import type { DecryptedSecrets } from "@/background/services/storage/types";
+import type { IAccount } from "./accounts";
+import type { IPrivateWallet, IWallet } from "./wallets";
+import type { AddressType } from "bellhdw";
 
 export interface IWalletController {
   createNewWallet(

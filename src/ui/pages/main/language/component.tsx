@@ -1,6 +1,6 @@
-import i18n from "../../../../shared/locales/i18n";
-import { useAppState } from "../../../states/appState";
-import { useControllersState } from "../../../states/controllerState";
+import i18n from "@/shared/locales/i18n";
+import { useAppState } from "@/ui/states/appState";
+import { useControllersState } from "@/ui/states/controllerState";
 import s from "./styles.module.scss";
 import cn from "classnames";
 

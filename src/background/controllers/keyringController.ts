@@ -1,8 +1,8 @@
 import { Psbt } from "belcoinjs-lib";
 import { keyringService } from "../services";
-import { Hex, SendTDC } from "../services/keyring/types";
-import { IPrivateWallet } from "@/shared/interfaces";
-import { AddressType } from "bellhdw";
+import type { Hex, SendTDC } from "../services/keyring/types";
+import type { IPrivateWallet } from "@/shared/interfaces";
+import type { AddressType } from "bellhdw";
 
 export interface IKeyringController {
   init(password: string): Promise<IPrivateWallet[]>;

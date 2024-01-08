@@ -1,12 +1,12 @@
-import { ConnectedSite } from "../permission";
-import { IWallet } from "@/shared/interfaces";
+import type { ConnectedSite } from "../permission";
+import type { IWallet } from "@/shared/interfaces";
 
 interface StorageAccountItem {
   id: number;
   name: string;
 }
 
-interface StorageWalletItem extends Omit<IWallet, 'accounts' | 'id'> {
+interface StorageWalletItem extends Omit<IWallet, "accounts" | "id"> {
   accounts: StorageAccountItem[];
 }
 

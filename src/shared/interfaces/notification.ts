@@ -1,5 +1,5 @@
-import { ConnectedSite } from "@/background/services/permission";
-import { EthereumProviderError } from "eth-rpc-errors";
+import type { ConnectedSite } from "@/background/services/permission";
+import type { EthereumProviderError } from "eth-rpc-errors";
 
 export interface INotificationController {
   getApproval(): Promise<ApprovalData>;
