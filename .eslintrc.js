@@ -19,7 +19,7 @@ module.exports = {
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
       ],
-      files: ["src/**/*.{ts,tsx}", "./build.ts"],
+      files: ["src/**/*.{ts,tsx}"],
       parser: "@typescript-eslint/parser",
       parserOptions: {
         ecmaVersion: "latest",
