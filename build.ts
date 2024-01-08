@@ -73,6 +73,7 @@ const buildOptions: BuildOptions = {
   },
   target: ["es2016"],
   platform: "browser",
+  sourcemap: Bun.argv.includes("--sourcemap") || Bun.argv.includes("-s"),
   plugins: [
     svgPlugin({
       typescript: true,
