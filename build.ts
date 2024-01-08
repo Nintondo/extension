@@ -105,7 +105,6 @@ const buildOptions: BuildOptions = {
       },
       modules: {
         buffer: true,
-        stream: true,
       },
     }),
     mergeManifests(),
