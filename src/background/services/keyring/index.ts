@@ -62,6 +62,8 @@ class KeyringService {
     keyring.addressType =
       typeof addressType === "number" ? addressType : AddressType.P2PKH;
     this.keyrings.push(keyring);
+    if (!keyring.getAccounts().length)
+      return (keyring as HDPrivateKey).addAccounts(1)[0];
     return keyring.getAccounts()[0];
   }
 
