@@ -32,6 +32,7 @@ import Security from "./main/security";
 import Advanced from "./main/security/advanced";
 import Discover from "./main/discover";
 import Home from "./main/home";
+import Discover from "./main/discover";
 
 export const guestRouter = createHashRouter([
   {
