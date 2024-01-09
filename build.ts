@@ -3,9 +3,10 @@ import { copy } from "esbuild-plugin-copy";
 import { sassPlugin, postcssModules } from "esbuild-sass-plugin";
 import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
 import svgPlugin from "esbuild-svg";
+import postcss from "postcss";
+
 const autoprefixer = require("autoprefixer");
 const tailwindcss = require("tailwindcss");
-import postcss from "postcss";
 
 async function readJsonFile(path: string) {
   const file = Bun.file(path);

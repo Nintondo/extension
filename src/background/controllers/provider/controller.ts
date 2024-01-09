@@ -1,6 +1,6 @@
 import { Psbt } from "belcoinjs-lib";
 import { keyringService, sessionService, storageService } from "../../services";
-import "reflect-metadata";
+import "reflect-metadata/lite";
 import type { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
 import { fetchTDCMainnet } from "@/shared/utils";
 import permission from "@/background/services/permission";
