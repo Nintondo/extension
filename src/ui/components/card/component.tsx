@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import s from "./styles.module.scss";
-import { XMarkIcon, Bars3Icon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/outline";
 
 import Menu from "@/ui/components/menu";
 import cn from "classnames";
@@ -15,7 +15,7 @@ interface Props {
   onClick: () => void;
   exclamation?: {
     description: string;
-    aggressive?: boolean
+    aggressive?: boolean;
   };
 
   address?: string;
@@ -28,7 +28,7 @@ const Card: FC<Props> = ({
   name,
   address,
   id,
-  exclamation
+  exclamation,
 }) => {
   const isRoot = exclamation?.aggressive && id === 0;
   const [active, setActive] = useState(false);
@@ -41,14 +41,18 @@ const Card: FC<Props> = ({
   return (
     <div
       id={String(id)}
-      className={cn(s.card, { [s.selected]: selected, [s.aggressive]: isRoot })}
+      className={cn(s.card, { [s.selected]: selected })}
       onClick={onClick}
     >
-      <div className={s.wrapper} title={(address ? isRoot : true) ? exclamation?.description: undefined}>
-        <div className={cn(s.name)}>{isRoot ? t('components.card.root_account') : name}</div>
+      <div
+        className={s.wrapper}
+        title={(address ? isRoot : true) ? exclamation?.description : undefined}
+      >
+        <div className={cn(s.name)}>
+          {isRoot ? t("components.card.root_account") : name}
+        </div>
         <div className={s.right}>
-          {(!address ? exclamation : isRoot) ? <ExclamationCircleIcon className={cn('w-7 h-7', {'text-white': isRoot, 'text-red-400' : !isRoot})} /> : undefined}
-          {address ? !isRoot ? <div className={s.address}>{address}</div> : undefined : undefined}
+          {address ? <div className={s.address}>{address}</div> : undefined}
           <button className={s.action} onClick={onMenuClick}>
             <Bars3Icon
               className={cn("w-8 h-8", {

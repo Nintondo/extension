@@ -86,6 +86,10 @@ export default function PagesLayout() {
         title: t("components.layout.settings"),
       },
       {
+        route: "/pages/advanced",
+        title: t("components.layout.advanced"),
+      },
+      {
         route: "/pages/show-mnemonic/@",
         title: t("components.layout.show_mnemonic"),
       },

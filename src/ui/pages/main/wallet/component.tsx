@@ -6,7 +6,6 @@ import {
   Cog6ToothIcon,
   ChevronDownIcon,
   CheckIcon,
-  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import s from "./styles.module.scss";
 import { shortAddress } from "@/shared/utils/transactions";
@@ -185,17 +184,6 @@ const Wallet = () => {
             {t("switch_wallet.warn.description")}
           </div>
         </Transition>
-        {currentWallet.type === "root" && !currentWallet.hideRoot ? (
-          <div
-            onMouseEnter={() => {
-              if (currentWallet.hideRoot) return;
-              setOpenTip(true);
-            }}
-            className="cursor-pointer"
-          >
-            <ExclamationTriangleIcon className="w-6 h-6 fill-red-500 text-bg" />
-          </div>
-        ) : undefined}
         <Link
           className="flex gap-3 items-center select-none cursor-pointer"
           to={"/pages/switch-wallet"}
