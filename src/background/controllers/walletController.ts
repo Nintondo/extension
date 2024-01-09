@@ -123,13 +123,6 @@ class WalletController implements IWalletController {
     );
     return keyring.getAccounts();
   }
-
-  async getCurrentAccountHideRootState(): Promise<boolean> {
-    const keyring = keyringService.getKeyringByIndex(
-      storageService.currentWallet.id
-    );
-    return keyring.hideRoot;
-  }
 }
 
 export default new WalletController();

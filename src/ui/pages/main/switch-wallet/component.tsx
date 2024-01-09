@@ -47,7 +47,11 @@ const SwitchWallet = () => {
           <Card
             key={`wallet-${i}`}
             id={wallet.id}
-            exclamation={!wallet.hideRoot ? {description: t("switch_wallet.warn.description")} : undefined}
+            exclamation={
+              wallet.type === "root" && !wallet.hideRoot
+                ? { description: t("switch_wallet.warn.description") }
+                : undefined
+            }
             menuItems={[
               {
                 action: () => {

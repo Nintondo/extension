@@ -200,6 +200,7 @@
     }
   },
   "advanced": {
-    "root_acc_warning": "Hide root acccount"
+    "root_acc_warning": "Hide root acccount",
+    "blank": "Nothing here for your wallet type"
   }
 }

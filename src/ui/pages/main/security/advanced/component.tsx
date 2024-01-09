@@ -55,15 +55,19 @@ const Advanced = () => {
 
   return (
     <div className={s.wrapper}>
-      <Switch
-        label={t("advanced.root_acc_warning")}
-        value={currentWallet.hideRoot}
-        onChange={() => {
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          toogleRootAccount();
-        }}
-        locked={false}
-      />
+      {currentWallet.type === "root" ? (
+        <Switch
+          label={t("advanced.root_acc_warning")}
+          value={currentWallet.hideRoot}
+          onChange={() => {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            toogleRootAccount();
+          }}
+          locked={false}
+        />
+      ) : (
+        <div className={s.blank}>{t("advanced.blank")}</div>
+      )}
     </div>
   );
 };

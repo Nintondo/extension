@@ -97,7 +97,9 @@ const SwitchAccount = () => {
               await switchAccount(acc.id);
             }}
             exclamation={
-              !currentWallet.hideRoot && acc.id === 0
+              currentWallet.type === "root" &&
+              !currentWallet.hideRoot &&
+              acc.id === 0
                 ? {
                     description: t("switch_account.account_warning"),
                     aggressive: true,

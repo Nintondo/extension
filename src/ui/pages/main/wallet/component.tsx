@@ -185,7 +185,7 @@ const Wallet = () => {
             {t("switch_wallet.warn.description")}
           </div>
         </Transition>
-        {!currentWallet.hideRoot ? (
+        {currentWallet.type === "root" && !currentWallet.hideRoot ? (
           <div
             onMouseEnter={() => {
               if (currentWallet.hideRoot) return;
@@ -251,7 +251,9 @@ const Wallet = () => {
           ) : undefined}
           <div>
             <p>
-              {currentAccount.id === 0 && !currentWallet.hideRoot
+              {currentAccount.id === 0 &&
+              !currentWallet.hideRoot &&
+              currentWallet.type === "root"
                 ? "Root account"
                 : currentAccount.name}
             </p>

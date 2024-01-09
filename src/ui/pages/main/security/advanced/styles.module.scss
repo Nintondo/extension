@@ -21,3 +21,7 @@
     @apply font-medium;
   }
 }
+
+.blank {
+  @apply w-full h-full flex items-center justify-center font-medium text-lg;
+}
