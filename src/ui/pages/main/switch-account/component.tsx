@@ -96,15 +96,10 @@ const SwitchAccount = () => {
             onClick={async () => {
               await switchAccount(acc.id);
             }}
-            exclamation={
+            isRoot={
               currentWallet.type === "root" &&
               !currentWallet.hideRoot &&
               acc.id === 0
-                ? {
-                    description: t("switch_account.account_warning"),
-                    aggressive: true,
-                  }
-                : undefined
             }
             selected={currentAccount.id === acc.id}
             address={shortAddress(acc.address, 7)}

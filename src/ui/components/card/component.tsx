@@ -13,12 +13,8 @@ interface Props {
   selected: boolean;
   name: string;
   onClick: () => void;
-  exclamation?: {
-    description: string;
-    aggressive?: boolean;
-  };
-
   address?: string;
+  isRoot?: boolean;
 }
 
 const Card: FC<Props> = ({
@@ -28,9 +24,8 @@ const Card: FC<Props> = ({
   name,
   address,
   id,
-  exclamation,
+  isRoot,
 }) => {
-  const isRoot = exclamation?.aggressive && id === 0;
   const [active, setActive] = useState(false);
 
   const onMenuClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -44,10 +39,7 @@ const Card: FC<Props> = ({
       className={cn(s.card, { [s.selected]: selected })}
       onClick={onClick}
     >
-      <div
-        className={s.wrapper}
-        title={(address ? isRoot : true) ? exclamation?.description : undefined}
-      >
+      <div className={s.wrapper}>
         <div className={cn(s.name)}>
           {isRoot ? t("components.card.root_account") : name}
         </div>

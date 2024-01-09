@@ -14,7 +14,7 @@ import {
   useGetCurrentWallet,
 } from "@/ui/states/walletState";
 import cn from "classnames";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useUpdateCurrentAccountBalance } from "@/ui/hooks/wallet";
 import ReactLoading from "react-loading";
 import { ITransaction } from "@/shared/interfaces/api";
@@ -29,12 +29,10 @@ import { Circle } from "rc-progress";
 import { useDebounceCall } from "@/ui/hooks/debounce";
 import { t } from "i18next";
 import { useInView } from "react-intersection-observer";
-import { Transition } from "@headlessui/react";
 import Loading from "react-loading";
 
 const Wallet = () => {
   const navigate = useNavigate();
-  const [openTip, setOpenTip] = useState(false);
   const [lastBlock, setLastBlock] = useState<number>(0);
   const currentWallet = useGetCurrentWallet();
 
@@ -165,25 +163,6 @@ const Wallet = () => {
   return (
     <div className={s.walletDiv}>
       <div className="flex justify-between mt-2 items-center mb-4">
-        <Transition
-          appear
-          show={openTip}
-          as={Fragment}
-          unmount
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div
-            onMouseLeave={() => setOpenTip(false)}
-            className="mt-4 absolute top-0 left-3 right-3 text-white font-medium bg-red-600 rounded-2xl p-3"
-          >
-            {t("switch_wallet.warn.description")}
-          </div>
-        </Transition>
         <Link
           className="flex gap-3 items-center select-none cursor-pointer"
           to={"/pages/switch-wallet"}
