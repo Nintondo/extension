@@ -30,6 +30,7 @@ import ConnectedSites from "./main/connected-sites";
 import Language from "./main/language";
 import Security from "./main/security";
 import Advanced from "./main/security/advanced";
+import Discover from "./main/discover";
 
 export const guestRouter = createHashRouter([
   {
@@ -69,6 +70,7 @@ export const authenticatedRouter = createHashRouter([
       { path: "language", element: <Language /> },
       { path: "security", element: <Security /> },
       { path: "advanced", element: <Advanced /> },
+      { path: "discover", element: <Discover /> },
     ],
   },
   {
