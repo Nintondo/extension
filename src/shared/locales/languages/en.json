@@ -162,8 +162,7 @@
     "export_private_key": "Export private key",
     "show_pk": {
       "copy": "Copy"
-    },
-    "account_warning": "This account is root you should create new wallet with new mnemonic transfer your tokens and remove this one for security reasons"
+    }
   },
   "switch_wallet": {
     "rename_wallet": "Rename wallet",
@@ -173,10 +172,7 @@
     "are_you_sure": "Are you sure you want to delete?",
     "yes": "Yes",
     "no": "No",
-    "copy": "Copy",
-    "warn": {
-      "description": "This wallet has root account you should create new wallet transfer your tokens and remove this one for security reasons"
-    }
+    "copy": "Copy"
   },
   "transaction_info": {
     "txid": "TxId",

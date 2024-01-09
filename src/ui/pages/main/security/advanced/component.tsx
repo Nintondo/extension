@@ -58,7 +58,7 @@ const Advanced = () => {
       {currentWallet.type === "root" ? (
         <Switch
           label={t("advanced.root_acc_warning")}
-          value={currentWallet.hideRoot}
+          value={!currentWallet.hideRoot}
           onChange={() => {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             toogleRootAccount();
