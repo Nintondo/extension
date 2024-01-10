@@ -3,7 +3,6 @@ import { FC, useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { t } from "i18next";
 import { useAppState } from "@/ui/states/appState";
-import { useControllersState } from "@/ui/states/controllerState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 interface Props {
@@ -12,15 +11,8 @@ interface Props {
 }
 
 const FeeInput: FC<Props> = ({ onChange, value }) => {
-  const [selected, setSelected] = useState<number>(0);
-  const [cards, setCards] = useState<
-    { title: string; description?: string; value: number }[]
-  >([]);
   const { feeRates } = useTransactionManagerContext();
-
-  const { apiController } = useControllersState((v) => ({
-    apiController: v.apiController,
-  }));
+  const [selected, setSelected] = useState<number>(feeRates?.slow);
 
   useEffect(() => {
     if (selected !== 3) {
@@ -28,28 +20,22 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
     }
   }, [selected, onChange]);
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    (async () => {
-      setCards([
-        {
-          title: t("send.create_send.fee_input.slow"),
-          description: `${feeRates.slow ?? "~"} sat/Vb`,
-          value: feeRates.slow,
-        },
-        {
-          title: t("send.create_send.fee_input.fast"),
-          description: `${feeRates.fast ?? "~"} sat/Vb`,
-          value: feeRates.fast,
-        },
-        {
-          title: t("send.create_send.fee_input.custom"),
-          value: 3,
-        },
-      ]);
-      setSelected(feeRates.slow);
-    })();
-  }, [apiController, feeRates]);
+  const cards = [
+    {
+      title: t("send.create_send.fee_input.slow"),
+      description: `${feeRates?.slow ?? "~"} sat/Vb`,
+      value: feeRates?.slow,
+    },
+    {
+      title: t("send.create_send.fee_input.fast"),
+      description: `${feeRates.fast ?? "~"} sat/Vb`,
+      value: feeRates?.fast,
+    },
+    {
+      title: t("send.create_send.fee_input.custom"),
+      value: 3,
+    },
+  ];
 
   return (
     <div className={s.container}>

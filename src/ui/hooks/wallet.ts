@@ -154,7 +154,7 @@ export const useSwitchAccount = () => {
 
       navigate("/home");
       await notificationController.changedAccount();
-      await trottledUpdate();
+      trottledUpdate();
     },
     [updateWalletState, navigate, notificationController, trottledUpdate]
   );

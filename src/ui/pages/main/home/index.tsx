@@ -22,11 +22,11 @@ const Home = () => {
             pending,
           },
         });
-      } else {
+      } else if (currentWallet) {
         navigate("/home");
       }
     })();
-  }, [stateController, navigate]);
+  }, [stateController, navigate, currentWallet]);
 
   if (!currentWallet) return <Navigate to={"/pages/create-new-wallet"} />;
 

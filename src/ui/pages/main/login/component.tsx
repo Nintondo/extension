@@ -61,7 +61,7 @@ const Login = () => {
         password: password,
       });
 
-      if (!isNotification()) navigate("/home");
+      if (!isNotification()) navigate("/");
       else await notificationController.resolveApproval();
     } catch (e) {
       toast.error(e.message);
