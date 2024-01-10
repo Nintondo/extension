@@ -85,6 +85,7 @@
     "new_mnemonic_label": "New mnemonic",
     "restore_mnemonic_label": "Restore mnemonic",
     "restore_from_private_key_label": "Restore from private key",
+    "restore_from_label": "Restore from",
     "step_1": "Step 1",
     "step_2": "Step 2",
     "continue": "Continue",

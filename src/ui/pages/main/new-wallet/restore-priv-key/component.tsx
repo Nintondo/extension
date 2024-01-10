@@ -1,4 +1,5 @@
 import PasswordInput from "@/ui/components/password-input";
+import Select from "@/ui/components/select";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
 import { useWalletState } from "@/ui/states/walletState";
 import { t } from "i18next";
@@ -12,12 +13,20 @@ interface FormType {
   privKey: string;
 }
 
+const waysToRestore: { name: "wif" | "hex" }[] = [
+  { name: "wif" },
+  { name: "hex" },
+];
+
 const RestorePrivKey = () => {
   const { register, handleSubmit } = useForm<FormType>({
     defaultValues: {
       privKey: "",
     },
   });
+  const [selectedWayToRestore, setSelectedWayToRestore] = useState<{
+    name: "wif" | "hex";
+  }>(waysToRestore[0]);
 
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
@@ -29,7 +38,11 @@ const RestorePrivKey = () => {
   const recoverWallet = async ({ privKey }: FormType) => {
     setLoading(true);
     try {
-      await createNewWallet({ phrase: privKey, walletType: "simple" });
+      await createNewWallet({
+        payload: privKey,
+        walletType: "simple",
+        restoreFrom: selectedWayToRestore.name,
+      });
       await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
     } catch (e) {
@@ -44,11 +57,21 @@ const RestorePrivKey = () => {
 
   return (
     <form className="form" onSubmit={handleSubmit(recoverWallet)}>
-      <PasswordInput
-        label={t("new_wallet.restore_private.private_key")}
-        register={register}
-        name="privKey"
-      />
+      <div className="flex flex-col gap-4">
+        <PasswordInput
+          label={t("new_wallet.restore_private.private_key")}
+          register={register}
+          name="privKey"
+        />
+        <Select
+          label={t("new_wallet.restore_from_label")}
+          values={waysToRestore}
+          selected={selectedWayToRestore}
+          setSelected={(name) => {
+            setSelectedWayToRestore(name);
+          }}
+        />
+      </div>
       <button className="btn primary" type="submit">
         {t("new_wallet.restore_private.recover")}
       </button>

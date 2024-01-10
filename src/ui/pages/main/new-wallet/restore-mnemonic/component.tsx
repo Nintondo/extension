@@ -48,7 +48,7 @@ const RestoreMnemonic = () => {
     setLoading(true);
     try {
       await createNewWallet({
-        phrase: mnemonicPhrase.join(" "),
+        payload: mnemonicPhrase.join(" "),
         walletType: "root",
         addressType,
         hideRoot: !showRootAcc,

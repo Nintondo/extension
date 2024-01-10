@@ -1,5 +1,10 @@
 import { storageService } from "@/background/services";
-import type { IAccount, IWallet, IWalletController } from "@/shared/interfaces";
+import type {
+  IAccount,
+  INewWalletProps,
+  IWallet,
+  IWalletController,
+} from "@/shared/interfaces";
 import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
 import type { DecryptedSecrets } from "../services/storage/types";
@@ -12,20 +17,21 @@ class WalletController implements IWalletController {
     return values.enc === undefined;
   }
 
-  async createNewWallet(
-    phrase: string,
-    walletType: "simple" | "root",
-    addressType?: AddressType,
-    name?: string,
-    hideRoot?: boolean
-  ): Promise<IWallet> {
+  async createNewWallet({
+    payload,
+    walletType,
+    addressType,
+    name,
+    hideRoot,
+    restoreFrom,
+  }: INewWalletProps): Promise<IWallet> {
     const exportedWallets = storageService.walletState.wallets;
-    const address = await keyringService.newKeyring(
+    const address = await keyringService.newKeyring({
       walletType,
-      phrase,
+      payload,
       addressType,
-      hideRoot
-    );
+      hideRoot,
+    });
     const account: IAccount = {
       id: 0,
       name: "Account 1",

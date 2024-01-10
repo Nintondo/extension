@@ -30,9 +30,10 @@ export interface IWalletState extends IWalletStateBase {
 }
 
 export interface INewWalletProps {
-  phrase: string;
+  payload: string;
   walletType: "simple" | "root";
   addressType?: AddressType;
   name?: string;
   hideRoot?: boolean;
+  restoreFrom?: "wif" | "hex";
 }

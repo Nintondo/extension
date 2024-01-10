@@ -23,19 +23,21 @@ export const useCreateNewWallet = () => {
 
   return useCallback(
     async ({
-      phrase,
+      payload,
       walletType,
       addressType,
       name,
       hideRoot,
+      restoreFrom,
     }: INewWalletProps) => {
-      const wallet = await walletController.createNewWallet(
-        phrase,
+      const wallet = await walletController.createNewWallet({
+        payload,
         walletType,
         addressType,
         name,
-        hideRoot
-      );
+        hideRoot,
+        restoreFrom,
+      });
       await updateWalletState({
         selectedAccount: 0,
         selectedWallet: wallet.id,
@@ -43,7 +45,7 @@ export const useCreateNewWallet = () => {
       });
       const keyring = await keyringController.serializeKeyringById(wallet.id);
       await walletController.saveWallets([
-        { id: wallet.id, phrase: phrase, data: keyring },
+        { id: wallet.id, phrase: payload, data: keyring },
       ]);
     },
     [wallets, updateWalletState, walletController, keyringController]

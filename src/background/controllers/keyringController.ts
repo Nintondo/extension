@@ -43,10 +43,10 @@ class KeyringController implements IKeyringController {
    * @returns {Promise<string | undefined>} P2PWKH address of created wallet
    */
   async newKeyring(
-    type: "simple" | "root",
+    walletType: "simple" | "root",
     payload: string
   ): Promise<string | undefined> {
-    return keyringService.newKeyring(type, payload);
+    return keyringService.newKeyring({ walletType, payload });
   }
 
   /**

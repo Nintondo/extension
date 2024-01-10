@@ -1,16 +1,16 @@
 import type { DecryptedSecrets } from "@/background/services/storage/types";
 import type { IAccount } from "./accounts";
-import type { IPrivateWallet, IWallet } from "./wallets";
-import type { AddressType } from "bellhdw";
+import type { INewWalletProps, IPrivateWallet, IWallet } from "./wallets";
 
 export interface IWalletController {
-  createNewWallet(
-    phrase: string,
-    walletType: "simple" | "root",
-    addressType?: AddressType,
-    name?: string,
-    hideRoot?: boolean
-  ): Promise<IWallet>;
+  createNewWallet({
+    payload,
+    walletType,
+    addressType,
+    name,
+    hideRoot,
+    restoreFrom,
+  }: INewWalletProps): Promise<IWallet>;
   saveWallets(phrases?: DecryptedSecrets, newPassword?: string): Promise<void>;
   isVaultEmpty(): Promise<boolean>;
   importWallets(password: string): Promise<Omit<IPrivateWallet, "data">[]>;

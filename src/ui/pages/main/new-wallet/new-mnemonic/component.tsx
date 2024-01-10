@@ -71,7 +71,7 @@ const NewMnemonic = () => {
     }
     setLoading(true);
     await createNewWallet({
-      phrase: mnemonicPhrase,
+      payload: mnemonicPhrase,
       walletType: "root",
       addressType,
       hideRoot: true,

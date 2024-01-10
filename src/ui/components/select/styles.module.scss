@@ -1,0 +1,7 @@
+.form {
+  @apply flex flex-col gap-5 w-full mt-6 px-2;
+}
+
+.label {
+  @apply text-xs text-gray-300 mb-2 block pl-1;
+}

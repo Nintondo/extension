@@ -8,6 +8,7 @@ import { createSendBEL } from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
+import { INewWalletProps } from "@/shared/interfaces";
 
 export const KEYRING_SDK_TYPES = {
   SimpleKey,
@@ -40,14 +41,14 @@ class KeyringService {
     return wallets;
   }
 
-  async newKeyring(
-    type: "simple" | "root",
-    payload: string,
-    addressType: AddressType = AddressType.P2PKH,
-    hideRoot?: boolean
-  ) {
+  async newKeyring({
+    walletType,
+    payload,
+    addressType = AddressType.P2PKH,
+    hideRoot,
+  }: INewWalletProps) {
     let keyring: HDPrivateKey | HDSimpleKey;
-    if (type === "root") {
+    if (walletType === "root") {
       keyring = await HDPrivateKey.fromMnemonic({
         mnemonic: payload,
         hideRoot,
