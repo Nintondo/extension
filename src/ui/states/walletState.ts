@@ -11,9 +11,14 @@ export const useWalletState = create<IWalletState>()((set) => ({
   selectedAccount: undefined,
   selectedWallet: undefined,
 
-  updateWalletState: async (state: Partial<IWalletState>) => {
+  updateWalletState: async (
+    state: Partial<IWalletState>,
+    updateBack = true
+  ) => {
+    if (updateBack) {
+      await proxy.updateWalletState(state);
+    }
     set(state);
-    await proxy.updateWalletState(state);
   },
 }));
 

@@ -9,6 +9,9 @@ export interface IAppStateBase {
 }
 
 export interface IAppState extends IAppStateBase {
-  updateAppState: (app: Partial<IAppState>) => Promise<void>;
+  updateAppState: (
+    app: Partial<IAppState>,
+    updateBack?: boolean
+  ) => Promise<void>;
   logout: () => Promise<void>;
 }
