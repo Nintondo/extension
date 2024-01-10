@@ -1,22 +1,40 @@
-import { FC } from "react";
+import { Inscription } from "@/shared/interfaces/inscriptions";
+import { shortAddress } from "@/shared/utils/transactions";
+import { FC, useState } from "react";
+import Modal from "../modal";
+import { t } from "i18next";
+import InscriptionDetails from "../inscription-details";
 
 interface Props {
-  label?: string;
-  value?: string;
-  className?: string;
-  iconClassName?: string;
-  title?: string;
+  inscription: Inscription;
 }
 
-const InscriptionCard: FC<Props> = ({
-  label,
-  value,
-  className,
-  iconClassName,
-  title,
-  ...props
-}) => {
-  return <div></div>;
+const InscriptionCard: FC<Props> = ({ inscription }) => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  return (
+    <>
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          setModalOpen(true);
+        }}
+      >
+        <img src={inscription.content} />
+        <p>{shortAddress(inscription.id)}</p>
+      </div>
+
+      <Modal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+        title={t("components.inscription_card.modal_title")}
+      >
+        <InscriptionDetails inscription={inscription} />
+      </Modal>
+    </>
+  );
 };
 
 export default InscriptionCard;
