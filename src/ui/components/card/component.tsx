@@ -48,8 +48,7 @@ const Card: FC<Props> = ({
           <button className={s.action} onClick={onMenuClick}>
             <Bars3Icon
               className={cn("w-8 h-8", {
-                "text-orange-300": selected && !isRoot && address,
-                "text-red-600": isRoot && !address,
+                "text-orange-300": selected,
                 "text-text": !selected,
               })}
             />

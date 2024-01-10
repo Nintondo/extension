@@ -29,11 +29,7 @@ const FinalleSend = () => {
         <Link to={"/home"} className="btn primary flex-3">
           {t("send.finalle_send.back")}
         </Link>
-        <button
-          className="btn primary flex-3"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={onClick}
-        >
+        <button className="btn primary flex-3" onClick={onClick}>
           {t("send.finalle_send.explorer")}
         </button>
       </div>

@@ -36,7 +36,6 @@ const Security = () => {
         Version <span>{config.version}</span> | By{" "}
         <a
           href="#"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             await browserTabsCreate({
               url: `https://nintondo.io`,

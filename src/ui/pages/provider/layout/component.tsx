@@ -54,18 +54,10 @@ const Layout: FC<Props> = ({
       </div>
       <div className={s.content}>{children}</div>
       <div className={s.btnContainer}>
-        <button
-          className={resolveBtnClassName}
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={onResolve}
-        >
+        <button className={resolveBtnClassName} onClick={onResolve}>
           {resolveBtnText ?? "Resolve"}
         </button>
-        <button
-          className={s.reject}
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={onReject}
-        >
+        <button className={s.reject} onClick={onReject}>
           Reject
         </button>
       </div>

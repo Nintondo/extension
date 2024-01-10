@@ -9,6 +9,7 @@ import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
+import { useTransactionManagerContext } from "../utils/tx-ctx";
 
 export const useCreateNewWallet = () => {
   const { wallets, updateWalletState } = useWalletState((v) => ({
@@ -66,31 +67,6 @@ export const useUpdateCurrentWallet = () => {
       });
     },
     [updateWalletState, selectedWallet, wallets]
-  );
-};
-
-export const useUpdateCurrentAccount = () => {
-  const { updateWalletState, wallets, selectedAccount, selectedWallet } =
-    useWalletState((v) => ({
-      updateWalletState: v.updateWalletState,
-      wallets: v.wallets,
-      selectedAccount: v.selectedAccount,
-      selectedWallet: v.selectedWallet,
-    }));
-
-  return useCallback(
-    async (account: Partial<IAccount>) => {
-      if (!wallets[selectedWallet]) return;
-      wallets[selectedWallet].accounts[selectedAccount] = {
-        ...wallets[selectedWallet].accounts[selectedAccount],
-        ...account,
-      };
-
-      await updateWalletState({
-        wallets: [...wallets],
-      });
-    },
-    [updateWalletState, selectedAccount, selectedWallet, wallets]
   );
 };
 
@@ -168,6 +144,7 @@ export const useSwitchAccount = () => {
   const { notificationController } = useControllersState((v) => ({
     notificationController: v.notificationController,
   }));
+  const { trottledUpdate } = useTransactionManagerContext();
 
   return useCallback(
     async (id: number) => {
@@ -177,8 +154,9 @@ export const useSwitchAccount = () => {
 
       navigate("/home");
       await notificationController.changedAccount();
+      await trottledUpdate();
     },
-    [updateWalletState, navigate, notificationController]
+    [updateWalletState, navigate, notificationController, trottledUpdate]
   );
 };
 
@@ -186,8 +164,30 @@ export const useUpdateCurrentAccountBalance = () => {
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
   }));
-  const updateCurrentAccount = useUpdateCurrentAccount();
   const currentAccount = useGetCurrentAccount();
+
+  const { updateWalletState, wallets, selectedAccount, selectedWallet } =
+    useWalletState((v) => ({
+      updateWalletState: v.updateWalletState,
+      wallets: v.wallets,
+      selectedAccount: v.selectedAccount,
+      selectedWallet: v.selectedWallet,
+    }));
+
+  const updateCurrentAccount = useCallback(
+    async (account: Partial<IAccount>) => {
+      if (!wallets[selectedWallet]) return;
+      wallets[selectedWallet].accounts[selectedAccount] = {
+        ...wallets[selectedWallet].accounts[selectedAccount],
+        ...account,
+      };
+
+      await updateWalletState({
+        wallets: [...wallets],
+      });
+    },
+    [updateWalletState, selectedAccount, selectedWallet, wallets]
+  );
 
   return useCallback(
     async (address?: string) => {
@@ -201,19 +201,6 @@ export const useUpdateCurrentAccountBalance = () => {
     },
     [updateCurrentAccount, currentAccount, apiController]
   );
-};
-
-export const useUpdateCurrentAccountTransactions = () => {
-  const { apiController } = useControllersState((v) => ({
-    apiController: v.apiController,
-    keyringController: v.keyringController,
-  }));
-  const currentAccount = useGetCurrentAccount();
-
-  return useCallback(async () => {
-    if (!currentAccount?.address) return;
-    return await apiController.getTransactions(currentAccount.address);
-  }, [currentAccount, apiController]);
 };
 
 export const useDeleteWallet = () => {

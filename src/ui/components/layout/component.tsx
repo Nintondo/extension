@@ -117,7 +117,6 @@ export default function PagesLayout() {
         {
           route: "/pages/new-mnemonic",
           title: t("components.layout.create_new_wallet"),
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           backAction: async () => {
             if (await stateController.getPendingWallet()) {
               await stateController.clearPendingWallet();

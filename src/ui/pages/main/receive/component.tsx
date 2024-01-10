@@ -72,12 +72,7 @@ const Receive = () => {
     <div className={s.receive}>
       <div>
         <div className="flex items-center flex-col p-3">
-          <div
-            title={t("receive.click_to_copy")}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={onCopy}
-            ref={ref}
-          />
+          <div title={t("receive.click_to_copy")} onClick={onCopy} ref={ref} />
         </div>
         <div className={s.accTitle}>{currentAccount?.name ?? "Account"}</div>
       </div>

@@ -85,7 +85,6 @@ const SwitchWallet = () => {
               },
             ]}
             name={wallet.name}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={async () => {
               await switchWallet(i);
               navigate("/home");
@@ -106,11 +105,7 @@ const SwitchWallet = () => {
           </span>
         </div>
         <div className="flex justify-center gap-4">
-          <button
-            className="btn w-full hover:bg-red-500"
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={onDelete}
-          >
+          <button className="btn w-full hover:bg-red-500" onClick={onDelete}>
             {t("switch_wallet.yes")}
           </button>
           <button
@@ -127,7 +122,6 @@ const SwitchWallet = () => {
           if (renameId === undefined) return "";
           return wallets[renameId].name;
         })()}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         handler={onRename}
         onClose={() => setRenameId(undefined)}
       />

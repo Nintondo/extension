@@ -108,11 +108,7 @@ const RestoreMnemonic = () => {
             handler={setAddressType}
             selectedType={addressType}
           />
-          <button
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={onRestore}
-            className="btn primary"
-          >
+          <button onClick={onRestore} className="btn primary">
             {t("new_wallet.continue")}
           </button>
         </div>
