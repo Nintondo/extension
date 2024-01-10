@@ -63,7 +63,6 @@ const ChangeAddrType = () => {
     <div className="px-6 h-full w-full">
       <SwitchAddressType
         selectedType={currentWallet?.addressType ?? AddressType.P2PKH}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         handler={onSwitchAddress}
       />
     </div>

@@ -231,16 +231,18 @@ class StorageService {
     const encrypted = await this.getLocalValues();
     if (!encrypted) return [];
 
-    await this.updateAppState({
+    this._appState = {
+      ...this._appState,
       addressBook: encrypted.cache.addressBook,
-    });
+    };
 
     permissionService.setConnectedSites(encrypted.cache.connectedSites);
 
-    await this.updateWalletState({
+    this._walletState = {
+      ...this._walletState,
       selectedAccount: encrypted.cache.selectedAccount,
       selectedWallet: encrypted.cache.selectedWallet,
-    });
+    };
 
     const secrets = await this.getSecrets(encrypted, password);
 

@@ -138,7 +138,6 @@ const CreateSend = () => {
       <form
         id={formId}
         className={cn("form", s.send)}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={async (e) => {
           e.preventDefault();
           await send(formData);
@@ -171,7 +170,7 @@ const CreateSend = () => {
         </div>
 
         <div className={s.feeDiv}>
-          <div className={cn("form-field", s.amountInput)}>
+          <div className="form-field">
             <span className="input-span">
               {t("send.create_send.fee_label")}
             </span>

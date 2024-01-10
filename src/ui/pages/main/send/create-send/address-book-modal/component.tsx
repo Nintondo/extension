@@ -48,11 +48,7 @@ const AddressBookModal: FC<Props> = ({ isOpen, onClose, setFormData }) => {
             <div onClick={() => onSelect(i)} className={s.address}>
               {shortAddress(i, 17)}
             </div>
-            <div
-              className={s.remove}
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={() => onRemove(i)}
-            >
+            <div className={s.remove} onClick={() => onRemove(i)}>
               <MinusCircleIcon className="w-5 h-5" />
             </div>
           </div>

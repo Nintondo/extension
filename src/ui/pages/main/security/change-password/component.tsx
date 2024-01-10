@@ -66,11 +66,7 @@ const ChangePassword = () => {
   };
 
   return (
-    <form
-      className="form"
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onSubmit={handleSubmit(executeChangePassword)}
-    >
+    <form className="form" onSubmit={handleSubmit(executeChangePassword)}>
       {formFields.map((i) => (
         <PasswordInput key={i.name} register={register} {...i} />
       ))}

@@ -25,7 +25,6 @@ const CopyBtn: FC<Props> = ({
     <button
       title={title}
       className={className ? className : s.btn}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         if (!value) return;
         await navigator.clipboard.writeText(value);

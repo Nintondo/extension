@@ -33,18 +33,14 @@ const CreatePassword = () => {
 
   const createPassword = async ({ confirmPassword, password }: FormType) => {
     if (password === confirmPassword) {
-      await updateAppState({ password: password, isUnlocked: true });
+      await updateAppState({ password, isUnlocked: true });
     } else {
       toast.error("Passwords dismatches");
     }
   };
 
   return (
-    <form
-      className="form"
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onSubmit={handleSubmit(createPassword)}
-    >
+    <form className="form" onSubmit={handleSubmit(createPassword)}>
       <p className="form-title">{t("create_password.create_password")}</p>
       {formFields.map((i, f) => (
         <PasswordInput

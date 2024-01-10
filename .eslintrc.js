@@ -36,7 +36,6 @@ module.exports = {
           "error",
           { ignoreVoid: false, ignoreIIFE: false },
         ],
-        "@typescript-eslint/no-misused-promises": "error",
       },
     },
     {

@@ -70,7 +70,6 @@ const ConfirmSend = () => {
           </div>
           <button
             className={cn("btn primary", s.confirmBtn)}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={confirmSend}
           >
             {t("send.confirm_send.confirm")}

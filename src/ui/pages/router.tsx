@@ -30,6 +30,7 @@ import ConnectedSites from "./main/connected-sites";
 import Language from "./main/language";
 import Security from "./main/security";
 import Advanced from "./main/security/advanced";
+import Home from "./main/home";
 
 export const guestRouter = createHashRouter([
   {
@@ -43,6 +44,7 @@ export const guestRouter = createHashRouter([
 ]);
 
 export const authenticatedRouter = createHashRouter([
+  { path: "/", element: <Home /> },
   { path: "home", element: <Wallet /> },
   {
     path: "pages",
@@ -80,5 +82,5 @@ export const authenticatedRouter = createHashRouter([
       { path: "createTx", element: <CreateTx /> },
     ],
   },
-  { path: "*", element: <Navigate to={"/home"} /> },
+  { path: "*", element: <Navigate to={"/"} /> },
 ]);

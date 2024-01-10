@@ -32,10 +32,7 @@ const ShowMnemonic = () => {
   if (!unlocked) {
     return (
       <div className={s.showMnemonic}>
-        <CheckPassword
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          handler={onLogin}
-        />
+        <CheckPassword handler={onLogin} />
       </div>
     );
   }

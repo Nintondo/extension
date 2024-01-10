@@ -7,7 +7,6 @@ export function useDebounceCall(
   const [triggered, setTriggered] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     const timer = setTimeout(async () => {
       if (triggered) {
         await value();

@@ -45,11 +45,7 @@ const Rename: FC<Props> = ({ handler, active, onClose, currentName }) => {
       onClose={onClose}
       title={t("components.rename.rename")}
     >
-      <form
-        className={s.form}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onSubmit={handleSubmit(onRename)}
-      >
+      <form className={s.form} onSubmit={handleSubmit(onRename)}>
         <div>
           <label htmlFor={renameId} className={s.label}>
             {t("components.rename.enter_new_name")}

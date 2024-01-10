@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   ListBulletIcon,
@@ -14,144 +13,23 @@ import {
   useGetCurrentWallet,
 } from "@/ui/states/walletState";
 import cn from "classnames";
-import { useCallback, useEffect, useState } from "react";
-import { useUpdateCurrentAccountBalance } from "@/ui/hooks/wallet";
-import ReactLoading from "react-loading";
-import { ITransaction } from "@/shared/interfaces/api";
-import {
-  useGetPaginatedTransactions,
-  useUpdateCurrentAccountTransactions,
-} from "@/ui/hooks/transactions";
+import { useEffect } from "react";
 import CopyBtn from "@/ui/components/copy-btn";
-import { useControllersState } from "@/ui/states/controllerState";
 import { getTransactionValue, isIncomeTx } from "@/shared/utils/transactions";
 import { Circle } from "rc-progress";
-import { useDebounceCall } from "@/ui/hooks/debounce";
 import { t } from "i18next";
 import { useInView } from "react-intersection-observer";
 import Loading from "react-loading";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 const Wallet = () => {
-  const navigate = useNavigate();
-  const [lastBlock, setLastBlock] = useState<number>(0);
+  const { currentPrice, lastBlock, loadMore, transactions } =
+    useTransactionManagerContext();
   const currentWallet = useGetCurrentWallet();
 
-  const [, setPrevAcc] = useState<string>();
-
-  if (currentWallet === undefined)
-    return <Navigate to={"/pages/create-new-wallet"} />;
-
-  const { apiController, stateController } = useControllersState((v) => ({
-    apiController: v.apiController,
-    stateController: v.stateController,
-  }));
-
   const currentAccount = useGetCurrentAccount();
-  const getPaginatedTransactions = useGetPaginatedTransactions();
 
-  const [transactions, setTransactions] = useState<ITransaction[]>([]);
-  const [currentPrice, setCurrentPrice] = useState<number | undefined>();
-
-  const updateAccountBalance = useUpdateCurrentAccountBalance();
-  const updateAccountTransactions = useUpdateCurrentAccountTransactions();
-
-  const udpateTransactions = useCallback(async () => {
-    const receivedTransactions = await updateAccountTransactions();
-    if (receivedTransactions !== undefined) {
-      if (
-        transactions.length > 0 &&
-        transactions[0].txid !== receivedTransactions[0].txid
-      ) {
-        const oldTxidIndex = receivedTransactions.findIndex(
-          (f) => f.txid === transactions[0].txid
-        );
-        setTransactions([
-          ...receivedTransactions.slice(0, oldTxidIndex),
-          ...transactions,
-        ]);
-      } else if (transactions.length <= 0)
-        setTransactions(receivedTransactions);
-    }
-  }, [updateAccountTransactions, transactions]);
-
-  const updateLastBlock = useCallback(async () => {
-    setLastBlock(await apiController.getLastBlockBEL());
-  }, [apiController]);
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    (async () => {
-      const data = await apiController.getBELPrice();
-      if (data.bellscoin) {
-        setCurrentPrice(data.bellscoin.usd);
-      }
-      await updateLastBlock();
-    })();
-  }, [updateLastBlock, apiController]);
-
-  const updateAll = useCallback(async () => {
-    await Promise.all([updateAccountBalance(), udpateTransactions()]);
-  }, [updateAccountBalance, udpateTransactions]);
-
-  const trottledUpdate = useDebounceCall(updateAll, 300);
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const interval = setInterval(async () => {
-      await Promise.all([
-        updateAccountBalance(),
-        updateLastBlock(),
-        udpateTransactions(),
-      ]);
-    }, 5000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [updateAccountBalance, udpateTransactions, updateLastBlock]);
-
-  useEffect(() => {
-    if (!currentAccount) return;
-    setPrevAcc((prev) => {
-      if (typeof prev === "undefined" || prev !== currentAccount.address) {
-        trottledUpdate();
-        return currentAccount.address;
-      }
-      return prev;
-    });
-  }, [trottledUpdate, currentAccount]);
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    (async () => {
-      const pending = await stateController.getPendingWallet();
-      if (pending) {
-        navigate("/pages/new-mnemonic", {
-          state: {
-            pending,
-          },
-        });
-      }
-    })();
-  }, [stateController, navigate]);
-
-  const [txIds, setTxIds] = useState<string[]>([]);
   const { ref, inView } = useInView();
-  const loadMore = useCallback(async () => {
-    if (
-      !transactions.length ||
-      txIds.includes(transactions[transactions.length - 1].txid) ||
-      transactions.length < 50
-    )
-      return;
-    const additionalTransactions = await getPaginatedTransactions(
-      transactions[transactions.length - 1].txid ?? ""
-    );
-    if (!additionalTransactions) return;
-    if (additionalTransactions.length > 0) {
-      setTxIds([...txIds, transactions[transactions.length - 1].txid]);
-      setTransactions((prev) => [...prev, ...additionalTransactions]);
-    }
-  }, [getPaginatedTransactions, transactions, txIds, setTxIds]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -187,7 +65,7 @@ const Wallet = () => {
         <div className="flex gap-2 pb-2">
           <div className={s.balance}>
             {currentAccount?.balance === undefined ? (
-              <ReactLoading
+              <Loading
                 type="spin"
                 color="#ffbc42"
                 width={"2.5rem"}

@@ -43,11 +43,7 @@ const RestorePrivKey = () => {
   if (loading) return <Loading />;
 
   return (
-    <form
-      className="form"
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onSubmit={handleSubmit(recoverWallet)}
-    >
+    <form className="form" onSubmit={handleSubmit(recoverWallet)}>
       <PasswordInput
         label={t("new_wallet.restore_private.private_key")}
         register={register}

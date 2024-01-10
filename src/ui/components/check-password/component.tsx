@@ -29,11 +29,7 @@ const CheckPassword: FC<Props> = ({ handler }) => {
   };
 
   return (
-    <form
-      className={s.form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onSubmit={handleSubmit(checkPassword)}
-    >
+    <form className={s.form} onSubmit={handleSubmit(checkPassword)}>
       <label htmlFor={pwdId} className={s.formTitle}>
         {t("components.check_password.password")}
       </label>

@@ -141,11 +141,7 @@ const NewMnemonic = () => {
             selectedType={addressType}
           />
           <div className={s.continueWrapper}>
-            <button
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={onCreate}
-              className="btn primary w-full"
-            >
+            <button onClick={onCreate} className="btn primary w-full">
               {t("new_wallet.continue")}
             </button>
           </div>
