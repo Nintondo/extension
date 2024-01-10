@@ -101,8 +101,8 @@ export function useSyncStorages() {
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
 
-    await updateAppState(appState);
-    await updateWalletState(walletState);
+    await updateAppState(appState, false);
+    await updateWalletState(walletState, false);
 
     return {
       appState,

@@ -23,7 +23,10 @@ export interface IWalletStateBase {
 }
 
 export interface IWalletState extends IWalletStateBase {
-  updateWalletState: (state: Partial<IWalletState>) => Promise<void>;
+  updateWalletState: (
+    state: Partial<IWalletState>,
+    updateBack?: boolean
+  ) => Promise<void>;
 }
 
 export interface INewWalletProps {

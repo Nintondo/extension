@@ -20,6 +20,11 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
   }));
+  const [feeRates, setFeeRates] = useState<{
+    fast: number;
+    slow: number;
+  }>();
+
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
@@ -74,6 +79,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     }
   }, [transactions, apiController, currentAccount?.address]);
 
+  const updateFeeRates = useCallback(async () => {
+    setFeeRates(await apiController.getFees());
+  }, [apiController]);
+
   useEffect(() => {
     if (!currentAccount?.address) return;
     if (currentPrice) return;
@@ -91,9 +100,12 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   useEffect(() => {
     if (!currentAccount?.address) return;
     const interval = setInterval(async () => {
-      await updateAccountBalance();
-      await udpateTransactions();
-      await updateLastBlock();
+      await Promise.all([
+        updateAccountBalance(),
+        udpateTransactions(),
+        updateLastBlock(),
+        updateFeeRates(),
+      ]);
     }, 5000);
     return () => {
       clearInterval(interval);
@@ -102,6 +114,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     updateAccountBalance,
     udpateTransactions,
     updateLastBlock,
+    updateFeeRates,
     currentAccount?.address,
   ]);
 
@@ -113,6 +126,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPrice,
     loadMore,
     trottledUpdate,
+    feeRates,
   };
 };
 
@@ -122,6 +136,10 @@ interface TransactionManagerContextType {
   currentPrice: number | undefined;
   loadMore: () => Promise<void>;
   trottledUpdate: () => void;
+  feeRates?: {
+    fast: number;
+    slow: number;
+  };
 }
 
 const TransactionManagerContext = createContext<

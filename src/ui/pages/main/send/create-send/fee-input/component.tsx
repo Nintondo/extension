@@ -4,6 +4,7 @@ import s from "./styles.module.scss";
 import { t } from "i18next";
 import { useAppState } from "@/ui/states/appState";
 import { useControllersState } from "@/ui/states/controllerState";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 interface Props {
   onChange: (value: number) => void;
@@ -15,6 +16,7 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
   const [cards, setCards] = useState<
     { title: string; description?: string; value: number }[]
   >([]);
+  const { feeRates } = useTransactionManagerContext();
 
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
@@ -29,26 +31,25 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
-      const rates = await apiController.getFees();
       setCards([
         {
           title: t("send.create_send.fee_input.slow"),
-          description: `${rates.slow ?? "~"} sat/Vb`,
-          value: rates.slow,
+          description: `${feeRates.slow ?? "~"} sat/Vb`,
+          value: feeRates.slow,
         },
         {
           title: t("send.create_send.fee_input.fast"),
-          description: `${rates.fast ?? "~"} sat/Vb`,
-          value: rates.fast,
+          description: `${feeRates.fast ?? "~"} sat/Vb`,
+          value: feeRates.fast,
         },
         {
           title: t("send.create_send.fee_input.custom"),
           value: 3,
         },
       ]);
-      setSelected(rates.slow);
+      setSelected(feeRates.slow);
     })();
-  }, [apiController]);
+  }, [apiController, feeRates]);
 
   return (
     <div className={s.container}>

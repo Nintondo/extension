@@ -58,8 +58,8 @@ export default function App() {
       appState.isUnlocked &&
       walletState.selectedWallet !== undefined
     ) {
-      await updateWalletState(walletState);
-      await updateAppState(appState);
+      await updateWalletState(walletState, false);
+      await updateAppState(appState, false);
     } else {
       await updateWalletState({
         vaultIsEmpty: await walletController.isVaultEmpty(),
@@ -76,8 +76,6 @@ export default function App() {
       });
     }
   }, [updateWalletState, updateAppState, updateControllers]);
-
-  // const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
