@@ -151,6 +151,7 @@ class StorageService {
   }
 
   async saveWallets({ password, wallets, newPassword, payload }: SaveWallets) {
+    if (!password) throw new Error("Password is required");
     const local = await this.getLocalValues();
     const current = await this.getSecrets(local, password);
 
