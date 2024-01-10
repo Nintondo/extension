@@ -31,6 +31,7 @@ class WalletController implements IWalletController {
       payload,
       addressType,
       hideRoot,
+      restoreFrom,
     });
     const account: IAccount = {
       id: 0,

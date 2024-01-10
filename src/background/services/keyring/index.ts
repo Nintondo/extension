@@ -46,6 +46,7 @@ class KeyringService {
     payload,
     addressType = AddressType.P2PKH,
     hideRoot,
+    restoreFrom,
   }: INewWalletProps) {
     let keyring: HDPrivateKey | HDSimpleKey;
     if (walletType === "root") {
@@ -58,6 +59,7 @@ class KeyringService {
       keyring = HDSimpleKey.deserialize({
         privateKey: payload,
         addressType: addressType,
+        isHex: restoreFrom === "hex",
       });
     }
     keyring.addressType =
