@@ -110,7 +110,11 @@ class StorageService {
 
   async updateAppState(state: Partial<IAppStateBase>) {
     this._appState = { ...this._appState, ...state };
-    if (state.addressBook !== undefined || state.pendingWallet !== undefined) {
+    if (
+      state.addressBook !== undefined ||
+      state.pendingWallet !== undefined ||
+      state.language !== undefined
+    ) {
       const localState = await this.getLocalValues();
       const cache: StorageInterface["cache"] = {
         ...localState.cache,
@@ -120,6 +124,7 @@ class StorageService {
         cache.addressBook = state.addressBook;
       if (state.pendingWallet !== undefined)
         cache.pendingWallet = state.pendingWallet;
+      if (state.language !== undefined) cache.language = state.language;
 
       const payload: StorageInterface = {
         cache: cache,

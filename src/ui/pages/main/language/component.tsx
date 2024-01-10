@@ -1,6 +1,5 @@
 import i18n from "@/shared/locales/i18n";
 import { useAppState } from "@/ui/states/appState";
-import { useControllersState } from "@/ui/states/controllerState";
 import s from "./styles.module.scss";
 import cn from "classnames";
 
@@ -9,15 +8,16 @@ const Language = () => {
     updateAppState: v.updateAppState,
   }));
 
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-  }));
-
   const changeLanguage = async (lng: string) => {
     await i18n.changeLanguage(lng);
     await updateAppState({ language: lng });
-    await walletController.saveWallets();
     window.location.reload();
+  };
+
+  const newLanguage = (lng: string) => {
+    return async () => {
+      await changeLanguage(lng);
+    };
   };
 
   return (
@@ -25,19 +25,13 @@ const Language = () => {
       <div className="flex w-10/12 justify-evenly gap-4">
         <button
           className={cn(s.langBtn, "btn primary")}
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            changeLanguage("en");
-          }}
+          onClick={newLanguage("en")}
         >
           English
         </button>
         <button
           className={cn(s.langBtn, "btn primary")}
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            changeLanguage("ru");
-          }}
+          onClick={newLanguage("ru")}
         >
           Русский
         </button>
@@ -45,19 +39,13 @@ const Language = () => {
       <div className="flex w-10/12 justify-evenly gap-4">
         <button
           className={cn(s.langBtn, "btn primary")}
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            changeLanguage("ch");
-          }}
+          onClick={newLanguage("ch")}
         >
           中國人
         </button>
         <button
           className={cn(s.langBtn, "btn primary")}
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            changeLanguage("kr");
-          }}
+          onClick={newLanguage("kr")}
         >
           중국인
         </button>
