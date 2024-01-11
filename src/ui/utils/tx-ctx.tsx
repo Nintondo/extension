@@ -29,34 +29,40 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
-  const udpateTransactions = useCallback(async () => {
-    const receivedTransactions = await apiController.getTransactions(
-      currentAccount?.address ?? ""
-    );
-    if (receivedTransactions !== undefined) {
-      if (
-        transactions.length > 0 &&
-        transactions[0].txid !== receivedTransactions[0].txid
-      ) {
-        const oldTxidIndex = receivedTransactions.findIndex(
-          (f) => f.txid === transactions[0].txid
-        );
-        setTransactions([
-          ...receivedTransactions.slice(0, oldTxidIndex),
-          ...transactions,
-        ]);
-      } else if (transactions.length <= 0)
-        setTransactions(receivedTransactions);
-    }
-  }, [apiController, transactions, currentAccount?.address]);
+  const udpateTransactions = useCallback(
+    async (force?: boolean) => {
+      const receivedTransactions = await apiController.getTransactions(
+        currentAccount?.address ?? ""
+      );
+      if (receivedTransactions !== undefined) {
+        if (
+          transactions.length > 0 &&
+          transactions[0].txid !== receivedTransactions[0].txid &&
+          !force
+        ) {
+          const oldTxidIndex = receivedTransactions.findIndex(
+            (f) => f.txid === transactions[0].txid
+          );
+          setTransactions([
+            ...receivedTransactions.slice(0, oldTxidIndex),
+            ...transactions,
+          ]);
+        } else setTransactions(receivedTransactions);
+      }
+    },
+    [apiController, transactions, currentAccount?.address]
+  );
 
   const updateLastBlock = useCallback(async () => {
     setLastBlock(await apiController.getLastBlockBEL());
   }, [apiController]);
 
-  const updateAll = useCallback(async () => {
-    await Promise.all([updateAccountBalance(), udpateTransactions()]);
-  }, [updateAccountBalance, udpateTransactions]);
+  const updateAll = useCallback(
+    async (force = false) => {
+      await Promise.all([updateAccountBalance(), udpateTransactions(force)]);
+    },
+    [updateAccountBalance, udpateTransactions]
+  );
 
   const trottledUpdate = useDebounceCall(updateAll, 300);
 
@@ -135,7 +141,7 @@ interface TransactionManagerContextType {
   transactions: ITransaction[];
   currentPrice: number | undefined;
   loadMore: () => Promise<void>;
-  trottledUpdate: () => void;
+  trottledUpdate: (force?: boolean) => void;
   feeRates?: {
     fast: number;
     slow: number;
