@@ -32,7 +32,8 @@
       "restore_from_mnemonic": "Restore from mnemonic",
       "restore_from_private_key": "Restore from private key",
       "security": "Security",
-      "advanced": "Advanced"
+      "advanced": "Advanced",
+      "discover": "Discover"
     },
     "check_password": {
       "incorrect_password_error": "Incorrect password",
@@ -53,6 +54,23 @@
     "card": {
       "close": "Close",
       "root_account": "Root account"
+    },
+    "inscription_card": {
+      "modal_title": "Inscription",
+      "id": "Id",
+      "address": "Address",
+      "outputValue": "Output value",
+      "content": "Content",
+      "contentLength": "Content length",
+      "contentType": "Content type",
+      "timeStamp": "Timestamp",
+      "genesisHeight": "Genesis height",
+      "genesisFee": "Genesis fee",
+      "genesisTransaction": "Genesis transaction",
+      "location": "Location",
+      "output": "Output",
+      "offset": "Offset",
+      "preview": "Preview"
     }
   },
   "change_password": {

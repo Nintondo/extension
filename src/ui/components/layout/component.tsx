@@ -97,6 +97,10 @@ export default function PagesLayout() {
         route: "/pages/show-pk/@",
         title: t("components.layout.show_private_key"),
       },
+      {
+        route: "/pages/discover",
+        title: t("components.layout.discover"),
+      },
     ],
     []
   );
