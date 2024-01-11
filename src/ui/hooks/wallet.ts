@@ -116,6 +116,7 @@ export const useSwitchWallet = () => {
       notificationController: v.notificationController,
     })
   );
+  const { trottledUpdate } = useTransactionManagerContext();
 
   return useCallback(
     async (key: number, accKey?: number) => {
@@ -133,8 +134,15 @@ export const useSwitchWallet = () => {
         selectedAccount: accKey ?? 0,
       });
       await notificationController.changedAccount();
+      trottledUpdate(true);
     },
-    [wallets, updateWalletState, walletController, notificationController]
+    [
+      wallets,
+      updateWalletState,
+      walletController,
+      notificationController,
+      trottledUpdate,
+    ]
   );
 };
 
