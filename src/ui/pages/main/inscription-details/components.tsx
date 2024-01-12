@@ -54,10 +54,7 @@ const InscriptionDetails = () => {
   return (
     <div className="flex flex-col justify-center align-center break-all gap-3 px-6 py-3">
       <div className="flex w-full justify-center">
-        <Iframe
-          preview={inscription.preview}
-          className={"w-20 h-20 bg-input-bg"}
-        />
+        <Iframe preview={inscription.preview} size="big" />
       </div>
       {inscription.address === currentAccount.address ? (
         <button onClick={send} className="btn primary mx-4 mb-4 md:m-6 md:mb-3">

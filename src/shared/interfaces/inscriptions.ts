@@ -16,13 +16,13 @@ export interface Inscription {
 }
 
 export const TestInscription: Inscription = {
-  id: "a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29i0",
-  address: "B7aGzxoUHgia1y8vRVP4EbaHkBNaasQieg",
+  id: "a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
+  address: "BPAiWMThT2ZwhkyoG27poU1HVNmKsRk7K4",
   outputValue: 100000,
   preview:
-    "https://bellinals.nintondo.io/preview/a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29i0",
+    "https://bellinals.nintondo.io/preview/a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
   content:
-    "https://bellinals.nintondo.io/content/a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29i0",
+    "https://bellinals.nintondo.io/content/a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
   contentLength: 694,
   contentType: "image/png",
   timeStamp: "2023-12-25 22:20:50 UTC",

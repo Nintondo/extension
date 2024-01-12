@@ -1,21 +1,31 @@
-import { memo, useMemo } from "react";
+import { FC, memo, useMemo } from "react";
+import cn from "classnames";
 
-export type IframeProps = { preview: string; className?: string };
+export type IframeProps = {
+  preview: string;
+  size: keyof typeof SIZES;
+};
 
-const Iframe = ({ preview }: IframeProps) => {
+const SIZES = {
+  default: "w-36 h-36",
+  big: "w-[302px] h-[302px]",
+};
+
+const Iframe: FC<IframeProps> = ({ preview, size }) => {
   return useMemo(
     () => (
-      // <div className={cn(className)}>
       <iframe
         onClick={(e) => e.preventDefault()}
-        className={"pointer-events-none w-full h-full"}
+        className={cn(
+          "pointer-events-none overflow-hidden rounded-xl",
+          SIZES[size]
+        )}
         src={preview}
         sandbox="allow-scripts"
         scrolling="no"
-      ></iframe>
-      // </div>
+      />
     ),
-    [preview]
+    [preview, size]
   );
 };
 
