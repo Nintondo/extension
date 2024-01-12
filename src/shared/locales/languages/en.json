@@ -2,8 +2,10 @@
   "wallet_page": {
     "transactions": "Transactions",
     "no_transactions": "No transactions",
+    "no_inscriptions": "No inscriptions",
     "receive": "Receive",
-    "send": "Send"
+    "send": "Send",
+    "inscriptions": "Inscriptions"
   },
   "settings": {
     "language": "Language",

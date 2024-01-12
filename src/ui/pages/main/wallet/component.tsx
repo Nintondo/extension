@@ -14,7 +14,7 @@ import {
   useGetCurrentWallet,
 } from "@/ui/states/walletState";
 import cn from "classnames";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CopyBtn from "@/ui/components/copy-btn";
 import { getTransactionValue, isIncomeTx } from "@/shared/utils/transactions";
 import { Circle } from "rc-progress";
@@ -22,15 +22,18 @@ import { t } from "i18next";
 import { useInView } from "react-intersection-observer";
 import Loading from "react-loading";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import InscriptionCard from "@/ui/components/inscription-card";
 
 const Wallet = () => {
-  const { currentPrice, lastBlock, loadMore, transactions } =
+  const { currentPrice, lastBlock, loadMore, transactions, inscriptions } =
     useTransactionManagerContext();
   const currentWallet = useGetCurrentWallet();
 
   const currentAccount = useGetCurrentAccount();
 
   const { ref, inView } = useInView();
+
+  const [transactionsActive, setTransactionsActive] = useState<boolean>(true);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -127,61 +130,92 @@ const Wallet = () => {
         </div>
       </div>
 
-      <p className={s.transactions}>{t("wallet_page.transactions")}</p>
-      {transactions.length > 0 ? (
-        <div className={s.transactionsDiv}>
-          {transactions.map((t, index) => (
-            <Link
-              className={s.transaction}
-              key={index}
-              to={`/pages/transaction-info/${t.txid}`}
-              state={{
-                transaction: t,
-                lastBlock,
-              }}
-            >
-              <div className="flex gap-3 items-center">
-                <div
-                  className={cn(
-                    "rounded-full w-6 h-6 text-bg flex items-center justify-center relative",
-                    {
-                      "bg-gradient-to-r from-green-400 to-emerald-600":
-                        getPercent(lastBlock, t.status.block_height) === 100,
-                      "bg-gradient-to-r from-gray-200 to-gray-500":
-                        getPercent(lastBlock, t.status.block_height) < 100,
-                    }
-                  )}
-                >
-                  <Circle
-                    className={cn("absolute -inset-1", {
-                      hidden:
-                        getPercent(lastBlock, t.status.block_height) === 100,
-                    })}
-                    percent={getPercent(lastBlock, t.status.block_height)}
-                    strokeWidth={3}
-                  />
-                  <div className="absolute inset-0">
-                    {getConfirmationsCount(lastBlock, t.status.block_height)}
-                  </div>
-                </div>
-                <div>{shortAddress(t.txid)}</div>
-              </div>
-              <div
-                className={cn(s.value, {
-                  "text-green-500": isIncomeTx(t, currentAccount.address),
-                  "text-red-500": !isIncomeTx(t, currentAccount.address),
-                })}
+      <div className="flex">
+        <p
+          onClick={() => {
+            setTransactionsActive(true);
+          }}
+          className={cn(s.transactions, transactionsActive ? s.active : "")}
+        >
+          {t("wallet_page.transactions")}
+        </p>
+        <p
+          onClick={() => {
+            setTransactionsActive(false);
+          }}
+          className={cn(s.transactions, !transactionsActive ? s.active : "")}
+        >
+          {t("wallet_page.inscriptions")}
+        </p>
+      </div>
+      {transactionsActive ? (
+        transactions.length > 0 ? (
+          <div className={s.transactionsDiv}>
+            {transactions.map((t, index) => (
+              <Link
+                className={s.transaction}
+                key={index}
+                to={`/pages/transaction-info/${t.txid}`}
+                state={{
+                  transaction: t,
+                  lastBlock,
+                }}
               >
-                {isIncomeTx(t, currentAccount.address) ? "+ " : "- "}
-                {getTransactionValue(t, currentAccount.address)} BEL
-              </div>
-            </Link>
-          ))}
-          <div ref={ref}></div>
-        </div>
-      ) : (
-        <p className={s.noTransactions}>{t("wallet_page.no_transactions")}</p>
-      )}
+                <div className="flex gap-3 items-center">
+                  <div
+                    className={cn(
+                      "rounded-full w-6 h-6 text-bg flex items-center justify-center relative",
+                      {
+                        "bg-gradient-to-r from-green-400 to-emerald-600":
+                          getPercent(lastBlock, t.status.block_height) === 100,
+                        "bg-gradient-to-r from-gray-200 to-gray-500":
+                          getPercent(lastBlock, t.status.block_height) < 100,
+                      }
+                    )}
+                  >
+                    <Circle
+                      className={cn("absolute -inset-1", {
+                        hidden:
+                          getPercent(lastBlock, t.status.block_height) === 100,
+                      })}
+                      percent={getPercent(lastBlock, t.status.block_height)}
+                      strokeWidth={3}
+                    />
+                    <div className="absolute inset-0">
+                      {getConfirmationsCount(lastBlock, t.status.block_height)}
+                    </div>
+                  </div>
+                  <div>{shortAddress(t.txid)}</div>
+                </div>
+                <div
+                  className={cn(s.value, {
+                    "text-green-500": isIncomeTx(t, currentAccount.address),
+                    "text-red-500": !isIncomeTx(t, currentAccount.address),
+                  })}
+                >
+                  {isIncomeTx(t, currentAccount.address) ? "+ " : "- "}
+                  {getTransactionValue(t, currentAccount.address)} BEL
+                </div>
+              </Link>
+            ))}
+            <div ref={ref}></div>
+          </div>
+        ) : (
+          <p className={s.noTransactions}>{t("wallet_page.no_transactions")}</p>
+        )
+      ) : undefined}
+
+      {!transactionsActive ? (
+        inscriptions.length > 0 ? (
+          <div className={s.girdContainer}>
+            {inscriptions.map((f, i) => (
+              <InscriptionCard key={i} inscription={f} />
+            ))}
+          </div>
+        ) : (
+          <p className={s.noTransactions}>{t("wallet_page.no_inscriptions")}</p>
+        )
+      ) : undefined}
     </div>
   );
 };

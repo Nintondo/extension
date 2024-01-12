@@ -12,6 +12,7 @@ import { useGetCurrentAccount } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
 import { useDebounceCall } from "../hooks/debounce";
+import { Inscription } from "@/shared/interfaces/inscriptions";
 
 const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
@@ -26,6 +27,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   }>();
 
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
@@ -51,6 +53,30 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       }
     },
     [apiController, transactions, currentAccount?.address]
+  );
+
+  const updateInscriptions = useCallback(
+    async (force?: boolean) => {
+      const receivedInscriptions = await apiController.getInscriptions(
+        currentAccount?.address ?? ""
+      );
+      if (receivedInscriptions !== undefined) {
+        if (
+          inscriptions.length > 0 &&
+          inscriptions[0].txid !== receivedInscriptions[0].txid &&
+          !force
+        ) {
+          const oldTxidIndex = receivedInscriptions.findIndex(
+            (f) => f.txid === inscriptions[0].txid
+          );
+          setInscriptions([
+            ...receivedInscriptions.slice(0, oldTxidIndex),
+            ...inscriptions,
+          ]);
+        } else setInscriptions(receivedInscriptions);
+      }
+    },
+    [apiController, inscriptions, currentAccount?.address]
   );
 
   const updateLastBlock = useCallback(async () => {
@@ -129,6 +155,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   return {
     lastBlock,
     transactions,
+    inscriptions,
     currentPrice,
     loadMore,
     trottledUpdate,
@@ -139,6 +166,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 interface TransactionManagerContextType {
   lastBlock: number;
   transactions: ITransaction[];
+  inscriptions: Inscription[];
   currentPrice: number | undefined;
   loadMore: () => Promise<void>;
   trottledUpdate: (force?: boolean) => void;

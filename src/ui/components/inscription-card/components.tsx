@@ -21,7 +21,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
       >
         <Iframe preview={inscription.preview} size="default" />
         <div className="absolute bottom-2 left-2 right-2 text-sm bg-slate-100 bg-opacity-50 backdrop-blur-sm rounded-md text-white text-center">
-          {shortAddress(inscription.id, 6)}
+          {shortAddress(inscription.inscription_id, 6)}
         </div>
       </div>
     </div>

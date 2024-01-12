@@ -46,7 +46,7 @@ const CreateSend = () => {
   const [inscription, setInscription] = useState<Inscription | undefined>(
     undefined
   );
-  const [inscriptionTransactoin, setInscriptionTransaction] =
+  const [inscriptionTransaction, setInscriptionTransaction] =
     useState<boolean>(false);
 
   const send = async ({
@@ -162,21 +162,23 @@ const CreateSend = () => {
               onOpenModal={() => setOpenModal(true)}
             />
           </div>
-          <div className="form-field">
-            <span className="input-span">{t("send.create_send.amount")}</span>
-            <div className="flex gap-2 w-full">
-              <input
-                type="number"
-                placeholder={t("send.create_send.amount_to_send")}
-                className="input w-full"
-                value={formData.amount}
-                onChange={onAmountChange}
-              />
-              <button className={s.maxAmount} onClick={onMaxClick}>
-                {t("send.create_send.max_amount")}
-              </button>
+          {inscriptionTransaction ? undefined : (
+            <div className="form-field">
+              <span className="input-span">{t("send.create_send.amount")}</span>
+              <div className="flex gap-2 w-full">
+                <input
+                  type="number"
+                  placeholder={t("send.create_send.amount_to_send")}
+                  className="input w-full"
+                  value={formData.amount}
+                  onChange={onAmountChange}
+                />
+                <button className={s.maxAmount} onClick={onMaxClick}>
+                  {t("send.create_send.max_amount")}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className={s.feeDiv}>
@@ -193,14 +195,16 @@ const CreateSend = () => {
             />
           </div>
 
-          <Switch
-            label={t("send.create_send.include_fee_in_the_amount_label")}
-            onChange={(v) =>
-              setFormData((prev) => ({ ...prev, includeFeeInAmount: v }))
-            }
-            value={formData.includeFeeInAmount}
-            locked={includeFeeLocked}
-          />
+          {inscriptionTransaction ? undefined : (
+            <Switch
+              label={t("send.create_send.include_fee_in_the_amount_label")}
+              onChange={(v) =>
+                setFormData((prev) => ({ ...prev, includeFeeInAmount: v }))
+              }
+              value={formData.includeFeeInAmount}
+              locked={includeFeeLocked}
+            />
+          )}
 
           <Switch
             label={t(

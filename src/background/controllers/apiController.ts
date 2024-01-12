@@ -3,6 +3,7 @@ import type {
   ApiUTXO,
   ITransaction,
 } from "@/shared/interfaces/api";
+import { Inscription } from "@/shared/interfaces/inscriptions";
 import { fetchTDCMainnet } from "@/shared/utils";
 
 export interface IApiController {
@@ -17,6 +18,7 @@ export interface IApiController {
   getBELPrice(): Promise<{ bellscoin?: { usd: number } }>;
   getLastBlockBEL(): Promise<number>;
   getFees(): Promise<{ fast: number; slow: number }>;
+  getInscriptions(address: string): Promise<Inscription[] | undefined>;
 }
 
 class ApiController implements IApiController {
@@ -72,6 +74,10 @@ class ApiController implements IApiController {
       path: `/address/${address}/txs`,
       // path: `/address/TSofqS7nm8Vnk1fk8jU7YgqQcGuWA7wtnK/txs`,
     });
+  }
+
+  async getInscriptions(address: string): Promise<Inscription[] | undefined> {
+    return [];
   }
 
   async getPaginatedTransactions(
