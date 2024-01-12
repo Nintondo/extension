@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 
 export function useDebounceCall(
-  value: () => Promise<void>,
+  value: (...args: any[]) => Promise<void>,
   delay?: number
 ): () => void {
-  const [triggered, setTriggered] = useState(false);
+  const [triggered, setTriggered] = useState<any[]>(undefined);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      if (triggered) {
-        await value();
-        return setTriggered(false);
+      if (triggered !== undefined) {
+        await value(...triggered);
+        return setTriggered(undefined);
       }
     }, delay || 500);
 
@@ -18,7 +18,10 @@ export function useDebounceCall(
       clearTimeout(timer);
     };
   }, [value, delay, triggered]);
-  return useCallback(() => {
-    setTriggered(true);
-  }, [setTriggered]);
+  return useCallback(
+    (...args: any[]) => {
+      setTriggered(args);
+    },
+    [setTriggered]
+  );
 }
