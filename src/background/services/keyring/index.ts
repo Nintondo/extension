@@ -154,7 +154,14 @@ class KeyringService {
           ).toString("hex"),
           addressType: wallet?.addressType,
           address: account.address,
-          ords: [],
+          ords: v.isOrd
+            ? [
+                {
+                  id: `${v.txid}i${v.vout}`,
+                  offset: 0,
+                },
+              ]
+            : [],
         };
       }),
       toAddress: data.to,
