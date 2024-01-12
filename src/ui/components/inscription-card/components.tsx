@@ -13,9 +13,9 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
-    <>
+    <div className="flex justify-center w-full">
       <div
-        className="cursor-pointer"
+        className="cursor-pointer bg-input-bg flex flex-col justify-center align-center"
         onClick={() => {
           setModalOpen(true);
         }}
@@ -33,7 +33,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
       >
         <InscriptionDetails inscription={inscription} />
       </Modal>
-    </>
+    </div>
   );
 };
 

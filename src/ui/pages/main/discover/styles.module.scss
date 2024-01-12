@@ -1,7 +1,11 @@
+// .gridContainer {
+//   display: grid;
+//   grid-template-columns: repeat(3, 1fr);
+//   grid-gap: 10px;
+//   gap: 1rem;
+//   @apply px-4;
+// }
+
 .gridContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
-  gap: 1rem;
-  @apply px-4;
+  @apply grid grid-cols-2 grid-rows-2 text-base gap-2 w-full px-6;
 }

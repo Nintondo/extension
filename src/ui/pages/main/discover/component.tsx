@@ -13,9 +13,7 @@ const Discover = () => {
   return (
     <div className={s.gridContainer}>
       {inscriptions.map((f, i) => (
-        <div className="w-2/5" key={i}>
-          <InscriptionCard inscription={f} />
-        </div>
+        <InscriptionCard key={i} inscription={f} />
       ))}
     </div>
   );

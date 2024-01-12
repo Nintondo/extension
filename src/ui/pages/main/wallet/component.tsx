@@ -5,7 +5,7 @@ import {
   Cog6ToothIcon,
   ChevronDownIcon,
   CheckIcon,
-  MagnifyingGlassCircleIcon,
+  Squares2X2Icon,
 } from "@heroicons/react/24/outline";
 import s from "./styles.module.scss";
 import { shortAddress } from "@/shared/utils/transactions";
@@ -59,7 +59,7 @@ const Wallet = () => {
 
         <div className="flex gap-1">
           <Link to={"/pages/discover"} className="cursor-pointer">
-            <MagnifyingGlassCircleIcon className="w-6 h-6" />
+            <Squares2X2Icon className="w-6 h-6" />
           </Link>
           <Link to={"/pages/settings"} className="cursor-pointer">
             <Cog6ToothIcon className="w-6 h-6 hover:rotate-90 transition-transform" />
