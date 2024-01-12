@@ -160,6 +160,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     loadMore,
     trottledUpdate,
     feeRates,
+    resetTransactions: () => {
+      setTransactions([]);
+    },
   };
 };
 
@@ -174,6 +177,7 @@ interface TransactionManagerContextType {
     fast: number;
     slow: number;
   };
+  resetTransactions: () => void;
 }
 
 const TransactionManagerContext = createContext<

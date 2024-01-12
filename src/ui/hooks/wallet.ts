@@ -116,7 +116,7 @@ export const useSwitchWallet = () => {
       notificationController: v.notificationController,
     })
   );
-  const { trottledUpdate } = useTransactionManagerContext();
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async (key: number, accKey?: number) => {
@@ -134,6 +134,7 @@ export const useSwitchWallet = () => {
         selectedAccount: accKey ?? 0,
       });
       await notificationController.changedAccount();
+      resetTransactions();
       trottledUpdate(true);
     },
     [
@@ -142,6 +143,7 @@ export const useSwitchWallet = () => {
       walletController,
       notificationController,
       trottledUpdate,
+      resetTransactions,
     ]
   );
 };
@@ -154,7 +156,7 @@ export const useSwitchAccount = () => {
   const { notificationController } = useControllersState((v) => ({
     notificationController: v.notificationController,
   }));
-  const { trottledUpdate } = useTransactionManagerContext();
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async (id: number) => {
@@ -165,8 +167,15 @@ export const useSwitchAccount = () => {
       navigate("/home");
       await notificationController.changedAccount();
       trottledUpdate(true);
+      resetTransactions();
     },
-    [updateWalletState, navigate, notificationController, trottledUpdate]
+    [
+      updateWalletState,
+      navigate,
+      notificationController,
+      trottledUpdate,
+      resetTransactions,
+    ]
   );
 };
 

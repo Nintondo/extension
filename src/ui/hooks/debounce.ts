@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 export function useDebounceCall(
   value: (...args: any[]) => Promise<void>,
   delay?: number
-): () => void {
+): (...args: any[]) => void {
   const [triggered, setTriggered] = useState<any[]>(undefined);
 
   useEffect(() => {
