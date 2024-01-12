@@ -32,6 +32,7 @@ import Security from "./main/security";
 import Advanced from "./main/security/advanced";
 import Home from "./main/home";
 import Discover from "./main/discover";
+import InscriptionDetails from "./main/inscription-details";
 
 export const guestRouter = createHashRouter([
   {
@@ -73,6 +74,7 @@ export const authenticatedRouter = createHashRouter([
       { path: "security", element: <Security /> },
       { path: "advanced", element: <Advanced /> },
       { path: "discover", element: <Discover /> },
+      { path: "details", element: <InscriptionDetails /> },
     ],
   },
   {

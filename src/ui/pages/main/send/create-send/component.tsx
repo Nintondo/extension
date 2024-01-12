@@ -18,6 +18,7 @@ import AddressBookModal from "./address-book-modal";
 import AddressInput from "./address-input";
 import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
+import { Inscription } from "@/shared/interfaces/inscriptions";
 
 export interface FormType {
   address: string;
@@ -42,6 +43,11 @@ const CreateSend = () => {
   const createTx = useCreateBellsTxCallback();
   const navigate = useNavigate();
   const location = useLocation();
+  const [inscription, setInscription] = useState<Inscription | undefined>(
+    undefined
+  );
+  const [inscriptionTransactoin, setInscriptionTransaction] =
+    useState<boolean>(false);
 
   const send = async ({
     address,
@@ -104,6 +110,10 @@ const CreateSend = () => {
       }
       if (currentAccount?.balance <= location.state.amount)
         setIncludeFeeLocked(true);
+    }
+    if (location.state && location.state.address) {
+      setInscription(location.state);
+      setInscriptionTransaction(true);
     }
   }, [location.state, setFormData, currentAccount?.balance]);
 

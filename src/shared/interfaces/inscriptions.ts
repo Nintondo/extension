@@ -17,7 +17,7 @@ export interface Inscription {
 
 export const TestInscription: Inscription = {
   id: "a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29i0",
-  address: "BPjQSZZYmnruVhRBPqcndhzHecbZkWgjPD",
+  address: "B7aGzxoUHgia1y8vRVP4EbaHkBNaasQieg",
   outputValue: 100000,
   preview:
     "https://bellinals.nintondo.io/preview/a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29i0",

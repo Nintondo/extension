@@ -1,38 +1,28 @@
 import { Inscription } from "@/shared/interfaces/inscriptions";
-import { shortAddress } from "@/shared/utils/transactions";
-import { FC, useState } from "react";
-import Modal from "../modal";
-import { t } from "i18next";
-import InscriptionDetails from "../inscription-details";
+import { FC } from "react";
+import { useNavigate } from "react-router-dom";
+import Iframe from "../iframe";
 
 interface Props {
   inscription: Inscription;
 }
 
 const InscriptionCard: FC<Props> = ({ inscription }) => {
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   return (
     <div className="flex justify-center w-full rounded-xl overflow-hidden">
       <div
         className="cursor-pointer bg-input-bg flex flex-col justify-center align-center"
         onClick={() => {
-          setModalOpen(true);
+          navigate("/pages/details", { state: inscription });
         }}
       >
-        <img src={inscription.content} />
-        <p>{shortAddress(inscription.id)}</p>
+        <Iframe
+          preview={inscription.preview}
+          className={"w-20 h-20 bg-input-bg"}
+        />
       </div>
-
-      <Modal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-        }}
-        title={t("components.inscription_card.modal_title")}
-      >
-        <InscriptionDetails inscription={inscription} />
-      </Modal>
     </div>
   );
 };
