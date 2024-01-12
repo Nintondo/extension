@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { FC, Fragment, ReactNode, useRef } from "react";
+import { FC, Fragment, ReactNode, useEffect, useRef } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import cn from "classnames";
 
@@ -14,9 +14,25 @@ interface Props {
 const Modal: FC<Props> = ({ title, children, open, onClose, className }) => {
   const closeRef = useRef(null);
 
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add("lock");
+    } else {
+      document.body.classList.remove("lock");
+    }
+    return () => {
+      document.body.classList.remove("lock");
+    };
+  }, [open]);
+
   return (
     <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className={cn("relative z-30", className)} onClose={onClose} initialFocus={closeRef}>
+      <Dialog
+        as="div"
+        className={cn("relative z-30", className)}
+        onClose={onClose}
+        initialFocus={closeRef}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -30,7 +46,7 @@ const Modal: FC<Props> = ({ title, children, open, onClose, className }) => {
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center text-center md:items-start">
+          <div className="flex min-h-full items-end justify-center text-center md:items-start overflow-hidden">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300 transform"
@@ -41,7 +57,10 @@ const Modal: FC<Props> = ({ title, children, open, onClose, className }) => {
               leaveTo="opacity-0 translate-y-full md:translate-y-0"
             >
               <Dialog.Panel className="relative w-full max-w-md transform overflow-hidden rounded-t-2xl bg-bg px-3 py-5 text-left align-middle shadow-xl transition-all md:rounded-2xl md:p-5">
-                <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-text text-center">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-text text-center"
+                >
                   {title}
                 </Dialog.Title>
                 <XMarkIcon
