@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { ITransaction } from "@/shared/interfaces/api";
+import type { ITransaction } from "@/shared/interfaces/api";
 import React, {
   useState,
   useEffect,
@@ -7,6 +7,8 @@ import React, {
   useContext,
   createContext,
   FC,
+  SetStateAction,
+  Dispatch,
 } from "react";
 import { useGetCurrentAccount } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
@@ -31,52 +33,45 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
-  const udpateTransactions = useCallback(
-    async (force?: boolean) => {
-      const receivedTransactions = await apiController.getTransactions(
-        currentAccount?.address ?? ""
-      );
-      if (receivedTransactions !== undefined) {
-        if (
-          transactions.length > 0 &&
-          transactions[0].txid !== receivedTransactions[0].txid &&
-          !force
-        ) {
-          const oldTxidIndex = receivedTransactions.findIndex(
-            (f) => f.txid === transactions[0].txid
-          );
-          setTransactions([
-            ...receivedTransactions.slice(0, oldTxidIndex),
-            ...transactions,
-          ]);
-        } else setTransactions(receivedTransactions);
-      }
-    },
-    [apiController, transactions, currentAccount?.address]
+  const updateFn = <T,>(
+    onUpdate: Dispatch<SetStateAction<T[]>>,
+    retrieveFn: (address: string) => Promise<T[]>,
+    currentValue: T[],
+    compareKey: keyof T
+  ) => {
+    return useCallback(
+      async (force?: boolean) => {
+        const receivedItems = await retrieveFn(currentAccount?.address ?? "");
+        if (receivedItems !== undefined) {
+          if (
+            currentValue.length > 0 &&
+            currentValue[0][compareKey] !== receivedItems[0][compareKey] &&
+            !force
+          ) {
+            const oldIndex = receivedItems.findIndex(
+              (f) => f[compareKey] === currentValue[0][compareKey]
+            );
+            onUpdate([...receivedItems.slice(0, oldIndex), ...currentValue]);
+          } else onUpdate(receivedItems ?? []);
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [onUpdate, retrieveFn, currentValue, currentAccount?.address]
+    );
+  };
+
+  const udpateTransactions = updateFn(
+    setTransactions,
+    apiController.getTransactions,
+    transactions,
+    "txid"
   );
 
-  const updateInscriptions = useCallback(
-    async (force?: boolean) => {
-      const receivedInscriptions = await apiController.getInscriptions(
-        currentAccount?.address ?? ""
-      );
-      if (receivedInscriptions !== undefined) {
-        if (
-          inscriptions.length > 0 &&
-          inscriptions[0].txid !== receivedInscriptions[0].txid &&
-          !force
-        ) {
-          const oldTxidIndex = receivedInscriptions.findIndex(
-            (f) => f.txid === inscriptions[0].txid
-          );
-          setInscriptions([
-            ...receivedInscriptions.slice(0, oldTxidIndex),
-            ...inscriptions,
-          ]);
-        } else setInscriptions(receivedInscriptions);
-      }
-    },
-    [apiController, inscriptions, currentAccount?.address]
+  const updateInscriptions = updateFn(
+    setInscriptions,
+    apiController.getInscriptions,
+    inscriptions,
+    "inscription_id"
   );
 
   const updateLastBlock = useCallback(async () => {
@@ -85,9 +80,13 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const updateAll = useCallback(
     async (force = false) => {
-      await Promise.all([updateAccountBalance(), udpateTransactions(force)]);
+      await Promise.all([
+        updateAccountBalance(),
+        udpateTransactions(force),
+        updateInscriptions(force),
+      ]);
     },
-    [updateAccountBalance, udpateTransactions]
+    [updateAccountBalance, udpateTransactions, updateInscriptions]
   );
 
   const trottledUpdate = useDebounceCall(updateAll, 300);
@@ -135,6 +134,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       await Promise.all([
         updateAccountBalance(),
         udpateTransactions(),
+        updateInscriptions(),
         updateLastBlock(),
         updateFeeRates(),
       ]);
@@ -145,6 +145,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   }, [
     updateAccountBalance,
     udpateTransactions,
+    updateInscriptions,
     updateLastBlock,
     updateFeeRates,
     currentAccount?.address,
