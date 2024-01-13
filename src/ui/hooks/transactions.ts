@@ -44,7 +44,7 @@ export function useCreateBellsTxCallback() {
         );
       }
 
-      const psbtHex = await keyringController.sendTDC({
+      const psbtHex = await keyringController.sendBEL({
         to: toAddress,
         amount: toAmount,
         utxos,

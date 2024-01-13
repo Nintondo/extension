@@ -6,7 +6,7 @@ import BroadcastChannelMessage from "@/shared/utils/message/broadcastChannelMess
 import PushEventHandlers from "./pushEventHandlers";
 import ReadyPromise from "./readyPromise";
 import { $, domReadyCall } from "./utils";
-import type { SendTDC } from "@/background/services/keyring/types";
+import type { SendBEL } from "@/background/services/keyring/types";
 
 const script = document.currentScript;
 const channelName = script?.getAttribute("channel") || "NINTONDOWALLET";
@@ -171,7 +171,7 @@ export class NintondoProvider extends EventEmitter {
     });
   };
 
-  createTx = async (data: SendTDC) => {
+  createTx = async (data: SendBEL) => {
     return this._request({
       method: "createTx",
       params: {

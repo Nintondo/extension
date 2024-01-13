@@ -10,10 +10,10 @@ export type Eip1024EncryptedData = {
   ciphertext: string;
 };
 
-export interface SendTDC {
+export interface SendBEL {
   to: string;
   amount: number;
-  utxos: (ApiUTXO & { isOrd?: boolean })[];
+  utxos: ApiUTXO[];
   receiverToPayFee: boolean;
   feeRate: number;
 }

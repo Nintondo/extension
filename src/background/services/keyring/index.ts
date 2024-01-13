@@ -1,10 +1,10 @@
 import { KeyringServiceError } from "./consts";
-import type { Hex, Json, SendTDC } from "./types";
+import type { Hex, Json, SendBEL } from "./types";
 import { storageService } from "@/background/services";
 import type { Psbt } from "belcoinjs-lib";
 import { networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
-import { createSendBEL } from "bel-ord-utils";
+import { createSendBEL, createSendOrd } from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
@@ -134,7 +134,7 @@ class KeyringService {
     return keyring.exportPublicKey(address);
   }
 
-  async sendTDC(data: SendTDC) {
+  async sendBEL(data: SendBEL) {
     const account = storageService.currentAccount;
     const wallet = storageService.currentWallet;
     if (!account || !account.address)
@@ -154,14 +154,7 @@ class KeyringService {
           ).toString("hex"),
           addressType: wallet?.addressType,
           address: account.address,
-          ords: v.isOrd
-            ? [
-                {
-                  id: `${v.txid}i${v.vout}`,
-                  offset: 0,
-                },
-              ]
-            : [],
+          ords: [],
         };
       }),
       toAddress: data.to,
@@ -170,6 +163,50 @@ class KeyringService {
       network: networks.bitcoin,
       changeAddress: account.address,
       receiverToPayFee: data.receiverToPayFee,
+      pubkey: this.exportPublicKey(account.address),
+      feeRate: data.feeRate,
+      enableRBF: false,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore We are really dont know what is it but we still copy working code
+    psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+    return psbt.toHex();
+  }
+
+  async sendOrd(data: Omit<SendBEL, "amount">) {
+    const account = storageService.currentAccount;
+    const wallet = storageService.currentWallet;
+    if (!account || !account.address)
+      throw new Error("Error when trying to get the current account");
+
+    const publicKey = this.exportPublicKey(account.address);
+
+    const psbt = await createSendOrd({
+      utxos: data.utxos.map((v) => {
+        return {
+          txId: v.txid,
+          outputIndex: v.vout,
+          satoshis: v.value,
+          scriptPk: getScriptForAddress(
+            Buffer.from(publicKey, "hex"),
+            wallet.addressType
+          ).toString("hex"),
+          addressType: wallet?.addressType,
+          address: account.address,
+          ords: [
+            {
+              id: `${v.txid}i${v.vout}`,
+              offset: 0,
+            },
+          ],
+        };
+      }),
+      toAddress: data.to,
+      outputValue: data.utxos[0].value,
+      signTransaction: this.signPsbt.bind(this),
+      network: networks.bitcoin,
+      changeAddress: account.address,
       pubkey: this.exportPublicKey(account.address),
       feeRate: data.feeRate,
       enableRBF: false,

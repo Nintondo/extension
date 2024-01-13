@@ -4,7 +4,7 @@ import "reflect-metadata/lite";
 import type { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
 import { fetchTDCMainnet } from "@/shared/utils";
 import permission from "@/background/services/permission";
-import type { SendTDC } from "@/background/services/keyring/types";
+import type { SendBEL } from "@/background/services/keyring/types";
 
 class ProviderController {
   connect = async () => {
@@ -130,9 +130,9 @@ class ProviderController {
     const utxos = await fetchTDCMainnet<ApiUTXO[]>({
       path: `/address/${account.address}/utxo`,
     });
-    const transactionData = { ...data.data.params, utxos } as SendTDC;
+    const transactionData = { ...data.data.params, utxos } as SendBEL;
     transactionData.amount = transactionData.amount * 10 ** 8;
-    const tx = await keyringService.sendTDC(transactionData);
+    const tx = await keyringService.sendBEL(transactionData);
     const psbt = Psbt.fromHex(tx);
     return psbt.extractTransaction().toHex();
   };

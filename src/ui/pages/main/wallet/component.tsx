@@ -207,7 +207,7 @@ const Wallet = () => {
 
       {!transactionsActive ? (
         inscriptions.length > 0 ? (
-          <div className={s.girdContainer}>
+          <div className={s.gridContainer}>
             {inscriptions.map((f, i) => (
               <InscriptionCard key={i} inscription={f} />
             ))}
