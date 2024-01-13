@@ -138,7 +138,8 @@
       "fee": "Fee",
       "included": "included",
       "not_included": "not included",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "inscription_id": "Inscription Id"
     },
     "create_send": {
       "minimum_amount_error": "Minimum amount is 0.01 BEL",

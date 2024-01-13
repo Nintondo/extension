@@ -1,4 +1,7 @@
-import { useCreateBellsTxCallback } from "@/ui/hooks/transactions";
+import {
+  useCreateBellsTxCallback,
+  useCreateOrdTx,
+} from "@/ui/hooks/transactions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import {
   useCallback,
@@ -41,6 +44,7 @@ const CreateSend = () => {
   const [includeFeeLocked, setIncludeFeeLocked] = useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
   const createTx = useCreateBellsTxCallback();
+  const createOrdTx = useCreateOrdTx();
   const navigate = useNavigate();
   const location = useLocation();
   const [inscription, setInscription] = useState<Inscription | undefined>(
@@ -55,7 +59,7 @@ const CreateSend = () => {
     feeAmount,
     includeFeeInAmount,
   }: FormType) => {
-    if (Number(amount) < 0.01) {
+    if (Number(amount) < 0.01 && !inscriptionTransaction) {
       return toast.error(t("send.create_send.minimum_amount_error"));
     }
     if (address.trim().length <= 0) {
@@ -72,23 +76,28 @@ const CreateSend = () => {
     }
 
     try {
-      const { fee, rawtx } = await createTx(
-        address,
-        Number(amount) * 10 ** 8,
-        feeAmount,
-        includeFeeInAmount
-      );
+      const { fee, rawtx } = !inscriptionTransaction
+        ? await createTx(
+            address,
+            Number(amount) * 10 ** 8,
+            feeAmount,
+            includeFeeInAmount
+          )
+        : await createOrdTx(address, feeAmount);
 
       navigate("/pages/confirm-send", {
         state: {
           toAddress: address,
-          amount: Number(amount),
+          amount: !inscriptionTransaction
+            ? Number(amount)
+            : inscription.inscription_id,
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",
           feeAmount: fee,
           inputedFee: feeAmount,
           hex: rawtx,
           save: isSaveAddress,
+          inscriptionTransaction,
         },
       });
     } catch (e) {

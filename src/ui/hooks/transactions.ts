@@ -69,6 +69,48 @@ export function useCreateBellsTxCallback() {
   );
 }
 
+export function useCreateOrdTx() {
+  const currentAccount = useGetCurrentAccount();
+  const { selectedAccount, selectedWallet } = useWalletState((v) => ({
+    selectedAccount: v.selectedAccount,
+    selectedWallet: v.selectedWallet,
+  }));
+  const { apiController, keyringController } = useControllersState((v) => ({
+    apiController: v.apiController,
+    keyringController: v.keyringController,
+  }));
+
+  return useCallback(
+    async (toAddress: Hex, feeRate: number) => {
+      if (selectedWallet === undefined || selectedAccount === undefined)
+        throw new Error("Failed to get current wallet or account");
+      const fromAddress = currentAccount?.address;
+      const utxos = await apiController.getUtxos(fromAddress);
+
+      const psbtHex = await keyringController.sendOrd({
+        to: toAddress,
+        utxos,
+        receiverToPayFee: false,
+        feeRate,
+      });
+      const psbt = Psbt.fromHex(psbtHex);
+      const tx = psbt.extractTransaction();
+      const rawtx = tx.toHex();
+      return {
+        rawtx,
+        fee: psbt.getFee(),
+      };
+    },
+    [
+      apiController,
+      currentAccount,
+      selectedAccount,
+      selectedWallet,
+      keyringController,
+    ]
+  );
+}
+
 export function usePushBellsTxCallback() {
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
