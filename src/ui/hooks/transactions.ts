@@ -85,7 +85,7 @@ export function useCreateOrdTx() {
       if (selectedWallet === undefined || selectedAccount === undefined)
         throw new Error("Failed to get current wallet or account");
       const fromAddress = currentAccount?.address;
-      const utxos = await apiController.getUtxos(fromAddress);
+      const utxos = await apiController.getOrdUtxos(fromAddress);
 
       const psbtHex = await keyringController.sendOrd({
         to: toAddress,

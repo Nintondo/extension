@@ -3,12 +3,13 @@ import type {
   ApiUTXO,
   ITransaction,
 } from "@/shared/interfaces/api";
-import { Inscription } from "@/shared/interfaces/inscriptions";
+import { ApiOrdUtxo, Inscription } from "@/shared/interfaces/inscriptions";
 import { fetchTDCMainnet } from "@/shared/utils";
 
 export interface IApiController {
   getAccountBalance(address: string): Promise<number | undefined>;
   getUtxos(address: string): Promise<ApiUTXO[] | undefined>;
+  getOrdUtxos(address: string): Promise<ApiOrdUtxo[] | undefined>;
   pushTx(rawTx: string): Promise<{ txid: string } | undefined>;
   getTransactions(address: string): Promise<ITransaction[] | undefined>;
   getPaginatedTransactions(
@@ -40,6 +41,13 @@ class ApiController implements IApiController {
   async getUtxos(address: string) {
     const data = await fetchTDCMainnet<ApiUTXO[]>({
       path: `/address/${address}/utxo`,
+    });
+    return data;
+  }
+
+  async getOrdUtxos(address: string) {
+    const data = await fetchTDCMainnet<ApiOrdUtxo[]>({
+      path: `/address/${address}/ords`,
     });
     return data;
   }
@@ -77,7 +85,9 @@ class ApiController implements IApiController {
   }
 
   async getInscriptions(address: string): Promise<Inscription[] | undefined> {
-    return [];
+    return await fetchTDCMainnet<Inscription[]>({
+      path: `/address/${address}/ords`,
+    });
   }
 
   async getPaginatedTransactions(

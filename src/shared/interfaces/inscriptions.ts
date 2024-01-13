@@ -42,3 +42,11 @@ export const TestInscription: Inscription = {
   status: undefined,
   value: 0,
 };
+
+export interface ApiOrdUtxo extends ApiUTXO {
+  inscription_id: string;
+  content_type: string;
+  content_length: number;
+  outpoint: string;
+  genesis: string;
+}
