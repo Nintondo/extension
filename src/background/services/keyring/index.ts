@@ -1,5 +1,5 @@
 import { KeyringServiceError } from "./consts";
-import type { Hex, Json, SendBEL } from "./types";
+import type { Hex, Json, SendBEL, SendOrd } from "./types";
 import { storageService } from "@/background/services";
 import type { Psbt } from "belcoinjs-lib";
 import { networks } from "belcoinjs-lib";
@@ -174,7 +174,7 @@ class KeyringService {
     return psbt.toHex();
   }
 
-  async sendOrd(data: Omit<SendBEL, "amount">) {
+  async sendOrd(data: Omit<SendOrd, "amount">) {
     const account = storageService.currentAccount;
     const wallet = storageService.currentWallet;
     if (!account || !account.address)
@@ -194,16 +194,18 @@ class KeyringService {
           ).toString("hex"),
           addressType: wallet?.addressType,
           address: account.address,
-          ords: [
-            {
-              id: `${v.txid}i${v.vout}`,
-              offset: 0,
-            },
-          ],
+          ords: v.isOrd
+            ? [
+                {
+                  id: `${v.txid}i${v.vout}`,
+                  offset: 0,
+                },
+              ]
+            : [],
         };
       }),
       toAddress: data.to,
-      outputValue: data.utxos[0].value,
+      outputValue: data.utxos.find((i) => i.isOrd)[0].value,
       signTransaction: this.signPsbt.bind(this),
       network: networks.bitcoin,
       changeAddress: account.address,

@@ -10,12 +10,19 @@ export type Eip1024EncryptedData = {
   ciphertext: string;
 };
 
-export interface SendBEL {
+interface SendBase {
   to: string;
   amount: number;
-  utxos: ApiUTXO[];
   receiverToPayFee: boolean;
   feeRate: number;
+}
+
+export interface SendBEL extends SendBase {
+  utxos: ApiUTXO[];
+}
+
+export interface SendOrd extends SendBase {
+  utxos: (ApiUTXO & { isOrd?: boolean })[];
 }
 
 interface BaseUserToSignInput {
