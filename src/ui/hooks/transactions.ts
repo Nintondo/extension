@@ -5,6 +5,7 @@ import { tidoshisToAmount } from "@/shared/utils/transactions";
 import { Psbt } from "belcoinjs-lib";
 import type { Hex } from "@/background/services/keyring/types";
 import { t } from "i18next";
+import { Inscription } from "@/shared/interfaces/inscriptions";
 
 export function useCreateBellsTxCallback() {
   const currentAccount = useGetCurrentAccount();
@@ -81,15 +82,15 @@ export function useCreateOrdTx() {
   }));
 
   return useCallback(
-    async (toAddress: Hex, feeRate: number) => {
+    async (toAddress: Hex, feeRate: number, inscription: Inscription) => {
       if (selectedWallet === undefined || selectedAccount === undefined)
         throw new Error("Failed to get current wallet or account");
       const fromAddress = currentAccount?.address;
-      const utxos = await apiController.getOrdUtxos(fromAddress);
+      const utxos = await apiController.getUtxos(fromAddress);
 
       const psbtHex = await keyringController.sendOrd({
         to: toAddress,
-        utxos,
+        utxos: [...utxos, inscription],
         receiverToPayFee: false,
         feeRate,
       });

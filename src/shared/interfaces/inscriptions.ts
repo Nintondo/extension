@@ -15,6 +15,7 @@ export interface Inscription extends ApiUTXO {
   location?: string;
   output?: string;
   offset?: number;
+  isOrd: true;
 }
 
 export const TestInscription: Inscription = {
@@ -41,6 +42,7 @@ export const TestInscription: Inscription = {
   vout: 0,
   status: undefined,
   value: 0,
+  isOrd: true,
 };
 
 export interface ApiOrdUtxo extends ApiUTXO {

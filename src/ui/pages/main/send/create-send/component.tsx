@@ -83,7 +83,7 @@ const CreateSend = () => {
             feeAmount,
             includeFeeInAmount
           )
-        : await createOrdTx(address, feeAmount);
+        : await createOrdTx(address, feeAmount, inscription);
 
       navigate("/pages/confirm-send", {
         state: {
