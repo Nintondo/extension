@@ -20,6 +20,7 @@ export interface IApiController {
   getLastBlockBEL(): Promise<number>;
   getFees(): Promise<{ fast: number; slow: number }>;
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
+  getDiscovery(): Promise<Inscription[] | undefined>;
 }
 
 class ApiController implements IApiController {
@@ -118,11 +119,27 @@ class ApiController implements IApiController {
     );
   }
 
-  async getBELPrice() {
-    const res = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=bellscoin&vs_currencies=usd"
+  async getBELPrice(): Promise<{ bellscoin?: { usd: number } }> {
+    return {
+      bellscoin: {
+        usd: (
+          await fetchBELLMainnet<{ price_usd: number }>({
+            path: "/last-price",
+          })
+        ).price_usd,
+      },
+    };
+  }
+
+  async getDiscovery(): Promise<Inscription[] | undefined> {
+    return (await fetchBELLMainnet<Inscription[]>({ path: "/discovery" })).map(
+      (f) => ({
+        ...f,
+        preview: `https://bellinals.nintondo.io/preview/${f.inscription_id}`,
+        content: `https://bellinals.nintondo.io/content/${f.inscription_id}`,
+        offset: 0,
+      })
     );
-    return (await res.json()) as { bellscoin?: { usd: number } };
   }
 }
 

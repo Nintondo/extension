@@ -220,5 +220,19 @@
   "advanced": {
     "root_acc_warning": "Use legacy derivation",
     "blank": "Nothing here for your wallet type"
+  },
+  "inscription_details": {
+    "content_length": "Content length",
+    "status.block_height": "Block height",
+    "content_type": "Content type",
+    "genesis": "Genesis",
+    "preview": "Preview",
+    "content": "Content",
+    "offset": "Offset",
+    "owner": "Owner",
+    "value": "Value",
+    "outpoint": "Outpoint",
+    "inscription_id": "Inscription id",
+    "status.block_time": "Block time"
   }
 }

@@ -108,7 +108,7 @@ const InscriptionDetails = () => {
       ) : undefined}
       {fields.map((f, i) => (
         <div key={i}>
-          <label>{t(`components.inscription_details.${f.key}`)}</label>
+          <label>{t(`inscription_details.${f.key}`)}</label>
           {f.link ? (
             <p
               onClick={async () => {
