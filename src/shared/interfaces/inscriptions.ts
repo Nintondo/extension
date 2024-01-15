@@ -1,6 +1,6 @@
 import { ApiUTXO } from "./api";
 
-interface ApiOrdUTXO extends ApiUTXO {
+export interface ApiOrdUTXO extends ApiUTXO {
   inscription_id: string;
   content_type: string;
   content_length: number;
@@ -12,7 +12,7 @@ interface ApiOrdUTXO extends ApiUTXO {
 export interface Inscription extends ApiOrdUTXO {
   preview: string;
   content: string;
-  offset: number;
+  offset: 0;
 }
 
 export const TestInscription: Inscription = {

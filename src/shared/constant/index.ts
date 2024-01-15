@@ -49,14 +49,14 @@ export const EVENTS = {
   },
 };
 
-export const COIN_NAME = "TDC";
-export const COIN_SYMBOL = "TDC";
+export const COIN_NAME = "BELL";
+export const COIN_SYMBOL = "BELL";
 
 export const SATS_DOMAIN = ".sats";
 
 export const CHANNEL = "chrome";
 
 export const BELLS_API_URL = "https://bells.quark.blue";
-export const TEST_API_URL = "http://65.109.171.29:3000";
+export const TEST_API_URL = "http://192.168.0.102:3001";
 export const BELLS_MAINNET_PATH = "/api";
 export const BELLS_TESTNET_PATH = "";

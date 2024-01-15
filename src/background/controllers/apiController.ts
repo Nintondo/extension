@@ -3,13 +3,13 @@ import type {
   ApiUTXO,
   ITransaction,
 } from "@/shared/interfaces/api";
-import { ApiOrdUtxo, Inscription } from "@/shared/interfaces/inscriptions";
-import { fetchTDCMainnet } from "@/shared/utils";
+import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
+import { fetchBELLMainnet } from "@/shared/utils";
 
 export interface IApiController {
   getAccountBalance(address: string): Promise<number | undefined>;
   getUtxos(address: string): Promise<ApiUTXO[] | undefined>;
-  getOrdUtxos(address: string): Promise<ApiOrdUtxo[] | undefined>;
+  getOrdUtxos(address: string): Promise<ApiOrdUTXO[] | undefined>;
   pushTx(rawTx: string): Promise<{ txid: string } | undefined>;
   getTransactions(address: string): Promise<ITransaction[] | undefined>;
   getPaginatedTransactions(
@@ -24,7 +24,7 @@ export interface IApiController {
 
 class ApiController implements IApiController {
   async getAccountBalance(address: string) {
-    const data = await fetchTDCMainnet<AccountBalanceResponse>({
+    const data = await fetchBELLMainnet<AccountBalanceResponse>({
       path: `/address/${address}`,
     });
 
@@ -39,21 +39,21 @@ class ApiController implements IApiController {
   }
 
   async getUtxos(address: string) {
-    const data = await fetchTDCMainnet<ApiUTXO[]>({
+    const data = await fetchBELLMainnet<ApiUTXO[]>({
       path: `/address/${address}/utxo`,
     });
     return data;
   }
 
   async getOrdUtxos(address: string) {
-    const data = await fetchTDCMainnet<ApiOrdUtxo[]>({
+    const data = await fetchBELLMainnet<ApiOrdUTXO[]>({
       path: `/address/${address}/ords`,
     });
     return data;
   }
 
   async getFees() {
-    const data = await fetchTDCMainnet({
+    const data = await fetchBELLMainnet({
       path: "/fee-estimates",
     });
     return {
@@ -63,7 +63,7 @@ class ApiController implements IApiController {
   }
 
   async pushTx(rawTx: string) {
-    const data = await fetchTDCMainnet<string>({
+    const data = await fetchBELLMainnet<string>({
       path: "/tx",
       method: "POST",
       headers: {
@@ -78,16 +78,23 @@ class ApiController implements IApiController {
   }
 
   async getTransactions(address: string): Promise<ITransaction[] | undefined> {
-    return await fetchTDCMainnet<ITransaction[]>({
+    return await fetchBELLMainnet<ITransaction[]>({
       path: `/address/${address}/txs`,
       // path: `/address/TSofqS7nm8Vnk1fk8jU7YgqQcGuWA7wtnK/txs`,
     });
   }
 
   async getInscriptions(address: string): Promise<Inscription[] | undefined> {
-    return await fetchTDCMainnet<Inscription[]>({
-      path: `/address/${address}/ords`,
-    });
+    return (
+      await fetchBELLMainnet<Inscription[]>({
+        path: `/address/${address}/ords`,
+      })
+    ).map((f) => ({
+      ...f,
+      preview: `https://bellinals.nintondo.io/preview/${f.inscription_id}`,
+      content: `https://bellinals.nintondo.io/content/${f.inscription_id}`,
+      offset: 0,
+    }));
   }
 
   async getPaginatedTransactions(
@@ -95,7 +102,7 @@ class ApiController implements IApiController {
     txid: string
   ): Promise<ITransaction[] | undefined> {
     try {
-      return await fetchTDCMainnet<ITransaction[]>({
+      return await fetchBELLMainnet<ITransaction[]>({
         path: `/address/${address}/txs/chain/${txid}`,
       });
     } catch (e) {
@@ -105,7 +112,7 @@ class ApiController implements IApiController {
 
   async getLastBlockBEL(): Promise<number> {
     return Number(
-      await fetchTDCMainnet<string>({
+      await fetchBELLMainnet<string>({
         path: "/blocks/tip/height",
       })
     );
