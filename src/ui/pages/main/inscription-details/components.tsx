@@ -7,7 +7,7 @@ import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
 // import Iframe from "@/ui/components/iframe";
-import { CONTENT_URL } from "@/shared/constant";
+import { CONTENT_URL, PREVIEW_URL } from "@/shared/constant";
 
 type PathOf<T> = T extends object
   ? {
@@ -102,7 +102,7 @@ const InscriptionDetails = () => {
       <div className="flex justify-center w-[302px] h-[302px] rounded-xl overflow-hidden">
         {/* <Iframe preview={inscription.preview} size="big" /> */}
         <img
-          src={`${CONTENT_URL}/${inscription.inscription_id}`}
+          src={`${PREVIEW_URL}/${inscription.inscription_id}`}
           alt="content"
           className="object-cover h-full"
         />
@@ -120,7 +120,11 @@ const InscriptionDetails = () => {
           {f.link ? (
             <div
               onClick={async () => {
-                await openContent(getValue<string>(f.key));
+                await openContent(
+                  `${f.key === "content" ? CONTENT_URL : PREVIEW_URL}/${
+                    inscription.inscription_id
+                  }`
+                );
               }}
               className="text-orange-400 cursor-pointer pl-1 text-sm font-medium"
             >

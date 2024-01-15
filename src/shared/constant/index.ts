@@ -61,5 +61,7 @@ export const NINTONDO_API_URL = "https://api.nintondo.io";
 export const TEST_API_URL = "http://192.168.0.102:3001";
 export const BELLS_MAINNET_PATH = "/api";
 export const BELLS_TESTNET_PATH = "";
-export const CONTENT_URL =
+export const PREVIEW_URL =
   "https://bellscdn.ordinalswallet.com/inscription/preview";
+export const CONTENT_URL =
+  "https://bellscdn.ordinalswallet.com/inscription/content";
