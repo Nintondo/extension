@@ -25,8 +25,14 @@ import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import InscriptionCard from "@/ui/components/inscription-card";
 
 const Wallet = () => {
-  const { currentPrice, lastBlock, loadMore, transactions, inscriptions } =
-    useTransactionManagerContext();
+  const {
+    currentPrice,
+    lastBlock,
+    loadMoreInscriptions,
+    loadMoreTransactions,
+    transactions,
+    inscriptions,
+  } = useTransactionManagerContext();
   const currentWallet = useGetCurrentWallet();
 
   const currentAccount = useGetCurrentAccount();
@@ -37,8 +43,10 @@ const Wallet = () => {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (inView) loadMore();
-  }, [inView, loadMore]);
+    if (inView && transactionsActive) loadMoreTransactions();
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    else if (inView && !transactionsActive) loadMoreInscriptions();
+  }, [inView, loadMoreInscriptions, loadMoreTransactions, transactionsActive]);
 
   if (!currentAccount) return <Loading />;
 
@@ -211,6 +219,7 @@ const Wallet = () => {
             {inscriptions.map((f, i) => (
               <InscriptionCard key={i} inscription={f} />
             ))}
+            <div ref={ref}></div>
           </div>
         ) : (
           <p className={s.noTransactions}>{t("wallet_page.no_inscriptions")}</p>

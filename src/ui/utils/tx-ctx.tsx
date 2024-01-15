@@ -91,7 +91,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const trottledUpdate = useDebounceCall(updateAll, 300);
 
-  const loadMore = useCallback(async () => {
+  const loadMoreTransactions = useCallback(async () => {
     if (
       !transactions.length ||
       transactions
@@ -109,6 +109,25 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setTransactions((prev) => [...prev, ...additionalTransactions]);
     }
   }, [transactions, apiController, currentAccount?.address]);
+
+  const loadMoreInscriptions = useCallback(async () => {
+    if (
+      !inscriptions.length ||
+      inscriptions
+        .map((i) => i.txid)
+        .includes(inscriptions[inscriptions.length - 1].txid) ||
+      inscriptions.length > 50
+    )
+      return;
+    const additionalInscriptions = await apiController.getPaginatedInscriptions(
+      currentAccount?.address,
+      inscriptions[inscriptions.length - 1].txid ?? ""
+    );
+    if (!additionalInscriptions) return;
+    if (additionalInscriptions.length > 0) {
+      setInscriptions((prev) => [...prev, ...additionalInscriptions]);
+    }
+  }, [apiController, currentAccount, inscriptions]);
 
   const updateFeeRates = useCallback(async () => {
     setFeeRates(await apiController.getFees());
@@ -158,7 +177,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     transactions,
     inscriptions,
     currentPrice,
-    loadMore,
+    loadMoreTransactions,
+    loadMoreInscriptions,
     trottledUpdate,
     feeRates,
     resetTransactions: () => {
@@ -172,7 +192,8 @@ interface TransactionManagerContextType {
   transactions: ITransaction[];
   inscriptions: Inscription[];
   currentPrice: number | undefined;
-  loadMore: () => Promise<void>;
+  loadMoreTransactions: () => Promise<void>;
+  loadMoreInscriptions: () => Promise<void>;
   trottledUpdate: (force?: boolean) => void;
   feeRates?: {
     fast: number;
