@@ -99,7 +99,7 @@ const InscriptionDetails = () => {
 
   return (
     <div className="flex flex-col justify-center align-center break-all gap-3 px-6 py-3">
-      <div className="flex w-full justify-center w-[302px] h-[302px] rounded-xl overflow-hidden">
+      <div className="flex justify-center w-[302px] h-[302px] rounded-xl overflow-hidden">
         {/* <Iframe preview={inscription.preview} size="big" /> */}
         <img
           src={`${CONTENT_URL}/${inscription.inscription_id}`}
@@ -113,19 +113,23 @@ const InscriptionDetails = () => {
         </button>
       ) : undefined}
       {fields.map((f, i) => (
-        <div key={i}>
-          <label>{t(`inscription_details.${f.key}`)}</label>
+        <div className="flex flex-col gap-1" key={i}>
+          <label className="uppercase text-slate-400">
+            {t(`inscription_details.${f.key}`)}
+          </label>
           {f.link ? (
-            <p
+            <div
               onClick={async () => {
                 await openContent(getValue<string>(f.key));
               }}
-              className="text-orange-400"
+              className="text-orange-400 cursor-pointer pl-1 text-sm font-medium"
             >
               link
-            </p>
+            </div>
           ) : (
-            <p>{getValue<string>(f.key)}</p>
+            <div className="pl-1 text-sm font-medium">
+              {getValue<string>(f.key)}
+            </div>
           )}
         </div>
       ))}
