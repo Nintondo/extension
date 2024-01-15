@@ -86,16 +86,9 @@ class ApiController implements IApiController {
   }
 
   async getInscriptions(address: string): Promise<Inscription[] | undefined> {
-    return (
-      await fetchBELLMainnet<Inscription[]>({
-        path: `/address/${address}/ords`,
-      })
-    ).map((f) => ({
-      ...f,
-      preview: `https://bellinals.nintondo.io/preview/${f.inscription_id}`,
-      content: `https://bellinals.nintondo.io/content/${f.inscription_id}`,
-      offset: 0,
-    }));
+    return await fetchBELLMainnet<Inscription[]>({
+      path: `/address/${address}/ords`,
+    });
   }
 
   async getPaginatedTransactions(
@@ -132,14 +125,7 @@ class ApiController implements IApiController {
   }
 
   async getDiscovery(): Promise<Inscription[] | undefined> {
-    return (await fetchBELLMainnet<Inscription[]>({ path: "/discovery" })).map(
-      (f) => ({
-        ...f,
-        preview: `https://bellinals.nintondo.io/preview/${f.inscription_id}`,
-        content: `https://bellinals.nintondo.io/content/${f.inscription_id}`,
-        offset: 0,
-      })
-    );
+    return await fetchBELLMainnet<Inscription[]>({ path: "/discovery" });
   }
 }
 

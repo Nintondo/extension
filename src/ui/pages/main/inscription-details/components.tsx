@@ -6,7 +6,8 @@ import { browserTabsCreate } from "@/shared/utils/browser";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
-import Iframe from "@/ui/components/iframe";
+// import Iframe from "@/ui/components/iframe";
+import { CONTENT_URL } from "@/shared/constant";
 
 type PathOf<T> = T extends object
   ? {
@@ -88,7 +89,7 @@ const InscriptionDetails = () => {
 
   const getValue = <T,>(key: string) => {
     let current = inscription;
-    for (const i in key.split(".")) {
+    for (const i of key.split(".")) {
       current = current[i];
     }
     return current as T;
@@ -98,8 +99,13 @@ const InscriptionDetails = () => {
 
   return (
     <div className="flex flex-col justify-center align-center break-all gap-3 px-6 py-3">
-      <div className="flex w-full justify-center">
-        <Iframe preview={inscription.preview} size="big" />
+      <div className="flex w-full justify-center w-[302px] h-[302px] rounded-xl overflow-hidden">
+        {/* <Iframe preview={inscription.preview} size="big" /> */}
+        <img
+          src={`${CONTENT_URL}/${inscription.inscription_id}`}
+          alt="content"
+          className="object-cover h-full"
+        />
       </div>
       {inscription.owner === currentAccount.address ? (
         <button onClick={send} className="btn primary mx-4 mb-4 md:m-6 md:mb-3">
@@ -119,7 +125,7 @@ const InscriptionDetails = () => {
               link
             </p>
           ) : (
-            <p>{inscription[f.key]}</p>
+            <p>{getValue<string>(f.key)}</p>
           )}
         </div>
       ))}
