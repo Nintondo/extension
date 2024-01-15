@@ -120,7 +120,7 @@ const CreateSend = () => {
       if (currentAccount?.balance <= location.state.amount)
         setIncludeFeeLocked(true);
     }
-    if (location.state && location.state.address) {
+    if (location.state && location.state.inscription_id) {
       setInscription(location.state);
       setInscriptionTransaction(true);
     }
