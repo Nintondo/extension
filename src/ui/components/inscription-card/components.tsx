@@ -16,7 +16,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
       <div
         className="cursor-pointer bg-input-bg flex flex-col justify-center align-center relative"
         onClick={() => {
-          navigate("/pages/details", { state: inscription });
+          navigate("/pages/inscription-details", { state: inscription });
         }}
       >
         {/* <Iframe preview={inscription.preview} size="default" /> */}

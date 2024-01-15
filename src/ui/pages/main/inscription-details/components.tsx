@@ -20,6 +20,7 @@ type PathOf<T> = T extends object
 interface InscField<T, K extends PathOf<T> = PathOf<T>> {
   key?: K;
   link?: boolean;
+  defaultValue?: any;
 }
 
 const fields: InscField<Inscription>[] = [
@@ -45,6 +46,7 @@ const fields: InscField<Inscription>[] = [
   },
   {
     key: "offset",
+    defaultValue: 0,
   },
   {
     key: "owner",
@@ -132,7 +134,7 @@ const InscriptionDetails = () => {
             </div>
           ) : (
             <div className="pl-1 text-sm font-medium">
-              {getValue<string>(f.key)}
+              {getValue<string>(f.key) ?? f.defaultValue}
             </div>
           )}
         </div>

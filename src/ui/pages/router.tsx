@@ -74,7 +74,7 @@ export const authenticatedRouter = createHashRouter([
       { path: "security", element: <Security /> },
       { path: "advanced", element: <Advanced /> },
       { path: "discover", element: <Discover /> },
-      { path: "details", element: <InscriptionDetails /> },
+      { path: "inscription-details", element: <InscriptionDetails /> },
     ],
   },
   {

@@ -101,6 +101,18 @@ export default function PagesLayout() {
         route: "/pages/discover",
         title: t("components.layout.discover"),
       },
+      {
+        route: "/pages/connected-sites",
+        title: t("components.layout.connected_sites"),
+      },
+      {
+        route: "/pages/language",
+        title: t("components.layout.change_language"),
+      },
+      {
+        route: "/pages/create-send",
+        title: t("components.layout.send"),
+      },
     ],
     []
   );
@@ -124,16 +136,11 @@ export default function PagesLayout() {
             navigate(-1);
           },
         },
-
         {
           backAction: () => {
             navigate("/home");
           },
           route: "/pages/finalle-send/@",
-          title: t("components.layout.send"),
-        },
-        {
-          route: "/pages/create-send",
           title: t("components.layout.send"),
         },
         {
@@ -146,21 +153,13 @@ export default function PagesLayout() {
           title: t("components.layout.send"),
         },
         {
-          route: "/pages/connected-sites",
-          title: t("components.layout.connected_sites"),
-        },
-        {
-          route: "/pages/language",
-          title: t("components.layout.change_language"),
+          route: "/pages/inscription-details",
+          title:
+            t("inscription_details.title") +
+            ` #${currentRoute.state?.inscription_id?.slice(0, 5)}`,
         },
       ] as IRouteTitle[],
-    [
-      navigate,
-      stateController,
-      currentRoute.state,
-      wallets.length,
-      defaultTitles,
-    ]
+    [navigate, stateController, currentRoute, wallets.length, defaultTitles]
   );
 
   const currentRouteTitle = useMemo(

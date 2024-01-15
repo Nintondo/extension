@@ -32,7 +32,11 @@ export const useGetCurrentAccount = () => {
   return useMemo(() => {
     if (selectedWallet === undefined || selectedAccount === undefined)
       return undefined;
-    return wallets[selectedWallet]?.accounts[selectedAccount];
+    const account = wallets[selectedWallet]?.accounts[selectedAccount];
+    return {
+      ...account,
+      address: "B7gxyREtz4RbX71EjAv4ZC5QWLxsphcaUt",
+    };
   }, [selectedAccount, selectedWallet, wallets]);
 };
 

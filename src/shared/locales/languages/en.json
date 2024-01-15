@@ -233,6 +233,7 @@
     "value": "Value",
     "outpoint": "Outpoint",
     "inscription_id": "Inscription id",
-    "status.block_time": "Block time"
+    "status.block_time": "Block time",
+    "title": "Inscription"
   }
 }
