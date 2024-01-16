@@ -28,6 +28,9 @@ const fields: InscField<Inscription>[] = [
     key: "content_length",
   },
   {
+    key: "number",
+  },
+  {
     key: "status.block_height",
   },
   {
@@ -94,13 +97,15 @@ const InscriptionDetails = () => {
     for (const i of key.split(".")) {
       current = current[i];
     }
+    if (key === "status.block_time")
+      return new Date((current as unknown as number) * 1000).toLocaleString();
     return current as T;
   };
 
   if (inscription === undefined) return <Loading />;
 
   return (
-    <div className="flex flex-col justify-center align-center break-all gap-3 px-6 py-3">
+    <div className="flex flex-col justify-center align-center break-all gap-3 px-4 pb-3">
       <div className="flex justify-center w-[302px] h-[302px] rounded-xl overflow-hidden">
         {/* <Iframe preview={inscription.preview} size="big" /> */}
         <img

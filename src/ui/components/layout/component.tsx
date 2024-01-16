@@ -155,8 +155,7 @@ export default function PagesLayout() {
         {
           route: "/pages/inscription-details",
           title:
-            t("inscription_details.title") +
-            ` #${currentRoute.state?.inscription_id?.slice(0, 5)}`,
+            t("inscription_details.title") + ` #${currentRoute.state?.number}`,
         },
       ] as IRouteTitle[],
     [navigate, stateController, currentRoute, wallets.length, defaultTitles]

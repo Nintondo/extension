@@ -32,6 +32,7 @@ const Wallet = () => {
     loadMoreTransactions,
     transactions,
     inscriptions,
+    trottledUpdate,
   } = useTransactionManagerContext();
   const currentWallet = useGetCurrentWallet();
 
@@ -47,6 +48,10 @@ const Wallet = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     else if (inView && !transactionsActive) loadMoreInscriptions();
   }, [inView, loadMoreInscriptions, loadMoreTransactions, transactionsActive]);
+
+  useEffect(() => {
+    trottledUpdate();
+  }, [trottledUpdate]);
 
   if (!currentAccount) return <Loading />;
 

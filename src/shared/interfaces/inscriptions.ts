@@ -7,6 +7,7 @@ export interface ApiOrdUTXO extends ApiUTXO {
   outpoint: string;
   genesis: string;
   owner: string;
+  number: number;
 }
 
 export interface Inscription extends ApiOrdUTXO {
@@ -19,6 +20,7 @@ export const TestInscription: Inscription = {
   inscription_id:
     "a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
   owner: "BPAiWMThT2ZwhkyoG27poU1HVNmKsRk7K4",
+  number: 1,
   value: 100000,
   preview:
     "https://bellinals.nintondo.io/preview/a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
