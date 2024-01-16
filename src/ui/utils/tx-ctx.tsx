@@ -78,15 +78,25 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     setLastBlock(await apiController.getLastBlockBEL());
   }, [apiController]);
 
+  const updateFeeRates = useCallback(async () => {
+    setFeeRates(await apiController.getFees());
+  }, [apiController]);
+
   const updateAll = useCallback(
     async (force = false) => {
       await Promise.all([
         updateAccountBalance(),
         udpateTransactions(force),
         updateInscriptions(force),
+        updateFeeRates(),
       ]);
     },
-    [updateAccountBalance, udpateTransactions, updateInscriptions]
+    [
+      updateAccountBalance,
+      udpateTransactions,
+      updateInscriptions,
+      updateFeeRates,
+    ]
   );
 
   const trottledUpdate = useDebounceCall(updateAll, 300);
@@ -128,10 +138,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setInscriptions((prev) => [...prev, ...additionalInscriptions]);
     }
   }, [apiController, currentAccount, inscriptions]);
-
-  const updateFeeRates = useCallback(async () => {
-    setFeeRates(await apiController.getFees());
-  }, [apiController]);
 
   useEffect(() => {
     if (!currentAccount?.address) return;
