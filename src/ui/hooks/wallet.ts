@@ -20,6 +20,7 @@ export const useCreateNewWallet = () => {
     walletController: v.walletController,
     keyringController: v.keyringController,
   }));
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async ({
@@ -47,8 +48,17 @@ export const useCreateNewWallet = () => {
       await walletController.saveWallets([
         { id: wallet.id, phrase: payload, data: keyring },
       ]);
+      trottledUpdate(true);
+      resetTransactions();
     },
-    [wallets, updateWalletState, walletController, keyringController]
+    [
+      wallets,
+      updateWalletState,
+      walletController,
+      keyringController,
+      trottledUpdate,
+      resetTransactions,
+    ]
   );
 };
 
@@ -81,6 +91,7 @@ export const useCreateNewAccount = () => {
   const { walletController } = useControllersState((v) => ({
     walletController: v.walletController,
   }));
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async (name?: string) => {
@@ -100,8 +111,17 @@ export const useCreateNewAccount = () => {
         selectedAccount:
           updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
       });
+      trottledUpdate(true);
+      resetTransactions();
     },
-    [currentWallet, updateCurrentWallet, walletController, updateWalletState]
+    [
+      currentWallet,
+      updateCurrentWallet,
+      walletController,
+      updateWalletState,
+      trottledUpdate,
+      resetTransactions,
+    ]
   );
 };
 

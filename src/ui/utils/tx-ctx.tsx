@@ -236,7 +236,10 @@ export const useTransactionManagerContext = () => {
       loadMoreTransactions: () => {},
       loadMoreInscriptions: () => {},
       trottledUpdate: () => {},
-      feeRates: {},
+      feeRates: {
+        slow: 0,
+        fast: 0,
+      },
       resetTransactions: () => {},
     };
   }
