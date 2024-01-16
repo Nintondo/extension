@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
 import { CONTENT_URL, PREVIEW_URL } from "@/shared/constant";
 import s from "./styles.module.scss";
+import cn from "classnames";
 
 type PathOf<T> = T extends object
   ? {
@@ -116,7 +117,7 @@ const InscriptionDetails = () => {
         />
       </div>
       {inscription.owner === currentAccount.address ? (
-        <button onClick={send} className={s.btn}>
+        <button onClick={send} className={cn(s.btn, "btn primary")}>
           {t("components.layout.send")}
         </button>
       ) : undefined}
