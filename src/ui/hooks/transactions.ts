@@ -90,7 +90,7 @@ export function useCreateOrdTx() {
 
       const psbtHex = await keyringController.sendOrd({
         to: toAddress,
-        utxos: [...utxos, inscription],
+        utxos: [...utxos, { ...inscription, isOrd: true }],
         receiverToPayFee: false,
         feeRate,
       });

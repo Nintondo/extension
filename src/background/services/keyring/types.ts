@@ -1,4 +1,5 @@
 import type { ApiUTXO } from "@/shared/interfaces/api";
+import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
 
 export type Json = any;
 export type Hex = string;
@@ -22,7 +23,7 @@ export interface SendBEL extends SendBase {
 }
 
 export interface SendOrd extends SendBase {
-  utxos: (ApiUTXO & { isOrd?: boolean })[];
+  utxos: ((ApiOrdUTXO & { isOrd?: boolean }) | ApiUTXO)[];
 }
 
 interface BaseUserToSignInput {

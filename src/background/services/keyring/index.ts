@@ -9,6 +9,7 @@ import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
 import { INewWalletProps } from "@/shared/interfaces";
+import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
 
 export const KEYRING_SDK_TYPES = {
   SimpleKey,
@@ -194,10 +195,10 @@ class KeyringService {
           ).toString("hex"),
           addressType: wallet?.addressType,
           address: account.address,
-          ords: v.isOrd
+          ords: (v as ApiOrdUTXO & { isOrd: boolean }).isOrd
             ? [
                 {
-                  id: `${v.txid}i${v.vout}`,
+                  id: `${(v as ApiOrdUTXO).inscription_id}`,
                   offset: 0,
                 },
               ]
@@ -205,7 +206,9 @@ class KeyringService {
         };
       }),
       toAddress: data.to,
-      outputValue: data.utxos.find((i) => i.isOrd)[0].value,
+      outputValue: data.utxos.find(
+        (i) => (i as ApiOrdUTXO & { isOrd: boolean }).isOrd
+      )?.value,
       signTransaction: this.signPsbt.bind(this),
       network: networks.bitcoin,
       changeAddress: account.address,

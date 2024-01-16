@@ -1,6 +1,6 @@
 import { Psbt } from "belcoinjs-lib";
 import { keyringService } from "../services";
-import type { Hex, SendBEL } from "../services/keyring/types";
+import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
 import type { IPrivateWallet } from "@/shared/interfaces";
 import type { AddressType } from "bellhdw";
 
@@ -18,7 +18,7 @@ export interface IKeyringController {
     data: string;
   }): Promise<string>;
   sendBEL(data: SendBEL): Promise<string>;
-  sendOrd(data: Omit<SendBEL, "amount">): Promise<string>;
+  sendOrd(data: Omit<SendOrd, "amount">): Promise<string>;
   changeAddressType(
     walletIndex: number,
     addressType: AddressType
@@ -89,7 +89,7 @@ class KeyringController implements IKeyringController {
     return await keyringService.sendBEL(data);
   }
 
-  async sendOrd(data: Omit<SendBEL, "amount">): Promise<string> {
+  async sendOrd(data: Omit<SendOrd, "amount">): Promise<string> {
     return await keyringService.sendOrd(data);
   }
 

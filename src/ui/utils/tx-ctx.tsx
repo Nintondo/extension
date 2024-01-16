@@ -189,6 +189,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     feeRates,
     resetTransactions: () => {
       setTransactions([]);
+      setInscriptions([]);
     },
   };
 };
