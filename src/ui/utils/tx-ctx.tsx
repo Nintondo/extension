@@ -33,6 +33,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
+  const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
+  const [inscriptionTxIds, setInscriptionTxIds] = useState<string[]>([]);
+
   const updateFn = <T,>(
     onUpdate: Dispatch<SetStateAction<T[]>>,
     retrieveFn: (address: string) => Promise<T[]>,
@@ -103,41 +106,44 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const loadMoreTransactions = useCallback(async () => {
     if (
-      !transactions.length ||
-      transactions
-        .map((i) => i.txid)
-        .includes(transactions[transactions.length - 1].txid) ||
-      transactions.length > 50
+      transactions.length < 50 ||
+      transactionTxIds.includes(transactions[length - 1].txid)
     )
       return;
     const additionalTransactions = await apiController.getPaginatedTransactions(
       currentAccount?.address,
       transactions[transactions.length - 1].txid ?? ""
     );
+    setTransactionTxIds([
+      ...transactionTxIds,
+      transactions[transactions.length - 1].txid,
+    ]);
     if (!additionalTransactions) return;
     if (additionalTransactions.length > 0) {
       setTransactions((prev) => [...prev, ...additionalTransactions]);
     }
-  }, [transactions, apiController, currentAccount?.address]);
+  }, [transactions, apiController, currentAccount?.address, transactionTxIds]);
 
   const loadMoreInscriptions = useCallback(async () => {
     if (
-      !inscriptions.length ||
-      inscriptions
-        .map((i) => i.txid)
-        .includes(inscriptions[inscriptions.length - 1].txid) ||
-      inscriptions.length > 50
+      inscriptions.length < 50 ||
+      inscriptionTxIds.includes(inscriptions[length - 1].txid)
     )
       return;
+
     const additionalInscriptions = await apiController.getPaginatedInscriptions(
       currentAccount?.address,
       inscriptions[inscriptions.length - 1].txid ?? ""
     );
+    setInscriptionTxIds([
+      ...inscriptionTxIds,
+      inscriptions[inscriptions.length - 1].txid,
+    ]);
     if (!additionalInscriptions) return;
     if (additionalInscriptions.length > 0) {
       setInscriptions((prev) => [...prev, ...additionalInscriptions]);
     }
-  }, [apiController, currentAccount, inscriptions]);
+  }, [apiController, currentAccount, inscriptions, inscriptionTxIds]);
 
   useEffect(() => {
     if (!currentAccount?.address) return;
