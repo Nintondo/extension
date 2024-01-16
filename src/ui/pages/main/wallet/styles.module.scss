@@ -37,11 +37,11 @@
 }
 
 .transactions {
-  @apply text-base mt-6 font-medium mb-4 cursor-pointer transition-colors px-2 py-0.5 rounded-xl relative duration-500;
+  @apply text-base mt-6 font-medium mb-4 cursor-pointer transition-colors px-2 py-1 rounded-xl relative border-2 border-transparent;
 }
 
 .active {
-  @apply bg-amber-700;
+  @apply border-amber-700;
 }
 
 .transactionsDiv {

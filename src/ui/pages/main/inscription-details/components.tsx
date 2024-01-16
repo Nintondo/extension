@@ -6,8 +6,8 @@ import { browserTabsCreate } from "@/shared/utils/browser";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
-// import Iframe from "@/ui/components/iframe";
 import { CONTENT_URL, PREVIEW_URL } from "@/shared/constant";
+import s from "./styles.module.scss";
 
 type PathOf<T> = T extends object
   ? {
@@ -56,6 +56,7 @@ const fields: InscField<Inscription>[] = [
   },
   {
     key: "value",
+    defaultValue: "-",
   },
   {
     key: "outpoint",
@@ -115,35 +116,37 @@ const InscriptionDetails = () => {
         />
       </div>
       {inscription.owner === currentAccount.address ? (
-        <button onClick={send} className="btn primary mx-4 mb-4 md:m-6 md:mb-3">
+        <button onClick={send} className={s.btn}>
           {t("components.layout.send")}
         </button>
       ) : undefined}
-      {fields.map((f, i) => (
-        <div className="flex flex-col gap-1" key={i}>
-          <label className="uppercase text-slate-400">
-            {t(`inscription_details.${f.key}`)}
-          </label>
-          {f.link ? (
-            <div
-              onClick={async () => {
-                await openContent(
-                  `${f.key === "content" ? CONTENT_URL : PREVIEW_URL}/${
-                    inscription.inscription_id
-                  }`
-                );
-              }}
-              className="text-orange-400 cursor-pointer pl-1 text-sm font-medium"
-            >
-              link
-            </div>
-          ) : (
-            <div className="pl-1 text-sm font-medium">
-              {getValue<string>(f.key) ?? f.defaultValue}
-            </div>
-          )}
-        </div>
-      ))}
+      <div className={s.fields}>
+        {fields.map((f, i) => (
+          <div className={s.item} key={i}>
+            <label className="uppercase text-slate-400">
+              {t(`inscription_details.${f.key}`)}
+            </label>
+            {f.link ? (
+              <div
+                onClick={async () => {
+                  await openContent(
+                    `${f.key === "content" ? CONTENT_URL : PREVIEW_URL}/${
+                      inscription.inscription_id
+                    }`
+                  );
+                }}
+                className="text-orange-400 cursor-pointer pl-1 text-sm font-medium"
+              >
+                link
+              </div>
+            ) : (
+              <div className="pl-1 text-sm font-medium">
+                {getValue<string>(f.key) ?? f.defaultValue}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

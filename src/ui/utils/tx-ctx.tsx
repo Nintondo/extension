@@ -230,14 +230,14 @@ export const useTransactionManagerContext = () => {
   if (!context) {
     return {
       lastBlock: undefined,
-      transactions: undefined,
-      inscriptions: undefined,
+      transactions: [],
+      inscriptions: [],
       currentPrice: undefined,
-      loadMoreTransactions: undefined,
-      loadMoreInscriptions: undefined,
-      trottledUpdate: undefined,
-      feeRates: undefined,
-      resetTransactions: undefined,
+      loadMoreTransactions: () => {},
+      loadMoreInscriptions: () => {},
+      trottledUpdate: () => {},
+      feeRates: {},
+      resetTransactions: () => {},
     };
   }
   return context;
