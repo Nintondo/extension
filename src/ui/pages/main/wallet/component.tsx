@@ -5,7 +5,6 @@ import {
   Cog6ToothIcon,
   ChevronDownIcon,
   CheckIcon,
-  Squares2X2Icon,
   NewspaperIcon,
 } from "@heroicons/react/24/outline";
 import s from "./styles.module.scss";

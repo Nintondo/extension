@@ -26,7 +26,7 @@ export const fetchBELLMainnet = async <T>({
   json = true,
   ...props
 }: fetchProps): Promise<T | undefined> => {
-  const url = new URL(BELLS_TESTNET_PATH.concat(path), TEST_API_URL);
+  const url = new URL(BELLS_MAINNET_PATH.concat(path), NINTONDO_API_URL);
   if (props.params) {
     Object.entries(props.params).forEach((v) => url.searchParams.set(...v));
   }
