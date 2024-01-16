@@ -6,6 +6,7 @@ import {
   ChevronDownIcon,
   CheckIcon,
   Squares2X2Icon,
+  NewspaperIcon,
 } from "@heroicons/react/24/outline";
 import s from "./styles.module.scss";
 import { shortAddress } from "@/shared/utils/transactions";
@@ -73,9 +74,9 @@ const Wallet = () => {
           </div>
         </Link>
 
-        <div className="flex gap-1">
+        <div className="flex gap-3">
           <Link to={"/pages/discover"} className="cursor-pointer">
-            <Squares2X2Icon className="w-6 h-6" />
+            <NewspaperIcon className="w-6 h-6" />
           </Link>
           <Link to={"/pages/settings"} className="cursor-pointer">
             <Cog6ToothIcon className="w-6 h-6 hover:rotate-90 transition-transform" />

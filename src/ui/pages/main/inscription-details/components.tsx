@@ -108,19 +108,26 @@ const InscriptionDetails = () => {
 
   return (
     <div className="flex flex-col justify-center align-center break-all gap-3 px-4 pb-3">
-      <div className="flex justify-center w-[302px] h-[302px] rounded-xl overflow-hidden">
-        {/* <Iframe preview={inscription.preview} size="big" /> */}
-        <img
-          src={`${PREVIEW_URL}/${inscription.inscription_id}`}
-          alt="content"
-          className="object-cover h-full"
-        />
+      <div
+        className={
+          inscription.owner === currentAccount.address
+            ? "p-4 rounded-xl flex flex-col gap-5 bg-input-bg"
+            : undefined
+        }
+      >
+        <div className="flex justify-center w-[286px] h-[286px] rounded-xl overflow-hidden">
+          <img
+            src={`${PREVIEW_URL}/${inscription.inscription_id}`}
+            alt="content"
+            className="object-cover h-full rounded-xl"
+          />
+        </div>
+        {inscription.owner === currentAccount.address ? (
+          <button onClick={send} className={"btn primary"}>
+            {t("components.layout.send")}
+          </button>
+        ) : undefined}
       </div>
-      {inscription.owner === currentAccount.address ? (
-        <button onClick={send} className={cn(s.btn, "btn primary")}>
-          {t("components.layout.send")}
-        </button>
-      ) : undefined}
       <div className={s.fields}>
         {fields.map((f, i) => (
           <div className={s.item} key={i}>
