@@ -143,7 +143,7 @@ const Wallet = () => {
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex justify-center gap-3">
         <p
           onClick={() => {
             setTransactionsActive(true);

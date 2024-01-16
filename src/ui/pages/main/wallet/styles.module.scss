@@ -37,7 +37,11 @@
 }
 
 .transactions {
-  @apply text-lg ml-2 mt-6 font-medium mb-4 cursor-pointer;
+  @apply text-base mt-6 font-medium mb-4 cursor-pointer transition-colors px-2 py-0.5 rounded-xl relative duration-500;
+}
+
+.active {
+  @apply bg-amber-700;
 }
 
 .transactionsDiv {
@@ -64,10 +68,6 @@
   @apply font-medium text-sm;
 }
 
-.active {
-  @apply text-amber-500 transition-colors;
-}
-
 .gridContainer {
-  @apply grid grid-cols-2 text-base w-full gap-3 py-2 overflow-y-auto;
+  @apply grid grid-cols-2 grid-rows-2 text-base w-full gap-3 py-2;
 }

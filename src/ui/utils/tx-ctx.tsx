@@ -228,9 +228,17 @@ export const TransactionManagerProvider: FC<{ children: React.ReactNode }> = ({
 export const useTransactionManagerContext = () => {
   const context = useContext(TransactionManagerContext);
   if (!context) {
-    throw new Error(
-      "useTransactionManagerContext must be used within a TransactionManagerProvider"
-    );
+    return {
+      lastBlock: undefined,
+      transactions: undefined,
+      inscriptions: undefined,
+      currentPrice: undefined,
+      loadMoreTransactions: undefined,
+      loadMoreInscriptions: undefined,
+      trottledUpdate: undefined,
+      feeRates: undefined,
+      resetTransactions: undefined,
+    };
   }
   return context;
 };
