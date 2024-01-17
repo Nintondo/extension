@@ -8,12 +8,19 @@ import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
 
 const Inscriptions = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { loadMoreInscriptions, inscriptions } = useTransactionManagerContext();
+  const { loadMoreInscriptions, inscriptions, inscriptionCounter } =
+    useTransactionManagerContext();
 
   if (!inscriptions.length)
     return (
       <p className={s.noTransactions}>{t("wallet_page.no_inscriptions")}</p>
     );
+
+  const changePage = async (page: number) => {
+    if (inscriptions.length <= page * 6 && page * 6 < inscriptionCounter)
+      await loadMoreInscriptions();
+    setCurrentPage(page);
+  };
 
   return (
     <div className="flex flex-col justify-space-between h-full">
@@ -27,15 +34,15 @@ const Inscriptions = () => {
         <MagnifyingGlassCircleIcon className="w-8 h-8" />
       </div>
       <div className={s.gridContainer}>
-        {inscriptions.map((f, i) => (
+        {inscriptions.slice(currentPage - 1, currentPage + 5).map((f, i) => (
           <InscriptionCard key={i} inscription={f} />
         ))}
       </div>
       <div className="w-full">
         <Pagination
           currentPage={currentPage}
-          onPageChange={setCurrentPage}
-          pageCount={15}
+          onPageChange={changePage}
+          pageCount={Math.ceil(inscriptionCounter / 6)}
           visiblePageButtonsCount={5}
           leftBtnPlaceholder={"<"}
           rightBtnPlaceholder={">"}

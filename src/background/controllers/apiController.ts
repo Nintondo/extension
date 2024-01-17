@@ -25,6 +25,7 @@ export interface IApiController {
   getFees(): Promise<{ fast: number; slow: number }>;
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
   getDiscovery(): Promise<Inscription[] | undefined>;
+  getInscriptionCounter(address: string): Promise<number>;
 }
 
 class ApiController implements IApiController {
@@ -143,6 +144,14 @@ class ApiController implements IApiController {
 
   async getDiscovery(): Promise<Inscription[] | undefined> {
     return await fetchBELLMainnet<Inscription[]>({ path: "/discovery" });
+  }
+
+  async getInscriptionCounter(address: string): Promise<number> {
+    // return (
+    //   (await fetchBELLMainnet<number | undefined>({ path: "/MEOWMEOWMEOW" })) ??
+    //   0
+    // );
+    return 100;
   }
 }
 
