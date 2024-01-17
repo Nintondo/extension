@@ -55,7 +55,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
               (f) => f[compareKey] === currentValue[0][compareKey]
             );
             onUpdate([...receivedItems.slice(0, oldIndex), ...currentValue]);
-          } else onUpdate(receivedItems ?? []);
+          } else if (currentValue.length < 50) onUpdate(receivedItems ?? []);
         }
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,16 +107,16 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const loadMoreTransactions = useCallback(async () => {
     if (
       transactions.length < 50 ||
-      transactionTxIds.includes(transactions[length - 1].txid)
+      transactionTxIds.includes(transactions[transactions.length - 1]?.txid)
     )
       return;
     const additionalTransactions = await apiController.getPaginatedTransactions(
       currentAccount?.address,
-      transactions[transactions.length - 1].txid ?? ""
+      transactions[transactions.length - 1]?.txid
     );
     setTransactionTxIds([
       ...transactionTxIds,
-      transactions[transactions.length - 1].txid,
+      transactions[transactions.length - 1]?.txid,
     ]);
     if (!additionalTransactions) return;
     if (additionalTransactions.length > 0) {
@@ -127,17 +127,17 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const loadMoreInscriptions = useCallback(async () => {
     if (
       inscriptions.length < 50 ||
-      inscriptionTxIds.includes(inscriptions[length - 1].txid)
+      inscriptionTxIds.includes(inscriptions[inscriptionTxIds.length - 1].txid)
     )
       return;
 
     const additionalInscriptions = await apiController.getPaginatedInscriptions(
       currentAccount?.address,
-      inscriptions[inscriptions.length - 1].txid ?? ""
+      inscriptions[inscriptions.length - 1]?.txid
     );
     setInscriptionTxIds([
       ...inscriptionTxIds,
-      inscriptions[inscriptions.length - 1].txid,
+      inscriptions[inscriptions.length - 1]?.txid,
     ]);
     if (!additionalInscriptions) return;
     if (additionalInscriptions.length > 0) {
