@@ -35,7 +35,8 @@
       "restore_from_private_key": "Restore from private key",
       "security": "Security",
       "advanced": "Advanced",
-      "discover": "Discover"
+      "discover": "Discover",
+      "inscriptions": "Inscriptions"
     },
     "check_password": {
       "incorrect_password_error": "Incorrect password",

@@ -35,6 +35,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
   const [inscriptionTxIds, setInscriptionTxIds] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const updateFn = <T,>(
     onUpdate: Dispatch<SetStateAction<T[]>>,
@@ -44,6 +45,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   ) => {
     return useCallback(
       async (force?: boolean) => {
+        if (!currentValue.length) setLoading(true);
         const receivedItems = await retrieveFn(currentAccount?.address ?? "");
         if (receivedItems !== undefined) {
           if (
@@ -57,6 +59,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
             onUpdate([...receivedItems.slice(0, oldIndex), ...currentValue]);
           } else if (currentValue.length < 50) onUpdate(receivedItems ?? []);
         }
+        setLoading(false);
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [onUpdate, retrieveFn, currentValue, currentAccount?.address]
@@ -193,6 +196,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     loadMoreInscriptions,
     trottledUpdate,
     feeRates,
+    loading,
     resetTransactions: () => {
       setTransactions([]);
       setInscriptions([]);
@@ -208,6 +212,7 @@ interface TransactionManagerContextType {
   loadMoreTransactions: () => Promise<void>;
   loadMoreInscriptions: () => Promise<void>;
   trottledUpdate: (force?: boolean) => void;
+  loading: boolean;
   feeRates?: {
     fast: number;
     slow: number;
@@ -242,6 +247,7 @@ export const useTransactionManagerContext = () => {
       loadMoreTransactions: () => {},
       loadMoreInscriptions: () => {},
       trottledUpdate: () => {},
+      loading: false,
       feeRates: {
         slow: 0,
         fast: 0,

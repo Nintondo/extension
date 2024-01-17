@@ -113,6 +113,10 @@ export default function PagesLayout() {
         route: "/pages/create-send",
         title: t("components.layout.send"),
       },
+      {
+        route: "/pages/inscriptions",
+        title: t("components.layout.inscriptions"),
+      },
     ],
     []
   );
