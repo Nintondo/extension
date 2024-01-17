@@ -237,5 +237,8 @@
     "status.block_time": "Timestamp",
     "title": "Inscription",
     "number": "Inscription number"
+  },
+  "inscriptions": {
+    "inscription_not_found": "Could not find inscription"
   }
 }

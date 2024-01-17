@@ -26,6 +26,13 @@ export interface IApiController {
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
   getDiscovery(): Promise<Inscription[] | undefined>;
   getInscriptionCounter(address: string): Promise<number>;
+  getInscription({
+    inscriptionNumber,
+    inscriptionId,
+  }: {
+    inscriptionNumber?: number;
+    inscriptionId?: string;
+  }): Promise<ApiOrdUTXO | undefined>;
 }
 
 class ApiController implements IApiController {
@@ -152,6 +159,22 @@ class ApiController implements IApiController {
     //   0
     // );
     return 100;
+  }
+
+  async getInscription({
+    inscriptionNumber,
+    inscriptionId,
+  }: {
+    inscriptionNumber?: number;
+    inscriptionId?: string;
+  }): Promise<ApiOrdUTXO | undefined> {
+    if (inscriptionNumber !== undefined)
+      return await fetchBELLMainnet<ApiOrdUTXO>({
+        path: "/GET_SHIT_BY_NUMBER",
+      });
+    else if (inscriptionId !== undefined)
+      return await fetchBELLMainnet<ApiOrdUTXO>({ path: "/GET_SHIT_BY_ID" });
+    return undefined;
   }
 }
 
