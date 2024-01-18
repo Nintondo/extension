@@ -106,8 +106,8 @@ const InscriptionDetails = () => {
   if (inscription === undefined) return <Loading />;
 
   return (
-    <div className="flex flex-col justify-center align-center break-all gap-5 px-4 pb-3">
-      <div className="flex justify-center w-[286px] h-[286px] rounded-xl overflow-hidden">
+    <div className="flex flex-col justify-center items-center break-all gap-5 px-4 pb-3 rounded-xl">
+      <div className="flex justify-center w-[318px] h-[318px] rounded-xl overflow-hidden">
         <img
           src={`${PREVIEW_URL}/${inscription.inscription_id}`}
           alt="content"
@@ -115,8 +115,8 @@ const InscriptionDetails = () => {
         />
       </div>
       {inscription.owner === currentAccount.address ? (
-        <div className="flex justify-center">
-          <button onClick={send} className="btn primary w-1/2">
+        <div className="flex justify-center w-full">
+          <button onClick={send} className="btn primary w-2/3">
             {t("components.layout.send")}
           </button>
         </div>

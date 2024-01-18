@@ -14,7 +14,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
   return (
     <div className="flex justify-center w-full rounded-xl overflow-hidden w-36 h-36">
       <div
-        className="cursor-pointer bg-input-bg flex flex-col justify-center align-center relative"
+        className="cursor-pointer bg-input-bg flex flex-col justify-center align-center relative rounded-xl"
         onClick={() => {
           navigate("/pages/inscription-details", { state: inscription });
         }}

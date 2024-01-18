@@ -44,7 +44,7 @@ const Inscriptions = () => {
 
   return (
     <div className={s.inscriptionDiv}>
-      <div className="flex align-center gap-1">
+      <div className="flex align-center gap-1 items-center">
         <input
           tabIndex={0}
           type="text"
@@ -72,7 +72,7 @@ const Inscriptions = () => {
         ))}
       </div>
 
-      <div className="w-full">
+      <div className="w-full absolute bottom-0 p-3">
         <Pagination
           currentPage={currentPage}
           onPageChange={changePage}
