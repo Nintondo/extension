@@ -106,6 +106,7 @@ const Inscriptions = () => {
           <XMarkIcon
             onClick={() => {
               setFoundInscriptions(undefined);
+              setSearchValue("");
             }}
             className="w-8 h-8 cursor-pointer"
           />

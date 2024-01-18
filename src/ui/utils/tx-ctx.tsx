@@ -58,7 +58,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
               (f) => f[compareKey] === currentValue[0][compareKey]
             );
             onUpdate([...receivedItems.slice(0, oldIndex), ...currentValue]);
-          } else if (currentValue.length < 50 || force)
+          } else if (currentValue.length < 60 || force)
             onUpdate(receivedItems ?? []);
         }
         setLoading(false);
@@ -116,7 +116,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const loadMoreTransactions = useCallback(async () => {
     if (
-      transactions.length < 50 ||
+      transactions.length < 60 ||
       transactionTxIds.includes(transactions[transactions.length - 1]?.txid)
     )
       return;
@@ -136,7 +136,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const loadMoreInscriptions = useCallback(async () => {
     if (
-      inscriptions.length < 50 ||
+      inscriptions.length < 60 ||
       inscriptionTxIds.includes(inscriptions[inscriptions.length - 1].txid)
     )
       return;
