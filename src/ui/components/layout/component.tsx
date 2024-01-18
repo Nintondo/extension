@@ -1,18 +1,23 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import s from "./styles.module.scss";
 import cn from "classnames";
-import { ChevronLeftIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  ChevronLeftIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 import { useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 interface IRouteTitle {
   route: string;
   title: string;
   action?: {
     icon: React.ReactNode;
-    link: string;
+    link?: string;
   };
   backAction?: () => void;
   disableBack?: boolean;
@@ -26,6 +31,7 @@ export default function PagesLayout() {
   const currentRoute = useLocation();
   const navigate = useNavigate();
   const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
+  const { forceUpdateInscriptions } = useTransactionManagerContext();
 
   const defaultTitles: IRouteTitle[] = useMemo(
     () => [
@@ -116,9 +122,17 @@ export default function PagesLayout() {
       {
         route: "/pages/inscriptions",
         title: t("components.layout.inscriptions"),
+        action: {
+          icon: (
+            <ArrowPathIcon
+              onClick={forceUpdateInscriptions}
+              className="w-8 h-8 cursor-pointer"
+            />
+          ),
+        },
       },
     ],
-    []
+    [forceUpdateInscriptions]
   );
 
   const routeTitles = useMemo(
@@ -200,12 +214,16 @@ export default function PagesLayout() {
           </div>
 
           {currentRouteTitle?.action ? (
-            <Link
-              className={cn(s.controlElem, s.addNew)}
-              to={currentRouteTitle.action.link}
-            >
-              {currentRouteTitle.action.icon}
-            </Link>
+            currentRouteTitle?.action.link ? (
+              <Link
+                className={cn(s.controlElem, s.addNew)}
+                to={currentRouteTitle.action.link}
+              >
+                {currentRouteTitle.action.icon}
+              </Link>
+            ) : (
+              currentRouteTitle.action.icon
+            )
           ) : undefined}
         </div>
       }

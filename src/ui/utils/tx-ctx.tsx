@@ -36,6 +36,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
   const [inscriptionTxIds, setInscriptionTxIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const updateFn = <T,>(
     onUpdate: Dispatch<SetStateAction<T[]>>,
@@ -57,7 +58,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
               (f) => f[compareKey] === currentValue[0][compareKey]
             );
             onUpdate([...receivedItems.slice(0, oldIndex), ...currentValue]);
-          } else if (currentValue.length < 50) onUpdate(receivedItems ?? []);
+          } else if (currentValue.length < 50 || force)
+            onUpdate(receivedItems ?? []);
         }
         setLoading(false);
       },
@@ -79,6 +81,11 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     inscriptions,
     "inscription_id"
   );
+
+  const forceUpdateInscriptions = useCallback(async () => {
+    await updateInscriptions(true);
+    setCurrentPage(1);
+  }, [updateInscriptions]);
 
   const updateLastBlock = useCallback(async () => {
     setLastBlock(await apiController.getLastBlockBEL());
@@ -199,6 +206,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setTransactions([]);
       setInscriptions([]);
     },
+    setCurrentPage,
+    currentPage,
+    forceUpdateInscriptions,
   };
 };
 
@@ -216,6 +226,9 @@ interface TransactionManagerContextType {
     slow: number;
   };
   resetTransactions: () => void;
+  setCurrentPage: (page: number) => void;
+  currentPage: number;
+  forceUpdateInscriptions: () => Promise<void>;
 }
 
 const TransactionManagerContext = createContext<
@@ -251,6 +264,9 @@ export const useTransactionManagerContext = () => {
         fast: 0,
       },
       resetTransactions: () => {},
+      setCurrentPage: () => {},
+      currentPage: 1,
+      forceUpdateInscriptions: () => {},
     };
   }
   return context;

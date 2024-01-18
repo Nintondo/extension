@@ -25,3 +25,24 @@ export function useDebounceCall(
     [setTriggered]
   );
 }
+
+export function useDebounce<T extends (...args: any) => void>(
+  value: T,
+  delay?: number
+): T {
+  const [debouncedValue, setDebouncedValue] = useState(undefined);
+
+  useEffect(() => {
+    if (debouncedValue) {
+      const timer = setTimeout(() => value(...debouncedValue), delay || 500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [debouncedValue, delay, value]);
+
+  return useCallback((...v: any[]) => {
+    setDebouncedValue(v);
+  }, []) as T;
+}
