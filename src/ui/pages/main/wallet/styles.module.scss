@@ -1,5 +1,5 @@
 .walletDiv {
-  @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6 relative pb-16;
+  @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6 relative;
 
   .accPanel {
     @apply flex flex-col mt-4 gap-4;
@@ -70,4 +70,8 @@
 
 .gridContainer {
   @apply grid grid-cols-2 text-base w-full gap-3 py-2 overflow-y-auto;
+}
+
+.inscriptionButton {
+  @apply absolute bottom-0 right-0 w-12 h-12 rounded-full bg-input-bg m-6 flex justify-center items-center cursor-pointer;
 }

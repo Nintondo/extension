@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import s from "./styles.module.scss";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { t } from "i18next";
@@ -9,32 +9,24 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Loading from "react-loading";
 import InscriptionCard from "@/ui/components/inscription-card";
-import { useInView } from "react-intersection-observer";
+import Pagination from "@/ui/components/pagination";
 
 const Inscriptions = () => {
-  // const [currentPage, setCurrentPage] = useState(1);
-  const { loadMoreInscriptions, inscriptions } = useTransactionManagerContext();
+  const [currentPage, setCurrentPage] = useState(1);
+  const { loadMoreInscriptions, inscriptions, inscriptionCounter } =
+    useTransactionManagerContext();
   const [inscriptionId, setInscriptionId] = useState<string>("");
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
   }));
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { ref, inView } = useInView();
 
-  useEffect(() => {
-    if (inView) loadMoreInscriptions();
-  }, [inView, loadMoreInscriptions]);
-
-  useEffect(() => {
-    console.log(inscriptions);
-  }, [inscriptions]);
-
-  // const changePage = async (page: number) => {
-  //   if (inscriptions.length <= page * 6 && page * 6 < inscriptionCounter)
-  //     await loadMoreInscriptions();
-  //   setCurrentPage(page);
-  // };
+  const changePage = async (page: number) => {
+    if (inscriptions.length <= page * 6 && page * 6 < inscriptionCounter)
+      await loadMoreInscriptions();
+    setCurrentPage(page);
+  };
 
   const searchInscription = async () => {
     setLoading(true);
@@ -74,23 +66,13 @@ const Inscriptions = () => {
           />
         )}
       </div>
-      {inscriptions.length ? (
-        <div className={s.gridContainer}>
-          {inscriptions.map((f, i) => (
-            <InscriptionCard key={i} inscription={f} />
-          ))}
-          <div ref={ref}></div>
-        </div>
-      ) : (
-        <p className={s.noTransactions}>{t("wallet_page.no_inscriptions")}</p>
-      )}
-      {/* <div className={s.gridContainer}>
+      <div className={s.gridContainer}>
         {inscriptions.slice(currentPage - 1, currentPage + 5).map((f, i) => (
           <InscriptionCard key={i} inscription={f} />
         ))}
-      </div> */}
+      </div>
 
-      {/* <div className="w-full">
+      <div className="w-full">
         <Pagination
           currentPage={currentPage}
           onPageChange={changePage}
@@ -100,7 +82,7 @@ const Inscriptions = () => {
           rightBtnPlaceholder={">"}
           className={s.pagination}
         />
-      </div> */}
+      </div>
     </div>
   );
 };

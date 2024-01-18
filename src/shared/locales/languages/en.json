@@ -144,7 +144,7 @@
     },
     "create_send": {
       "minimum_amount_error": "Minimum amount is 0.01 BEL",
-      "address_error": "Insert the addresss of receiver",
+      "address_error": "Insert receiver's address",
       "not_enough_money_error": "There's not enough money in your account",
       "not_enough_fee_error": "Increase the fee",
       "fee_is_text_error": "Fee should be integer",
