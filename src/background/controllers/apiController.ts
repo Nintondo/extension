@@ -25,14 +25,18 @@ export interface IApiController {
   getFees(): Promise<{ fast: number; slow: number }>;
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
   getDiscovery(): Promise<Inscription[] | undefined>;
-  getInscriptionCounter(address: string): Promise<number>;
+  getInscriptionCounter(
+    address: string
+  ): Promise<{ amount: number; count: number }>;
   getInscription({
     inscriptionNumber,
     inscriptionId,
+    address,
   }: {
     inscriptionNumber?: number;
     inscriptionId?: string;
-  }): Promise<ApiOrdUTXO | undefined>;
+    address: string;
+  }): Promise<Inscription[] | undefined>;
 }
 
 class ApiController implements IApiController {
@@ -153,28 +157,35 @@ class ApiController implements IApiController {
     return await fetchBELLMainnet<Inscription[]>({ path: "/discovery" });
   }
 
-  async getInscriptionCounter(address: string): Promise<number> {
-    // return (
-    //   (await fetchBELLMainnet<number | undefined>({ path: "/MEOWMEOWMEOW" })) ??
-    //   0
-    // );
-    return 100;
+  async getInscriptionCounter(
+    address: string
+  ): Promise<{ amount: number; count: number }> {
+    try {
+      const result = await fetchBELLMainnet<
+        { amount: number; count: number } | undefined
+      >({
+        path: `/address/${address}/stats`,
+      });
+      return result;
+    } catch {
+      return { amount: 0, count: 0 };
+    }
   }
 
   async getInscription({
     inscriptionNumber,
     inscriptionId,
+    address,
   }: {
     inscriptionNumber?: number;
     inscriptionId?: string;
-  }): Promise<ApiOrdUTXO | undefined> {
-    if (inscriptionNumber !== undefined)
-      return await fetchBELLMainnet<ApiOrdUTXO>({
-        path: "/GET_SHIT_BY_NUMBER",
-      });
-    else if (inscriptionId !== undefined)
-      return await fetchBELLMainnet<ApiOrdUTXO>({ path: "/GET_SHIT_BY_ID" });
-    return undefined;
+    address: string;
+  }): Promise<Inscription[] | undefined> {
+    return await fetchBELLMainnet<Inscription[]>({
+      path: `/address/${address}/ords?search=${
+        inscriptionId ?? inscriptionNumber
+      }`,
+    });
   }
 }
 

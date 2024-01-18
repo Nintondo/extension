@@ -36,9 +36,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
   const [inscriptionTxIds, setInscriptionTxIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [inscriptionCounter, setInscriptionCounter] = useState<
-    number | undefined
-  >(undefined);
 
   const updateFn = <T,>(
     onUpdate: Dispatch<SetStateAction<T[]>>,
@@ -91,13 +88,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     setFeeRates(await apiController.getFees());
   }, [apiController]);
 
-  const updateInscriptionCounter = useCallback(async () => {
-    if (!currentAccount?.address) return;
-    setInscriptionCounter(
-      await apiController.getInscriptionCounter(currentAccount?.address)
-    );
-  }, [apiController, currentAccount?.address]);
-
   const updateAll = useCallback(
     async (force = false) => {
       await Promise.all([
@@ -105,7 +95,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
         udpateTransactions(force),
         updateInscriptions(force),
         updateFeeRates(),
-        updateInscriptionCounter(),
       ]);
     },
     [
@@ -113,7 +102,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       udpateTransactions,
       updateInscriptions,
       updateFeeRates,
-      updateInscriptionCounter,
     ]
   );
 
@@ -180,10 +168,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       await Promise.all([
         updateAccountBalance(),
         udpateTransactions(),
-        updateInscriptions(),
         updateLastBlock(),
         updateFeeRates(),
-        updateInscriptionCounter(),
       ]);
     }, 5000);
     return () => {
@@ -192,10 +178,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   }, [
     updateAccountBalance,
     udpateTransactions,
-    updateInscriptions,
     updateLastBlock,
     updateFeeRates,
-    updateInscriptionCounter,
     currentAccount?.address,
   ]);
 
@@ -211,11 +195,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     trottledUpdate,
     feeRates,
     loading,
-    inscriptionCounter,
     resetTransactions: () => {
       setTransactions([]);
       setInscriptions([]);
-      setInscriptionCounter(0);
     },
   };
 };
@@ -234,7 +216,6 @@ interface TransactionManagerContextType {
     slow: number;
   };
   resetTransactions: () => void;
-  inscriptionCounter?: number;
 }
 
 const TransactionManagerContext = createContext<
@@ -270,7 +251,6 @@ export const useTransactionManagerContext = () => {
         fast: 0,
       },
       resetTransactions: () => {},
-      inscriptionCounter: 0,
     };
   }
   return context;

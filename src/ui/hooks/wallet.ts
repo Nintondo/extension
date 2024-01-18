@@ -233,9 +233,13 @@ export const useUpdateCurrentAccountBalance = () => {
       const balance = await apiController.getAccountBalance(
         address ? address : currentAccount?.address ?? ""
       );
+      const { count, amount } = await apiController.getInscriptionCounter(
+        currentAccount?.address
+      );
       if (balance === undefined || !currentAccount) return;
       await updateCurrentAccount({
-        balance: balance / 10 ** 8,
+        balance: balance / 10 ** 8 - amount / 10 ** 8,
+        inscriptionCounter: count,
       });
     },
     [updateCurrentAccount, currentAccount, apiController]
