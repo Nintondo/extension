@@ -9,3 +9,7 @@
 .input {
   @apply py-1 pl-5 pr-10 text-base text-text bg-input-bg rounded-xl md:bg-bg w-full;
 }
+
+.inscriptionDiv {
+  @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6 relative pb-16;
+}

@@ -1,5 +1,5 @@
 .walletDiv {
-  @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6 relative;
+  @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6 relative pb-16;
 
   .accPanel {
     @apply flex flex-col mt-4 gap-4;
@@ -37,7 +37,7 @@
 }
 
 .transactions {
-  @apply text-base mt-6 font-medium mb-4 cursor-pointer transition-colors px-2 py-1 rounded-xl relative border-2 border-transparent;
+  @apply text-base mt-3 font-medium mb-2 cursor-pointer transition-colors px-2 py-1 rounded-xl relative border-2 border-transparent;
 }
 
 .active {

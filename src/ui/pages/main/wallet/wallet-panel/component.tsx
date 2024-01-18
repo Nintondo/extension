@@ -2,7 +2,7 @@ import s from "../styles.module.scss";
 import {
   Cog6ToothIcon,
   ChevronDownIcon,
-  NewspaperIcon,
+  // NewspaperIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useGetCurrentWallet } from "@/ui/states/walletState";
@@ -28,9 +28,9 @@ const WalletPanel = () => {
       </Link>
 
       <div className="flex gap-3">
-        <Link to={"/pages/discover"} className="cursor-pointer">
+        {/* <Link to={"/pages/discover"} className="cursor-pointer">
           <NewspaperIcon className="w-6 h-6" />
-        </Link>
+        </Link> */}
         <Link to={"/pages/settings"} className="cursor-pointer">
           <Cog6ToothIcon className="w-6 h-6 hover:rotate-90 transition-transform" />
         </Link>

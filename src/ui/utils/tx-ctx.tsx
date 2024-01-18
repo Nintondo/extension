@@ -142,7 +142,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const loadMoreInscriptions = useCallback(async () => {
     if (
       inscriptions.length < 50 ||
-      inscriptionTxIds.includes(inscriptions[inscriptionTxIds.length - 1].txid)
+      inscriptionTxIds.includes(inscriptions[inscriptions.length - 1].txid)
     )
       return;
 
