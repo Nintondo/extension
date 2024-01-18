@@ -16,14 +16,20 @@ import { t } from "i18next";
 import { useDebounce } from "@/ui/hooks/debounce";
 
 const Inscriptions = () => {
-  const { loadMoreInscriptions, inscriptions, currentPage, setCurrentPage } =
-    useTransactionManagerContext();
+  const {
+    loadMoreInscriptions,
+    inscriptions,
+    currentPage,
+    setCurrentPage,
+    forceUpdateInscriptions,
+  } = useTransactionManagerContext();
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
   }));
   const [loading, setLoading] = useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
   const [searchValue, setSearchValue] = useState<string>("");
+  const [loadedOnce, setLoadedOnce] = useState<boolean>(false);
 
   const changePage = async (page: number) => {
     if (
@@ -68,6 +74,13 @@ const Inscriptions = () => {
       setFoundInscriptions(undefined);
     }
   }, [setFoundInscriptions, inscriptions]);
+
+  useEffect(() => {
+    if (!loadedOnce) {
+      setLoadedOnce(true);
+      forceUpdateInscriptions();
+    }
+  }, [forceUpdateInscriptions, loadedOnce]);
 
   return (
     <div className={s.inscriptionDiv}>
