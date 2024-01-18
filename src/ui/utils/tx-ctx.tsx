@@ -85,6 +85,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const forceUpdateInscriptions = useCallback(async () => {
     await updateInscriptions(true);
     setCurrentPage(1);
+    setInscriptionTxIds([]);
   }, [updateInscriptions]);
 
   const updateLastBlock = useCallback(async () => {
