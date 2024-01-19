@@ -2,6 +2,7 @@ import type { IWalletState } from "@/shared/interfaces";
 import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
 import { useMemo } from "react";
+import { useAppState } from "./appState";
 
 const proxy = setupStateProxy();
 
@@ -15,8 +16,10 @@ export const useWalletState = create<IWalletState>()((set) => ({
     state: Partial<IWalletState>,
     updateBack = true
   ) => {
+    const { updateTab } = useAppState.getState();
     if (updateBack) {
       await proxy.updateWalletState(state);
+      updateTab();
     }
     set(state);
   },

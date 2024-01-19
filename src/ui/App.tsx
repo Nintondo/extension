@@ -19,11 +19,14 @@ import i18n from "../shared/locales/i18n";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
-  const { isReady, isUnlocked, updateAppState } = useAppState((v) => ({
-    isReady: v.isReady,
-    isUnlocked: v.isUnlocked,
-    updateAppState: v.updateAppState,
-  }));
+  const { isReady, isUnlocked, updateAppState, setCurrentTab } = useAppState(
+    (v) => ({
+      isReady: v.isReady,
+      isUnlocked: v.isUnlocked,
+      updateAppState: v.updateAppState,
+      setCurrentTab: v.setCurrentTab,
+    })
+  );
 
   const { updateControllers } = useControllersState((v) => ({
     updateControllers: v.updateControllers,
@@ -77,7 +80,33 @@ export default function App() {
     }
   }, [updateWalletState, updateAppState, updateControllers]);
 
+  const updateFromStore = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (request, sender, sendResponse) => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      setupApp();
+    },
+    [setupApp]
+  );
+
   useEffect(() => {
+    chrome.runtime.onMessage.addListener(updateFromStore);
+    return () => {
+      chrome.runtime.onMessage.removeListener(updateFromStore);
+    };
+  }, [updateFromStore]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    (async () => {
+      chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        const tab = tabs[0];
+        if (tab && tab.url) {
+          setCurrentTab(tab.url.includes(chrome.runtime.id) ? tab : undefined);
+        }
+      });
+    })();
+
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (!isReady) setupApp();
     else if (isReady && isUnlocked) setRouter(authenticatedRouter);
@@ -90,6 +119,7 @@ export default function App() {
     router,
     setRouter,
     setupApp,
+    setCurrentTab,
   ]);
 
   return (
