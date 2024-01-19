@@ -85,6 +85,7 @@ export default function App() {
     (request, sender, sendResponse) => {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       setupApp();
+      sendResponse();
     },
     [setupApp]
   );

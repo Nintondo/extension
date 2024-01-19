@@ -28,7 +28,11 @@ export const useAppState = create<IAppState>()((set, get) => ({
   updateTab: () => {
     const { tab } = get();
     if (tab !== undefined) {
-      chrome.tabs.sendMessage(tab.id, { forceUpdate: true }, () => {});
+      try {
+        chrome.tabs.sendMessage(tab.id, { forceUpdate: true }, () => {});
+      } catch {
+        //impl catch
+      }
     }
   },
 }));
