@@ -10,14 +10,17 @@ export const useAppState = create<IAppState>()((set, get) => ({
   vault: [],
   addressBook: [],
   language: "en",
-  setCurrentTab: (tab) => {
-    set({ tab });
-  },
+  activeTabs: [],
   updateAppState: async (app: Partial<IAppState>, updateBack = true) => {
     const { updateTab } = get();
     if (updateBack) {
       await proxy.updateAppState(app);
-      updateTab();
+      if (app.activeTabs === undefined) await updateTab();
+      else {
+        app.activeTabs = (await proxy.getAppState()).activeTabs.filter(
+          (f) => f !== app.activeTabs[app.activeTabs.length - 1]
+        );
+      }
     }
     set(app);
   },
@@ -25,14 +28,15 @@ export const useAppState = create<IAppState>()((set, get) => ({
     await proxy.updateAppState({ password: undefined, isUnlocked: false });
     set({ password: undefined, isUnlocked: false });
   },
-  updateTab: () => {
-    const { tab } = get();
-    if (tab !== undefined) {
-      try {
-        chrome.tabs.sendMessage(tab.id, { forceUpdate: true }, () => {});
-      } catch {
-        //impl catch
-      }
-    }
+  updateTab: async () => {
+    const { activeTabs } = get();
+    if (!activeTabs || !activeTabs.length) return;
+    activeTabs.forEach((tabId) => {
+      chrome.tabs.sendMessage(tabId, { forceUpdate: true }, () => {
+        if (chrome.runtime.lastError) {
+          //handle error
+        }
+      });
+    });
   },
 }));

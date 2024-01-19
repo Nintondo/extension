@@ -19,12 +19,12 @@ import i18n from "../shared/locales/i18n";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
-  const { isReady, isUnlocked, updateAppState, setCurrentTab } = useAppState(
+  const { isReady, isUnlocked, updateAppState, activeTabs } = useAppState(
     (v) => ({
       isReady: v.isReady,
       isUnlocked: v.isUnlocked,
       updateAppState: v.updateAppState,
-      setCurrentTab: v.setCurrentTab,
+      activeTabs: v.activeTabs,
     })
   );
 
@@ -35,6 +35,14 @@ export default function App() {
   const { updateWalletState } = useWalletState((v) => ({
     updateWalletState: v.updateWalletState,
   }));
+
+  const addTabToUpdate = useCallback(async () => {
+    chrome.tabs.query({ active: true }, async (tabs) => {
+      if (window.location.origin.includes(chrome.runtime.id) && !tabs[0]?.url) {
+        await updateAppState({ activeTabs: [...activeTabs, tabs[0].id] });
+      }
+    });
+  }, [activeTabs, updateAppState]);
 
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
@@ -55,7 +63,7 @@ export default function App() {
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
     await i18n.changeLanguage(appState.language ?? "en");
-
+    await addTabToUpdate();
     if (
       appState.isReady &&
       appState.isUnlocked &&
@@ -75,10 +83,11 @@ export default function App() {
           "isUnlocked",
           "password",
           "vault",
+          "activeTabs",
         ]),
       });
     }
-  }, [updateWalletState, updateAppState, updateControllers]);
+  }, [updateWalletState, updateAppState, updateControllers, addTabToUpdate]);
 
   const updateFromStore = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -99,16 +108,6 @@ export default function App() {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    (async () => {
-      chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-        const tab = tabs[0];
-        if (tab && tab.url) {
-          setCurrentTab(tab.url.includes(chrome.runtime.id) ? tab : undefined);
-        }
-      });
-    })();
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (!isReady) setupApp();
     else if (isReady && isUnlocked) setRouter(authenticatedRouter);
     else setRouter(guestRouter);
@@ -120,7 +119,6 @@ export default function App() {
     router,
     setRouter,
     setupApp,
-    setCurrentTab,
   ]);
 
   return (

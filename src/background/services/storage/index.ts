@@ -109,6 +109,18 @@ class StorageService {
   }
 
   async updateAppState(state: Partial<IAppStateBase>) {
+    if (state.activeTabs) {
+      this._appState = {
+        ...this._appState,
+        activeTabs: [
+          ...new Set([
+            ...(this.appState.activeTabs ?? []),
+            ...state.activeTabs,
+          ]),
+        ],
+      };
+      return;
+    }
     this._appState = { ...this._appState, ...state };
     if (
       state.addressBook !== undefined ||

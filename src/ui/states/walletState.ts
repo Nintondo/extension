@@ -19,7 +19,7 @@ export const useWalletState = create<IWalletState>()((set) => ({
     const { updateTab } = useAppState.getState();
     if (updateBack) {
       await proxy.updateWalletState(state);
-      updateTab();
+      await updateTab();
     }
     set(state);
   },
