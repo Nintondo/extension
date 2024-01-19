@@ -31,7 +31,7 @@ const AccountPanel = () => {
               className="react-loading pr-2"
             />
           ) : (
-            currentAccount?.balance
+            (currentAccount?.balance ?? 0).toFixed(8)
           )}
           <span className="text-xl pb-0.5 text-slate-300">BEL</span>
         </div>

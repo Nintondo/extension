@@ -116,10 +116,6 @@ export default function PagesLayout() {
         title: t("components.layout.change_language"),
       },
       {
-        route: "/pages/create-send",
-        title: t("components.layout.send"),
-      },
-      {
         route: "/pages/inscriptions",
         title: t("components.layout.inscriptions"),
         action: {
@@ -174,6 +170,13 @@ export default function PagesLayout() {
           route: "/pages/inscription-details",
           title:
             t("inscription_details.title") + ` #${currentRoute.state?.number}`,
+        },
+        {
+          route: "/pages/create-send",
+          title: t("components.layout.send"),
+          backAction: () => {
+            navigate("/home");
+          },
         },
       ] as IRouteTitle[],
     [navigate, stateController, currentRoute, wallets.length, defaultTitles]

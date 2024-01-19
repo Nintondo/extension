@@ -22,6 +22,7 @@ import AddressInput from "./address-input";
 import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
+import Loading from "react-loading";
 
 export interface FormType {
   address: string;
@@ -52,6 +53,7 @@ const CreateSend = () => {
   );
   const [inscriptionTransaction, setInscriptionTransaction] =
     useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const send = async ({
     address,
@@ -59,23 +61,24 @@ const CreateSend = () => {
     feeAmount,
     includeFeeInAmount,
   }: FormType) => {
-    if (Number(amount) < 0.01 && !inscriptionTransaction) {
-      return toast.error(t("send.create_send.minimum_amount_error"));
-    }
-    if (address.trim().length <= 0) {
-      return toast.error(t("send.create_send.address_error"));
-    }
-    if (Number(amount) > (currentAccount?.balance ?? 0)) {
-      return toast.error(t("send.create_send.not_enough_money_error"));
-    }
-    if (feeAmount < 1) {
-      return toast.error(t("send.create_send.not_enough_fee_error"));
-    }
-    if (feeAmount % 1 !== 0) {
-      return toast.error(t("send.create_send.fee_is_text_error"));
-    }
-
     try {
+      setLoading(true);
+      if (Number(amount) < 0.01 && !inscriptionTransaction) {
+        return toast.error(t("send.create_send.minimum_amount_error"));
+      }
+      if (address.trim().length <= 0) {
+        return toast.error(t("send.create_send.address_error"));
+      }
+      if (Number(amount) > (currentAccount?.balance ?? 0)) {
+        return toast.error(t("send.create_send.not_enough_money_error"));
+      }
+      if (feeAmount < 1) {
+        return toast.error(t("send.create_send.not_enough_fee_error"));
+      }
+      if (feeAmount % 1 !== 0) {
+        return toast.error(t("send.create_send.fee_is_text_error"));
+      }
+
       const { fee, rawtx } = !inscriptionTransaction
         ? await createTx(
             address,
@@ -103,6 +106,8 @@ const CreateSend = () => {
     } catch (e) {
       console.error(e);
       toast.error(t("send.create_send.default_error"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -226,13 +231,19 @@ const CreateSend = () => {
         </div>
       </form>
 
-      <button
-        type="submit"
-        className={"btn primary mx-4 mb-4 md:m-6 md:mb-3"}
-        form={formId}
-      >
-        {t("send.create_send.continue")}
-      </button>
+      {loading ? (
+        <div className="w-full flex justify-center">
+          <Loading />
+        </div>
+      ) : (
+        <button
+          type="submit"
+          className={"btn primary mx-4 mb-4 md:m-6 md:mb-3"}
+          form={formId}
+        >
+          {t("send.create_send.continue")}
+        </button>
+      )}
 
       <AddressBookModal
         isOpen={isOpenModal}

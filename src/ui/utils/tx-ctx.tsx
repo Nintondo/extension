@@ -48,6 +48,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       async (force?: boolean) => {
         if (!currentValue.length) setLoading(true);
         const receivedItems = await retrieveFn(currentAccount?.address ?? "");
+        console.log(receivedItems);
         if (receivedItems !== undefined) {
           if (
             currentValue.length > 0 &&

@@ -237,8 +237,9 @@ export const useUpdateCurrentAccountBalance = () => {
         currentAccount?.address
       );
       if (balance === undefined || !currentAccount) return;
+      const calculatedBalance = balance / 10 ** 8 - amount / 10 ** 8;
       await updateCurrentAccount({
-        balance: balance / 10 ** 8 - amount / 10 ** 8,
+        balance: calculatedBalance <= 0 ? 0 : calculatedBalance,
         inscriptionCounter: count,
       });
     },
