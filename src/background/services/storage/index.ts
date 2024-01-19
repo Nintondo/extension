@@ -9,6 +9,8 @@ import type { IAppStateBase, IWalletStateBase } from "@/shared/interfaces";
 import { emptyAppState, emptyWalletState } from "./utils";
 import { keyringService, permissionService, storageService } from "..";
 import { excludeKeysFromObj, pickKeysFromObj } from "@/shared/utils";
+import eventBus from "@/shared/eventBus";
+import { EVENTS } from "@/shared/constant";
 
 interface SaveWallets {
   password: string;
@@ -104,23 +106,12 @@ class StorageService {
         enc: localState.enc,
       };
 
+      eventBus.emit(EVENTS.broadcastToUI, { method: "updateFromStore" });
       await browserStorageLocalSet(payload);
     }
   }
 
   async updateAppState(state: Partial<IAppStateBase>) {
-    if (state.activeTabs) {
-      this._appState = {
-        ...this._appState,
-        activeTabs: [
-          ...new Set([
-            ...(this.appState.activeTabs ?? []),
-            ...state.activeTabs,
-          ]),
-        ],
-      };
-      return;
-    }
     this._appState = { ...this._appState, ...state };
     if (
       state.addressBook !== undefined ||
@@ -143,6 +134,7 @@ class StorageService {
         enc: localState.enc,
       };
 
+      eventBus.emit(EVENTS.broadcastToUI, { method: "updateFromStore" });
       await browserStorageLocalSet(payload);
     }
   }

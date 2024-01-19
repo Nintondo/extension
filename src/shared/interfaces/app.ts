@@ -6,7 +6,6 @@ export interface IAppStateBase {
   addressBook: string[];
   pendingWallet?: string;
   language: string;
-  activeTabs?: number[];
 }
 
 export interface IAppState extends IAppStateBase {
@@ -15,5 +14,4 @@ export interface IAppState extends IAppStateBase {
     updateBack?: boolean
   ) => Promise<void>;
   logout: () => Promise<void>;
-  updateTab: () => Promise<void>;
 }
