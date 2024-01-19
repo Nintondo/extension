@@ -84,41 +84,43 @@ const Inscriptions = () => {
 
   return (
     <div className={s.inscriptionDiv}>
-      <div className="flex align-center gap-1 items-center">
-        <input
-          tabIndex={0}
-          type="text"
-          className={s.input}
-          placeholder="Number/Inscription id"
-          onChange={(e) => {
-            setSearchValue(e.target.value);
-            debounce(e.target.value);
-          }}
-          value={searchValue}
-        />
-        {loading ? (
-          <div className="w-8 h-8 flex align-center">
-            <Loading />
-          </div>
-        ) : foundInscription === undefined ? (
-          <MagnifyingGlassCircleIcon className="w-8 h-8" />
-        ) : (
-          <XMarkIcon
-            onClick={() => {
-              setFoundInscriptions(undefined);
-              setSearchValue("");
+      <div className="flex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">
+        <div className="flex align-center gap-1 items-center">
+          <input
+            tabIndex={0}
+            type="text"
+            className={s.input}
+            placeholder="Number/Inscription id"
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+              debounce(e.target.value);
             }}
-            className="w-8 h-8 cursor-pointer"
+            value={searchValue}
           />
-        )}
-      </div>
+          {loading ? (
+            <div className="w-8 h-8 flex align-center">
+              <Loading />
+            </div>
+          ) : foundInscription === undefined ? (
+            <MagnifyingGlassCircleIcon className="w-8 h-8" />
+          ) : (
+            <XMarkIcon
+              onClick={() => {
+                setFoundInscriptions(undefined);
+                setSearchValue("");
+              }}
+              className="w-8 h-8 cursor-pointer"
+            />
+          )}
+        </div>
 
-      <div className={s.gridContainer}>
-        {(foundInscription === undefined ? inscriptions : foundInscription)
-          .slice((currentPage - 1) * 6, (currentPage - 1) * 6 + 6)
-          .map((f, i) => (
-            <InscriptionCard key={i} inscription={f} />
-          ))}
+        <div className={s.gridContainer}>
+          {(foundInscription === undefined ? inscriptions : foundInscription)
+            .slice((currentPage - 1) * 6, (currentPage - 1) * 6 + 6)
+            .map((f, i) => (
+              <InscriptionCard key={i} inscription={f} />
+            ))}
+        </div>
       </div>
 
       {!(
@@ -142,7 +144,7 @@ const Inscriptions = () => {
           />
         </div>
       ) : (
-        <div className="flex w-full h-full items-center justify-center">
+        <div className="flex w-full h-full items-center justify-center absolute pt-10">
           <p>{t("inscriptions.inscription_not_found")}</p>
         </div>
       )}
