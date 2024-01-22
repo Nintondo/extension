@@ -9,7 +9,7 @@
     }
 
     .balance {
-      @apply flex text-3xl gap-1 items-end;
+      @apply flex text-3xl gap-1 items-end cursor-default;
     }
 
     .accPubAddress {

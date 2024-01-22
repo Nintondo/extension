@@ -227,7 +227,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       );
       setInscriptions([
         ...receivedInscriptions,
-        ...inscriptions.slice(receivedInscriptions.length),
+        ...inscriptions.slice(receivedInscriptions.length, inscriptions.length),
       ]);
     }
   }, [
