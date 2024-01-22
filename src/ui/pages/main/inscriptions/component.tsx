@@ -27,18 +27,34 @@ const Inscriptions = () => {
     apiController: v.apiController,
   }));
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMoreInscriptions, setLoadingMoreInscriptions] =
+    useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
   const [searchValue, setSearchValue] = useState<string>("");
   const [loadedOnce, setLoadedOnce] = useState<boolean>(false);
 
-  const changePage = async (page: number) => {
-    if (
-      inscriptions.length <= page * 6 &&
-      page * 6 < (currentAccount?.inscriptionCounter ?? 0)
-    )
-      await loadMoreInscriptions();
-    setCurrentPage(page);
-  };
+  const changePage = useCallback(
+    async (page: number) => {
+      if (!loadingMoreInscriptions) {
+        if (
+          inscriptions.length <= page * 6 &&
+          page * 6 < (currentAccount?.inscriptionCounter ?? 0)
+        ) {
+          setLoadingMoreInscriptions(true);
+          await loadMoreInscriptions();
+          setLoadingMoreInscriptions(false);
+        }
+        setCurrentPage(page);
+      }
+    },
+    [
+      currentAccount?.inscriptionCounter,
+      inscriptions.length,
+      loadMoreInscriptions,
+      loadingMoreInscriptions,
+      setCurrentPage,
+    ]
+  );
   const [foundInscription, setFoundInscriptions] = useState<
     Inscription[] | undefined
   >(undefined);

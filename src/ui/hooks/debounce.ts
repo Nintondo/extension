@@ -9,8 +9,9 @@ export function useDebounceCall(
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (triggered !== undefined) {
-        await value(...triggered);
-        return setTriggered(undefined);
+        setTriggered(undefined);
+        const copy = [...triggered];
+        await value(...copy);
       }
     }, delay || 500);
 
