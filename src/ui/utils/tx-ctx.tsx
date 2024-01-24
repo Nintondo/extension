@@ -47,7 +47,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   ) => {
     return useCallback(
       async (force?: boolean) => {
-        if (!currentValue.length) setLoading(true);
         const receivedItems = await retrieveFn(currentAccount?.address ?? "");
         if (receivedItems !== undefined) {
           if (
@@ -62,7 +61,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
           } else if (currentValue.length < 50 || force)
             onUpdate(receivedItems ?? []);
         }
-        setLoading(false);
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [onUpdate, retrieveFn, currentValue, currentAccount?.address]
@@ -99,12 +97,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const updateAll = useCallback(
     async (force = false) => {
+      setLoading(true);
       await Promise.all([
         updateAccountBalance(),
         udpateTransactions(force),
         updateInscriptions(force),
         updateFeeRates(),
       ]);
+      setLoading(false);
     },
     [
       updateAccountBalance,
@@ -225,10 +225,17 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       const receivedInscriptions = await apiController.getInscriptions(
         currentAccount.address
       );
-      setInscriptions([
-        ...receivedInscriptions,
-        ...inscriptions.slice(receivedInscriptions.length, inscriptions.length),
-      ]);
+      if (!inscriptionTxIds.length) {
+        setInscriptions(receivedInscriptions);
+      } else {
+        setInscriptions([
+          ...receivedInscriptions,
+          ...inscriptions.slice(
+            receivedInscriptions.length,
+            inscriptions.length
+          ),
+        ]);
+      }
     }
   }, [
     inscriptionTxIds,

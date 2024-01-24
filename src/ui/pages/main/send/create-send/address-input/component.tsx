@@ -32,6 +32,9 @@ const AddressInput: FC<Props> = ({ address, onChange, onOpenModal }) => {
             autoComplete="off"
             className="input w-full"
             value={address}
+            placeholder={t(
+              "send.create_send.address_input.address_placeholder"
+            )}
             onChange={(v) => {
               onChange(v.target.value.trim());
               setFiltered(getFiltered(v.target.value.trim()));
@@ -47,7 +50,11 @@ const AddressInput: FC<Props> = ({ address, onChange, onOpenModal }) => {
             >
               <Combobox.Options className={s.addressbookoptions}>
                 {filtered.map((address) => (
-                  <Combobox.Option className={s.addressbookoption} key={address} value={address}>
+                  <Combobox.Option
+                    className={s.addressbookoption}
+                    key={address}
+                    value={address}
+                  >
                     {shortAddress(address, 14)}
                   </Combobox.Option>
                 ))}

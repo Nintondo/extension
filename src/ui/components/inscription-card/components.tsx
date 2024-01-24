@@ -12,7 +12,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-center w-full rounded-xl overflow-hidden w-36 h-36">
+    <div className="flex justify-center w-full rounded-xl overflow-hidden w-33 h-33">
       <div
         className="cursor-pointer bg-input-bg flex flex-col justify-center align-center relative rounded-xl"
         onClick={() => {
@@ -20,7 +20,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
         }}
       >
         {/* <Iframe preview={inscription.preview} size="default" /> */}
-        <div className="rounded-xl w-36 h-36 overflow-hidden">
+        <div className="rounded-xl w-33 h-33 overflow-hidden">
           <img
             src={`${PREVIEW_URL}/${inscription.inscription_id}`}
             alt="content"

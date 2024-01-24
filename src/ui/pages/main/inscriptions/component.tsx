@@ -22,6 +22,7 @@ const Inscriptions = () => {
     currentPage,
     setCurrentPage,
     forceUpdateInscriptions,
+    loading: managerLoading,
   } = useTransactionManagerContext();
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
@@ -86,22 +87,19 @@ const Inscriptions = () => {
   const debounce = useDebounce(searchInscription, 200);
 
   useEffect(() => {
-    if (inscriptions) {
-      setFoundInscriptions(undefined);
-    }
-  }, [setFoundInscriptions, inscriptions]);
-
-  useEffect(() => {
     if (!loadedOnce) {
       setLoadedOnce(true);
       forceUpdateInscriptions();
     }
   }, [forceUpdateInscriptions, loadedOnce]);
 
+  if (currentAccount?.inscriptionCounter === undefined && managerLoading)
+    return <Loading />;
+
   return (
     <div className={s.inscriptionDiv}>
       <div className="flex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">
-        <div className="flex align-center gap-1 items-center">
+        <div className="flex align-center gap-1 items-center z-10">
           <input
             tabIndex={0}
             type="text"
@@ -144,7 +142,7 @@ const Inscriptions = () => {
           !currentAccount?.inscriptionCounter) ||
         (foundInscription !== undefined && !foundInscription.length)
       ) ? (
-        <div className="w-full absolute bottom-0 p-3">
+        <div className="w-full absolute bottom-0 p-3 pb-4">
           <Pagination
             currentPage={currentPage}
             onPageChange={changePage}

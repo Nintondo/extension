@@ -14,7 +14,7 @@
 
 .arrow {
   border: none;
-  background: none;
+  @apply bg-input-bg px-3 rounded-xl;
 }
 
 .pagination {

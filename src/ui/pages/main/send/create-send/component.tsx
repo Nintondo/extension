@@ -177,20 +177,32 @@ const CreateSend = () => {
             />
           </div>
           {inscriptionTransaction ? undefined : (
-            <div className="form-field">
-              <span className="input-span">{t("send.create_send.amount")}</span>
-              <div className="flex gap-2 w-full">
-                <input
-                  type="number"
-                  placeholder={t("send.create_send.amount_to_send")}
-                  className="input w-full"
-                  value={formData.amount}
-                  onChange={onAmountChange}
-                />
-                <button className={s.maxAmount} onClick={onMaxClick}>
-                  {t("send.create_send.max_amount")}
-                </button>
+            <div className="flex flex-col gap-1">
+              <div className="form-field">
+                <span className="input-span">
+                  {t("send.create_send.amount")}
+                </span>
+                <div className="flex gap-2 w-full">
+                  <input
+                    type="number"
+                    placeholder={t("send.create_send.amount_to_send")}
+                    className="input w-full"
+                    value={formData.amount}
+                    onChange={onAmountChange}
+                  />
+                  <button className={s.maxAmount} onClick={onMaxClick}>
+                    {t("send.create_send.max_amount")}
+                  </button>
+                </div>
               </div>
+              <p className="p-0.5">
+                {`${t("wallet_page.amount_in_transactions")}: `}
+                {`${currentAccount.balance?.toFixed(8) ?? "-"} BEL`}
+              </p>
+              <p className="p-0.5">
+                {`${t("wallet_page.amount_in_inscriptions")}: `}
+                {`${currentAccount.inscriptionBalance?.toFixed(8) ?? "-"} BEL`}
+              </p>
             </div>
           )}
         </div>

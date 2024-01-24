@@ -241,6 +241,7 @@ export const useUpdateCurrentAccountBalance = () => {
       await updateCurrentAccount({
         balance: calculatedBalance <= 0 ? 0 : calculatedBalance,
         inscriptionCounter: count,
+        inscriptionBalance: amount / 10 ** 8,
       });
     },
     [updateCurrentAccount, currentAccount, apiController]

@@ -3,6 +3,12 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      width: {
+        33: "8.6rem",
+      },
+      height: {
+        33: "8.6rem",
+      },
       colors: {
         bg: "#1A1A1A",
         "input-bg": "#3d3d3d95",

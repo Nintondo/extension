@@ -5,7 +5,9 @@
     "no_inscriptions": "No inscriptions",
     "receive": "Receive",
     "send": "Send",
-    "inscriptions": "Inscriptions"
+    "inscriptions": "Inscriptions",
+    "amount_in_transactions": "BEL in transactions",
+    "amount_in_inscriptions": "BEL in inscriptions"
   },
   "settings": {
     "language": "Language",
@@ -163,7 +165,8 @@
         "custom": "Custom"
       },
       "address_input": {
-        "address_book": "Address book"
+        "address_book": "Address book",
+        "address_placeholder": "Receiver's address"
       },
       "address_book": {
         "address_book": "Address book",
