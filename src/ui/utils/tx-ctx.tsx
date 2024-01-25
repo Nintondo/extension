@@ -173,53 +173,45 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setInscriptions(updatedInscriptions);
     };
 
-    const fetchInscriptions = async (
-      address: string,
-      txId: string,
-      callbackIndex: number
-    ) => {
+    const fetchAndUpdateInscriptions = async (txId: string, index: number) => {
       const receivedInscriptions = await apiController.getPaginatedInscriptions(
-        address,
+        currentAccount.address,
         txId
       );
       if (receivedInscriptions.length) {
-        const index =
-          receivedInscriptions.length === 60
-            ? (callbackIndex + 1) * 60 - (callbackIndex ? 1 : 0)
-            : (callbackIndex + 1) * 60 - callbackIndex;
         updateInscriptions(receivedInscriptions, index);
+        return true;
       }
-      return receivedInscriptions.length;
+      return false;
     };
 
     if (currentPage > 10) {
       const chainIndex = Math.floor(currentPage / 10) - 1;
-      let inscriptionLength = await fetchInscriptions(
-        currentAccount.address,
+      let isUpdated = await fetchAndUpdateInscriptions(
         inscriptionTxIds[chainIndex],
-        chainIndex
+        chainIndex * 10
       );
-      if (!inscriptionLength) {
+      if (!isUpdated) {
         const txIdIndex = inscriptions.findIndex(
           (f) => f.txid === inscriptionTxIds[chainIndex]
         );
         for (let i = 1; i <= 3; i++) {
-          inscriptionLength = await fetchInscriptions(
-            currentAccount.address,
+          isUpdated = await fetchAndUpdateInscriptions(
             inscriptions[txIdIndex - i].txid,
-            i
+            txIdIndex - i
           );
-          if (inscriptionLength) {
+          if (isUpdated) {
             const updatedInscriptionTxIds = [...inscriptionTxIds];
             updatedInscriptionTxIds.splice(
               chainIndex,
-              1,
-              inscriptions[txIdIndex - i].txid
+              updatedInscriptionTxIds.length - 1
             );
+            updatedInscriptionTxIds.push(inscriptions[txIdIndex - i].txid);
             setInscriptionTxIds(updatedInscriptionTxIds);
             return;
           }
         }
+        await forceUpdateInscriptions();
       }
     } else {
       const receivedInscriptions = await apiController.getInscriptions(
@@ -243,6 +235,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPage,
     currentAccount?.address,
     apiController,
+    forceUpdateInscriptions,
   ]);
 
   useEffect(() => {
