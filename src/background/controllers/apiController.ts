@@ -4,6 +4,7 @@ import type {
   ITransaction,
 } from "@/shared/interfaces/api";
 import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
+import { IToken } from "@/shared/interfaces/token";
 import { fetchBELLMainnet } from "@/shared/utils";
 
 export interface IApiController {
@@ -37,6 +38,7 @@ export interface IApiController {
     inscriptionId?: string;
     address: string;
   }): Promise<Inscription[] | undefined>;
+  getTokens(address: string): Promise<IToken[] | undefined>;
 }
 
 class ApiController implements IApiController {
@@ -185,6 +187,12 @@ class ApiController implements IApiController {
       path: `/address/${address}/ords?search=${
         inscriptionId ?? inscriptionNumber
       }`,
+    });
+  }
+
+  async getTokens(address: string): Promise<IToken[] | undefined> {
+    return await fetchBELLMainnet<IToken[]>({
+      path: `/address/${address}/tokens`,
     });
   }
 }

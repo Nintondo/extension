@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import {
@@ -14,6 +14,8 @@ import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { t } from "i18next";
 import { useDebounce } from "@/ui/hooks/debounce";
+import { IToken } from "@/shared/interfaces/token";
+import TokenCard from "@/ui/components/token-card";
 
 const Inscriptions = () => {
   const {
@@ -21,8 +23,9 @@ const Inscriptions = () => {
     inscriptions,
     currentPage,
     setCurrentPage,
-    forceUpdateInscriptions,
     loading: managerLoading,
+    tokens,
+    active,
   } = useTransactionManagerContext();
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
@@ -33,6 +36,9 @@ const Inscriptions = () => {
   const currentAccount = useGetCurrentAccount();
   const [searchValue, setSearchValue] = useState<string>("");
   const [loadedOnce, setLoadedOnce] = useState<boolean>(false);
+  const [foundInscription, setFoundInscriptions] = useState<
+    Inscription[] | undefined
+  >(undefined);
 
   const changePage = useCallback(
     async (page: number) => {
@@ -56,9 +62,6 @@ const Inscriptions = () => {
       setCurrentPage,
     ]
   );
-  const [foundInscription, setFoundInscriptions] = useState<
-    Inscription[] | undefined
-  >(undefined);
 
   const searchInscription = useCallback(
     async (search: string) => {
@@ -89,44 +92,50 @@ const Inscriptions = () => {
   useEffect(() => {
     if (!loadedOnce) {
       setLoadedOnce(true);
-      forceUpdateInscriptions();
     }
-  }, [forceUpdateInscriptions, loadedOnce]);
+  }, [loadedOnce]);
 
   if (currentAccount?.inscriptionCounter === undefined && managerLoading)
     return <Loading />;
 
+  if (active === "bel") {
+    if (tokens.length === 0)
+      return (
+        <div className="flex w-full h-4/5 bottom-0 items-center justify-center absolute">
+          <p>{t("inscriptions.tokens_not_found")}</p>
+        </div>
+      );
+
+    return (
+      <div className={s.inscriptionDiv}>
+        <div className="flex flex-col h-full w-full p-2 gap-3">
+          <SearchField
+            debounce={debounce}
+            foundData={foundInscription}
+            loading={loading}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            setFoundData={setFoundInscriptions}
+          />
+          {tokens.map((f: IToken, i: number) => {
+            return <TokenCard token={f} key={i} />;
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={s.inscriptionDiv}>
       <div className="flex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">
-        <div className="flex align-center gap-1 items-center z-10">
-          <input
-            tabIndex={0}
-            type="text"
-            className={s.input}
-            placeholder="Number/Inscription id"
-            onChange={(e) => {
-              setSearchValue(e.target.value);
-              debounce(e.target.value);
-            }}
-            value={searchValue}
-          />
-          {loading ? (
-            <div className="w-8 h-8 flex align-center">
-              <Loading />
-            </div>
-          ) : foundInscription === undefined ? (
-            <MagnifyingGlassCircleIcon className="w-8 h-8" />
-          ) : (
-            <XMarkIcon
-              onClick={() => {
-                setFoundInscriptions(undefined);
-                setSearchValue("");
-              }}
-              className="w-8 h-8 cursor-pointer"
-            />
-          )}
-        </div>
+        <SearchField
+          debounce={debounce}
+          foundData={foundInscription}
+          loading={loading}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          setFoundData={setFoundInscriptions}
+        />
 
         <div className={s.gridContainer}>
           {(foundInscription === undefined ? inscriptions : foundInscription)
@@ -158,7 +167,7 @@ const Inscriptions = () => {
           />
         </div>
       ) : (
-        <div className="flex w-full h-full items-center justify-center absolute pt-10">
+        <div className="flex w-full h-4/5 bottom-0 items-center justify-center absolute">
           <p>{t("inscriptions.inscription_not_found")}</p>
         </div>
       )}
@@ -167,3 +176,52 @@ const Inscriptions = () => {
 };
 
 export default Inscriptions;
+
+interface SearchFieldProps {
+  setSearchValue: (value: string) => void;
+  debounce: (search: string) => Promise<void>;
+  searchValue: string;
+  loading: boolean;
+  foundData: (Inscription | IToken)[] | undefined;
+  setFoundData: (undefined) => void;
+}
+
+const SearchField: FC<SearchFieldProps> = ({
+  setSearchValue,
+  debounce,
+  searchValue,
+  loading,
+  foundData,
+  setFoundData,
+}) => {
+  return (
+    <div className="flex align-center gap-1 items-center">
+      <input
+        tabIndex={0}
+        type="text"
+        className={s.input}
+        placeholder="Number/Inscription id"
+        onChange={(e) => {
+          setSearchValue(e.target.value);
+          debounce(e.target.value);
+        }}
+        value={searchValue}
+      />
+      {loading ? (
+        <div className="w-8 h-8 flex align-center">
+          <Loading />
+        </div>
+      ) : foundData === undefined ? (
+        <MagnifyingGlassCircleIcon className="w-8 h-8" />
+      ) : (
+        <XMarkIcon
+          onClick={() => {
+            setFoundData(undefined);
+            setSearchValue("");
+          }}
+          className="w-8 h-8 cursor-pointer"
+        />
+      )}
+    </div>
+  );
+};

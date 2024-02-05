@@ -76,6 +76,10 @@
       "output": "Output",
       "offset": "Offset",
       "preview": "Preview"
+    },
+    "token_card": {
+      "transferable_balance": "Transferable balance",
+      "balance": "Balance"
     }
   },
   "change_password": {
@@ -242,6 +246,7 @@
     "number": "Inscription number"
   },
   "inscriptions": {
-    "inscription_not_found": "Could not find inscription"
+    "inscription_not_found": "Could not find inscription",
+    "tokens_not_found": "Could not find tokens"
   }
 }

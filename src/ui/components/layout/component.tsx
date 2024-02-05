@@ -1,16 +1,13 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import s from "./styles.module.scss";
 import cn from "classnames";
-import {
-  ArrowPathIcon,
-  ChevronLeftIcon,
-  PlusCircleIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 import { useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import Select from "../select";
 
 interface IRouteTitle {
   route: string;
@@ -31,7 +28,7 @@ export default function PagesLayout() {
   const currentRoute = useLocation();
   const navigate = useNavigate();
   const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
-  const { forceUpdateInscriptions } = useTransactionManagerContext();
+  const { active, setActive } = useTransactionManagerContext();
 
   const defaultTitles: IRouteTitle[] = useMemo(
     () => [
@@ -120,15 +117,16 @@ export default function PagesLayout() {
         title: t("components.layout.inscriptions"),
         action: {
           icon: (
-            <ArrowPathIcon
-              onClick={forceUpdateInscriptions}
-              className="w-8 h-8 cursor-pointer"
+            <Select
+              values={[{ name: "NFT" }, { name: "bel" }]}
+              selected={{ name: active }}
+              setSelected={(v) => setActive(v.name)}
             />
           ),
         },
       },
     ],
-    [forceUpdateInscriptions]
+    [active, setActive]
   );
 
   const routeTitles = useMemo(

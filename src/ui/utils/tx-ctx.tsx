@@ -16,6 +16,7 @@ import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
 import { useDebounceCall } from "../hooks/debounce";
 import { Inscription } from "@/shared/interfaces/inscriptions";
+import { IToken } from "@/shared/interfaces/token";
 
 const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
@@ -31,6 +32,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
+  const [tokens, setTokens] = useState<IToken[]>([]);
+  const [active, setActive] = useState<"NFT" | "bel">("NFT");
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
@@ -95,6 +98,12 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     setFeeRates(await apiController.getFees());
   }, [apiController]);
 
+  const updateTokens = useCallback(async () => {
+    if (!currentAccount?.address) return;
+    const tokens = await apiController.getTokens(currentAccount.address);
+    setTokens(tokens);
+  }, [apiController, currentAccount?.address]);
+
   const updateAll = useCallback(
     async (force = false) => {
       setLoading(true);
@@ -103,6 +112,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
         udpateTransactions(force),
         updateInscriptions(force),
         updateFeeRates(),
+        updateTokens(),
       ]);
       setLoading(false);
     },
@@ -111,6 +121,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       udpateTransactions,
       updateInscriptions,
       updateFeeRates,
+      updateTokens,
     ]
   );
 
@@ -261,6 +272,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
         updateLastBlock(),
         updateFeeRates(),
         inscriptionIntervalUpdate(),
+        updateTokens(),
       ]);
     }, 5000);
     return () => {
@@ -272,6 +284,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     updateLastBlock,
     updateFeeRates,
     inscriptionIntervalUpdate,
+    updateTokens,
     currentAccount?.address,
   ]);
 
@@ -301,6 +314,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     },
     setCurrentPage,
     currentPage,
+    tokens,
+    active,
+    setActive,
     forceUpdateInscriptions,
   };
 };
@@ -321,6 +337,9 @@ interface TransactionManagerContextType {
   resetTransactions: () => void;
   setCurrentPage: (page: number) => void;
   currentPage: number;
+  tokens: IToken[];
+  active: string;
+  setActive: (active: "NFT" | "bel") => void;
   forceUpdateInscriptions: () => Promise<void>;
 }
 
@@ -359,6 +378,9 @@ export const useTransactionManagerContext = () => {
       resetTransactions: () => {},
       setCurrentPage: () => {},
       currentPage: 1,
+      tokens: [],
+      active: "NFT",
+      setActive: () => {},
       forceUpdateInscriptions: () => {},
     };
   }
