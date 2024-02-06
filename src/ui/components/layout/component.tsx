@@ -121,6 +121,8 @@ export default function PagesLayout() {
               values={[{ name: "NFT" }, { name: "bel" }]}
               selected={{ name: active }}
               setSelected={(v) => setActive(v.name)}
+              displayCheckIcon={false}
+              className="w-20.5"
             />
           ),
         },

@@ -7,16 +7,25 @@ interface Props {
   values: { name: string }[];
   selected: any;
   label?: string;
+  displayCheckIcon?: boolean;
+  className?: string;
 }
 
-const Select: FC<Props> = ({ selected, setSelected, values, label }) => {
+const Select: FC<Props> = ({
+  selected,
+  setSelected,
+  values,
+  label,
+  displayCheckIcon = true,
+  className,
+}) => {
   return (
-    <div>
+    <div className={className ?? ""}>
       {label !== undefined ? (
         <label className="input-span">{label}</label>
       ) : undefined}
       <Listbox value={selected} onChange={setSelected}>
-        <div className="relative mt-1">
+        <div className={`relative mt-1 w-full`}>
           <Listbox.Button className="relative w-full cursor-default rounded-xl bg-input-bg py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
             <span className="block truncate">{selected.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -37,8 +46,10 @@ const Select: FC<Props> = ({ selected, setSelected, values, label }) => {
                 <Listbox.Option
                   key={valueIdx}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                    `relative cursor-default select-none py-2 ${
                       active ? "bg-input-bg text-text" : "text-text"
+                    } ${
+                      displayCheckIcon ? "pl-10 pr-4" : "flex justify-center"
                     }`
                   }
                   value={value}
@@ -52,7 +63,7 @@ const Select: FC<Props> = ({ selected, setSelected, values, label }) => {
                       >
                         {value.name}
                       </span>
-                      {selected ? (
+                      {selected && displayCheckIcon ? (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />
                         </span>

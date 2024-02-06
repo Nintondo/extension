@@ -39,6 +39,9 @@ const Inscriptions = () => {
   const [foundInscription, setFoundInscriptions] = useState<
     Inscription[] | undefined
   >(undefined);
+  const [foundTokens, setFoundTokens] = useState<IToken[] | undefined>(
+    undefined
+  );
 
   const changePage = useCallback(
     async (page: number) => {
@@ -87,7 +90,24 @@ const Inscriptions = () => {
     [apiController, setCurrentPage, currentAccount.address]
   );
 
-  const debounce = useDebounce(searchInscription, 200);
+  const searchToken = useCallback(
+    async (search: string) => {
+      if (!search || !search.trim().length) {
+        setFoundTokens(undefined);
+        return;
+      }
+      setLoading(true);
+      setFoundTokens(
+        tokens.filter((f) => f.tick.includes(search.trim().toLowerCase()))
+      );
+      setCurrentPage(1);
+      setLoading(false);
+    },
+    [setCurrentPage, tokens]
+  );
+
+  const inscriptionDebounce = useDebounce(searchInscription, 200);
+  const tokenDebounce = useDebounce(searchToken, 10);
 
   useEffect(() => {
     if (!loadedOnce) {
@@ -99,28 +119,35 @@ const Inscriptions = () => {
     return <Loading />;
 
   if (active === "bel") {
-    if (tokens.length === 0)
-      return (
-        <div className="flex w-full h-4/5 bottom-0 items-center justify-center absolute">
-          <p>{t("inscriptions.tokens_not_found")}</p>
-        </div>
-      );
-
     return (
       <div className={s.inscriptionDiv}>
-        <div className="flex flex-col h-full w-full p-2 gap-3">
+        <div className="lex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">
           <SearchField
-            debounce={debounce}
-            foundData={foundInscription}
+            debounce={tokenDebounce}
+            foundData={foundTokens}
             loading={loading}
             searchValue={searchValue}
             setSearchValue={setSearchValue}
-            setFoundData={setFoundInscriptions}
+            setFoundData={setFoundTokens}
+            tokenSearch={true}
           />
-          {tokens.map((f: IToken, i: number) => {
-            return <TokenCard token={f} key={i} />;
-          })}
+
+          <div className="py-2 pt-4 overflow-y-auto gap-2">
+            {(foundTokens === undefined ? tokens : foundTokens).map(
+              (f: IToken, i: number) => {
+                return <TokenCard token={f} key={i} />;
+              }
+            )}
+          </div>
         </div>
+        {(foundTokens === undefined && !tokens.length) ||
+        (foundTokens !== undefined && !foundTokens.length) ? (
+          <div className="flex w-full h-4/5 bottom-0 items-center justify-center absolute">
+            <p>{t("inscriptions.tokens_not_found")}</p>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     );
   }
@@ -129,7 +156,7 @@ const Inscriptions = () => {
     <div className={s.inscriptionDiv}>
       <div className="flex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">
         <SearchField
-          debounce={debounce}
+          debounce={inscriptionDebounce}
           foundData={foundInscription}
           loading={loading}
           searchValue={searchValue}
@@ -184,6 +211,7 @@ interface SearchFieldProps {
   loading: boolean;
   foundData: (Inscription | IToken)[] | undefined;
   setFoundData: (undefined) => void;
+  tokenSearch?: boolean;
 }
 
 const SearchField: FC<SearchFieldProps> = ({
@@ -193,6 +221,7 @@ const SearchField: FC<SearchFieldProps> = ({
   loading,
   foundData,
   setFoundData,
+  tokenSearch = false,
 }) => {
   return (
     <div className="flex align-center gap-1 items-center">
@@ -200,7 +229,11 @@ const SearchField: FC<SearchFieldProps> = ({
         tabIndex={0}
         type="text"
         className={s.input}
-        placeholder="Number/Inscription id"
+        placeholder={
+          tokenSearch
+            ? t("inscriptions.token_search_placeholder")
+            : t("inscriptions.inscription_search_placeholder")
+        }
         onChange={(e) => {
           setSearchValue(e.target.value);
           debounce(e.target.value);

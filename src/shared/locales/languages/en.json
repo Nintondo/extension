@@ -79,7 +79,9 @@
     },
     "token_card": {
       "transferable_balance": "Transferable balance",
-      "balance": "Balance"
+      "balance": "Balance",
+      "create_transfer": "Mint transfer",
+      "send": "Send"
     }
   },
   "change_password": {
@@ -247,6 +249,8 @@
   },
   "inscriptions": {
     "inscription_not_found": "Could not find inscription",
-    "tokens_not_found": "Could not find tokens"
+    "tokens_not_found": "Could not find tokens",
+    "inscription_search_placeholder": "Number/Inscription id",
+    "token_search_placeholder": "Token name"
   }
 }
