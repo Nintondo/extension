@@ -254,6 +254,9 @@
     "token_search_placeholder": "Token name",
     "mint_token_modal_title": "Mint transfer token",
     "send_token_modal_title": "Send token",
-    "amount_to_mint": "Amount to mint"
+    "amount_to_mint": "Amount to mint",
+    "amount_is_text_error": "Amount should be integer",
+    "amount_cannot_be_fractional": "Amount cannot be fractional",
+    "amount_exceeds_balance": "Amount exceeds balance"
   }
 }

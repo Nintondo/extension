@@ -39,6 +39,7 @@ export interface IApiController {
     address: string;
   }): Promise<Inscription[] | undefined>;
   getTokens(address: string): Promise<IToken[] | undefined>;
+  getTransactionHex(txid: string): Promise<string | undefined>;
 }
 
 class ApiController implements IApiController {
@@ -193,6 +194,13 @@ class ApiController implements IApiController {
   async getTokens(address: string): Promise<IToken[] | undefined> {
     return await fetchBELLMainnet<IToken[]>({
       path: `/address/${address}/tokens`,
+    });
+  }
+
+  async getTransactionHex(txid: string): Promise<string> {
+    return await fetchBELLMainnet<string>({
+      path: "/tx/" + txid + "/hex",
+      json: false,
     });
   }
 }

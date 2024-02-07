@@ -14,6 +14,8 @@ import { normalizeAmount } from "@/ui/utils";
 import s from "./styles.module.scss";
 import FeeInput from "../../send/create-send/fee-input";
 import Loading from "react-loading";
+import { useInscribeTransferToken } from "@/ui/hooks/inscriber";
+import toast from "react-hot-toast";
 
 interface FormType {
   amount: string;
@@ -35,6 +37,7 @@ const MintTransferModal: FC<Props> = ({
   });
   const formId = useId();
   const [loading, setLoading] = useState<boolean>(false);
+  const inscribeTransferToken = useInscribeTransferToken();
 
   const onAmountChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFormData((prev) => ({
@@ -51,10 +54,35 @@ const MintTransferModal: FC<Props> = ({
     }));
   };
 
-  const inscribe = useCallback(async () => {
-    setLoading(true);
-    setLoading(false);
-  }, [setLoading]);
+  const inscribe = useCallback(
+    async ({ amount, feeRate }: FormType) => {
+      setLoading(true);
+      if (Number.isNaN(Number(amount))) {
+        return toast.error(t("inscriptions.amount_is_text_error"));
+      }
+      if (Number(amount) % 1 !== 0) {
+        return toast.error(t("inscriptions.amount_cannot_be_fractional"));
+      }
+      if (Number(amount) > selectedMintToken.balance) {
+        return toast.error(t("inscriptions.amount_exceeds_balance"));
+      }
+      if (feeRate % 1 !== 0) {
+        return toast.error(t("send.create_send.fee_is_text_error"));
+      }
+      const txs = await inscribeTransferToken(
+        {
+          p: "bel-20",
+          op: "transfer",
+          tick: selectedMintToken.tick,
+          amt: Number(amount),
+        },
+        formData.feeRate
+      );
+      console.log(txs);
+      setLoading(false);
+    },
+    [setLoading, formData.feeRate, inscribeTransferToken, selectedMintToken]
+  );
 
   return (
     <Modal
@@ -67,7 +95,7 @@ const MintTransferModal: FC<Props> = ({
         className={"w-full flex flex-col gap-6 px-1 py-6 items-start h-full"}
         onSubmit={async (e) => {
           e.preventDefault();
-          inscribe();
+          inscribe(formData);
         }}
       >
         <div className="form-field">
