@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { FC, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
-import {
-  MagnifyingGlassCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
 import { useControllersState } from "@/ui/states/controllerState";
 import Loading from "react-loading";
 import InscriptionCard from "@/ui/components/inscription-card";
@@ -16,6 +12,8 @@ import { t } from "i18next";
 import { useDebounce } from "@/ui/hooks/debounce";
 import { IToken } from "@/shared/interfaces/token";
 import TokenCard from "@/ui/components/token-card";
+import SearchField from "./search-field";
+import MintTransferModal from "./mint-transfer-modal";
 
 const Inscriptions = () => {
   const {
@@ -35,13 +33,18 @@ const Inscriptions = () => {
     useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
   const [searchValue, setSearchValue] = useState<string>("");
-  const [loadedOnce, setLoadedOnce] = useState<boolean>(false);
   const [foundInscription, setFoundInscriptions] = useState<
     Inscription[] | undefined
   >(undefined);
   const [foundTokens, setFoundTokens] = useState<IToken[] | undefined>(
     undefined
   );
+  const [selectedMintToken, setSelectedMintToken] = useState<
+    IToken | undefined
+  >(undefined);
+  const [selectedSendToken, setSelectedSendToken] = useState<
+    IToken | undefined
+  >(undefined);
 
   const changePage = useCallback(
     async (page: number) => {
@@ -109,12 +112,6 @@ const Inscriptions = () => {
   const inscriptionDebounce = useDebounce(searchInscription, 200);
   const tokenDebounce = useDebounce(searchToken, 10);
 
-  useEffect(() => {
-    if (!loadedOnce) {
-      setLoadedOnce(true);
-    }
-  }, [loadedOnce]);
-
   if (currentAccount?.inscriptionCounter === undefined && managerLoading)
     return <Loading />;
 
@@ -135,7 +132,18 @@ const Inscriptions = () => {
           <div className="py-2 pt-4 overflow-y-auto gap-2">
             {(foundTokens === undefined ? tokens : foundTokens).map(
               (f: IToken, i: number) => {
-                return <TokenCard token={f} key={i} />;
+                return (
+                  <TokenCard
+                    openMintModal={(token) => {
+                      setSelectedMintToken(token);
+                    }}
+                    openSendModal={(token) => {
+                      setSelectedSendToken(token);
+                    }}
+                    token={f}
+                    key={i}
+                  />
+                );
               }
             )}
           </div>
@@ -145,9 +153,11 @@ const Inscriptions = () => {
           <div className="flex w-full h-4/5 bottom-0 items-center justify-center absolute">
             <p>{t("inscriptions.tokens_not_found")}</p>
           </div>
-        ) : (
-          ""
-        )}
+        ) : undefined}
+        <MintTransferModal
+          selectedMintToken={selectedMintToken}
+          setSelectedMintToken={setSelectedMintToken}
+        />
       </div>
     );
   }
@@ -203,58 +213,3 @@ const Inscriptions = () => {
 };
 
 export default Inscriptions;
-
-interface SearchFieldProps {
-  setSearchValue: (value: string) => void;
-  debounce: (search: string) => Promise<void>;
-  searchValue: string;
-  loading: boolean;
-  foundData: (Inscription | IToken)[] | undefined;
-  setFoundData: (undefined) => void;
-  tokenSearch?: boolean;
-}
-
-const SearchField: FC<SearchFieldProps> = ({
-  setSearchValue,
-  debounce,
-  searchValue,
-  loading,
-  foundData,
-  setFoundData,
-  tokenSearch = false,
-}) => {
-  return (
-    <div className="flex align-center gap-1 items-center">
-      <input
-        tabIndex={0}
-        type="text"
-        className={s.input}
-        placeholder={
-          tokenSearch
-            ? t("inscriptions.token_search_placeholder")
-            : t("inscriptions.inscription_search_placeholder")
-        }
-        onChange={(e) => {
-          setSearchValue(e.target.value);
-          debounce(e.target.value);
-        }}
-        value={searchValue}
-      />
-      {loading ? (
-        <div className="w-8 h-8 flex align-center">
-          <Loading />
-        </div>
-      ) : foundData === undefined ? (
-        <MagnifyingGlassCircleIcon className="w-8 h-8" />
-      ) : (
-        <XMarkIcon
-          onClick={() => {
-            setFoundData(undefined);
-            setSearchValue("");
-          }}
-          className="w-8 h-8 cursor-pointer"
-        />
-      )}
-    </div>
-  );
-};

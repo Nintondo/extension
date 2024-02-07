@@ -7,9 +7,11 @@ import cn from "classnames";
 
 interface Props {
   token: IToken;
+  openMintModal: (token: IToken) => void;
+  openSendModal: (token: IToken) => void;
 }
 
-const TokenCard: FC<Props> = ({ token }) => {
+const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
   return (
     <Disclosure>
       {({ open }) => (
@@ -40,13 +42,17 @@ const TokenCard: FC<Props> = ({ token }) => {
             <div className="flex py-2 items-center gap-3">
               <button
                 className={"btn primary w-full flex-1"}
-                onClick={() => {}}
+                onClick={() => {
+                  openSendModal(token);
+                }}
               >
                 {t("components.token_card.send")}
               </button>
               <button
                 className={"btn primary w-full flex-3"}
-                onClick={() => {}}
+                onClick={() => {
+                  openMintModal(token);
+                }}
               >
                 {t("components.token_card.create_transfer")}
               </button>

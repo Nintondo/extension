@@ -251,6 +251,9 @@
     "inscription_not_found": "Could not find inscription",
     "tokens_not_found": "Could not find tokens",
     "inscription_search_placeholder": "Number/Inscription id",
-    "token_search_placeholder": "Token name"
+    "token_search_placeholder": "Token name",
+    "mint_token_modal_title": "Mint transfer token",
+    "send_token_modal_title": "Send token",
+    "amount_to_mint": "Amount to mint"
   }
 }
