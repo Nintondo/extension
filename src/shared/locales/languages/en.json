@@ -258,6 +258,8 @@
     "amount_is_text_error": "Amount should be integer",
     "amount_cannot_be_fractional": "Amount cannot be fractional",
     "amount_exceeds_balance": "Amount exceeds balance",
-    "transfer_inscribed": "Transfer inscribed successfully"
+    "transfer_inscribed": "Transfer inscribed successfully",
+    "choose_transfer": "Choose transfers to send",
+    "total_amount": "Total amount"
   }
 }

@@ -11,10 +11,11 @@ import { t } from "i18next";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  setFormData: React.Dispatch<React.SetStateAction<FormType>>;
+  // setFormData: React.Dispatch<React.SetStateAction<FormType>>;
+  setAddress: (address: string) => void;
 }
 
-const AddressBookModal: FC<Props> = ({ isOpen, onClose, setFormData }) => {
+const AddressBookModal: FC<Props> = ({ isOpen, onClose, setAddress }) => {
   const { addressBook, updateAppState } = useAppState((v) => ({
     addressBook: v.addressBook,
     updateAppState: v.updateAppState,
@@ -27,7 +28,7 @@ const AddressBookModal: FC<Props> = ({ isOpen, onClose, setFormData }) => {
   };
 
   const onSelect = (address: string) => {
-    setFormData((prev) => ({ ...prev, address }));
+    setAddress(address);
     onClose();
   };
 

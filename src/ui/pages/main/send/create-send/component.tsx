@@ -260,7 +260,9 @@ const CreateSend = () => {
       <AddressBookModal
         isOpen={isOpenModal}
         onClose={() => setOpenModal(false)}
-        setFormData={setFormData}
+        setAddress={(address) => {
+          setFormData((p) => ({ ...p, address: address }));
+        }}
       />
     </div>
   );

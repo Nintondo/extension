@@ -74,7 +74,7 @@ const MintTransferModal: FC<Props> = ({
           p: "bel-20",
           op: "transfer",
           tick: selectedMintToken.tick,
-          amt: Number(amount),
+          amt: amount,
         },
         formData.feeRate
       );
@@ -134,7 +134,7 @@ const MintTransferModal: FC<Props> = ({
 
       <div className="w-full flex justify-center items-center">
         {loading ? (
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center items-center">
             <Loading />
           </div>
         ) : (
