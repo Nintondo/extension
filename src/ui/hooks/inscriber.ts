@@ -3,6 +3,8 @@ import { inscribe } from "bells-inscriber";
 import { useCallback } from "react";
 import { useGetCurrentAccount } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
+import toast from "react-hot-toast";
+import { t } from "i18next";
 
 export const useInscribeTransferToken = () => {
   const currentAccount = useGetCurrentAccount();
@@ -30,12 +32,13 @@ export const useInscribeTransferToken = () => {
         },
         contentType: "application/json; charset=utf-8",
         publicKey: Buffer.from(
-          await keyringController.exportPublicKey(currentAccount.address)
+          await keyringController.exportPublicKey(currentAccount.address),
+          "hex"
         ),
-        signPsbtHex: keyringController.signTransaction,
+        signPsbtHex: keyringController.signAllInputs,
       });
-
-      return txs;
+      for (const i of txs) await apiController.pushTx(i);
+      toast.success(t("inscriptions.transfer_inscribed"));
     },
     [apiController, currentAccount, keyringController]
   );

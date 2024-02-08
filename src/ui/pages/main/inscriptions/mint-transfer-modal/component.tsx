@@ -69,7 +69,7 @@ const MintTransferModal: FC<Props> = ({
       if (feeRate % 1 !== 0) {
         return toast.error(t("send.create_send.fee_is_text_error"));
       }
-      const txs = await inscribeTransferToken(
+      await inscribeTransferToken(
         {
           p: "bel-20",
           op: "transfer",
@@ -78,10 +78,16 @@ const MintTransferModal: FC<Props> = ({
         },
         formData.feeRate
       );
-      console.log(txs);
+      setSelectedMintToken(undefined);
       setLoading(false);
     },
-    [setLoading, formData.feeRate, inscribeTransferToken, selectedMintToken]
+    [
+      setLoading,
+      formData.feeRate,
+      inscribeTransferToken,
+      selectedMintToken,
+      setSelectedMintToken,
+    ]
   );
 
   return (

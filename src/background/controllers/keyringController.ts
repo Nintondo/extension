@@ -25,6 +25,9 @@ export interface IKeyringController {
   ): Promise<string[]>;
   exportPublicKey(address: string): Promise<string>;
   serializeKeyringById(index: number): Promise<any>;
+  signAllInputs(
+    txHex: string
+  ): Promise<{ psbtHex: string; signatures: (string | undefined)[] }>;
 }
 
 class KeyringController implements IKeyringController {
@@ -70,6 +73,12 @@ class KeyringController implements IKeyringController {
     keyringService.signPsbt(psbt);
     (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
     return psbt.toHex();
+  }
+
+  async signAllInputs(txHex: string) {
+    const psbt = Psbt.fromHex(txHex);
+    const signatures = keyringService.signAllPsbtInputs(psbt);
+    return { psbtHex: psbt.toHex(), signatures };
   }
 
   async signMessage(msgParams: { from: string; data: string }) {

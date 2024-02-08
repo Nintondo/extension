@@ -116,6 +116,14 @@ class KeyringService {
     );
   }
 
+  signAllPsbtInputs(psbt: Psbt) {
+    const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
+    return keyring.signAllInputsInPsbt(
+      psbt,
+      storageService.currentAccount.address
+    ).signatures;
+  }
+
   signMessage(msgParams: { from: string; data: string }) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     return keyring.signMessage(msgParams.from, msgParams.data);

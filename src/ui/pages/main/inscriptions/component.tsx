@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import s from "./styles.module.scss";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { useControllersState } from "@/ui/states/controllerState";
@@ -14,6 +14,7 @@ import { IToken } from "@/shared/interfaces/token";
 import TokenCard from "@/ui/components/token-card";
 import SearchField from "./search-field";
 import MintTransferModal from "./mint-transfer-modal";
+import SendTransferModal from "./send-transfer-modal";
 
 const Inscriptions = () => {
   const {
@@ -129,20 +130,21 @@ const Inscriptions = () => {
             tokenSearch={true}
           />
 
-          <div className="py-2 pt-4 overflow-y-auto gap-2">
+          <div className="py-2 pt-4 overflow-y-auto gap-3 flex flex-col">
             {(foundTokens === undefined ? tokens : foundTokens).map(
               (f: IToken, i: number) => {
                 return (
-                  <TokenCard
-                    openMintModal={(token) => {
-                      setSelectedMintToken(token);
-                    }}
-                    openSendModal={(token) => {
-                      setSelectedSendToken(token);
-                    }}
-                    token={f}
-                    key={i}
-                  />
+                  <div key={i}>
+                    <TokenCard
+                      openMintModal={(token) => {
+                        setSelectedMintToken(token);
+                      }}
+                      openSendModal={(token) => {
+                        setSelectedSendToken(token);
+                      }}
+                      token={f}
+                    />
+                  </div>
                 );
               }
             )}
@@ -157,6 +159,10 @@ const Inscriptions = () => {
         <MintTransferModal
           selectedMintToken={selectedMintToken}
           setSelectedMintToken={setSelectedMintToken}
+        />
+        <SendTransferModal
+          selectedSendToken={selectedSendToken}
+          setSelectedSendToken={setSelectedSendToken}
         />
       </div>
     );
