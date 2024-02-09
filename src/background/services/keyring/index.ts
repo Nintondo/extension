@@ -1,15 +1,16 @@
 import { KeyringServiceError } from "./consts";
 import type { Hex, Json, SendBEL, SendOrd } from "./types";
 import { storageService } from "@/background/services";
-import type { Psbt } from "belcoinjs-lib";
+import { Psbt } from "belcoinjs-lib";
 import { networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
-import { createSendBEL, createSendOrd } from "bel-ord-utils";
+import { createMultisendOrd, createSendBEL, createSendOrd } from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
 import { INewWalletProps } from "@/shared/interfaces";
 import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import { ApiUTXO } from "bells-inscriber/lib/types";
 
 export const KEYRING_SDK_TYPES = {
   SimpleKey,
@@ -229,6 +230,30 @@ class KeyringService {
     // @ts-ignore We are really dont know what is it but we still copy working code
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
     return psbt.toHex();
+  }
+
+  async sendMultiOrd(toAddress: string, feeRate: number, ordUtxos: ApiOrdUTXO[], utxos: ApiUTXO[]){
+    const tx = await createMultisendOrd({
+        changeAddress: storageService.currentAccount.address,
+        feeRate,
+        signPsbtHex: async (psbtHex: string) => {
+          const psbt = Psbt.fromHex(psbtHex);
+          this.signAllPsbtInputs(psbt);
+          return psbt.toHex();
+        },
+        toAddress,
+        utxos: [...utxos.map(f => ({
+          txId: f.txid,
+  outputIndex: f.vout,
+  satoshis: f.value,
+  addressType: AddressType,
+  ords: {
+    id: string,
+    offset: number,
+  }[],
+  rawHex?: string,
+        }))]
+      });
   }
 
   changeAddressType(index: number, addressType: AddressType): string[] {

@@ -8,6 +8,7 @@ export interface ApiOrdUTXO extends ApiUTXO {
   genesis: string;
   owner: string;
   number: number;
+  rawTx?: string;
 }
 
 export interface Inscription extends ApiOrdUTXO {

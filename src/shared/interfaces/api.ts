@@ -3,6 +3,7 @@ export interface ApiUTXO {
   vout: number;
   status: Status;
   value: number;
+  rawHex?: string;
 }
 
 export interface Status {

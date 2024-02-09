@@ -56,30 +56,39 @@ const MintTransferModal: FC<Props> = ({
 
   const inscribe = useCallback(
     async ({ amount, feeRate }: FormType) => {
-      setLoading(true);
-      if (Number.isNaN(Number(amount))) {
-        return toast.error(t("inscriptions.amount_is_text_error"));
+      try {
+        setLoading(true);
+        if (Number.isNaN(Number(amount))) {
+          return toast.error(t("inscriptions.amount_is_text_error"));
+        }
+        if (Number(amount) % 1 !== 0) {
+          return toast.error(t("inscriptions.amount_cannot_be_fractional"));
+        }
+        if (Number(amount) > selectedMintToken.balance) {
+          return toast.error(t("inscriptions.amount_exceeds_balance"));
+        }
+        if (feeRate % 1 !== 0) {
+          return toast.error(t("send.create_send.fee_is_text_error"));
+        }
+        await inscribeTransferToken(
+          {
+            p: "bel-20",
+            op: "transfer",
+            tick: selectedMintToken.tick,
+            amt: amount,
+          },
+          formData.feeRate
+        );
+        setSelectedMintToken(undefined);
+      } catch (e) {
+        toast.error(e.message);
+      } finally {
+        setFormData({
+          amount: "",
+          feeRate: 10,
+        });
+        setLoading(false);
       }
-      if (Number(amount) % 1 !== 0) {
-        return toast.error(t("inscriptions.amount_cannot_be_fractional"));
-      }
-      if (Number(amount) > selectedMintToken.balance) {
-        return toast.error(t("inscriptions.amount_exceeds_balance"));
-      }
-      if (feeRate % 1 !== 0) {
-        return toast.error(t("send.create_send.fee_is_text_error"));
-      }
-      await inscribeTransferToken(
-        {
-          p: "bel-20",
-          op: "transfer",
-          tick: selectedMintToken.tick,
-          amt: amount,
-        },
-        formData.feeRate
-      );
-      setSelectedMintToken(undefined);
-      setLoading(false);
     },
     [
       setLoading,
@@ -143,7 +152,7 @@ const MintTransferModal: FC<Props> = ({
             className={"btn primary mx-4 md:m-6"}
             form={formId}
           >
-            {t("send.create_send.continue")}
+            {t("components.layout.send")}
           </button>
         )}
       </div>

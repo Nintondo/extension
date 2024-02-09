@@ -8,6 +8,9 @@ import FeeInput from "../../send/create-send/fee-input";
 import Loading from "react-loading";
 import AddressInput from "../../send/create-send/address-input";
 import AddressBookModal from "../../send/create-send/address-book-modal";
+import cn from "classnames";
+import toast from "react-hot-toast";
+import { useSendTransferTokens } from "@/ui/hooks/transactions";
 
 interface Props {
   selectedSendToken: IToken | undefined;
@@ -33,8 +36,31 @@ const SendTransferModal: FC<Props> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpenModal, setOpenModal] = useState<boolean>(false);
 
-  const send = useCallback(async ({ address, txIds, feeRate }: FormType) => {},
-  []);
+  const sendTransferTokens = useSendTransferTokens();
+
+  const send = useCallback(
+    async ({ address, txIds, feeRate }: FormType) => {
+      try {
+        setLoading(true);
+        if (feeRate % 1 !== 0) {
+          return toast.error(t("send.create_send.fee_is_text_error"));
+        }
+        if (address.trim().length <= 0) {
+          return toast.error(t("send.create_send.address_error"));
+        }
+        if (txIds.length <= 0) {
+          return toast.error(t("inscriptions.0_selected_inscriptions_error"));
+        }
+        await sendTransferTokens(address, txIds, feeRate);
+        setSelectedSendToken(undefined);
+      } catch (e) {
+        toast.error(e.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setSelectedSendToken, sendTransferTokens]
+  );
 
   const selectedTransfer = (tx: ITransfer) => {
     if (formData.txIds.includes(tx)) {
@@ -53,7 +79,10 @@ const SendTransferModal: FC<Props> = ({
   return (
     <Modal
       open={selectedSendToken !== undefined}
-      onClose={() => setSelectedSendToken(undefined)}
+      onClose={() => {
+        setSelectedSendToken(undefined);
+        setFormData({ address: "", txIds: [], feeRate: 10 });
+      }}
       title={t("inscriptions.send_token_modal_title")}
     >
       <form
@@ -74,11 +103,8 @@ const SendTransferModal: FC<Props> = ({
         </div>
 
         <div className="form-field">
-          <div className="flex">
-            <span className="input-span">
-              {t("inscriptions.choose_transfer")}
-            </span>
-            <span>
+          <div className="flex justify-center">
+            <span className="font-medium text-base">
               {t("inscriptions.total_amount")}:{" "}
               {formData.txIds.reduce((acc, tx) => acc + tx.amount, 0)}
             </span>
@@ -90,7 +116,11 @@ const SendTransferModal: FC<Props> = ({
                   selectedTransfer(tx);
                 }}
                 key={i}
-                className="flex flex-col items-center justify-center bg-input-bg rounded-xl w-24 h-24 cursor-pointer"
+                className={cn(
+                  "flex flex-col items-center justify-center bg-input-bg rounded-xl w-24 h-24 cursor-pointer border-2",
+                  { [s.selectedTransfer]: formData.txIds.includes(tx) },
+                  { [s.transfer]: !formData.txIds.includes(tx) }
+                )}
               >
                 <span>${selectedSendToken.tick.toUpperCase()}</span>
                 <span>{tx.amount}</span>
@@ -123,7 +153,7 @@ const SendTransferModal: FC<Props> = ({
             className={"btn primary mx-4 md:m-6"}
             form={formId}
           >
-            {t("send.create_send.continue")}
+            {t("components.layout.send")}
           </button>
         )}
       </div>

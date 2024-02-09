@@ -16,9 +16,8 @@ export const useInscribeTransferToken = () => {
   return useCallback(
     async (data: ITransferToken, feeRate: number) => {
       const utxos = await apiController.getUtxos(currentAccount.address);
-      const hexes = [];
       for (const utxo of utxos) {
-        hexes.push(await apiController.getTransactionHex(utxo.txid));
+        utxo.rawHex = await apiController.getTransactionHex(utxo.txid);
       }
 
       const txs = await inscribe({
@@ -26,10 +25,7 @@ export const useInscribeTransferToken = () => {
         fromAddress: currentAccount.address,
         data: Buffer.from(JSON.stringify(data)),
         feeRate,
-        inputData: {
-          utxos,
-          hexes,
-        },
+        utxos: utxos as unknown as any,
         contentType: "application/json; charset=utf-8",
         publicKey: Buffer.from(
           await keyringController.exportPublicKey(currentAccount.address),

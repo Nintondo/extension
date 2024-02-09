@@ -260,6 +260,8 @@
     "amount_exceeds_balance": "Amount exceeds balance",
     "transfer_inscribed": "Transfer inscribed successfully",
     "choose_transfer": "Choose transfers to send",
-    "total_amount": "Total amount"
+    "total_amount": "Total amount",
+    "0_selected_inscriptions_error": "0 selected inscriptions",
+    "success_send_transfer": "Successfully sended transfer(s)"
   }
 }
