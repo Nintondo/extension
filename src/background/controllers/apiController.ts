@@ -1,8 +1,4 @@
-import type {
-  AccountBalanceResponse,
-  ApiUTXO,
-  ITransaction,
-} from "@/shared/interfaces/api";
+import type { ApiUTXO, ITransaction } from "@/shared/interfaces/api";
 import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
 import { fetchBELLMainnet } from "@/shared/utils";
@@ -44,18 +40,11 @@ export interface IApiController {
 
 class ApiController implements IApiController {
   async getAccountBalance(address: string) {
-    const data = await fetchBELLMainnet<AccountBalanceResponse>({
-      path: `/address/${address}`,
+    const data = await fetchBELLMainnet<ApiUTXO[]>({
+      path: `/address/${address}/utxo`,
     });
 
-    if (!data) return undefined;
-
-    return (
-      data.chain_stats.funded_txo_sum -
-      data.chain_stats.spent_txo_sum +
-      data.mempool_stats.funded_txo_sum -
-      data.mempool_stats.spent_txo_sum
-    );
+    return data.reduce((acc, utxo) => acc + utxo.value, 0);
   }
 
   async getUtxos(address: string) {

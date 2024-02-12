@@ -129,11 +129,11 @@ export const useSendTransferTokens = () => {
       }
       const inscriptions: Inscription[] = [];
       for (const transferToken of txIds) {
-        const txid = transferToken.inscription_id.slice(0, -2);
         const foundInscriptons = await apiController.getInscription({
           inscriptionId: transferToken.inscription_id,
           address: currentAccount.address,
         });
+        const txid = foundInscriptons[0].txid;
         inscriptions.push({
           ...foundInscriptons[0],
           rawHex: await apiController.getTransactionHex(txid),
