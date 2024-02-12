@@ -116,7 +116,7 @@ const Inscriptions = () => {
   if (currentAccount?.inscriptionCounter === undefined && managerLoading)
     return <Loading />;
 
-  if (active === "bel") {
+  if (active === "bel-20") {
     return (
       <div className={s.inscriptionDiv}>
         <div className="lex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">

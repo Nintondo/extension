@@ -29,14 +29,14 @@ const AccountPanel = () => {
     clearTimeout(leaveTimeOutRef.current);
     enterTimeOutRef.current = setTimeout(() => {
       !isOpen && triggerRef.current?.click();
-    }, 120);
+    }, 240);
   };
 
   const handleLeave = (isOpen: boolean) => {
     clearTimeout(enterTimeOutRef.current);
     leaveTimeOutRef.current = setTimeout(() => {
       isOpen && triggerRef.current?.click();
-    }, 120);
+    }, 240);
   };
 
   return (
@@ -60,7 +60,17 @@ const AccountPanel = () => {
                     className="react-loading pr-2"
                   />
                 ) : (
-                  (currentAccount?.balance ?? 0).toFixed(8)
+                  (currentAccount?.balance ?? 0).toFixed(
+                    currentAccount.balance?.toFixed(0).toString().length > 4
+                      ? 8 -
+                          currentAccount.balance?.toFixed(0)?.toString()
+                            .length <
+                        0
+                        ? 0
+                        : 8 -
+                          currentAccount.balance?.toFixed(0)?.toString().length
+                      : 8
+                  )
                 )}
                 <span className="text-xl pb-0.5 text-slate-300">BEL</span>
               </div>
@@ -68,7 +78,7 @@ const AccountPanel = () => {
             {currentAccount?.balance !== undefined ? (
               currentPrice !== undefined ? (
                 <div className="text-gray-500 text-sm">
-                  ~{(currentAccount.balance * currentPrice).toFixed(3)}$
+                  ~{(currentAccount.balance * currentPrice)?.toFixed(3)}$
                 </div>
               ) : undefined
             ) : undefined}

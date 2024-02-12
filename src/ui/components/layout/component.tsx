@@ -118,7 +118,7 @@ export default function PagesLayout() {
         action: {
           icon: (
             <Select
-              values={[{ name: "NFT" }, { name: "bel" }]}
+              values={[{ name: "NFTs" }, { name: "bel-20" }]}
               selected={{ name: active }}
               setSelected={(v) => setActive(v.name)}
               displayCheckIcon={false}

@@ -245,7 +245,7 @@
     "inscription_id": "Inscription id",
     "status.block_time": "Timestamp",
     "title": "Inscription",
-    "number": "Inscription number"
+    "inscription_number": "Inscription number"
   },
   "inscriptions": {
     "inscription_not_found": "Could not find inscription",
@@ -262,6 +262,7 @@
     "choose_transfer": "Choose transfers to send",
     "total_amount": "Total amount",
     "0_selected_inscriptions_error": "0 selected inscriptions",
-    "success_send_transfer": "Successfully sended transfer(s)"
+    "success_send_transfer": "Successfully sended transfer(s)",
+    "failed_send_transfer": "Failed to send transfer(s)"
   }
 }

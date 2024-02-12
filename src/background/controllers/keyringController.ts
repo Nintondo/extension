@@ -3,6 +3,8 @@ import { keyringService } from "../services";
 import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
 import type { IPrivateWallet } from "@/shared/interfaces";
 import type { AddressType } from "bellhdw";
+import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import { ApiUTXO } from "bells-inscriber/lib/types";
 
 export interface IKeyringController {
   init(password: string): Promise<IPrivateWallet[]>;
@@ -28,6 +30,12 @@ export interface IKeyringController {
   signAllInputs(
     txHex: string
   ): Promise<{ psbtHex: string; signatures: (string | undefined)[] }>;
+  createSendMultiOrd(
+    toAddress: string,
+    feeRate: number,
+    ordUtxos: ApiOrdUTXO[],
+    utxos: ApiUTXO[]
+  ): Promise<string>;
 }
 
 class KeyringController implements IKeyringController {
@@ -115,6 +123,15 @@ class KeyringController implements IKeyringController {
 
   async serializeKeyringById(index: number) {
     return keyringService.serializeById(index);
+  }
+
+  async createSendMultiOrd(
+    toAddress: string,
+    feeRate: number,
+    ordUtxos: ApiOrdUTXO[],
+    utxos: ApiUTXO[]
+  ): Promise<string> {
+    return keyringService.sendMultiOrd(toAddress, feeRate, ordUtxos, utxos);
   }
 }
 

@@ -129,16 +129,26 @@ export const useSendTransferTokens = () => {
       }
       const inscriptions: Inscription[] = [];
       for (const transferToken of txIds) {
+        const txid = transferToken.inscription_id.slice(0, -2);
+        const foundInscriptons = await apiController.getInscription({
+          inscriptionId: transferToken.inscription_id,
+          address: currentAccount.address,
+        });
         inscriptions.push({
-          ...(await apiController.getInscription({
-            inscriptionId: transferToken.inscription_id,
-            address: currentAccount.address,
-          })[0]),
-          rawHex: await apiController.getTransactionHex(
-            transferToken.inscription_id
-          ),
+          ...foundInscriptons[0],
+          rawHex: await apiController.getTransactionHex(txid),
         });
       }
+      const tx = await keyringController.createSendMultiOrd(
+        toAddress,
+        feeRate,
+        inscriptions,
+        utxos as any
+      );
+      const result = await apiController.pushTx(tx);
+      if (result?.txid !== undefined)
+        toast.success(t("inscriptions.success_send_transfer"));
+      else toast.error(t("inscriptions.failed_send_transfer"));
     },
     [apiController, currentAccount, keyringController]
   );

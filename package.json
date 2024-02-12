@@ -33,7 +33,7 @@
     "@headlessui/react": "1.7.18",
     "@heroicons/react": "2.1.1",
     "@noble/hashes": "1.3.3",
-    "bel-ord-utils": "file:../ord-utils",
+    "bel-ord-utils": "0.2.0",
     "bellhdw": "0.5.19",
     "bells-inscriber": "0.0.4",
     "big.js": "6.2.1",

@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Inscription } from "@/shared/interfaces/inscriptions";
-import { useEffect, useState } from "react";
+import {
+  CompletedInscription,
+  Inscription,
+} from "@/shared/interfaces/inscriptions";
+import { useCallback, useEffect, useState } from "react";
 import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
@@ -23,12 +26,12 @@ interface InscField<T, K extends PathOf<T> = PathOf<T>> {
   defaultValue?: any;
 }
 
-const fields: InscField<Inscription>[] = [
+const fields: InscField<CompletedInscription>[] = [
   {
     key: "content_length",
   },
   {
-    key: "number",
+    key: "inscription_number",
   },
   {
     key: "status.block_height",
@@ -73,14 +76,25 @@ const InscriptionDetails = () => {
   const currentAccount = useGetCurrentAccount();
   const navigate = useNavigate();
   const location = useLocation();
-  const [inscription, setInscription] = useState<Inscription | undefined>(
-    undefined
+  const [inscription, setInscription] = useState<
+    CompletedInscription | undefined
+  >(undefined);
+
+  const convertToCompletedInscription = useCallback(
+    (inscription: Inscription): CompletedInscription => {
+      return {
+        ...inscription,
+        outpoint: `${inscription.txid}i${inscription.vout}`,
+        genesis: inscription.inscription_id,
+      };
+    },
+    []
   );
 
   useEffect(() => {
     if (!location.state) return navigate(-1);
-    setInscription(location.state);
-  }, [location, navigate]);
+    setInscription(convertToCompletedInscription(location.state));
+  }, [location, navigate, convertToCompletedInscription]);
 
   const openContent = async (link: string) => {
     await browserTabsCreate({

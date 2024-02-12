@@ -1,13 +1,12 @@
 import { ApiUTXO } from "./api";
 
 export interface ApiOrdUTXO extends ApiUTXO {
-  inscription_id: string;
   content_type: string;
   content_length: number;
-  outpoint: string;
-  genesis: string;
+  inscription_id: string;
+  inscription_number: number;
+  offset: number;
   owner: string;
-  number: number;
   rawTx?: string;
 }
 
@@ -17,11 +16,16 @@ export interface Inscription extends ApiOrdUTXO {
   offset: 0;
 }
 
+export interface CompletedInscription extends Inscription {
+  genesis: string;
+  outpoint: string;
+}
+
 export const TestInscription: Inscription = {
   inscription_id:
     "a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
   owner: "BPAiWMThT2ZwhkyoG27poU1HVNmKsRk7K4",
-  number: 1,
+  inscription_number: 1,
   value: 100000,
   preview:
     "https://bellinals.nintondo.io/preview/a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
@@ -29,9 +33,9 @@ export const TestInscription: Inscription = {
     "https://bellinals.nintondo.io/content/a77d282813922a140cee709d5afe644d8836d430fc1ac2c824fbbe282d661944i0",
   content_length: 694,
   content_type: "image/png",
-  genesis: "a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29",
-  outpoint:
-    "a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29:0:0",
+  // genesis: "a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29",
+  // outpoint:
+  //   "a33eddbfb700301038f2e25d34cbe2b55c1602d4138967f37759c9227d6d0b29:0:0",
   offset: 0,
   txid: "",
   vout: 0,

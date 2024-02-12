@@ -4,7 +4,11 @@ import { storageService } from "@/background/services";
 import { Psbt } from "belcoinjs-lib";
 import { networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
-import { createMultisendOrd, createSendBEL, createSendOrd } from "bel-ord-utils";
+import {
+  createMultisendOrd,
+  createSendBEL,
+  createSendOrd,
+} from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
@@ -208,7 +212,7 @@ class KeyringService {
             ? [
                 {
                   id: `${(v as ApiOrdUTXO).inscription_id}`,
-                  offset: 0,
+                  offset: (v as ApiOrdUTXO).offset,
                 },
               ]
             : [],
@@ -232,28 +236,43 @@ class KeyringService {
     return psbt.toHex();
   }
 
-  async sendMultiOrd(toAddress: string, feeRate: number, ordUtxos: ApiOrdUTXO[], utxos: ApiUTXO[]){
-    const tx = await createMultisendOrd({
-        changeAddress: storageService.currentAccount.address,
-        feeRate,
-        signPsbtHex: async (psbtHex: string) => {
-          const psbt = Psbt.fromHex(psbtHex);
-          this.signAllPsbtInputs(psbt);
-          return psbt.toHex();
-        },
-        toAddress,
-        utxos: [...utxos.map(f => ({
+  async sendMultiOrd(
+    toAddress: string,
+    feeRate: number,
+    ordUtxos: ApiOrdUTXO[],
+    utxos: ApiUTXO[]
+  ) {
+    return await createMultisendOrd({
+      changeAddress: storageService.currentAccount.address,
+      feeRate,
+      signPsbtHex: async (psbtHex: string) => {
+        const psbt = Psbt.fromHex(psbtHex);
+        this.signAllPsbtInputs(psbt);
+        return psbt.toHex();
+      },
+      toAddress,
+      utxos: [
+        ...utxos.map((f) => ({
           txId: f.txid,
-  outputIndex: f.vout,
-  satoshis: f.value,
-  addressType: AddressType,
-  ords: {
-    id: string,
-    offset: number,
-  }[],
-  rawHex?: string,
-        }))]
-      });
+          satoshis: f.value,
+          rawHex: f.rawHex,
+          outputIndex: f.vout,
+          ords: [],
+        })),
+        ...ordUtxos.map((f) => ({
+          txId: f.txid,
+          satoshis: f.value,
+          rawHex: f.rawHex,
+          outputIndex: f.vout,
+          ords: [
+            {
+              id: f.inscription_id,
+              offset: f.offset,
+            },
+          ],
+        })),
+      ],
+    });
   }
 
   changeAddressType(index: number, addressType: AddressType): string[] {
