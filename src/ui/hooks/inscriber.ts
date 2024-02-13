@@ -33,8 +33,12 @@ export const useInscribeTransferToken = () => {
         ),
         signPsbtHex: keyringController.signAllInputs,
       });
-      for (const i of txs) await apiController.pushTx(i);
-      toast.success(t("inscriptions.transfer_inscribed"));
+      for (const i of txs) {
+        const result = await apiController.pushTx(i);
+        if (result?.txid !== undefined)
+          toast.success(t("inscriptions.transfer_inscribed"));
+        else toast.error(t("inscriptions.failed_inscribe_transfer"));
+      }
     },
     [apiController, currentAccount, keyringController]
   );
