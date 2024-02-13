@@ -41,6 +41,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
             </div>
             <div className="flex py-2 items-center gap-3">
               <button
+                disabled={!token.transfers.length}
                 className={"btn primary w-full flex-1"}
                 onClick={() => {
                   openSendModal(token);
@@ -49,6 +50,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
                 {t("components.token_card.send")}
               </button>
               <button
+                disabled={token.balance <= 0}
                 className={"btn primary w-full flex-3"}
                 onClick={() => {
                   openMintModal(token);
