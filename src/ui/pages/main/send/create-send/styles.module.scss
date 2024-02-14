@@ -7,7 +7,7 @@
 }
 
 .inputs {
-  @apply w-full flex flex-col justify-center items-center gap-8;
+  @apply w-full flex flex-col justify-center items-center gap-5;
 }
 
 .feeDiv {
@@ -16,7 +16,7 @@
   .includeFeeInAmountDiv {
     @apply flex gap-2 mt-2 select-none;
 
-    >* {
+    > * {
       @apply cursor-pointer;
     }
   }

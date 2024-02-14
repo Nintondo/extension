@@ -177,7 +177,7 @@ const CreateSend = () => {
             />
           </div>
           {inscriptionTransaction ? undefined : (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 w-full">
               <div className="form-field">
                 <span className="input-span">
                   {t("send.create_send.amount")}
@@ -195,14 +195,22 @@ const CreateSend = () => {
                   </button>
                 </div>
               </div>
-              <p className="p-0.5">
-                {`${t("wallet_page.amount_in_transactions")}: `}
-                {`${currentAccount.balance?.toFixed(8) ?? "-"} BEL`}
-              </p>
-              <p className="p-0.5">
-                {`${t("wallet_page.amount_in_inscriptions")}: `}
-                {`${currentAccount.inscriptionBalance?.toFixed(8) ?? "-"} BEL`}
-              </p>
+              <div className="p-2 mt-2 bg-input-light rounded-xl text-center">
+                <div className="p-0.5 flex justify-between">
+                  <div>{`${t("wallet_page.amount_in_transactions")}: `}</div>
+                  <span className="font-medium text-sm">
+                    {`${currentAccount.balance?.toFixed(8) ?? "-"} BEL`}
+                  </span>
+                </div>
+                <div className="p-0.5 flex justify-between">
+                  <div>{`${t("wallet_page.amount_in_inscriptions")}: `}</div>
+                  <span className="font-medium text-sm">
+                    {`${
+                      currentAccount.inscriptionBalance?.toFixed(8) ?? "-"
+                    } BEL`}
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </div>

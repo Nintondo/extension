@@ -70,10 +70,14 @@ export class NintondoProvider extends EventEmitter {
         ($('head > meta[name="title"]') as HTMLMetaElement)?.content ||
         origin;
 
-      await this._bcm.request({
-        method: "tabCheckin",
-        params: { icon, name, origin },
-      });
+      try {
+        await this._bcm.request({
+          method: "tabCheckin",
+          params: { icon, name, origin },
+        });
+      } catch {
+        //
+      }
     });
 
     try {

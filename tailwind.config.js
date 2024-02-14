@@ -15,6 +15,7 @@ module.exports = {
       colors: {
         bg: "#1A1A1A",
         "input-bg": "#3d3d3d95",
+        "input-light": "#3d3d3d35",
         "toast-bg": "#3d3d3d",
         text: "#FDFDFD",
         secondary: "#c1e1ea",

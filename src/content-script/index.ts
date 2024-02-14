@@ -5,7 +5,7 @@ function injectScript() {
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement("script");
     scriptTag.setAttribute("async", "false");
-    scriptTag.setAttribute("channel", "fjdsfousf98esyfew9y");
+    scriptTag.setAttribute("channel", "NINTONDOWALLET");
     scriptTag.src = chrome.runtime.getURL("pageProvider.js");
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
@@ -14,8 +14,8 @@ function injectScript() {
 
     const pm = new PortMessage().connect();
 
-    const bcm = new BroadcastChannelMessage("fjdsfousf98esyfew9y").listen(
-      (data) => pm.request(data)
+    const bcm = new BroadcastChannelMessage("NINTONDOWALLET").listen((data) =>
+      pm.request(data)
     );
 
     // background notification
