@@ -1,8 +1,10 @@
 import { Psbt } from "belcoinjs-lib";
 import { keyringService } from "../services";
-import type { Hex, SendTDC } from "../services/keyring/types";
+import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
 import type { IPrivateWallet } from "@/shared/interfaces";
 import type { AddressType } from "bellhdw";
+import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import { ApiUTXO } from "bells-inscriber/lib/types";
 
 export interface IKeyringController {
   init(password: string): Promise<IPrivateWallet[]>;
@@ -17,13 +19,23 @@ export interface IKeyringController {
     from: string;
     data: string;
   }): Promise<string>;
-  sendTDC(data: SendTDC): Promise<string>;
+  sendBEL(data: SendBEL): Promise<string>;
+  sendOrd(data: Omit<SendOrd, "amount">): Promise<string>;
   changeAddressType(
     walletIndex: number,
     addressType: AddressType
   ): Promise<string[]>;
   exportPublicKey(address: string): Promise<string>;
   serializeKeyringById(index: number): Promise<any>;
+  signAllInputs(
+    txHex: string
+  ): Promise<{ psbtHex: string; signatures: (string | undefined)[] }>;
+  createSendMultiOrd(
+    toAddress: string,
+    feeRate: number,
+    ordUtxos: ApiOrdUTXO[],
+    utxos: ApiUTXO[]
+  ): Promise<string>;
 }
 
 class KeyringController implements IKeyringController {
@@ -71,6 +83,12 @@ class KeyringController implements IKeyringController {
     return psbt.toHex();
   }
 
+  async signAllInputs(txHex: string) {
+    const psbt = Psbt.fromHex(txHex);
+    const signatures = keyringService.signAllPsbtInputs(psbt);
+    return { psbtHex: psbt.toHex(), signatures };
+  }
+
   async signMessage(msgParams: { from: string; data: string }) {
     return keyringService.signMessage(msgParams);
   }
@@ -81,11 +99,15 @@ class KeyringController implements IKeyringController {
 
   /**
    * Method should be used to create hex of transaction and sigs all inputs
-   * @param {SendTDC} data Input data for the transaction
+   * @param {SendBEL} data Input data for the transaction
    * @returns {Promise<string>} Hex of transaction to push transaction to the blockchain with
    */
-  async sendTDC(data: SendTDC): Promise<string> {
-    return await keyringService.sendTDC(data);
+  async sendBEL(data: SendBEL): Promise<string> {
+    return await keyringService.sendBEL(data);
+  }
+
+  async sendOrd(data: Omit<SendOrd, "amount">): Promise<string> {
+    return await keyringService.sendOrd(data);
   }
 
   async exportPublicKey(address: string): Promise<string> {
@@ -101,6 +123,15 @@ class KeyringController implements IKeyringController {
 
   async serializeKeyringById(index: number) {
     return keyringService.serializeById(index);
+  }
+
+  async createSendMultiOrd(
+    toAddress: string,
+    feeRate: number,
+    ordUtxos: ApiOrdUTXO[],
+    utxos: ApiUTXO[]
+  ): Promise<string> {
+    return keyringService.sendMultiOrd(toAddress, feeRate, ordUtxos, utxos);
   }
 }
 

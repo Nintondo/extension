@@ -28,7 +28,7 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
     },
     {
       title: t("send.create_send.fee_input.fast"),
-      description: `${feeRates.fast ?? "~"} sat/Vb`,
+      description: `${feeRates?.fast ?? "~"} sat/Vb`,
       value: feeRates?.fast,
     },
     {

@@ -1,0 +1,15 @@
+.pagination {
+  @apply w-full flex justify-evenly;
+}
+
+.gridContainer {
+  @apply grid grid-cols-2 grid-rows-3 text-base w-full gap-2 py-2 pt-4 overflow-y-auto;
+}
+
+.input {
+  @apply py-1 pl-5 pr-10 text-base text-text bg-input-bg rounded-xl md:bg-bg w-full;
+}
+
+.inscriptionDiv {
+  @apply w-full h-full flex flex-col justify-start px-4 md:px-6 relative items-center;
+}

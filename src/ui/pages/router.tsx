@@ -31,6 +31,8 @@ import Language from "./main/language";
 import Security from "./main/security";
 import Advanced from "./main/security/advanced";
 import Home from "./main/home";
+import InscriptionDetails from "./main/inscription-details";
+import Inscriptions from "./main/inscriptions";
 
 export const guestRouter = createHashRouter([
   {
@@ -45,7 +47,10 @@ export const guestRouter = createHashRouter([
 
 export const authenticatedRouter = createHashRouter([
   { path: "/", element: <Home /> },
-  { path: "home", element: <Wallet /> },
+  {
+    path: "home",
+    element: <Wallet />,
+  },
   {
     path: "pages",
     element: <PagesLayout />,
@@ -71,6 +76,8 @@ export const authenticatedRouter = createHashRouter([
       { path: "language", element: <Language /> },
       { path: "security", element: <Security /> },
       { path: "advanced", element: <Advanced /> },
+      { path: "inscription-details", element: <InscriptionDetails /> },
+      { path: "inscriptions", element: <Inscriptions /> },
     ],
   },
   {

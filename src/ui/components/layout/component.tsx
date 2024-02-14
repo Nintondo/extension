@@ -6,13 +6,15 @@ import { useMemo } from "react";
 import { useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import Select from "../select";
 
 interface IRouteTitle {
   route: string;
   title: string;
   action?: {
     icon: React.ReactNode;
-    link: string;
+    link?: string;
   };
   backAction?: () => void;
   disableBack?: boolean;
@@ -26,6 +28,7 @@ export default function PagesLayout() {
   const currentRoute = useLocation();
   const navigate = useNavigate();
   const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
+  const { active, setActive } = useTransactionManagerContext();
 
   const defaultTitles: IRouteTitle[] = useMemo(
     () => [
@@ -97,8 +100,35 @@ export default function PagesLayout() {
         route: "/pages/show-pk/@",
         title: t("components.layout.show_private_key"),
       },
+      {
+        route: "/pages/discover",
+        title: t("components.layout.discover"),
+      },
+      {
+        route: "/pages/connected-sites",
+        title: t("components.layout.connected_sites"),
+      },
+      {
+        route: "/pages/language",
+        title: t("components.layout.change_language"),
+      },
+      {
+        route: "/pages/inscriptions",
+        title: t("components.layout.inscriptions"),
+        action: {
+          icon: (
+            <Select
+              values={[{ name: "NFTs" }, { name: "bel-20" }]}
+              selected={{ name: active }}
+              setSelected={(v) => setActive(v.name)}
+              displayCheckIcon={false}
+              className="w-20.5"
+            />
+          ),
+        },
+      },
     ],
-    []
+    [active, setActive]
   );
 
   const routeTitles = useMemo(
@@ -120,20 +150,12 @@ export default function PagesLayout() {
             navigate(-1);
           },
         },
-
         {
           backAction: () => {
             navigate("/home");
           },
           route: "/pages/finalle-send/@",
           title: t("components.layout.send"),
-        },
-        {
-          route: "/pages/create-send",
-          title: t("components.layout.send"),
-          backAction: () => {
-            navigate("/home");
-          },
         },
         {
           backAction: () => {
@@ -145,21 +167,19 @@ export default function PagesLayout() {
           title: t("components.layout.send"),
         },
         {
-          route: "/pages/connected-sites",
-          title: t("components.layout.connected_sites"),
+          route: "/pages/inscription-details",
+          title:
+            t("inscription_details.title") + ` #${currentRoute.state?.number}`,
         },
         {
-          route: "/pages/language",
-          title: t("components.layout.change_language"),
+          route: "/pages/create-send",
+          title: t("components.layout.send"),
+          backAction: () => {
+            navigate("/home");
+          },
         },
       ] as IRouteTitle[],
-    [
-      navigate,
-      stateController,
-      currentRoute.state,
-      wallets.length,
-      defaultTitles,
-    ]
+    [navigate, stateController, currentRoute, wallets.length, defaultTitles]
   );
 
   const currentRouteTitle = useMemo(
@@ -197,12 +217,16 @@ export default function PagesLayout() {
           </div>
 
           {currentRouteTitle?.action ? (
-            <Link
-              className={cn(s.controlElem, s.addNew)}
-              to={currentRouteTitle.action.link}
-            >
-              {currentRouteTitle.action.icon}
-            </Link>
+            currentRouteTitle?.action.link ? (
+              <Link
+                className={cn(s.controlElem, s.addNew)}
+                to={currentRouteTitle.action.link}
+              >
+                {currentRouteTitle.action.icon}
+              </Link>
+            ) : (
+              currentRouteTitle.action.icon
+            )
           ) : undefined}
         </div>
       }

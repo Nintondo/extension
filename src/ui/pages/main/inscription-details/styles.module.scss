@@ -1,0 +1,11 @@
+.fields {
+  @apply py-3 rounded-xl bg-input-bg flex flex-col gap-2;
+}
+
+.item {
+  @apply flex flex-col gap-0.5 border-b-2 border-bg px-2 pb-2;
+
+  &:last-child {
+    @apply border-none pb-0;
+  }
+}

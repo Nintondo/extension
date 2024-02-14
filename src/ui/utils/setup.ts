@@ -11,19 +11,19 @@ import type { INotificationController } from "@/shared/interfaces/notification";
 import type { IApiController } from "@/background/controllers/apiController";
 import type { IKeyringController } from "@/background/controllers/keyringController";
 
-function setupPm() {
+export function setupPm() {
   const { PortMessage } = Message;
   const portMessageChannel = new PortMessage();
   portMessageChannel.connect("popup");
 
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  portMessageChannel.listen(
-    (data: { method: string; params: any[]; type: string }) => {
-      if (data.type === "broadcast") {
-        eventBus.emit(data.method, data.params);
-      }
-    }
-  );
+  // portMessageChannel.listen(
+  //   (data: { method: string; params: any[]; type: string }) => {
+  //     if (data.type === "broadcast") {
+  //       eventBus.emit(data.method, data.params);
+  //     }
+  //   }
+  // );
 
   eventBus.addEventListener(
     EVENTS.broadcastToBackground,

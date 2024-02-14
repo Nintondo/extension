@@ -1,14 +1,20 @@
 import { KeyringServiceError } from "./consts";
-import type { Hex, Json, SendTDC } from "./types";
+import type { Hex, Json, SendBEL, SendOrd } from "./types";
 import { storageService } from "@/background/services";
-import type { Psbt } from "belcoinjs-lib";
+import { Psbt } from "belcoinjs-lib";
 import { networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
-import { createSendBEL } from "bel-ord-utils";
+import {
+  createMultisendOrd,
+  createSendBEL,
+  createSendOrd,
+} from "bel-ord-utils";
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
 import { INewWalletProps } from "@/shared/interfaces";
+import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import { ApiUTXO } from "bells-inscriber/lib/types";
 
 export const KEYRING_SDK_TYPES = {
   SimpleKey,
@@ -115,6 +121,14 @@ class KeyringService {
     );
   }
 
+  signAllPsbtInputs(psbt: Psbt) {
+    const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
+    return keyring.signAllInputsInPsbt(
+      psbt,
+      storageService.currentAccount.address
+    ).signatures;
+  }
+
   signMessage(msgParams: { from: string; data: string }) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     return keyring.signMessage(msgParams.from, msgParams.data);
@@ -134,7 +148,7 @@ class KeyringService {
     return keyring.exportPublicKey(address);
   }
 
-  async sendTDC(data: SendTDC) {
+  async sendBEL(data: SendBEL) {
     const account = storageService.currentAccount;
     const wallet = storageService.currentWallet;
     if (!account || !account.address)
@@ -172,6 +186,93 @@ class KeyringService {
     // @ts-ignore We are really dont know what is it but we still copy working code
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
     return psbt.toHex();
+  }
+
+  async sendOrd(data: Omit<SendOrd, "amount">) {
+    const account = storageService.currentAccount;
+    const wallet = storageService.currentWallet;
+    if (!account || !account.address)
+      throw new Error("Error when trying to get the current account");
+
+    const publicKey = this.exportPublicKey(account.address);
+
+    const psbt = await createSendOrd({
+      utxos: data.utxos.map((v) => {
+        return {
+          txId: v.txid,
+          outputIndex: v.vout,
+          satoshis: v.value,
+          scriptPk: getScriptForAddress(
+            Buffer.from(publicKey, "hex"),
+            wallet.addressType
+          ).toString("hex"),
+          addressType: wallet?.addressType,
+          address: account.address,
+          ords: (v as ApiOrdUTXO & { isOrd: boolean }).isOrd
+            ? [
+                {
+                  id: `${(v as ApiOrdUTXO).inscription_id}`,
+                  offset: (v as ApiOrdUTXO).offset,
+                },
+              ]
+            : [],
+        };
+      }),
+      toAddress: data.to,
+      outputValue: data.utxos.find(
+        (i) => (i as ApiOrdUTXO & { isOrd: boolean }).isOrd
+      )?.value,
+      signTransaction: this.signPsbt.bind(this),
+      network: networks.bitcoin,
+      changeAddress: account.address,
+      pubkey: this.exportPublicKey(account.address),
+      feeRate: data.feeRate,
+      enableRBF: false,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore We are really dont know what is it but we still copy working code
+    psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+    return psbt.toHex();
+  }
+
+  async sendMultiOrd(
+    toAddress: string,
+    feeRate: number,
+    ordUtxos: ApiOrdUTXO[],
+    utxos: ApiUTXO[]
+  ) {
+    return await createMultisendOrd({
+      changeAddress: storageService.currentAccount.address,
+      feeRate,
+      signPsbtHex: async (psbtHex: string) => {
+        const psbt = Psbt.fromHex(psbtHex);
+        this.signAllPsbtInputs(psbt);
+        return psbt.toHex();
+      },
+      toAddress,
+      utxos: [
+        ...utxos.map((f) => ({
+          txId: f.txid,
+          satoshis: f.value,
+          rawHex: f.rawHex,
+          outputIndex: f.vout,
+          ords: [],
+        })),
+        ...ordUtxos.map((f) => ({
+          txId: f.txid,
+          satoshis: f.value,
+          rawHex: f.rawHex,
+          outputIndex: f.vout,
+          ords: [
+            {
+              id: f.inscription_id,
+              offset: f.offset,
+            },
+          ],
+        })),
+      ],
+    });
   }
 
   changeAddressType(index: number, addressType: AddressType): string[] {

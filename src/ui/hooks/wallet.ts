@@ -20,6 +20,7 @@ export const useCreateNewWallet = () => {
     walletController: v.walletController,
     keyringController: v.keyringController,
   }));
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async ({
@@ -47,8 +48,17 @@ export const useCreateNewWallet = () => {
       await walletController.saveWallets([
         { id: wallet.id, phrase: payload, data: keyring },
       ]);
+      trottledUpdate(true);
+      resetTransactions();
     },
-    [wallets, updateWalletState, walletController, keyringController]
+    [
+      wallets,
+      updateWalletState,
+      walletController,
+      keyringController,
+      trottledUpdate,
+      resetTransactions,
+    ]
   );
 };
 
@@ -81,6 +91,7 @@ export const useCreateNewAccount = () => {
   const { walletController } = useControllersState((v) => ({
     walletController: v.walletController,
   }));
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async (name?: string) => {
@@ -100,8 +111,17 @@ export const useCreateNewAccount = () => {
         selectedAccount:
           updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
       });
+      trottledUpdate(true);
+      resetTransactions();
     },
-    [currentWallet, updateCurrentWallet, walletController, updateWalletState]
+    [
+      currentWallet,
+      updateCurrentWallet,
+      walletController,
+      updateWalletState,
+      trottledUpdate,
+      resetTransactions,
+    ]
   );
 };
 
@@ -116,7 +136,7 @@ export const useSwitchWallet = () => {
       notificationController: v.notificationController,
     })
   );
-  const { trottledUpdate } = useTransactionManagerContext();
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async (key: number, accKey?: number) => {
@@ -134,6 +154,7 @@ export const useSwitchWallet = () => {
         selectedAccount: accKey ?? 0,
       });
       await notificationController.changedAccount();
+      resetTransactions();
       trottledUpdate(true);
     },
     [
@@ -142,6 +163,7 @@ export const useSwitchWallet = () => {
       walletController,
       notificationController,
       trottledUpdate,
+      resetTransactions,
     ]
   );
 };
@@ -154,7 +176,7 @@ export const useSwitchAccount = () => {
   const { notificationController } = useControllersState((v) => ({
     notificationController: v.notificationController,
   }));
-  const { trottledUpdate } = useTransactionManagerContext();
+  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
 
   return useCallback(
     async (id: number) => {
@@ -165,8 +187,15 @@ export const useSwitchAccount = () => {
       navigate("/home");
       await notificationController.changedAccount();
       trottledUpdate(true);
+      resetTransactions();
     },
-    [updateWalletState, navigate, notificationController, trottledUpdate]
+    [
+      updateWalletState,
+      navigate,
+      notificationController,
+      trottledUpdate,
+      resetTransactions,
+    ]
   );
 };
 
@@ -204,9 +233,14 @@ export const useUpdateCurrentAccountBalance = () => {
       const balance = await apiController.getAccountBalance(
         address ? address : currentAccount?.address ?? ""
       );
+      const { count, amount } = await apiController.getInscriptionCounter(
+        currentAccount?.address
+      );
       if (balance === undefined || !currentAccount) return;
       await updateCurrentAccount({
         balance: balance / 10 ** 8,
+        inscriptionCounter: count,
+        inscriptionBalance: amount / 10 ** 8,
       });
     },
     [updateCurrentAccount, currentAccount, apiController]

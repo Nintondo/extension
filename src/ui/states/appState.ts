@@ -10,6 +10,7 @@ export const useAppState = create<IAppState>()((set) => ({
   vault: [],
   addressBook: [],
   language: "en",
+  activeTabs: [],
   updateAppState: async (app: Partial<IAppState>, updateBack = true) => {
     if (updateBack) {
       await proxy.updateAppState(app);

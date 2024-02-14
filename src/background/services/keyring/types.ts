@@ -1,4 +1,5 @@
 import type { ApiUTXO } from "@/shared/interfaces/api";
+import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
 
 export type Json = any;
 export type Hex = string;
@@ -10,12 +11,19 @@ export type Eip1024EncryptedData = {
   ciphertext: string;
 };
 
-export interface SendTDC {
+interface SendBase {
   to: string;
   amount: number;
-  utxos: ApiUTXO[];
   receiverToPayFee: boolean;
   feeRate: number;
+}
+
+export interface SendBEL extends SendBase {
+  utxos: ApiUTXO[];
+}
+
+export interface SendOrd extends SendBase {
+  utxos: ((ApiOrdUTXO & { isOrd?: boolean }) | ApiUTXO)[];
 }
 
 interface BaseUserToSignInput {

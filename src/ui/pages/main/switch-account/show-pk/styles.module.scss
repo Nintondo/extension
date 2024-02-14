@@ -1,9 +1,9 @@
 .showPk {
-  @apply w-full h-full p-4 flex flex-col items-center break-all md:mt-10;
+  @apply w-full h-full p-4 flex flex-col items-center break-all md:mt-10 justify-center;
 }
 
 .showPkDiv {
-  @apply h-full flex flex-col items-center pt-8 gap-8;
+  @apply h-full flex flex-col items-center pt-8 gap-8 justify-center;
 }
 
 .secret {

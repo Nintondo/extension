@@ -2,8 +2,12 @@
   "wallet_page": {
     "transactions": "Transactions",
     "no_transactions": "No transactions",
+    "no_inscriptions": "No inscriptions",
     "receive": "Receive",
-    "send": "Send"
+    "send": "Send",
+    "inscriptions": "Inscriptions",
+    "amount_in_transactions": "BEL in transactions",
+    "amount_in_inscriptions": "BEL in inscriptions"
   },
   "settings": {
     "language": "Language",
@@ -32,7 +36,9 @@
       "restore_from_mnemonic": "Restore from mnemonic",
       "restore_from_private_key": "Restore from private key",
       "security": "Security",
-      "advanced": "Advanced"
+      "advanced": "Advanced",
+      "discover": "Discover",
+      "inscriptions": "Inscriptions"
     },
     "check_password": {
       "incorrect_password_error": "Incorrect password",
@@ -53,6 +59,29 @@
     "card": {
       "close": "Close",
       "root_account": "Root account"
+    },
+    "inscription_card": {
+      "modal_title": "Inscription",
+      "id": "Id",
+      "address": "Address",
+      "outputValue": "Output value",
+      "content": "Content",
+      "contentLength": "Content length",
+      "contentType": "Content type",
+      "timeStamp": "Timestamp",
+      "genesisHeight": "Genesis height",
+      "genesisFee": "Genesis fee",
+      "genesisTransaction": "Genesis transaction",
+      "location": "Location",
+      "output": "Output",
+      "offset": "Offset",
+      "preview": "Preview"
+    },
+    "token_card": {
+      "transferable_balance": "Transferable balance",
+      "balance": "Balance",
+      "create_transfer": "Mint transfer",
+      "send": "Send"
     }
   },
   "change_password": {
@@ -118,11 +147,12 @@
       "fee": "Fee",
       "included": "included",
       "not_included": "not included",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "inscription_id": "Inscription Id"
     },
     "create_send": {
       "minimum_amount_error": "Minimum amount is 0.01 BEL",
-      "address_error": "Insert the addresss of receiver",
+      "address_error": "Insert receiver's address",
       "not_enough_money_error": "There's not enough money in your account",
       "not_enough_fee_error": "Increase the fee",
       "fee_is_text_error": "Fee should be integer",
@@ -141,7 +171,8 @@
         "custom": "Custom"
       },
       "address_input": {
-        "address_book": "Address book"
+        "address_book": "Address book",
+        "address_placeholder": "Receiver's address"
       },
       "address_book": {
         "address_book": "Address book",
@@ -199,5 +230,40 @@
   "advanced": {
     "root_acc_warning": "Use legacy derivation",
     "blank": "Nothing here for your wallet type"
+  },
+  "inscription_details": {
+    "content_length": "Content length",
+    "status.block_height": "Block height",
+    "content_type": "Content type",
+    "genesis": "Genesis",
+    "preview": "Preview",
+    "content": "Content",
+    "offset": "Offset",
+    "owner": "Owner",
+    "value": "Value",
+    "outpoint": "Outpoint",
+    "inscription_id": "Inscription id",
+    "status.block_time": "Timestamp",
+    "title": "Inscription",
+    "inscription_number": "Inscription number"
+  },
+  "inscriptions": {
+    "inscription_not_found": "Could not find inscription",
+    "tokens_not_found": "Could not find tokens",
+    "inscription_search_placeholder": "Number/Inscription id",
+    "token_search_placeholder": "Token name",
+    "mint_token_modal_title": "Mint transfer token",
+    "send_token_modal_title": "Send token",
+    "amount_to_mint": "Amount to mint",
+    "amount_is_text_error": "Amount should be integer",
+    "amount_cannot_be_fractional": "Amount cannot be fractional",
+    "amount_exceeds_balance": "Amount exceeds balance",
+    "transfer_inscribed": "Transfer inscribed successfully",
+    "failed_inscribe_transfer": "Failed to inscribe transfer",
+    "choose_transfer": "Choose transfers to send",
+    "total_amount": "Total amount",
+    "0_selected_inscriptions_error": "0 selected inscriptions",
+    "success_send_transfer": "Successfully sended transfer(s)",
+    "failed_send_transfer": "Failed to send transfer(s)"
   }
 }

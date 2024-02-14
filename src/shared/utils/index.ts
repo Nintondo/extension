@@ -1,4 +1,4 @@
-import { BELLS_MAINNET_PATH, BELLS_API_URL } from "@/shared/constant";
+import { NINTONDO_API_URL, TEST_API_URL } from "@/shared/constant";
 import browser from "./browser";
 
 export const t = (name: string) => browser.i18n.getMessage(name);
@@ -16,15 +16,12 @@ interface fetchProps extends RequestInit {
   json?: boolean;
 }
 
-export const fetchTDCMainnet = async <T>({
+export const fetchBELLMainnet = async <T>({
   path,
   json = true,
   ...props
 }: fetchProps): Promise<T | undefined> => {
-  const url = new URL(BELLS_MAINNET_PATH.concat(path), BELLS_API_URL);
-  if (props.params) {
-    Object.entries(props.params).forEach((v) => url.searchParams.set(...v));
-  }
+  const url = `${NINTONDO_API_URL}${path}`;
   const res = await fetch(url.toString(), { ...props });
 
   if (!json) return (await res.text()) as T;

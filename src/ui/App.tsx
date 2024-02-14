@@ -7,6 +7,7 @@ import {
   setupKeyringProxy,
   setupNotificationProxy,
   setupOpenAPIProxy,
+  setupPm,
   setupStateProxy,
   setupWalletProxy,
 } from "@/ui/utils/setup";
@@ -33,6 +34,9 @@ export default function App() {
     updateWalletState: v.updateWalletState,
   }));
 
+  const { stateController } = useControllersState((v) => ({
+    stateController: v.stateController,
+  }));
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
     const apiController = setupOpenAPIProxy();
@@ -52,7 +56,6 @@ export default function App() {
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
     await i18n.changeLanguage(appState.language ?? "en");
-
     if (
       appState.isReady &&
       appState.isUnlocked &&
@@ -76,6 +79,30 @@ export default function App() {
       });
     }
   }, [updateWalletState, updateAppState, updateControllers]);
+
+  const updateFromStore = useCallback(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    if (isReady && isUnlocked) {
+      const appState = await stateController.getAppState();
+      const walletState = await stateController.getWalletState();
+      await updateWalletState(walletState, false);
+      await updateAppState(appState, false);
+    }
+  }, [isReady, isUnlocked, stateController, updateAppState, updateWalletState]);
+
+  useEffect(() => {
+    const pm = setupPm();
+    //eslint-disable-next-line @typescript-eslint/no-floating-promises
+    pm.listen((data: { method: string; params: any[]; type: string }) => {
+      if (data.type === "broadcast") {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        if (data.method === "updateFromStore") updateFromStore();
+      }
+    });
+    return () => {
+      pm.removeAllListeners();
+    };
+  }, [updateFromStore]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

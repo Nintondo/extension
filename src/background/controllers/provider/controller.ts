@@ -2,9 +2,9 @@ import { Psbt } from "belcoinjs-lib";
 import { keyringService, sessionService, storageService } from "../../services";
 import "reflect-metadata/lite";
 import type { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
-import { fetchTDCMainnet } from "@/shared/utils";
+import { fetchBELLMainnet } from "@/shared/utils";
 import permission from "@/background/services/permission";
-import type { SendTDC } from "@/background/services/keyring/types";
+import type { SendBEL } from "@/background/services/keyring/types";
 
 class ProviderController {
   connect = async () => {
@@ -33,7 +33,7 @@ class ProviderController {
     if (!permission.siteIsConnected(origin)) return undefined;
     const account = storageService.currentAccount;
     if (!account) return null;
-    const data = await fetchTDCMainnet<AccountBalanceResponse>({
+    const data = await fetchBELLMainnet<AccountBalanceResponse>({
       path: `/address/${account.address}`,
     });
 
@@ -127,12 +127,12 @@ class ProviderController {
   createTx = async (data: any) => {
     const account = storageService.currentAccount;
     if (!account) return;
-    const utxos = await fetchTDCMainnet<ApiUTXO[]>({
+    const utxos = await fetchBELLMainnet<ApiUTXO[]>({
       path: `/address/${account.address}/utxo`,
     });
-    const transactionData = { ...data.data.params, utxos } as SendTDC;
+    const transactionData = { ...data.data.params, utxos } as SendBEL;
     transactionData.amount = transactionData.amount * 10 ** 8;
-    const tx = await keyringService.sendTDC(transactionData);
+    const tx = await keyringService.sendBEL(transactionData);
     const psbt = Psbt.fromHex(tx);
     return psbt.extractTransaction().toHex();
   };

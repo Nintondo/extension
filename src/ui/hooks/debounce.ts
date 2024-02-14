@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 
 export function useDebounceCall(
-  value: () => Promise<void>,
+  value: (...args: any[]) => Promise<void>,
   delay?: number
-): () => void {
-  const [triggered, setTriggered] = useState(false);
+): (...args: any[]) => void {
+  const [triggered, setTriggered] = useState<any[]>(undefined);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      if (triggered) {
-        await value();
-        return setTriggered(false);
+      if (triggered !== undefined) {
+        setTriggered(undefined);
+        const copy = [...triggered];
+        await value(...copy);
       }
     }, delay || 500);
 
@@ -18,7 +19,31 @@ export function useDebounceCall(
       clearTimeout(timer);
     };
   }, [value, delay, triggered]);
-  return useCallback(() => {
-    setTriggered(true);
-  }, [setTriggered]);
+  return useCallback(
+    (...args: any[]) => {
+      setTriggered(args);
+    },
+    [setTriggered]
+  );
+}
+
+export function useDebounce<T extends (...args: any) => void>(
+  value: T,
+  delay?: number
+): T {
+  const [debouncedValue, setDebouncedValue] = useState(undefined);
+
+  useEffect(() => {
+    if (debouncedValue) {
+      const timer = setTimeout(() => value(...debouncedValue), delay || 500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [debouncedValue, delay, value]);
+
+  return useCallback((...v: any[]) => {
+    setDebouncedValue(v);
+  }, []) as T;
 }

@@ -1,4 +1,7 @@
-import { useCreateBellsTxCallback } from "@/ui/hooks/transactions";
+import {
+  useCreateBellsTxCallback,
+  useCreateOrdTx,
+} from "@/ui/hooks/transactions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import {
   useCallback,
@@ -18,6 +21,8 @@ import AddressBookModal from "./address-book-modal";
 import AddressInput from "./address-input";
 import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
+import { Inscription } from "@/shared/interfaces/inscriptions";
+import Loading from "react-loading";
 
 export interface FormType {
   address: string;
@@ -40,8 +45,15 @@ const CreateSend = () => {
   const [includeFeeLocked, setIncludeFeeLocked] = useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
   const createTx = useCreateBellsTxCallback();
+  const createOrdTx = useCreateOrdTx();
   const navigate = useNavigate();
   const location = useLocation();
+  const [inscription, setInscription] = useState<Inscription | undefined>(
+    undefined
+  );
+  const [inscriptionTransaction, setInscriptionTransaction] =
+    useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const send = async ({
     address,
@@ -49,45 +61,53 @@ const CreateSend = () => {
     feeAmount,
     includeFeeInAmount,
   }: FormType) => {
-    if (Number(amount) < 0.01) {
-      return toast.error(t("send.create_send.minimum_amount_error"));
-    }
-    if (address.trim().length <= 0) {
-      return toast.error(t("send.create_send.address_error"));
-    }
-    if (Number(amount) > (currentAccount?.balance ?? 0)) {
-      return toast.error(t("send.create_send.not_enough_money_error"));
-    }
-    if (feeAmount < 1) {
-      return toast.error(t("send.create_send.not_enough_fee_error"));
-    }
-    if (feeAmount % 1 !== 0) {
-      return toast.error(t("send.create_send.fee_is_text_error"));
-    }
-
     try {
-      const { fee, rawtx } = await createTx(
-        address,
-        Number(amount) * 10 ** 8,
-        feeAmount,
-        includeFeeInAmount
-      );
+      setLoading(true);
+      if (Number(amount) < 0.01 && !inscriptionTransaction) {
+        return toast.error(t("send.create_send.minimum_amount_error"));
+      }
+      if (address.trim().length <= 0) {
+        return toast.error(t("send.create_send.address_error"));
+      }
+      if (Number(amount) > (currentAccount?.balance ?? 0)) {
+        return toast.error(t("send.create_send.not_enough_money_error"));
+      }
+      if (feeAmount < 1) {
+        return toast.error(t("send.create_send.not_enough_fee_error"));
+      }
+      if (feeAmount % 1 !== 0) {
+        return toast.error(t("send.create_send.fee_is_text_error"));
+      }
+
+      const { fee, rawtx } = !inscriptionTransaction
+        ? await createTx(
+            address,
+            Number(amount) * 10 ** 8,
+            feeAmount,
+            includeFeeInAmount
+          )
+        : await createOrdTx(address, feeAmount, inscription);
 
       navigate("/pages/confirm-send", {
         state: {
           toAddress: address,
-          amount: Number(amount),
+          amount: !inscriptionTransaction
+            ? Number(amount)
+            : inscription.inscription_id,
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",
           feeAmount: fee,
           inputedFee: feeAmount,
           hex: rawtx,
           save: isSaveAddress,
+          inscriptionTransaction,
         },
       });
     } catch (e) {
       console.error(e);
       toast.error(t("send.create_send.default_error"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,6 +124,10 @@ const CreateSend = () => {
       }
       if (currentAccount?.balance <= location.state.amount)
         setIncludeFeeLocked(true);
+    }
+    if (location.state && location.state.inscription_id) {
+      setInscription(location.state);
+      setInscriptionTransaction(true);
     }
   }, [location.state, setFormData, currentAccount?.balance]);
 
@@ -152,21 +176,35 @@ const CreateSend = () => {
               onOpenModal={() => setOpenModal(true)}
             />
           </div>
-          <div className="form-field">
-            <span className="input-span">{t("send.create_send.amount")}</span>
-            <div className="flex gap-2 w-full">
-              <input
-                type="number"
-                placeholder={t("send.create_send.amount_to_send")}
-                className="input w-full"
-                value={formData.amount}
-                onChange={onAmountChange}
-              />
-              <button className={s.maxAmount} onClick={onMaxClick}>
-                {t("send.create_send.max_amount")}
-              </button>
+          {inscriptionTransaction ? undefined : (
+            <div className="flex flex-col gap-1">
+              <div className="form-field">
+                <span className="input-span">
+                  {t("send.create_send.amount")}
+                </span>
+                <div className="flex gap-2 w-full">
+                  <input
+                    type="number"
+                    placeholder={t("send.create_send.amount_to_send")}
+                    className="input w-full"
+                    value={formData.amount}
+                    onChange={onAmountChange}
+                  />
+                  <button className={s.maxAmount} onClick={onMaxClick}>
+                    {t("send.create_send.max_amount")}
+                  </button>
+                </div>
+              </div>
+              <p className="p-0.5">
+                {`${t("wallet_page.amount_in_transactions")}: `}
+                {`${currentAccount.balance?.toFixed(8) ?? "-"} BEL`}
+              </p>
+              <p className="p-0.5">
+                {`${t("wallet_page.amount_in_inscriptions")}: `}
+                {`${currentAccount.inscriptionBalance?.toFixed(8) ?? "-"} BEL`}
+              </p>
             </div>
-          </div>
+          )}
         </div>
 
         <div className={s.feeDiv}>
@@ -183,14 +221,16 @@ const CreateSend = () => {
             />
           </div>
 
-          <Switch
-            label={t("send.create_send.include_fee_in_the_amount_label")}
-            onChange={(v) =>
-              setFormData((prev) => ({ ...prev, includeFeeInAmount: v }))
-            }
-            value={formData.includeFeeInAmount}
-            locked={includeFeeLocked}
-          />
+          {inscriptionTransaction ? undefined : (
+            <Switch
+              label={t("send.create_send.include_fee_in_the_amount_label")}
+              onChange={(v) =>
+                setFormData((prev) => ({ ...prev, includeFeeInAmount: v }))
+              }
+              value={formData.includeFeeInAmount}
+              locked={includeFeeLocked}
+            />
+          )}
 
           <Switch
             label={t(
@@ -203,18 +243,26 @@ const CreateSend = () => {
         </div>
       </form>
 
-      <button
-        type="submit"
-        className={"btn primary mx-4 mb-4 md:m-6 md:mb-3"}
-        form={formId}
-      >
-        {t("send.create_send.continue")}
-      </button>
+      {loading ? (
+        <div className="w-full flex justify-center">
+          <Loading />
+        </div>
+      ) : (
+        <button
+          type="submit"
+          className={"btn primary mx-4 mb-4 md:m-6 md:mb-3"}
+          form={formId}
+        >
+          {t("send.create_send.continue")}
+        </button>
+      )}
 
       <AddressBookModal
         isOpen={isOpenModal}
         onClose={() => setOpenModal(false)}
-        setFormData={setFormData}
+        setAddress={(address) => {
+          setFormData((p) => ({ ...p, address: address }));
+        }}
       />
     </div>
   );

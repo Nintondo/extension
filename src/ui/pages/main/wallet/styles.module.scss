@@ -9,7 +9,7 @@
     }
 
     .balance {
-      @apply flex text-3xl gap-1 items-end;
+      @apply flex text-3xl gap-1 items-end cursor-default;
     }
 
     .accPubAddress {
@@ -37,7 +37,11 @@
 }
 
 .transactions {
-  @apply text-lg ml-2 mt-6 font-medium mb-4;
+  @apply text-base mt-3 font-medium mb-2 cursor-pointer transition-colors px-2 py-1 rounded-xl relative border-2 border-transparent;
+}
+
+.active {
+  @apply border-amber-700;
 }
 
 .transactionsDiv {
@@ -62,4 +66,12 @@
 
 .change {
   @apply font-medium text-sm;
+}
+
+.gridContainer {
+  @apply grid grid-cols-2 text-base w-full gap-3 py-2 overflow-y-auto;
+}
+
+.inscriptionButton {
+  @apply absolute bottom-0 right-0 w-12 h-12 rounded-full bg-input-bg m-6 flex justify-center items-center cursor-pointer;
 }

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useControllersState } from "@/ui/states/controllerState";
 import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 const Advanced = () => {
   const currentWallet = useGetCurrentWallet();
@@ -16,6 +17,7 @@ const Advanced = () => {
     updateWalletState: v.updateWalletState,
     wallets: v.wallets,
   }));
+  const { trottledUpdate } = useTransactionManagerContext();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -43,6 +45,7 @@ const Advanced = () => {
         }),
         selectedAccount: 0,
       });
+      trottledUpdate(true);
       navigate("/");
     } catch (e) {
       console.error(e);

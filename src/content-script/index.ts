@@ -14,8 +14,8 @@ function injectScript() {
 
     const pm = new PortMessage().connect();
 
-    const bcm = new BroadcastChannelMessage("fjdsfousf98esyfew9y").listen((data) =>
-      pm.request(data)
+    const bcm = new BroadcastChannelMessage("fjdsfousf98esyfew9y").listen(
+      (data) => pm.request(data)
     );
 
     // background notification
@@ -120,5 +120,9 @@ function shouldInjectProvider() {
 }
 
 if (shouldInjectProvider()) {
-  injectScript();
+  try {
+    injectScript();
+  } catch (e) {
+    console.log(e);
+  }
 }
