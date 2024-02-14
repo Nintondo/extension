@@ -21,7 +21,7 @@ export const fetchBELLMainnet = async <T>({
   json = true,
   ...props
 }: fetchProps): Promise<T | undefined> => {
-  const url = `${TEST_API_URL}${path}`;
+  const url = `${NINTONDO_API_URL}${path}`;
   const res = await fetch(url.toString(), { ...props });
 
   if (!json) return (await res.text()) as T;
