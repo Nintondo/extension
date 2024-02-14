@@ -106,3 +106,37 @@ input[type="number"] {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.profile-card {
+  // height: 52rem;
+  position: relative;
+  perspective: 150rem;
+  -moz-perspective: 150rem;
+
+  &-face {
+    @apply bg-input-bg;
+    transition: all 0.8s ease;
+    position: absolute;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    overflow: hidden;
+  }
+
+  &-back {
+    transform: rotateY(180deg);
+  }
+
+  &:hover {
+    & .profile-card-front {
+      transform: rotateY(-180deg);
+    }
+
+    & .profile-card-back {
+      transform: rotateY(0);
+    }
+  }
+}
+
+.inscription-card {
+  @apply w-[318px] h-[318px];
+}

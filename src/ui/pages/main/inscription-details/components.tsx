@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
 import { CONTENT_URL, PREVIEW_URL } from "@/shared/constant";
 import s from "./styles.module.scss";
+import Iframe from "@/ui/components/iframe";
 
 type PathOf<T> = T extends object
   ? {
@@ -122,11 +123,22 @@ const InscriptionDetails = () => {
   return (
     <div className="flex flex-col justify-center items-center break-all gap-5 px-4 pb-3 rounded-xl">
       <div className="flex justify-center w-[318px] h-[318px] rounded-xl overflow-hidden">
-        <img
-          src={`${PREVIEW_URL}/${inscription.inscription_id}`}
-          alt="content"
-          className="object-cover h-full rounded-xl"
-        />
+        <div className="profile-card first-profile-card inscription-card">
+          <div className="profile-card-front profile-card-face inscription-card">
+            <img
+              src={`${PREVIEW_URL}/${inscription.inscription_id}`}
+              alt="content"
+              className="object-cover h-full rounded-xl"
+            />
+          </div>
+
+          <div className="profile-card-back profile-card-face inscription-card">
+            <Iframe
+              preview={`${CONTENT_URL}/${inscription.inscription_id}`}
+              size="big"
+            />
+          </div>
+        </div>
       </div>
       {inscription.owner === currentAccount.address ? (
         <div className="flex justify-center w-full">
