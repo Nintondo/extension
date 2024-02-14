@@ -6,8 +6,8 @@
     "receive": "Receive",
     "send": "Send",
     "inscriptions": "Inscriptions",
-    "amount_in_transactions": "BEL in transactions",
-    "amount_in_inscriptions": "BEL in inscriptions"
+    "amount_in_transactions": "Cardinal balance",
+    "amount_in_inscriptions": "Ordinal balance"
   },
   "settings": {
     "language": "Language",

@@ -33,7 +33,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
   const [tokens, setTokens] = useState<IToken[]>([]);
-  const [active, setActive] = useState<"NFTs" | "bel-20">("NFTs");
+  const [active, setActive] = useState<"ORDs" | "bel-20">("ORDs");
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
@@ -339,7 +339,7 @@ interface TransactionManagerContextType {
   currentPage: number;
   tokens: IToken[];
   active: string;
-  setActive: (active: "NFTs" | "bel-20") => void;
+  setActive: (active: "ORDs" | "bel-20") => void;
   forceUpdateInscriptions: () => Promise<void>;
 }
 
@@ -379,7 +379,7 @@ export const useTransactionManagerContext = () => {
       setCurrentPage: () => {},
       currentPage: 1,
       tokens: [],
-      active: "NFTs",
+      active: "ORDs",
       setActive: () => {},
       forceUpdateInscriptions: () => {},
     };

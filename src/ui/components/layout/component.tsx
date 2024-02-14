@@ -118,7 +118,7 @@ export default function PagesLayout() {
         action: {
           icon: (
             <Select
-              values={[{ name: "NFTs" }, { name: "bel-20" }]}
+              values={[{ name: "ORDs" }, { name: "bel-20" }]}
               selected={{ name: active }}
               setSelected={(v) => setActive(v.name)}
               displayCheckIcon={false}
@@ -169,7 +169,7 @@ export default function PagesLayout() {
         {
           route: "/pages/inscription-details",
           title:
-            t("inscription_details.title") + ` #${currentRoute.state?.number}`,
+            t("inscription_details.title") + ` #${currentRoute.state?.inscription_number}`,
         },
         {
           route: "/pages/create-send",

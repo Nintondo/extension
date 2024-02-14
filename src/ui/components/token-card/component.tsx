@@ -13,7 +13,7 @@ interface Props {
 
 const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
   return (
-    <Disclosure>
+    <Disclosure defaultOpen>
       {({ open }) => (
         <>
           <Disclosure.Button

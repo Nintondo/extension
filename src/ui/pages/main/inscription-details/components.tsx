@@ -123,7 +123,7 @@ const InscriptionDetails = () => {
   return (
     <div className="flex flex-col justify-center items-center break-all gap-5 px-4 pb-3 rounded-xl">
       <div className="flex justify-center w-[318px] h-[318px] rounded-xl overflow-hidden">
-        <div className="profile-card first-profile-card inscription-card">
+        {/* <div className="profile-card first-profile-card inscription-card">
           <div className="profile-card-front profile-card-face inscription-card">
             <img
               src={`${PREVIEW_URL}/${inscription.inscription_id}`}
@@ -138,7 +138,12 @@ const InscriptionDetails = () => {
               size="big"
             />
           </div>
-        </div>
+        </div> */}
+        <img
+          src={`${PREVIEW_URL}/${inscription.inscription_id}`}
+          alt="content"
+          className="object-cover h-full rounded-xl"
+        />
       </div>
       {inscription.owner === currentAccount.address ? (
         <div className="flex justify-center w-full">
