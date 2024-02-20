@@ -38,29 +38,35 @@ Happy Bell Hunting! 🛎️
 
 ## Testing
 
-First of all you should have installed bun:
+##### Install bun.sh:
 
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
 
+##### Install dependencies:
+```bash
+bun i
+```
+
 #### Chrome
 
-1. Build extension using command `bun chrome`
+1. Build extension using command
+```
+bun chrome
+```
 2. Go to extensions in your browser and click on "Manage Extensions"
 3. In top right corner activate "developer mode"
 4. In top left corner click on  "Load unpacked"
 5. Select `dist/chrome` folder from the project folder
-6. Test
 
 #### Firefox
 
-1. Build extension using command `bun firefox`
+1. Build extension using command
+```
+bun firefox
+```
 2. Go to `about:debugging#/runtime/this-firefox`
 3. Click on the button "Load temporary Add-on..."
 4. Select `dist/firefox` folder from the project folder
-5. Test
 
-
-## ❗ TODO: 
--
