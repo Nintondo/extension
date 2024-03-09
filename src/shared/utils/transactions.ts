@@ -64,11 +64,13 @@ export const getTransactionValue = (
       break;
   }
 
+  // return value;
+
   if (fixed) {
-    return value.toFixed(2);
+    return Math.abs(value).toFixed(2);
   }
 
-  return value;
+  return Math.abs(value);
 };
 
 export const isIncomeTx = (

@@ -149,7 +149,7 @@ const MintTransferModal: FC<Props> = ({
         ) : (
           <button
             type="submit"
-            className={"btn primary mx-4 md:m-6"}
+            className={"btn primary mx-4 standard:m-6"}
             form={formId}
           >
             {t("components.layout.send")}

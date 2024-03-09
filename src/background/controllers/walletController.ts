@@ -17,22 +17,9 @@ class WalletController implements IWalletController {
     return values.enc === undefined;
   }
 
-  async createNewWallet({
-    payload,
-    walletType,
-    addressType,
-    name,
-    hideRoot,
-    restoreFrom,
-  }: INewWalletProps): Promise<IWallet> {
+  async createNewWallet(props: INewWalletProps): Promise<IWallet> {
     const exportedWallets = storageService.walletState.wallets;
-    const address = await keyringService.newKeyring({
-      walletType,
-      payload,
-      addressType,
-      hideRoot,
-      restoreFrom,
-    });
+    const address = await keyringService.newKeyring(props);
     const account: IAccount = {
       id: 0,
       name: "Account 1",
@@ -44,13 +31,15 @@ class WalletController implements IWalletController {
         : 0;
 
     return {
-      name: !name ? storageService.getUniqueName("Wallet") : name,
+      name: !props.name ? storageService.getUniqueName("Wallet") : props.name,
       id: walletId,
-      type: walletType,
+      type: props.walletType,
       addressType:
-        typeof addressType === "number" ? addressType : AddressType.P2PKH,
+        typeof props.addressType === "number"
+          ? props.addressType
+          : AddressType.P2PKH,
       accounts: [account],
-      hideRoot: hideRoot,
+      hideRoot: props.hideRoot,
     };
   }
 

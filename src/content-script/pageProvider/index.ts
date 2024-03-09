@@ -193,21 +193,27 @@ export class NintondoProvider extends EventEmitter {
     });
   };
 
-  signTx = async (hex: string) => {
-    return this._request({
-      method: "signTx",
-      params: {
-        hex,
-      },
-    });
-  };
-
   calculateFee = async (hex: string, feeRate: number) => {
     return this._request({
       method: "calculateFee",
       params: {
         hex,
         feeRate,
+      },
+    });
+  };
+
+  signTx = async (
+    psbtBase64: string,
+    inputsToSign: number[],
+    sigHashTypes: number[][]
+  ) => {
+    return this._request({
+      method: "signTx",
+      params: {
+        psbtBase64,
+        inputsToSign,
+        sigHashTypes,
       },
     });
   };

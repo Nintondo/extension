@@ -10,7 +10,8 @@ export interface IKeyringController {
   init(password: string): Promise<IPrivateWallet[]>;
   newKeyring(
     type: "simple" | "root",
-    payload: string
+    payload: string,
+    hdPath?: string
   ): Promise<string | undefined>;
   exportAccount(address: Hex): Promise<string>;
   signTransaction(txHex: string): Promise<string>;
@@ -56,9 +57,10 @@ class KeyringController implements IKeyringController {
    */
   async newKeyring(
     walletType: "simple" | "root",
-    payload: string
+    payload: string,
+    hdPath?: string
   ): Promise<string | undefined> {
-    return keyringService.newKeyring({ walletType, payload });
+    return keyringService.newKeyring({ walletType, payload, hdPath });
   }
 
   /**

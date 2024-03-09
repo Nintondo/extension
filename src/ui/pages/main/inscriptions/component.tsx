@@ -119,7 +119,7 @@ const Inscriptions = () => {
   if (active === "bel-20") {
     return (
       <div className={s.inscriptionDiv}>
-        <div className="lex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">
+        <div className="lex flex-col h-full w-full pb-8 overflow-hidden standard:pb-16">
           <SearchField
             debounce={tokenDebounce}
             foundData={foundTokens}
@@ -170,7 +170,7 @@ const Inscriptions = () => {
 
   return (
     <div className={s.inscriptionDiv}>
-      <div className="flex flex-col h-full w-full pb-8 overflow-hidden md:pb-16">
+      <div className="flex flex-col h-full w-full pb-8 overflow-hidden standard:pb-16">
         <SearchField
           debounce={inscriptionDebounce}
           foundData={foundInscription}

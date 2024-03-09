@@ -9,8 +9,8 @@ import type { SendBEL } from "@/background/services/keyring/types";
 class ProviderController {
   connect = async () => {
     if (storageService.currentWallet === undefined) return undefined;
-    const _account = storageService.currentWallet.accounts[0];
-    const account = _account ? _account.address : "";
+    const _account = storageService.currentAccount.address;
+    const account = _account ? _account : "";
     sessionService.broadcastEvent("accountsChanged", account);
     return account;
   };
@@ -95,7 +95,7 @@ class ProviderController {
   @Reflect.metadata("SAFE", true)
   getPublicKey = async ({ session: { origin } }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
-    const _account = storageService.currentWallet.accounts[0];
+    const _account = storageService.currentAccount;
     if (!_account) return undefined;
     return keyringService.exportPublicKey(_account.address);
   };
@@ -142,16 +142,22 @@ class ProviderController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (_req: any) => {},
   ])
-  signTx = async ({
+  signTx = async (data: {
     data: {
-      params: { hex },
-    },
+      params: {
+        psbtBase64: string;
+        inputsToSign: number[];
+        sigHashTypes?: number[][];
+      };
+    };
   }) => {
-    const psbt = Psbt.fromHex(hex);
-    (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = true;
-    keyringService.signPsbt(psbt);
-    (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
-    return psbt.toHex();
+    const psbt = Psbt.fromBase64(data.data.params.psbtBase64);
+    await keyringService.signPsbtWithoutFinalizing(
+      psbt,
+      data.data.params.inputsToSign,
+      data.data.params.sigHashTypes
+    );
+    return psbt.toBase64();
   };
 }
 

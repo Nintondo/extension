@@ -4,7 +4,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "nintondo.ext@quark.blue",
+      "id": "nintondo@quark.blue",
       "strict_min_version": "113.0"
     },
     "gecko_android": {

@@ -50,6 +50,41 @@ function mergeManifests(): Plugin {
   };
 }
 
+function dotenvPlugin(): Plugin {
+  return {
+    name: "dotenv",
+    setup(build) {
+      const fs = require("fs");
+      const path = require("path");
+      const dotenvPath = path.resolve("./.env");
+      const env: Record<string, string> = {};
+
+      try {
+        if (fs.existsSync(dotenvPath)) {
+          const dotenv = fs.readFileSync(dotenvPath, "utf8");
+          dotenv.split("\n").forEach((line: string) => {
+            const [key, value] = line.split("=");
+            if (key && value) {
+              env[`process.env.${key}`] = JSON.stringify(value.trim().replace(/^["']|["']$/g, ''));
+            }
+          });
+        } else {
+          env["process.env.PREVIEW_URL"] = JSON.stringify("");
+          env["process.env.CONTENT_URL"] = JSON.stringify("");
+          env["process.env.API_URL"] = JSON.stringify("");
+        }
+      } catch (error) {
+        console.error("Failed to load .env file", error);
+      }
+
+      build.initialOptions.define = {
+        ...build.initialOptions.define,
+        ...env,
+      };
+    },
+  };
+}
+
 console.log(
   `\n🔨 Building extension... \n` +
     `💻 Browser: ${chrome ? "Chrome" : "Firefox"}\n` +
@@ -109,6 +144,7 @@ const buildOptions: BuildOptions = {
       },
     }),
     mergeManifests(),
+    dotenvPlugin(),
   ],
 };
 

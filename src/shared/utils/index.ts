@@ -1,4 +1,4 @@
-import { NINTONDO_API_URL, TEST_API_URL } from "@/shared/constant";
+import { NINTONDO_API_URL } from "@/shared/constant";
 import browser from "./browser";
 
 export const t = (name: string) => browser.i18n.getMessage(name);

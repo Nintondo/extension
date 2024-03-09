@@ -266,15 +266,23 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   useEffect(() => {
     if (!currentAccount?.address) return;
     const interval = setInterval(async () => {
+      await Promise.all([updateFeeRates(), updateTokens()]);
+    }, 5000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [updateFeeRates, updateTokens, currentAccount?.address]);
+
+  useEffect(() => {
+    if (!currentAccount?.address) return;
+    const interval = setInterval(async () => {
       await Promise.all([
         updateAccountBalance(),
         udpateTransactions(),
         updateLastBlock(),
-        updateFeeRates(),
         inscriptionIntervalUpdate(),
-        updateTokens(),
       ]);
-    }, 5000);
+    }, 10000);
     return () => {
       clearInterval(interval);
     };
@@ -282,9 +290,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     updateAccountBalance,
     udpateTransactions,
     updateLastBlock,
-    updateFeeRates,
     inscriptionIntervalUpdate,
-    updateTokens,
     currentAccount?.address,
   ]);
 

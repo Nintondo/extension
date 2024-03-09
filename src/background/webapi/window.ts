@@ -2,20 +2,18 @@ import { EventEmitter } from "events";
 
 import { IS_WINDOWS } from "@/shared/constant";
 import {
-  browserWindowsOnFocusChanged,
   browserWindowsOnRemoved,
   browserWindowsGetCurrent,
   browserWindowsCreate,
   browserWindowsUpdate,
   browserWindowsRemove,
 } from "@/shared/utils/browser";
-import { CreateNotificationProps, OpenNotificationProps } from "@/shared/interfaces/notification";
+import {
+  CreateNotificationProps,
+  OpenNotificationProps,
+} from "@/shared/interfaces/notification";
 
 export const event = new EventEmitter();
-
-browserWindowsOnFocusChanged((winId: number) => {
-  event.emit("windowFocusChange", winId);
-});
 
 browserWindowsOnRemoved((winId: number) => {
   event.emit("windowRemoved", winId);
@@ -27,7 +25,10 @@ const WINDOW_SIZE = {
   height: 600,
 };
 
-const create = async ({ url, ...rest }: CreateNotificationProps): Promise<number | undefined> => {
+const create = async ({
+  url,
+  ...rest
+}: CreateNotificationProps): Promise<number | undefined> => {
   const {
     top: cTop,
     left: cLeft,
@@ -53,18 +54,16 @@ const create = async ({ url, ...rest }: CreateNotificationProps): Promise<number
   if (win.left !== left) {
     await browserWindowsUpdate(win.id, { left, top });
   }
-
   return win.id;
 };
 
 export const remove = async (winId: number) => {
-  return browserWindowsRemove(winId);
+  return await browserWindowsRemove(winId);
 };
 
-export const openNotification = async (
+export const openNotification = (
   { route, ...rest }: OpenNotificationProps = { route: "" }
 ): Promise<number | undefined> => {
   const url = `notification.html#${route}`;
-
   return create({ url, ...rest });
 };

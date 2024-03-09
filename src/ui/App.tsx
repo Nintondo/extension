@@ -121,7 +121,7 @@ export default function App() {
 
   return (
     <div>
-      <div className="uppercase text-center hidden md:block font-medium text-xl mb-6 select-none">
+      <div className="uppercase text-center hidden standard:block font-medium text-xl mb-6 select-none">
         Bells
       </div>
       <div className="app">

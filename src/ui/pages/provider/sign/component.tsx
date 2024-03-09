@@ -15,6 +15,7 @@ const Sign = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
+      console.log(approval.params.data.text);
       setMessage(approval.params.data.text);
     })();
   }, [notificationController]);
@@ -29,8 +30,8 @@ const Sign = () => {
         <KeyIcon className="w-10 h-10 text-orange-500" />
         <h4 className="text-xl font-medium">Sign request</h4>
         <div className="text-sm text-gray-400">You are signing</div>
-        <div className="p-2 bg-input-bg rounded-xl max-h-full">
-          <div className="break-all max-h-60 overflow-y-auto px-1">
+        <div className="p-2 bg-input-bg rounded-xl max-h-full w-full">
+          <div className="break-words whitespace-pre-wrap max-h-60 overflow-y-auto px-1 text-base">
             {message}
           </div>
         </div>

@@ -1,5 +1,5 @@
 .walletDiv {
-  @apply w-full h-full pt-4 flex flex-col justify-start max-md:h-screen px-4 md:px-6 relative;
+  @apply w-full h-full pt-4 flex flex-col justify-start max-standard:h-screen px-4 standard:px-6 relative;
 
   .accPanel {
     @apply flex flex-col mt-4 gap-4;

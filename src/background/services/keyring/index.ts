@@ -53,18 +53,22 @@ class KeyringService {
     addressType = AddressType.P2PKH,
     hideRoot,
     restoreFrom,
+    hdPath,
+    passphrase = undefined,
   }: INewWalletProps) {
     let keyring: HDPrivateKey | HDSimpleKey;
     if (walletType === "root") {
       keyring = await HDPrivateKey.fromMnemonic({
         mnemonic: payload,
         hideRoot,
-        addressType: addressType,
+        addressType,
+        hdPath,
+        passphrase,
       });
     } else {
       keyring = HDSimpleKey.deserialize({
         privateKey: payload,
-        addressType: addressType,
+        addressType,
         isHex: restoreFrom === "hex",
       });
     }
@@ -294,6 +298,29 @@ class KeyringService {
   async toogleRootAcc() {
     const currentWallet = storageService.currentWallet.id;
     this.keyrings[currentWallet].toggleHideRoot();
+  }
+
+  async signPsbtWithoutFinalizing(
+    psbt: Psbt,
+    inputIndexesToSign: number[],
+    sigHashTypes?: number[][]
+  ) {
+    const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
+    try {
+      keyring.signInputsWithoutFinalizing(
+        psbt,
+        inputIndexesToSign.map((v, i) => ({
+          index: v,
+          publicKey: this.exportPublicKey(
+            storageService.currentAccount.address
+          ),
+          sighashTypes:
+            sigHashTypes !== undefined ? sigHashTypes[i] : undefined,
+        }))
+      );
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 

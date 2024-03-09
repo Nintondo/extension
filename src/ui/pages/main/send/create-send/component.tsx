@@ -258,7 +258,7 @@ const CreateSend = () => {
       ) : (
         <button
           type="submit"
-          className={"btn primary mx-4 mb-4 md:m-6 md:mb-3"}
+          className={"btn primary mx-4 mb-4 standard:m-6 standard:mb-3"}
           form={formId}
         >
           {t("send.create_send.continue")}

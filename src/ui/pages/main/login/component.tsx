@@ -79,7 +79,7 @@ const Login = () => {
         label={t("login.password")}
         name="password"
       />
-      <button className="btn primary md:mx-auto" type="submit">
+      <button className="btn primary standard:mx-auto" type="submit">
         {t("login.login")}
       </button>
     </form>

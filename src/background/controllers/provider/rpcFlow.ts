@@ -7,7 +7,13 @@ import providerController from "./controller";
 import { permissionService } from "@/background/services";
 
 const isSignApproval = (type: string) => {
-  const SIGN_APPROVALS = ["SignText", "SignPsbt", "SignTx"];
+  const SIGN_APPROVALS = [
+    "SignText",
+    "SignPsbt",
+    "SignTx",
+    "SignSpecificInputs",
+    "SignAllPsbtInputs",
+  ];
   return SIGN_APPROVALS.includes(type);
 };
 
@@ -34,7 +40,7 @@ const flowContext = flow
     if (!Reflect.getMetadata("SAFE", providerController, mapMethod)) {
       if (!storageService.appState.isUnlocked) {
         ctx.request.requestedApproval = true;
-        await notificationService.requestApproval({});
+        await notificationService.requestApproval({ lock: true });
       }
     }
 
@@ -48,7 +54,6 @@ const flowContext = flow
       },
       mapMethod,
     } = ctx;
-
     if (!Reflect.getMetadata("SAFE", providerController, mapMethod)) {
       if (!permissionService.siteIsConnected(origin)) {
         ctx.request.requestedApproval = true;
@@ -108,7 +113,8 @@ const flowContext = flow
   .use(async (ctx) => {
     const { approvalRes, mapMethod, request } = ctx;
     // process request
-    const [approvalType] = Reflect.getMetadata("APPROVAL", providerController, mapMethod) || [];
+    const [approvalType] =
+      Reflect.getMetadata("APPROVAL", providerController, mapMethod) || [];
 
     const { uiRequestComponent, ...rest } = approvalRes || {};
     const {

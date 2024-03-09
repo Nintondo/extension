@@ -6,12 +6,10 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
 import { CONTENT_URL, PREVIEW_URL } from "@/shared/constant";
 import s from "./styles.module.scss";
-import Iframe from "@/ui/components/iframe";
 
 type PathOf<T> = T extends object
   ? {
@@ -74,7 +72,6 @@ const fields: InscField<CompletedInscription>[] = [
 ];
 
 const InscriptionDetails = () => {
-  const currentAccount = useGetCurrentAccount();
   const navigate = useNavigate();
   const location = useLocation();
   const [inscription, setInscription] = useState<
@@ -145,13 +142,11 @@ const InscriptionDetails = () => {
           className="object-cover h-full rounded-xl"
         />
       </div>
-      {inscription.owner === currentAccount.address ? (
-        <div className="flex justify-center w-full">
-          <button onClick={send} className="btn primary w-2/3">
-            {t("components.layout.send")}
-          </button>
-        </div>
-      ) : undefined}
+      <div className="flex justify-center w-full">
+        <button onClick={send} className="btn primary w-2/3">
+          {t("components.layout.send")}
+        </button>
+      </div>
       <div className={s.fields}>
         {fields.map((f, i) => (
           <div className={s.item} key={i}>

@@ -3,14 +3,7 @@ import type { IAccount } from "./accounts";
 import type { INewWalletProps, IPrivateWallet, IWallet } from "./wallets";
 
 export interface IWalletController {
-  createNewWallet({
-    payload,
-    walletType,
-    addressType,
-    name,
-    hideRoot,
-    restoreFrom,
-  }: INewWalletProps): Promise<IWallet>;
+  createNewWallet(props: INewWalletProps): Promise<IWallet>;
   saveWallets(phrases?: DecryptedSecrets, newPassword?: string): Promise<void>;
   isVaultEmpty(): Promise<boolean>;
   importWallets(password: string): Promise<Omit<IPrivateWallet, "data">[]>;

@@ -16,7 +16,8 @@ const Layout: FC<Props> = ({
   resolveBtnClassName,
   resolveBtnText,
 }) => {
-  const [origin, setOrigin] = useState<string>("test");
+  const [origin, setOrigin] = useState<string>("");
+  const [iconUrl, setIconUrl] = useState<string>("");
 
   const { notificationController } = useControllersState((v) => ({
     notificationController: v.notificationController,
@@ -28,6 +29,7 @@ const Layout: FC<Props> = ({
     (async () => {
       const approval = await notificationController.getApproval();
       setOrigin(approval.params.session.origin);
+      setIconUrl(approval.params.session.icon);
     })();
   }, [documentTitle, notificationController]);
 
@@ -50,7 +52,8 @@ const Layout: FC<Props> = ({
   return (
     <div className={s.container}>
       <div className={s.originWrapper}>
-        <div className={s.origin}>{origin}</div>
+        <img src={iconUrl} className="w-6 h-6 rounded-xl" alt="icon" />
+        <span>{origin}</span>
       </div>
       <div className={s.content}>{children}</div>
       <div className={s.btnContainer}>

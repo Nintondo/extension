@@ -36,6 +36,7 @@ export interface IApiController {
   }): Promise<Inscription[] | undefined>;
   getTokens(address: string): Promise<IToken[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
+  getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
 }
 
 class ApiController implements IApiController {
@@ -191,6 +192,15 @@ class ApiController implements IApiController {
       path: "/tx/" + txid + "/hex",
       json: false,
     });
+  }
+
+  async getUtxoValues(outpoints: string[]): Promise<number[] | undefined> {
+    const result = await fetchBELLMainnet<{ values: number[] }>({
+      path: "/prev",
+      body: JSON.stringify({ locations: outpoints }),
+      method: "POST",
+    });
+    return result.values;
   }
 }
 

@@ -1,47 +1,32 @@
-import { useControllersState } from "@/ui/states/controllerState";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { KeyIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
-import { Psbt } from "belcoinjs-lib";
+import Loading from "react-loading";
+import { IField } from "@/shared/interfaces/provider";
+import { useDecodePsbtInputs as useGetPsbtFields } from "@/ui/hooks/provider";
+import { PREVIEW_URL } from "@/shared/constant";
 
-const SignTransaction = () => {
-  const [psbt, setPsbt] = useState<Psbt>();
+const SignTx = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [fields, setFields] = useState<IField[]>([]);
+  const getPsbtFields = useGetPsbtFields();
 
-  const { notificationController, keyringController } = useControllersState(
-    (v) => ({
-      notificationController: v.notificationController,
-      keyringController: v.keyringController,
-    })
-  );
+  const updateFields = useCallback(async () => {
+    if (fields.length <= 0) setLoading(true);
+    const resultFields = await getPsbtFields();
+    if (resultFields === undefined) return;
+    setFields(resultFields);
+    setLoading(false);
+  }, [getPsbtFields, fields]);
 
   useEffect(() => {
+    if (fields.length) return;
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    (async () => {
-      const approval = await notificationController.getApproval();
-      const signed = Psbt.fromHex(
-        await keyringController.signTransaction(approval.params.data?.hex)
-      );
-      setPsbt(signed);
-    })();
-  }, [notificationController, keyringController]);
+    updateFields();
+  }, [updateFields, fields]);
 
-  if (!psbt) return <></>;
-
-  const fields = [
-    {
-      label: "Address",
-      value: psbt.txOutputs[0].address,
-    },
-    {
-      label: "Amount",
-      value: `${psbt.txOutputs[0].value / 10 ** 8} BEL`,
-    },
-    {
-      label: "Fee",
-      value: `${psbt.getFee() / 10 ** 8} BEL`,
-    },
-  ];
+  if (loading) return <Loading type="balls" />;
 
   return (
     <Layout
@@ -53,10 +38,29 @@ const SignTransaction = () => {
         <KeyIcon className="w-10 h-10 text-orange-500" />
         <h4 className="text-xl font-medium mb-6">Sign transaction</h4>
         <div className="flex flex-col gap-4 w-full">
-          {fields.map((i) => (
-            <div key={i.label}>
-              <label className="mb-2 block text-gray-300 pl-2">{i.label}</label>
-              <div className="bg-input-bg rounded-xl px-5 py-2">{i.value}</div>
+          {fields.map((f, i) => (
+            <div key={i}>
+              <label className="mb-2 block text-gray-300 pl-2">{f.label}</label>
+              <div className="bg-input-bg rounded-xl px-5 py-2">
+                {f.value.inscriptions !== undefined ? (
+                  <div className="flex justify-center rounded-xl w-33 h-33 overflow-hidden">
+                    {f.value.inscriptions.map((k, j) => (
+                      <div key={j}>
+                        <img
+                          src={`${PREVIEW_URL}/${k.inscription_id}`}
+                          className="object-cover w-full"
+                        />
+                        <span>{f.value.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div>
+                    <p>{f.value.text}</p>
+                    <span>{f.value.value}</span>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -65,4 +69,4 @@ const SignTransaction = () => {
   );
 };
 
-export default SignTransaction;
+export default SignTx;

@@ -3,7 +3,7 @@
 }
 
 .wrapper {
-  @apply h-full w-full p-6 pb-3 md:pb-0 flex flex-col justify-between;
+  @apply h-full w-full p-6 pb-3 standard:pb-0 flex flex-col justify-between;
 }
 
 .card {
@@ -15,7 +15,7 @@
 }
 
 .version {
-  @apply text-gray-300 text-center md:hidden;
+  @apply text-gray-300 text-center standard:hidden;
 
   span {
     @apply font-medium;

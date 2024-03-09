@@ -2,7 +2,6 @@ import { ethErrors } from "eth-rpc-errors";
 import { EthereumProviderError } from "eth-rpc-errors/dist/classes";
 import Events from "events";
 import { event, remove, openNotification } from "../webapi";
-import { IS_CHROME, IS_LINUX } from "@/shared/constant";
 import type {
   Approval,
   ApprovalData,
@@ -26,16 +25,6 @@ class NotificationService extends Events {
         this.rejectApproval();
       }
     });
-
-    event.on("windowFocusChange", (winId: number) => {
-      if (this.notifiWindowId && winId !== this.notifiWindowId) {
-        if (IS_CHROME && winId === chrome.windows.WINDOW_ID_NONE && IS_LINUX) {
-          // Wired issue: When notification popuped, will focus to -1 first then focus on notification
-          return;
-        }
-        // this.rejectApproval();
-      }
-    });
   }
 
   getApproval = (): ApprovalData => {
@@ -48,11 +37,11 @@ class NotificationService extends Events {
       this.approval?.reject(new EthereumProviderError(4001, "User Cancel"));
     } else {
       this.approval?.resolve(data);
-      if (this.approval.data.params.method === "connect") connectedSite = true;
+      if (this.approval?.data?.params?.method === "connect")
+        connectedSite = true;
     }
-    this.approval = null;
-    this.emit("resolve", data);
     await this.clear();
+    this.emit("resolve", data);
     return connectedSite;
   };
 
@@ -69,13 +58,15 @@ class NotificationService extends Events {
   };
 
   // currently it only support one approval at the same time
-  requestApproval = async (
+  requestApproval = (
     data?: any,
     winProps?: OpenNotificationProps
   ): Promise<any> => {
-    // if (preferenceService.getPopupOpen()) {
-    //   this.approval = null;
-    //   throw ethErrors.provider.userRejectedRequest('please request after user close current popup');
+    // if (this.approval) {
+    //   // this.approval = null;
+    //   throw ethErrors.provider.userRejectedRequest(
+    //     "please request after user close current popup"
+    //   );
     // }
 
     // We will just override the existing open approval with the new one coming in
@@ -92,6 +83,7 @@ class NotificationService extends Events {
   };
 
   clear = async (stay = false) => {
+    this.unLock();
     this.approval = null;
     if (this.notifiWindowId && !stay) {
       await remove(this.notifiWindowId);
@@ -107,15 +99,19 @@ class NotificationService extends Events {
     this.isLocked = true;
   };
 
-  openNotification = async (winProps: OpenNotificationProps) => {
+  openNotification = (winProps: OpenNotificationProps) => {
     // if (this.isLocked) return;
     // this.lock();
     if (this.notifiWindowId) {
-      await remove(this.notifiWindowId);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      remove(this.notifiWindowId);
       this.notifiWindowId = 0;
     }
-    const winId = await openNotification(winProps);
-    this.notifiWindowId = winId;
+    openNotification(winProps)
+      .then((winId) => {
+        this.notifiWindowId = winId;
+      })
+      .catch((e) => console.log(e));
   };
 }
 

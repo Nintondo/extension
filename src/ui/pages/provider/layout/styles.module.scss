@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-col justify-between px-6 w-full h-full max-md:min-h-screen;
+  @apply flex flex-col justify-between px-6 w-full h-full max-standard:min-h-screen;
 }
 
 .content {
@@ -24,4 +24,8 @@
   &Wrapper {
     @apply flex justify-center w-full mt-4;
   }
+}
+
+.originWrapper{
+  @apply flex justify-center items-center text-lg gap-3 p-6;
 }

@@ -23,6 +23,7 @@ export interface Approval {
 export interface Session {
   origin: string;
   name: string;
+  icon: string;
 }
 
 export interface ApprovalData {

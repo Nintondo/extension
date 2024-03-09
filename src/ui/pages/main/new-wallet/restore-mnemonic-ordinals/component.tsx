@@ -10,9 +10,8 @@ import SelectWithHint from "@/ui/components/select-hint/component";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Loading from "react-loading";
-import Switch from "@/ui/components/switch";
 
-const RestoreMnemonic = () => {
+const RestoreMnemonicOrdinals = () => {
   const [step, setStep] = useState(1);
   const { updateWalletState } = useWalletState((v) => ({
     updateWalletState: v.updateWalletState,
@@ -24,9 +23,6 @@ const RestoreMnemonic = () => {
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-  const [showRootAcc, setShowRootAcc] = useState<boolean>(false);
-  const [hdPath, setHdPath] = useState<string | undefined>();
-  const [passphrase, setPassphrase] = useState<string>("bells");
 
   const setMnemonic = useCallback(
     (v: string, index: number) => {
@@ -53,9 +49,9 @@ const RestoreMnemonic = () => {
         payload: mnemonicPhrase.join(" "),
         walletType: "root",
         addressType,
-        hideRoot: !showRootAcc,
-        hdPath,
-        passphrase,
+        hideRoot: false,
+        hdPath: "m/44'/3'/0'/0/0",
+        passphrase: "",
       });
       await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
@@ -65,10 +61,6 @@ const RestoreMnemonic = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const onSwitch = () => {
-    setShowRootAcc((p) => !p);
   };
 
   if (loading) return <Loading />;
@@ -92,14 +84,6 @@ const RestoreMnemonic = () => {
               </div>
             ))}
           </div>
-          <div className="w-full flex justify-center">
-            <Switch
-              label={t("new_wallet.restore_mnemonic.show_root_acc")}
-              value={showRootAcc}
-              onChange={onSwitch}
-              className="flex gap-2 items-center"
-            />
-          </div>
           <div className={s.continueWrapper}>
             <button className="btn primary" onClick={onNextStep}>
               {t("new_wallet.continue")}
@@ -112,51 +96,13 @@ const RestoreMnemonic = () => {
             handler={setAddressType}
             selectedType={addressType}
           />
-          <div className="flex flex-col w-full gap-3">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="passphrase" className="text-xs uppercase">
-                {t("new_wallet.restore_mnemonic.passphrase")}
-              </label>
-              <input
-                id="passphrase"
-                className="input w-full text-sm"
-                type="text"
-                value={passphrase}
-                onChange={(e) => {
-                  if (typeof e.target.value !== "undefined") {
-                    setPassphrase(e.target.value);
-                  } else {
-                    setPassphrase("");
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="hd_path" className="text-xs uppercase">
-                {t("new_wallet.restore_mnemonic.hd_path")}
-              </label>
-              <input
-                id="hd_path"
-                className="input w-full text-sm"
-                type="text"
-                value={hdPath}
-                onChange={(e) => {
-                  if (e.target.value?.length) {
-                    setHdPath(e.target.value);
-                  } else {
-                    setHdPath(undefined);
-                  }
-                }}
-              />
-            </div>
-            <button onClick={onRestore} className="btn primary">
-              {t("new_wallet.continue")}
-            </button>
-          </div>
+          <button onClick={onRestore} className="btn primary">
+            {t("new_wallet.continue")}
+          </button>
         </div>
       )}
     </div>
   );
 };
 
-export default RestoreMnemonic;
+export default RestoreMnemonicOrdinals;

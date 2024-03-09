@@ -13,7 +13,7 @@ html {
 }
 
 body {
-  @apply mx-auto bg-bg text-text md:max-w-2xl md:py-6 min-w-[350px] min-h-[600px];
+  @apply mx-auto bg-bg text-text standard:max-w-2xl standard:py-6 min-w-[350px] min-h-[600px];
 
   font-family: "Montserrat", sans-serif;
 }
@@ -36,7 +36,7 @@ input[type="number"] {
 }
 
 .form-title {
-  @apply p-0 mx-auto text-xl md:pt-5;
+  @apply p-0 mx-auto text-xl standard:pt-5;
 }
 
 .form-field {
@@ -64,7 +64,7 @@ input[type="number"] {
 }
 
 .input {
-  @apply py-2 pl-5 pr-10 text-base text-text bg-input-bg rounded-xl md:bg-bg;
+  @apply py-2 pl-5 pr-10 text-base text-text bg-input-bg rounded-xl standard:bg-bg;
 }
 
 .react-loading {
@@ -72,7 +72,7 @@ input[type="number"] {
 }
 
 .app {
-  @apply h-full min-h-screen flex justify-center items-center w-full md:bg-input-bg md:rounded-2xl md:overflow-hidden md:min-h-max md:pb-6 max-md:max-w-[350px];
+  @apply h-full min-h-screen flex justify-center items-center w-full standard:bg-input-bg standard:rounded-2xl overflow-x-hidden standard:min-h-max standard:pb-6 max-standard:max-w-[350px];
 
   .main-route {
     @apply w-full flex justify-center;

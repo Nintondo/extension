@@ -5,3 +5,4 @@ bun.lockb
 dist
 .idea
 package-lock.json
+.env

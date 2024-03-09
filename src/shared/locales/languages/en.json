@@ -113,6 +113,7 @@
   "new_wallet": {
     "new_mnemonic_label": "New mnemonic",
     "restore_mnemonic_label": "Restore mnemonic",
+    "restore_ordinals_label": "Restore ordinals mnemonic",
     "restore_from_private_key_label": "Restore from private key",
     "restore_from_label": "Restore from",
     "step_1": "Step 1",
@@ -127,7 +128,9 @@
     "restore_mnemonic": {
       "incomplete_phrase_error": "Please insert all the words",
       "invalid_words_error": "Words are invalid",
-      "show_root_acc": "Use legacy derivation"
+      "show_root_acc": "Use legacy derivation",
+      "hd_path": "Custom HD path",
+      "passphrase": "Passphrase"
     },
     "restore_private": {
       "private_key": "Private key",
@@ -265,5 +268,11 @@
     "0_selected_inscriptions_error": "0 selected inscriptions",
     "success_send_transfer": "Successfully sended transfer(s)",
     "failed_send_transfer": "Failed to send transfer(s)"
+  },
+  "provider": {
+    "you_will_receive": "You will receive",
+    "signSpecificInputs": {
+      "inscriptions_you_send": "These are inscriptions, which you will send"
+    }
   }
 }

@@ -56,10 +56,17 @@ export const SATS_DOMAIN = ".sats";
 
 export const CHANNEL = "chrome";
 
+export const NINTONDO_API_URL =
+  process.env.API_URL === ""
+    ? "https://api.nintondo.io/api"
+    : process.env.API_URL;
 export const BELLS_API_URL = "https://bells.quark.blue";
-export const NINTONDO_API_URL = "https://api.nintondo.io/api";
-export const TEST_API_URL = "http://192.168.0.102:3001";
+
 export const PREVIEW_URL =
-  "https://bellscdn.ordinalswallet.com/inscription/preview";
+  process.env.PREVIEW_URL === ""
+    ? "https://static.nintondo.io/pub/preview"
+    : process.env.PREVIEW_URL;
 export const CONTENT_URL =
-  "https://bellscdn.ordinalswallet.com/inscription/content";
+  process.env.CONTENT_URL === ""
+    ? "https://static.nintondo.io/pub/content"
+    : process.env.CONTENT_URL;
