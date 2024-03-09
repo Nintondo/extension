@@ -128,9 +128,7 @@
     "restore_mnemonic": {
       "incomplete_phrase_error": "Please insert all the words",
       "invalid_words_error": "Words are invalid",
-      "show_root_acc": "Use legacy derivation",
-      "hd_path": "Custom HD path",
-      "passphrase": "Passphrase"
+      "show_root_acc": "Use legacy derivation"
     },
     "restore_private": {
       "private_key": "Private key",
