@@ -4,22 +4,27 @@ import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { t } from "i18next";
-import { FC, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import { useLocation } from "react-router";
 
-interface Props {
-  type: "tokens" | "inscriptions";
-}
-
-const SearchInscriptions: FC<Props> = ({ type }) => {
+const SearchInscriptions = () => {
   const { apiController } = useControllersState((v) => ({
     apiController: v.apiController,
   }));
   const currentAccount = useGetCurrentAccount();
 
+  const currentRoute = useLocation();
+
   const { setCurrentPage, setFoundInscriptions, setFoundTokens, tokens } =
     useTransactionManagerContext();
 
   const [open, setOpen] = useState<boolean>(false);
+
+  const type: "inscriptions" | "tokens" = currentRoute.pathname.includes(
+    "inscriptions"
+  )
+    ? "inscriptions"
+    : "tokens";
 
   const searchInscription = useCallback(
     async (search: string) => {

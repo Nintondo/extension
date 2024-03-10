@@ -135,15 +135,7 @@ export default function PagesLayout() {
           },
         ],
         action: {
-          icon: (
-            <SearchInscriptions
-              type={
-                currentRoute.pathname.includes("inscriptions")
-                  ? "inscriptions"
-                  : "tokens"
-              }
-            />
-          ),
+          icon: <SearchInscriptions />,
         },
       },
     ],

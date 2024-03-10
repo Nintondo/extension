@@ -54,9 +54,6 @@ const fields: InscField<CompletedInscription>[] = [
     defaultValue: 0,
   },
   {
-    key: "owner",
-  },
-  {
     key: "value",
     defaultValue: "-",
   },
