@@ -34,6 +34,7 @@ import InscriptionDetails from "./main/inscription-details";
 import Inscriptions from "./main/inscriptions";
 import SignTx from "./provider/sign-tx";
 import RestoreMnemonicOrdinals from "./main/new-wallet/restore-mnemonic-ordinals";
+import TokensComponent from "./main/tokens/component";
 
 export const guestRouter = createHashRouter([
   {
@@ -80,6 +81,10 @@ export const authenticatedRouter = createHashRouter([
       { path: "advanced", element: <Advanced /> },
       { path: "inscription-details", element: <InscriptionDetails /> },
       { path: "inscriptions", element: <Inscriptions /> },
+      {
+        path: "bel-20",
+        element: <TokensComponent />,
+      },
     ],
   },
   {

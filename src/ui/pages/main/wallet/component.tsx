@@ -8,7 +8,6 @@ import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import TransactionList from "./transactions-list";
 import WalletPanel from "./wallet-panel";
 import AccountPanel from "./account-panel";
-import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 
 const Wallet = () => {
@@ -39,7 +38,6 @@ const Wallet = () => {
           >
             {t("wallet_page.inscriptions")}
           </p>
-          <ArrowUpRightIcon className="w-5 h-5" />
         </div>
       </div>
 

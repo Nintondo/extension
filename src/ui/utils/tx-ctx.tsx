@@ -33,7 +33,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
   const [tokens, setTokens] = useState<IToken[]>([]);
-  const [active, setActive] = useState<"ORDs" | "bel-20">("ORDs");
+
+  const [foundInscriptions, setFoundInscriptions] = useState<Inscription[]>();
+  const [foundTokens, setFoundTokens] = useState<IToken[]>();
+
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
@@ -70,7 +73,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     );
   };
 
-  const udpateTransactions = updateFn(
+  const updateTransactions = updateFn(
     setTransactions,
     apiController.getTransactions,
     transactions,
@@ -109,7 +112,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setLoading(true);
       await Promise.all([
         updateAccountBalance(),
-        udpateTransactions(force),
+        updateTransactions(force),
         updateInscriptions(force),
         updateFeeRates(),
         updateTokens(),
@@ -118,14 +121,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     },
     [
       updateAccountBalance,
-      udpateTransactions,
+      updateTransactions,
       updateInscriptions,
       updateFeeRates,
       updateTokens,
     ]
   );
 
-  const trottledUpdate = useDebounceCall(updateAll, 300);
+  const throttleUpdate = useDebounceCall(updateAll, 300);
 
   const loadMoreTransactions = useCallback(async () => {
     if (
@@ -278,7 +281,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     const interval = setInterval(async () => {
       await Promise.all([
         updateAccountBalance(),
-        udpateTransactions(),
+        updateTransactions(),
         updateLastBlock(),
         inscriptionIntervalUpdate(),
       ]);
@@ -288,7 +291,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     };
   }, [
     updateAccountBalance,
-    udpateTransactions,
+    updateTransactions,
     updateLastBlock,
     inscriptionIntervalUpdate,
     currentAccount?.address,
@@ -311,7 +314,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPrice,
     loadMoreTransactions,
     loadMoreInscriptions,
-    trottledUpdate,
+    trottledUpdate: throttleUpdate,
     feeRates,
     loading,
     resetTransactions: () => {
@@ -321,9 +324,11 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     setCurrentPage,
     currentPage,
     tokens,
-    active,
-    setActive,
     forceUpdateInscriptions,
+    foundInscriptions,
+    setFoundInscriptions,
+    foundTokens,
+    setFoundTokens,
   };
 };
 
@@ -344,9 +349,11 @@ interface TransactionManagerContextType {
   setCurrentPage: (page: number) => void;
   currentPage: number;
   tokens: IToken[];
-  active: string;
-  setActive: (active: "ORDs" | "bel-20") => void;
   forceUpdateInscriptions: () => Promise<void>;
+  foundInscriptions?: Inscription[];
+  setFoundInscriptions: (v: Inscription[]) => void;
+  foundTokens?: IToken[];
+  setFoundTokens: (v: IToken[]) => void;
 }
 
 const TransactionManagerContext = createContext<
@@ -385,9 +392,11 @@ export const useTransactionManagerContext = () => {
       setCurrentPage: () => {},
       currentPage: 1,
       tokens: [],
-      active: "ORDs",
-      setActive: () => {},
       forceUpdateInscriptions: () => {},
+      foundInscriptions: undefined,
+      setFoundInscriptions: () => {},
+      foundTokens: undefined,
+      setFoundTokens: () => {},
     };
   }
   return context;
