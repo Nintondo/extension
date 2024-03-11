@@ -19,15 +19,17 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
           navigate("/pages/inscription-details", { state: inscription });
         }}
       >
-        {/* <Iframe preview={inscription.preview} size="default" /> */}
-        <div className="rounded-xl w-full">
+        <div className="rounded-xl w-full bg-slate-950 bg-opacity-50">
           <img
             src={`${PREVIEW_URL}/${inscription.inscription_id}`}
             alt="content"
             className="object-cover rounded-xl h-38 w-38"
+            style={{
+              imageRendering: "pixelated",
+            }}
           />
         </div>
-        <div className="absolute bottom-2 left-2 right-2 text-sm bg-slate-100 bg-opacity-50 backdrop-blur-sm rounded-md text-white text-center">
+        <div className="absolute top-2 left-5 right-5 text-sm bg-slate-100 bg-opacity-40 backdrop-blur-sm rounded-md text-white text-center">
           {shortAddress(inscription.inscription_id, 6)}
         </div>
       </div>

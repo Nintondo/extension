@@ -8,8 +8,9 @@ import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
-import { CONTENT_URL, PREVIEW_URL } from "@/shared/constant";
+import { CONTENT_URL, HTML_PREVIEW_URL, PREVIEW_URL } from "@/shared/constant";
 import s from "./styles.module.scss";
+import Iframe from "@/ui/components/iframe";
 
 type PathOf<T> = T extends object
   ? {
@@ -117,14 +118,13 @@ const InscriptionDetails = () => {
   return (
     <div className="flex flex-col justify-center items-center break-all gap-5 px-4 pb-3 rounded-xl">
       <div className="flex justify-center w-[318px] h-[318px] rounded-xl overflow-hidden">
-        <img
-          src={`${PREVIEW_URL}/${inscription.inscription_id}`}
-          alt="content"
-          className="object-cover h-full rounded-xl"
+        <Iframe
+          preview={`${HTML_PREVIEW_URL}/${inscription.inscription_id}`}
+          size="big"
         />
       </div>
       <div className="flex justify-center w-full">
-        <button onClick={send} className="btn primary w-2/3">
+        <button onClick={send} className="btn bg-white text-black w-2/3">
           {t("components.layout.send")}
         </button>
       </div>

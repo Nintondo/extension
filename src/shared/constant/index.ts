@@ -66,6 +66,10 @@ export const PREVIEW_URL =
   process.env.PREVIEW_URL === ""
     ? "https://static.nintondo.io/pub/preview"
     : process.env.PREVIEW_URL;
+export const HTML_PREVIEW_URL =
+  process.env.PREVIEW_URL === ""
+    ? "https://static.nintondo.io/pub/html"
+    : process.env.HTML_PREVIEW_URL;
 export const CONTENT_URL =
   process.env.CONTENT_URL === ""
     ? "https://static.nintondo.io/pub/content"

@@ -49,7 +49,7 @@ const Inscriptions = () => {
 
   return (
     <div className={s.inscriptionDiv}>
-      <div className="flex flex-col h-full w-full pb-8 overflow-hidden standard:pb-16">
+      <div className="flex flex-col h-full w-full overflow-hidden pb-8 standard:pb-16">
         <div className={s.gridContainer}>
           {(typeof searchInscriptions === "undefined"
             ? inscriptions
@@ -65,7 +65,7 @@ const Inscriptions = () => {
       {(typeof searchInscriptions !== "undefined" &&
         searchInscriptions.length) ||
       (typeof searchInscriptions === "undefined" && inscriptions.length) ? (
-        <div className="w-full absolute bottom-0 p-3 pb-4">
+        <div className="w-full absolute bottom-0 p-3">
           <Pagination
             currentPage={currentPage}
             onPageChange={changePage}
