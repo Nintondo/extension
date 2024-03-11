@@ -15,7 +15,7 @@ const SearchInscriptions = () => {
 
   const currentRoute = useLocation();
 
-  const { setCurrentPage, setFoundInscriptions, setFoundTokens, tokens } =
+  const { setCurrentPage, tokens, inscriptionHandler, tokenHandler } =
     useTransactionManagerContext();
 
   const [open, setOpen] = useState<boolean>(false);
@@ -29,11 +29,11 @@ const SearchInscriptions = () => {
   const searchInscription = useCallback(
     async (search: string) => {
       if (!search || !search.trim().length) {
-        setFoundInscriptions(undefined);
+        inscriptionHandler(undefined);
         return;
       }
       const inscriptionNumber = Number(search);
-      setFoundInscriptions(
+      inscriptionHandler(
         await apiController.getInscription(
           Number.isNaN(inscriptionNumber)
             ? {
@@ -45,26 +45,21 @@ const SearchInscriptions = () => {
       );
       setCurrentPage(1);
     },
-    [
-      apiController,
-      setCurrentPage,
-      currentAccount.address,
-      setFoundInscriptions,
-    ]
+    [apiController, setCurrentPage, currentAccount.address, inscriptionHandler]
   );
 
   const searchToken = useCallback(
     async (search: string) => {
       if (!search || !search.trim().length) {
-        setFoundTokens(undefined);
+        tokenHandler(undefined);
         return;
       }
-      setFoundTokens(
+      tokenHandler(
         tokens.filter((f) => f.tick.includes(search.trim().toLowerCase()))
       );
       setCurrentPage(1);
     },
-    [setCurrentPage, tokens, setFoundTokens]
+    [setCurrentPage, tokens, tokenHandler]
   );
 
   const tokenDebounce = useDebounce(searchToken, 10);
@@ -94,7 +89,7 @@ const SearchInscriptions = () => {
         />
         <XMarkIcon
           onClick={() => {
-            setFoundInscriptions(undefined);
+            inscriptionHandler(undefined);
             setOpen(false);
           }}
           className="w-6 h-6 cursor-pointer"

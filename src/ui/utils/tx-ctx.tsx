@@ -34,8 +34,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
   const [tokens, setTokens] = useState<IToken[]>([]);
 
-  const [foundInscriptions, setFoundInscriptions] = useState<Inscription[]>();
-  const [foundTokens, setFoundTokens] = useState<IToken[]>();
+  const [tokenHandler, setTokenHandler] = useState<(v: IToken[]) => void>();
+  const [inscriptionHandler, setInscriptionHandler] =
+    useState<(v: Inscription[]) => void>();
 
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
@@ -151,19 +152,21 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   }, [transactions, apiController, currentAccount?.address, transactionTxIds]);
 
   const loadMoreInscriptions = useCallback(async () => {
+    const inc = inscriptions[inscriptions.length - 1];
+
     if (
       inscriptions.length < 60 ||
-      inscriptionTxIds.includes(inscriptions[inscriptions.length - 1].txid)
+      inscriptionTxIds.includes(`${inc.txid}:${inc.vout}:${inc.offset}`)
     )
       return;
 
     const additionalInscriptions = await apiController.getPaginatedInscriptions(
       currentAccount?.address,
-      inscriptions[inscriptions.length - 1]?.txid
+      `${inc.txid}:${inc.vout}:${inc.offset}`
     );
     setInscriptionTxIds([
       ...inscriptionTxIds,
-      inscriptions[inscriptions.length - 1]?.txid,
+      `${inc.txid}:${inc.vout}:${inc.offset}`,
     ]);
     if (!additionalInscriptions) return;
     if (additionalInscriptions.length > 0) {
@@ -187,12 +190,15 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setInscriptions(updatedInscriptions);
     };
 
-    const fetchAndUpdateInscriptions = async (txId: string, index: number) => {
+    const fetchAndUpdateInscriptions = async (
+      location: string,
+      index: number
+    ) => {
       const receivedInscriptions = await apiController.getPaginatedInscriptions(
         currentAccount.address,
-        txId
+        location
       );
-      if (receivedInscriptions.length) {
+      if (receivedInscriptions?.length) {
         updateInscriptions(receivedInscriptions, index);
         return true;
       }
@@ -210,8 +216,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
           (f) => f.txid === inscriptionTxIds[chainIndex]
         );
         for (let i = 1; i <= 3; i++) {
+          const inc = inscriptions[txIdIndex - i];
+
           isUpdated = await fetchAndUpdateInscriptions(
-            inscriptions[txIdIndex - i].txid,
+            `${inc.txid}:${inc.vout}:${inc.offset}`,
             txIdIndex - i
           );
           if (isUpdated) {
@@ -237,7 +245,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
         setInscriptions([
           ...receivedInscriptions,
           ...inscriptions.slice(
-            receivedInscriptions.length,
+            receivedInscriptions?.length,
             inscriptions.length
           ),
         ]);
@@ -325,10 +333,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPage,
     tokens,
     forceUpdateInscriptions,
-    foundInscriptions,
-    setFoundInscriptions,
-    foundTokens,
-    setFoundTokens,
+    inscriptionHandler,
+    setInscriptionHandler,
+    tokenHandler,
+    setTokenHandler,
   };
 };
 
@@ -350,10 +358,10 @@ interface TransactionManagerContextType {
   currentPage: number;
   tokens: IToken[];
   forceUpdateInscriptions: () => Promise<void>;
-  foundInscriptions?: Inscription[];
-  setFoundInscriptions: (v: Inscription[]) => void;
-  foundTokens?: IToken[];
-  setFoundTokens: (v: IToken[]) => void;
+  inscriptionHandler: (v: Inscription[]) => void;
+  setInscriptionHandler: (v: (v: Inscription[]) => void) => void;
+  tokenHandler: (v: IToken[]) => void;
+  setTokenHandler: (v: (v: IToken[]) => void) => void;
 }
 
 const TransactionManagerContext = createContext<
@@ -393,10 +401,10 @@ export const useTransactionManagerContext = () => {
       currentPage: 1,
       tokens: [],
       forceUpdateInscriptions: () => {},
-      foundInscriptions: undefined,
-      setFoundInscriptions: () => {},
-      foundTokens: undefined,
-      setFoundTokens: () => {},
+      inscriptionHandler: (_) => {},
+      setInscriptionHandler: (_) => {},
+      tokenHandler: (_) => {},
+      setTokenHandler: (_) => {},
     };
   }
   return context;

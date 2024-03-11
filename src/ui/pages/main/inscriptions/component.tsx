@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import Loading from "react-loading";
@@ -6,6 +6,8 @@ import InscriptionCard from "@/ui/components/inscription-card";
 import Pagination from "@/ui/components/pagination";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { t } from "i18next";
+import { Inscription } from "@/shared/interfaces/inscriptions";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const Inscriptions = () => {
   const {
@@ -14,11 +16,13 @@ const Inscriptions = () => {
     currentPage,
     setCurrentPage,
     loading: managerLoading,
-    foundInscriptions,
+    setInscriptionHandler,
   } = useTransactionManagerContext();
   const [loadingMoreInscriptions, setLoadingMoreInscriptions] =
     useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
+
+  const [foundInscriptions, setFoundInscriptions] = useState<Inscription[]>();
 
   const changePage = useCallback(
     async (page: number) => {
@@ -42,6 +46,14 @@ const Inscriptions = () => {
       setCurrentPage,
     ]
   );
+
+  useEffect(() => {
+    setInscriptionHandler(setFoundInscriptions);
+
+    return () => {
+      setInscriptionHandler(undefined);
+    };
+  }, [setInscriptionHandler]);
 
   if (currentAccount?.inscriptionCounter === undefined && managerLoading)
     return <Loading />;
@@ -68,13 +80,13 @@ const Inscriptions = () => {
             currentPage={currentPage}
             onPageChange={changePage}
             pageCount={Math.ceil(
-              (typeof foundInscriptions === "undefined"
+              ((typeof foundInscriptions === "undefined"
                 ? currentAccount?.inscriptionCounter
-                : foundInscriptions.length) ?? 0 / 6
+                : foundInscriptions?.length) ?? 0) / 6
             )}
             visiblePageButtonsCount={5}
-            leftBtnPlaceholder={"<"}
-            rightBtnPlaceholder={">"}
+            leftBtnPlaceholder={<ChevronLeftIcon className="w-4 h-4" />}
+            rightBtnPlaceholder={<ChevronRightIcon className="w-4 h-4" />}
             className={s.pagination}
           />
         </div>

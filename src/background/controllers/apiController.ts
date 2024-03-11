@@ -15,7 +15,7 @@ export interface IApiController {
   ): Promise<ITransaction[] | undefined>;
   getPaginatedInscriptions(
     address: string,
-    txid: string
+    location: string
   ): Promise<Inscription[] | undefined>;
   getBELPrice(): Promise<{ bellscoin?: { usd: number } }>;
   getLastBlockBEL(): Promise<number>;
@@ -115,11 +115,11 @@ class ApiController implements IApiController {
 
   async getPaginatedInscriptions(
     address: string,
-    txid: string
+    location: string
   ): Promise<Inscription[] | undefined> {
     try {
       return await fetchBELLMainnet<Inscription[]>({
-        path: `/address/${address}/ords/chain/${txid}`,
+        path: `/address/${address}/ords/chain/${location}`,
       });
     } catch (e) {
       return undefined;

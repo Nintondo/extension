@@ -1,5 +1,5 @@
 import s from "../inscriptions/styles.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { IToken } from "@/shared/interfaces/token";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import TokenCard from "@/ui/components/token-card";
@@ -8,7 +8,8 @@ import MintTransferModal from "./mint-transfer-modal";
 import SendTransferModal from "./send-transfer-modal";
 
 const TokensComponent = () => {
-  const { tokens, foundTokens } = useTransactionManagerContext();
+  const { tokens, setTokenHandler } = useTransactionManagerContext();
+  const [foundTokens, setFoundTokens] = useState<IToken[]>();
 
   const [selectedMintToken, setSelectedMintToken] = useState<
     IToken | undefined
@@ -16,6 +17,14 @@ const TokensComponent = () => {
   const [selectedSendToken, setSelectedSendToken] = useState<
     IToken | undefined
   >(undefined);
+
+  useEffect(() => {
+    setTokenHandler(setFoundTokens);
+
+    return () => {
+      setTokenHandler(undefined);
+    };
+  }, [setTokenHandler]);
 
   return (
     <div className={s.inscriptionDiv}>
