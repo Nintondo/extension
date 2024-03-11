@@ -15,12 +15,8 @@ export const getTxDirection = (
   const includesIn = transaction.vin
     .map((i) => i.prevout?.scriptpubkey_address)
     .includes(targetAddress);
-  const includesOut = transaction.vout
-    .map((i) => i.scriptpubkey_address)
-    .includes(targetAddress);
-  if (includesIn && includesOut) {
-    return TxDirection.out;
-  } else if (includesIn) {
+
+  if (includesIn) {
     return TxDirection.out;
   }
   return TxDirection.in;
@@ -29,7 +25,7 @@ export const getTxDirection = (
 export const getTransactionValue = (
   transaction: ITransaction,
   targetAddress: string,
-  fixed: boolean = true
+  fixed: number = 2
 ) => {
   const direction = getTxDirection(transaction, targetAddress);
   let value: number;
@@ -48,11 +44,10 @@ export const getTransactionValue = (
         (transaction.vin.reduce(
           (acc, cur) =>
             cur.prevout?.scriptpubkey_address === targetAddress
-              ? acc + cur.prevout?.value
+              ? acc - cur.prevout?.value
               : acc,
           0
-        ) -
-          transaction.fee -
+        ) +
           transaction.vout.reduce(
             (acc, cur) =>
               cur.scriptpubkey_address === targetAddress
@@ -66,8 +61,11 @@ export const getTransactionValue = (
 
   // return value;
 
-  if (fixed) {
-    return Math.abs(value).toFixed(2);
+  if (typeof fixed !== "undefined") {
+    if (value < 100) {
+      return Math.abs(value).toFixed(fixed + 1);
+    }
+    return Math.abs(value).toFixed(fixed);
   }
 
   return Math.abs(value);
