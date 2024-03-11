@@ -42,7 +42,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
   const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
-  const [inscriptionTxIds, setInscriptionTxIds] = useState<string[]>([]);
+  const [inscriptionLocations, setInscriptionLocations] = useState<string[]>(
+    []
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -91,7 +93,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const forceUpdateInscriptions = useCallback(async () => {
     await updateInscriptions(true);
     setCurrentPage(1);
-    setInscriptionTxIds([]);
+    setInscriptionLocations([]);
   }, [updateInscriptions]);
 
   const updateLastBlock = useCallback(async () => {
@@ -156,7 +158,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
     if (
       inscriptions.length < 60 ||
-      inscriptionTxIds.includes(`${inc.txid}:${inc.vout}:${inc.offset}`)
+      inscriptionLocations.includes(`${inc.txid}:${inc.vout}:${inc.offset}`)
     )
       return;
 
@@ -164,15 +166,15 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       currentAccount?.address,
       `${inc.txid}:${inc.vout}:${inc.offset}`
     );
-    setInscriptionTxIds([
-      ...inscriptionTxIds,
+    setInscriptionLocations([
+      ...inscriptionLocations,
       `${inc.txid}:${inc.vout}:${inc.offset}`,
     ]);
     if (!additionalInscriptions) return;
     if (additionalInscriptions.length > 0) {
       setInscriptions((prev) => [...prev, ...additionalInscriptions]);
     }
-  }, [apiController, currentAccount, inscriptions, inscriptionTxIds]);
+  }, [apiController, currentAccount, inscriptions, inscriptionLocations]);
 
   const inscriptionIntervalUpdate = useCallback(async () => {
     if (!currentAccount?.address) return;
@@ -208,12 +210,12 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     if (currentPage > 10) {
       const chainIndex = Math.floor(currentPage / 10) - 1;
       let isUpdated = await fetchAndUpdateInscriptions(
-        inscriptionTxIds[chainIndex],
+        inscriptionLocations[chainIndex],
         chainIndex * 10
       );
       if (!isUpdated) {
         const txIdIndex = inscriptions.findIndex(
-          (f) => f.txid === inscriptionTxIds[chainIndex]
+          (f) => f.txid === inscriptionLocations[chainIndex]
         );
         for (let i = 1; i <= 3; i++) {
           const inc = inscriptions[txIdIndex - i];
@@ -223,13 +225,13 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
             txIdIndex - i
           );
           if (isUpdated) {
-            const updatedInscriptionTxIds = [...inscriptionTxIds];
+            const updatedInscriptionTxIds = [...inscriptionLocations];
             updatedInscriptionTxIds.splice(
               chainIndex,
               updatedInscriptionTxIds.length - 1
             );
             updatedInscriptionTxIds.push(inscriptions[txIdIndex - i].txid);
-            setInscriptionTxIds(updatedInscriptionTxIds);
+            setInscriptionLocations(updatedInscriptionTxIds);
             return;
           }
         }
@@ -239,7 +241,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       const receivedInscriptions = await apiController.getInscriptions(
         currentAccount.address
       );
-      if (!inscriptionTxIds.length) {
+      if (!inscriptionLocations.length) {
         setInscriptions(receivedInscriptions);
       } else {
         setInscriptions([
@@ -252,7 +254,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       }
     }
   }, [
-    inscriptionTxIds,
+    inscriptionLocations,
     inscriptions,
     currentPage,
     currentAccount?.address,
