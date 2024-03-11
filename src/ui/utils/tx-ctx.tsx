@@ -34,9 +34,15 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
   const [tokens, setTokens] = useState<IToken[]>([]);
 
-  const [tokenHandler, setTokenHandler] = useState<(v: IToken[]) => void>();
-  const [inscriptionHandler, setInscriptionHandler] =
-    useState<(v: Inscription[]) => void>();
+  // const [tokenHandler, setTokenHandler] = useState<(v: IToken[]) => void>();
+  // const [inscriptionHandler, setInscriptionHandler] =
+  //   useState<(v: Inscription[]) => void>();
+  const [searchInscriptions, setSearchInscriptions] = useState<
+    Inscription[] | undefined
+  >(undefined);
+  const [searchTokens, setSearchTokens] = useState<IToken[] | undefined>(
+    undefined
+  );
 
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
@@ -335,10 +341,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPage,
     tokens,
     forceUpdateInscriptions,
-    inscriptionHandler,
-    setInscriptionHandler,
-    tokenHandler,
-    setTokenHandler,
+    // inscriptionHandler,
+    // setInscriptionHandler,
+    // tokenHandler,
+    // setTokenHandler,
+    setSearchInscriptions,
+    setSearchTokens,
+    searchInscriptions,
+    searchTokens,
   };
 };
 
@@ -360,10 +370,10 @@ interface TransactionManagerContextType {
   currentPage: number;
   tokens: IToken[];
   forceUpdateInscriptions: () => Promise<void>;
-  inscriptionHandler: (v: Inscription[]) => void;
-  setInscriptionHandler: (v: (v: Inscription[]) => void) => void;
-  tokenHandler: (v: IToken[]) => void;
-  setTokenHandler: (v: (v: IToken[]) => void) => void;
+  setSearchInscriptions: (v: Inscription[] | undefined) => void;
+  setSearchTokens: (v: IToken[] | undefined) => void;
+  searchInscriptions: Inscription[] | undefined;
+  searchTokens: IToken[] | undefined;
 }
 
 const TransactionManagerContext = createContext<
@@ -403,10 +413,10 @@ export const useTransactionManagerContext = () => {
       currentPage: 1,
       tokens: [],
       forceUpdateInscriptions: () => {},
-      inscriptionHandler: (_) => {},
-      setInscriptionHandler: (_) => {},
-      tokenHandler: (_) => {},
-      setTokenHandler: (_) => {},
+      setSearchInscriptions: () => {},
+      setSearchTokens: () => {},
+      searchInscriptions: undefined,
+      searchTokens: undefined,
     };
   }
   return context;

@@ -2,7 +2,6 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import s from "./styles.module.scss";
 import cn from "classnames";
 import {
-  ArrowDownIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   PlusCircleIcon,
@@ -11,7 +10,6 @@ import { useMemo } from "react";
 import { useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
-import Select from "../select";
 import { Menu } from "@headlessui/react";
 import SearchInscriptions from "../search-inscriptions";
 
@@ -121,23 +119,6 @@ export default function PagesLayout() {
         route: "/pages/language",
         title: t("components.layout.change_language"),
       },
-      {
-        route: /\/pages\/(inscriptions|bel-20)/,
-        title: t("components.layout.inscriptions"),
-        dropdown: [
-          {
-            name: "Inscriptions",
-            link: "/pages/inscriptions",
-          },
-          {
-            name: "BEL-20",
-            link: "/pages/bel-20",
-          },
-        ],
-        action: {
-          icon: <SearchInscriptions />,
-        },
-      },
     ],
     []
   );
@@ -186,6 +167,26 @@ export default function PagesLayout() {
         {
           route: "/pages/create-send",
           title: t("components.layout.send"),
+          backAction: () => {
+            navigate("/home");
+          },
+        },
+        {
+          route: /\/pages\/(inscriptions|bel-20)/,
+          title: t("components.layout.inscriptions"),
+          dropdown: [
+            {
+              name: "Inscriptions",
+              link: "/pages/inscriptions",
+            },
+            {
+              name: "BEL-20",
+              link: "/pages/bel-20",
+            },
+          ],
+          action: {
+            icon: <SearchInscriptions />,
+          },
           backAction: () => {
             navigate("/home");
           },

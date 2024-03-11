@@ -24,7 +24,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
           <img
             src={`${PREVIEW_URL}/${inscription.inscription_id}`}
             alt="content"
-            className="object-cover w-full rounded-xl"
+            className="object-cover rounded-xl h-38 w-38"
           />
         </div>
         <div className="absolute bottom-2 left-2 right-2 text-sm bg-slate-100 bg-opacity-50 backdrop-blur-sm rounded-md text-white text-center">

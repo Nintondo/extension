@@ -15,7 +15,7 @@ const SearchInscriptions = () => {
 
   const currentRoute = useLocation();
 
-  const { setCurrentPage, tokens, inscriptionHandler, tokenHandler } =
+  const { setCurrentPage, tokens, setSearchInscriptions, setSearchTokens } =
     useTransactionManagerContext();
 
   const [open, setOpen] = useState<boolean>(false);
@@ -29,11 +29,11 @@ const SearchInscriptions = () => {
   const searchInscription = useCallback(
     async (search: string) => {
       if (!search || !search.trim().length) {
-        inscriptionHandler(undefined);
+        setSearchInscriptions(undefined);
         return;
       }
       const inscriptionNumber = Number(search);
-      inscriptionHandler(
+      setSearchInscriptions(
         await apiController.getInscription(
           Number.isNaN(inscriptionNumber)
             ? {
@@ -45,25 +45,29 @@ const SearchInscriptions = () => {
       );
       setCurrentPage(1);
     },
-    [apiController, setCurrentPage, currentAccount.address, inscriptionHandler]
+    [
+      apiController,
+      setCurrentPage,
+      currentAccount.address,
+      setSearchInscriptions,
+    ]
   );
 
   const searchToken = useCallback(
     async (search: string) => {
       if (!search || !search.trim().length) {
-        tokenHandler(undefined);
+        setSearchTokens(undefined);
         return;
       }
-      tokenHandler(
+      setSearchTokens(
         tokens.filter((f) => f.tick.includes(search.trim().toLowerCase()))
       );
       setCurrentPage(1);
     },
-    [setCurrentPage, tokens, tokenHandler]
+    [setCurrentPage, tokens, setSearchTokens]
   );
 
   const tokenDebounce = useDebounce(searchToken, 10);
-
   const inscriptionDebounce = useDebounce(searchInscription, 200);
 
   if (open) {
@@ -89,8 +93,8 @@ const SearchInscriptions = () => {
         />
         <XMarkIcon
           onClick={() => {
-            inscriptionHandler(undefined);
             setOpen(false);
+            setSearchInscriptions(undefined);
           }}
           className="w-6 h-6 cursor-pointer"
         />

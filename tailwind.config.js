@@ -6,10 +6,12 @@ module.exports = {
       width: {
         33: "8.6rem",
         20.5: "6.01rem",
+        38: "9.5rem",
         38.1: "9.6875rem",
       },
       height: {
         33: "8.6rem",
+        38: "9.5rem",
         38.1: "9.6875rem",
       },
       colors: {

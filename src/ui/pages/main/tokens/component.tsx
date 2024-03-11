@@ -8,8 +8,7 @@ import MintTransferModal from "./mint-transfer-modal";
 import SendTransferModal from "./send-transfer-modal";
 
 const TokensComponent = () => {
-  const { tokens, setTokenHandler } = useTransactionManagerContext();
-  const [foundTokens, setFoundTokens] = useState<IToken[]>();
+  const { tokens, searchTokens } = useTransactionManagerContext();
 
   const [selectedMintToken, setSelectedMintToken] = useState<
     IToken | undefined
@@ -18,19 +17,11 @@ const TokensComponent = () => {
     IToken | undefined
   >(undefined);
 
-  useEffect(() => {
-    setTokenHandler(setFoundTokens);
-
-    return () => {
-      setTokenHandler(undefined);
-    };
-  }, [setTokenHandler]);
-
   return (
     <div className={s.inscriptionDiv}>
       <div className="lex flex-col h-full w-full pb-8 overflow-hidden standard:pb-16">
         <div className="py-2 pt-4 overflow-y-auto gap-3 flex flex-col">
-          {(foundTokens === undefined ? tokens : foundTokens).map(
+          {(searchTokens === undefined ? tokens : searchTokens).map(
             (f: IToken, i: number) => {
               return (
                 <div key={i}>
@@ -49,8 +40,8 @@ const TokensComponent = () => {
           )}
         </div>
       </div>
-      {(foundTokens === undefined && !tokens.length) ||
-      (foundTokens !== undefined && !foundTokens.length) ? (
+      {(searchTokens === undefined && !tokens.length) ||
+      (searchTokens !== undefined && !searchTokens.length) ? (
         <div className="flex w-full h-4/5 bottom-0 items-center justify-center absolute">
           <p>{t("inscriptions.tokens_not_found")}</p>
         </div>
