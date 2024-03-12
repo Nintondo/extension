@@ -65,13 +65,17 @@ function dotenvPlugin(): Plugin {
           dotenv.split("\n").forEach((line: string) => {
             const [key, value] = line.split("=");
             if (key && value) {
-              env[`process.env.${key}`] = JSON.stringify(value.trim().replace(/^["']|["']$/g, ''));
+              console.log(value);
+              env[`process.env.${key}`] = JSON.stringify(
+                value.trim().replace(/^["']|["']$/g, "")
+              );
             }
           });
         } else {
           env["process.env.PREVIEW_URL"] = JSON.stringify("");
           env["process.env.CONTENT_URL"] = JSON.stringify("");
           env["process.env.API_URL"] = JSON.stringify("");
+          env["process.env.HTML_PREVIEW_URL"] = JSON.stringify("");
         }
       } catch (error) {
         console.error("Failed to load .env file", error);

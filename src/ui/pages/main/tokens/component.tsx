@@ -1,5 +1,5 @@
 import s from "../inscriptions/styles.module.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { IToken } from "@/shared/interfaces/token";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import TokenCard from "@/ui/components/token-card";

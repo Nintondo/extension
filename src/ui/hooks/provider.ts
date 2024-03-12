@@ -73,8 +73,8 @@ export const useDecodePsbtInputs = () => {
   return useCallback(async (): Promise<IField[] | undefined> => {
     const approval = await notificationController.getApproval();
     const psbt = Psbt.fromBase64(approval.params.data.psbtBase64);
-    let inputFields: IField[] = [];
-    let outputFields: IField[] = [];
+    const inputFields: IField[] = [];
+    const outputFields: IField[] = [];
     const inputLocations = (approval.params.data.inputsToSign as number[]).map(
       (f) =>
         psbt.txInputs[f].hash.reverse().toString("hex") +
@@ -102,8 +102,8 @@ export const useDecodePsbtInputs = () => {
         txInput.hash.reverse().toString("hex") + "i" + txInput.index;
 
       if (psbt.data.inputs[index].sighashType === 131) {
-        inputFields = [];
-        outputFields = [];
+        // inputFields = [];
+        // outputFields = [];
         const foundInscriptions = await apiController.getInscription({
           address: currentAccount.address,
           inscriptionId: outpoint,
