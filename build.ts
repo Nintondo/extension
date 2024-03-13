@@ -65,17 +65,11 @@ function dotenvPlugin(): Plugin {
           dotenv.split("\n").forEach((line: string) => {
             const [key, value] = line.split("=");
             if (key && value) {
-              console.log(value);
               env[`process.env.${key}`] = JSON.stringify(
                 value.trim().replace(/^["']|["']$/g, "")
               );
             }
           });
-        } else {
-          env["process.env.PREVIEW_URL"] = JSON.stringify("");
-          env["process.env.CONTENT_URL"] = JSON.stringify("");
-          env["process.env.API_URL"] = JSON.stringify("");
-          env["process.env.HTML_PREVIEW_URL"] = JSON.stringify("");
         }
       } catch (error) {
         console.error("Failed to load .env file", error);
@@ -142,9 +136,11 @@ const buildOptions: BuildOptions = {
     nodeModulesPolyfillPlugin({
       globals: {
         Buffer: true,
+        process: true,
       },
       modules: {
         buffer: true,
+        process: true,
       },
     }),
     mergeManifests(),
