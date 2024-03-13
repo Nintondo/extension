@@ -4,6 +4,7 @@ import { sassPlugin, postcssModules } from "esbuild-sass-plugin";
 import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
 import svgPlugin from "esbuild-svg";
 import postcss from "postcss";
+import { dotenvRun } from "@dotenv-run/esbuild";
 
 const autoprefixer = require("autoprefixer");
 const tailwindcss = require("tailwindcss");
@@ -46,39 +47,6 @@ function mergeManifests(): Plugin {
           console.error(err)
         );
       });
-    },
-  };
-}
-
-function dotenvPlugin(): Plugin {
-  return {
-    name: "dotenv",
-    setup(build) {
-      const fs = require("fs");
-      const path = require("path");
-      const dotenvPath = path.resolve("./.env");
-      const env: Record<string, string> = {};
-
-      try {
-        if (fs.existsSync(dotenvPath)) {
-          const dotenv = fs.readFileSync(dotenvPath, "utf8");
-          dotenv.split("\n").forEach((line: string) => {
-            const [key, value] = line.split("=");
-            if (key && value) {
-              env[`process.env.${key}`] = JSON.stringify(
-                value.trim().replace(/^["']|["']$/g, "")
-              );
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Failed to load .env file", error);
-      }
-
-      build.initialOptions.define = {
-        ...build.initialOptions.define,
-        ...env,
-      };
     },
   };
 }
@@ -144,7 +112,9 @@ const buildOptions: BuildOptions = {
       },
     }),
     mergeManifests(),
-    dotenvPlugin(),
+    dotenvRun({
+      verbose: true,
+    }),
   ],
 };
 
