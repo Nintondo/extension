@@ -1,6 +1,7 @@
 import { Inscription } from "./inscriptions";
 
 export interface IField {
+  input: boolean;
   label: string;
   value: {
     text?: string;
