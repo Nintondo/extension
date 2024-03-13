@@ -269,6 +269,18 @@
   },
   "provider": {
     "you_will_receive": "You will receive",
+    "sign_tx": "Sign transaction",
+    "sign_message": "Sign message",
+    "you_are_signing": "You are signing",
+    "resolve": "Resolve",
+    "reject": "Reject",
+    "sign_request": "Sign request",
+    "send_bells": "Send bells",
+    "sign": "Sign",
+    "create_transaction": "Create transaction",
+    "connecting": "Connecting",
+    "connect": "Connect",
+    "access_required": "Access required",
     "signSpecificInputs": {
       "inscriptions_you_send": "These are inscriptions, which you will send"
     }

@@ -6,6 +6,7 @@ import Loading from "react-loading";
 import { IField } from "@/shared/interfaces/provider";
 import { useDecodePsbtInputs as useGetPsbtFields } from "@/ui/hooks/provider";
 import { PREVIEW_URL } from "@/shared/constant";
+import { t } from "i18next";
 
 const SignTx = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -30,13 +31,13 @@ const SignTx = () => {
 
   return (
     <Layout
-      documentTitle="Sign transaction"
+      documentTitle={t("provider.sign_tx")}
       resolveBtnClassName="bg-text text-bg hover:bg-orange-500 hover:text-bg"
-      resolveBtnText="Sign"
+      resolveBtnText={t("provider.sign")}
     >
       <>
         <KeyIcon className="w-10 h-10 text-orange-500" />
-        <h4 className="text-xl font-medium mb-6">Sign transaction</h4>
+        <h4 className="text-xl font-medium mb-6">{t("provider.sign_tx")}</h4>
         <div className="flex flex-col gap-4 w-full">
           {fields.map((f, i) => (
             <div key={i}>

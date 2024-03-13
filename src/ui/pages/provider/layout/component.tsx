@@ -2,6 +2,7 @@ import { useControllersState } from "@/ui/states/controllerState";
 import s from "./styles.module.scss";
 import { FC, useEffect, useState } from "react";
 import ReactLoading from "react-loading";
+import { t } from "i18next";
 
 interface Props {
   documentTitle: string;
@@ -58,10 +59,10 @@ const Layout: FC<Props> = ({
       <div className={s.content}>{children}</div>
       <div className={s.btnContainer}>
         <button className={resolveBtnClassName} onClick={onResolve}>
-          {resolveBtnText ?? "Resolve"}
+          {resolveBtnText ?? t("provider.resolve")}
         </button>
         <button className={s.reject} onClick={onReject}>
-          Reject
+          {t("provider.reject")}
         </button>
       </div>
     </div>
