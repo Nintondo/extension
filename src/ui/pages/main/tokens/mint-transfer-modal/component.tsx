@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 
 interface FormType {
   amount: string;
-  feeRate: number;
+  feeRate: number | string;
 }
 
 interface Props {
@@ -67,7 +67,7 @@ const MintTransferModal: FC<Props> = ({
         if (Number(amount) > selectedMintToken.balance) {
           return toast.error(t("inscriptions.amount_exceeds_balance"));
         }
-        if (feeRate % 1 !== 0) {
+        if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
           return toast.error(t("send.create_send.fee_is_text_error"));
         }
         await inscribeTransferToken(
@@ -77,16 +77,16 @@ const MintTransferModal: FC<Props> = ({
             tick: selectedMintToken.tick,
             amt: amount,
           },
-          formData.feeRate
+          formData.feeRate as number
         );
         setSelectedMintToken(undefined);
-      } catch (e) {
-        toast.error(e.message);
-      } finally {
         setFormData({
           amount: "",
           feeRate: 10,
         });
+      } catch (e) {
+        toast.error(e.message);
+      } finally {
         setLoading(false);
       }
     },

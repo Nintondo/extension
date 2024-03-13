@@ -27,7 +27,7 @@ import Loading from "react-loading";
 export interface FormType {
   address: string;
   amount: string;
-  feeAmount: number;
+  feeAmount: number | string;
   includeFeeInAmount: boolean;
 }
 
@@ -58,7 +58,7 @@ const CreateSend = () => {
   const send = async ({
     address,
     amount,
-    feeAmount,
+    feeAmount: feeRate,
     includeFeeInAmount,
   }: FormType) => {
     try {
@@ -72,10 +72,10 @@ const CreateSend = () => {
       if (Number(amount) > (currentAccount?.balance ?? 0)) {
         return toast.error(t("send.create_send.not_enough_money_error"));
       }
-      if (feeAmount < 1) {
+      if (typeof feeRate !== "number" || !feeRate || feeRate < 1) {
         return toast.error(t("send.create_send.not_enough_fee_error"));
       }
-      if (feeAmount % 1 !== 0) {
+      if (feeRate % 1 !== 0) {
         return toast.error(t("send.create_send.fee_is_text_error"));
       }
 
@@ -83,10 +83,10 @@ const CreateSend = () => {
         ? await createTx(
             address,
             Number(amount) * 10 ** 8,
-            feeAmount,
+            feeRate,
             includeFeeInAmount
           )
-        : await createOrdTx(address, feeAmount, inscription);
+        : await createOrdTx(address, feeRate, inscription);
 
       navigate("/pages/confirm-send", {
         state: {
@@ -97,7 +97,7 @@ const CreateSend = () => {
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",
           feeAmount: fee,
-          inputedFee: feeAmount,
+          inputedFee: feeRate,
           hex: rawtx,
           save: isSaveAddress,
           inscriptionTransaction,
