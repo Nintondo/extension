@@ -57,6 +57,36 @@ console.log(
     `♻️  Environment: ${isDev ? "Development" : "Production"}`
 );
 
+function dotenvPlugin(): Plugin {
+  return {
+    name: "dotenv",
+    async setup(build) {
+      let envFile = Bun.file("./.env");
+      const isExists = await envFile.exists();
+
+      let env: Record<string, string> = {};
+
+      if (isExists) {
+        let content = await envFile.text();
+
+        content.split("\n").forEach((line: string) => {
+          const [key, value] = line.split("=");
+          if (key && value) {
+            env[`process.env.${key}`] = JSON.stringify(
+              value.trim().replace(/^["']|["']$/g, "")
+            );
+          }
+        });
+      }
+
+      build.initialOptions.define = {
+        ...build.initialOptions.define,
+        ...env,
+      };
+    },
+  };
+}
+
 const buildOptions: BuildOptions = {
   entryPoints: {
     background: "src/background/index.ts",
@@ -111,6 +141,7 @@ const buildOptions: BuildOptions = {
       },
     }),
     mergeManifests(),
+    dotenvPlugin(),
   ],
 };
 
