@@ -66,7 +66,7 @@
     "@typescript-eslint/parser": "6.18.1",
     "autoprefixer": "10.4.18",
     "bun-types": "1.0.21",
-    "esbuild": "0.19.11",
+    "esbuild": "0.19.12",
     "esbuild-plugin-copy": "2.1.1",
     "esbuild-plugin-svg": "0.1.0",
     "esbuild-plugin-svgj": "1.0.3",
