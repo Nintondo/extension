@@ -106,6 +106,7 @@ const buildOptions: BuildOptions = {
   platform: "browser",
   sourcemap: Bun.argv.includes("--sourcemap") || Bun.argv.includes("-s"),
   plugins: [
+    dotenvPlugin(),
     svgPlugin({
       typescript: true,
       svgo: true,
@@ -141,7 +142,6 @@ const buildOptions: BuildOptions = {
       },
     }),
     mergeManifests(),
-    dotenvPlugin(),
   ],
 };
 
