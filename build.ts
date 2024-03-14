@@ -4,7 +4,6 @@ import { sassPlugin, postcssModules } from "esbuild-sass-plugin";
 import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
 import svgPlugin from "esbuild-svg";
 import postcss from "postcss";
-import { dotenvRun } from "@dotenv-run/esbuild";
 
 const autoprefixer = require("autoprefixer");
 const tailwindcss = require("tailwindcss");
@@ -112,9 +111,6 @@ const buildOptions: BuildOptions = {
       },
     }),
     mergeManifests(),
-    dotenvRun({
-      verbose: true,
-    }),
   ],
 };
 
