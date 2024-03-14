@@ -72,7 +72,7 @@
     "esbuild-plugin-svg": "0.1.0",
     "esbuild-plugin-svgj": "1.0.3",
     "esbuild-plugin-wasm": "1.1.0",
-    "esbuild-plugins-node-modules-polyfill": "1.6.1",
+    "esbuild-plugins-node-modules-polyfill": "1.6.3",
     "esbuild-sass-plugin": "2.16.1",
     "esbuild-svg": "1.0.3",
     "eslint": "8.56.0",
