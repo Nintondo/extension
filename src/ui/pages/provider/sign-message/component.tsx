@@ -5,7 +5,7 @@ import { KeyIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
 import { t } from "i18next";
 
-const Sign = () => {
+const SignMessage = () => {
   const [message, setMessage] = useState<string>();
 
   const { notificationController } = useControllersState((v) => ({
@@ -43,4 +43,4 @@ const Sign = () => {
   );
 };
 
-export default Sign;
+export default SignMessage;

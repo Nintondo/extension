@@ -1,5 +1,5 @@
 import { KeyringServiceError } from "./consts";
-import type { Hex, Json, SendBEL, SendOrd } from "./types";
+import type { Hex, Json, SendBEL, SendOrd, UserToSignInput } from "./types";
 import { storageService } from "@/background/services";
 import { Psbt } from "belcoinjs-lib";
 import { networks } from "belcoinjs-lib";
@@ -300,22 +300,18 @@ class KeyringService {
     this.keyrings[currentWallet].toggleHideRoot();
   }
 
-  async signPsbtWithoutFinalizing(
-    psbt: Psbt,
-    inputIndexesToSign: number[],
-    sigHashTypes?: number[][]
-  ) {
+  async signPsbtWithoutFinalizing(psbt: Psbt, inputs?: UserToSignInput[]) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     try {
       keyring.signInputsWithoutFinalizing(
         psbt,
-        inputIndexesToSign.map((v, i) => ({
-          index: v,
-          publicKey: this.exportPublicKey(
-            storageService.currentAccount.address
-          ),
-          sighashTypes:
-            sigHashTypes !== undefined ? sigHashTypes[i] : undefined,
+        inputs.map((f) => ({
+          index: f.index,
+          publicKey:
+            (f as any).publicKey !== undefined
+              ? (f as any).publicKey
+              : this.exportPublicKey((f as any).address),
+          sighashTypes: f.sighashTypes,
         }))
       );
     } catch (e) {

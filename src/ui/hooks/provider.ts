@@ -2,7 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useControllersState } from "../states/controllerState";
 import { useCallback, useEffect } from "react";
 import { isNotification } from "../utils";
-import { IField, LocationValue } from "@/shared/interfaces/provider";
+import {
+  IField,
+  LocationValue,
+  SignPsbtOptions,
+} from "@/shared/interfaces/provider";
 import { Psbt } from "belcoinjs-lib";
 import { useGetCurrentAccount } from "../states/walletState";
 
@@ -98,8 +102,10 @@ export const useDecodePsbtInputs = () => {
       const outpoint =
         txInput.hash.reverse().toString("hex") + ":" + txInput.index;
       const isImportant = (
-        approval.params.data.inputsToSign as number[]
-      ).includes(i);
+        approval.params.data as { options?: SignPsbtOptions }
+      ).options?.toSignInputs
+        ?.map((f) => f.index)
+        .includes(i);
 
       let value;
       if (psbt.data.inputs[i].sighashType === 131) {

@@ -6,7 +6,10 @@ import BroadcastChannelMessage from "@/shared/utils/message/broadcastChannelMess
 import PushEventHandlers from "./pushEventHandlers";
 import ReadyPromise from "./readyPromise";
 import { $, domReadyCall } from "./utils";
-import type { SendBEL } from "@/background/services/keyring/types";
+import type {
+  SendBEL,
+  SignPsbtOptions,
+} from "@/background/services/keyring/types";
 
 const script = document.currentScript;
 const channelName = script?.getAttribute("channel") || "NINTONDOWALLET";
@@ -203,17 +206,12 @@ export class NintondoProvider extends EventEmitter {
     });
   };
 
-  signTx = async (
-    psbtBase64: string,
-    inputsToSign: number[],
-    sigHashTypes: number[][]
-  ) => {
+  signPsbt = async (psbtBase64: string, options?: SignPsbtOptions) => {
     return this._request({
-      method: "signTx",
+      method: "signPsbt",
       params: {
         psbtBase64,
-        inputsToSign,
-        sigHashTypes,
+        options,
       },
     });
   };

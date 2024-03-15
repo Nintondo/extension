@@ -9,7 +9,7 @@ import { PREVIEW_URL } from "@/shared/constant";
 import { t } from "i18next";
 import cn from "classnames";
 
-const SignTx = () => {
+const SignPsbt = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [fields, setFields] = useState<IField[]>([]);
   const getPsbtFields = useGetPsbtFields();
@@ -36,9 +36,11 @@ const SignTx = () => {
       resolveBtnClassName="bg-text text-bg hover:bg-orange-500 hover:text-bg"
       resolveBtnText={t("provider.sign")}
     >
-      <>
-        <KeyIcon className="w-10 h-10 text-orange-500" />
-        <h4 className="text-xl font-medium mb-6">{t("provider.sign_tx")}</h4>
+      <div className="flex flex-col overflow-y-scroll max-h-[420px] standard:max-h-full standard:overflow-hidden items-center gap-3 p-3 text-sm">
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <KeyIcon className="w-8 h-8 text-orange-500" />
+          <h4 className="text-xl font-medium">{t("provider.sign_tx")}</h4>
+        </div>
         <div className="flex flex-col gap-4 w-full">
           {fields.map((f, i) => (
             <div key={i}>
@@ -86,9 +88,9 @@ const SignTx = () => {
             </div>
           ))}
         </div>
-      </>
+      </div>
     </Layout>
   );
 };
 
-export default SignTx;
+export default SignPsbt;
