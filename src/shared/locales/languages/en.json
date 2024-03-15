@@ -268,7 +268,6 @@
     "failed_send_transfer": "Failed to send transfer(s)"
   },
   "provider": {
-    "you_will_receive": "You will receive",
     "sign_tx": "Sign transaction",
     "sign_message": "Sign message",
     "you_are_signing": "You are signing",
@@ -281,8 +280,6 @@
     "connecting": "Connecting",
     "connect": "Connect",
     "access_required": "Access required",
-    "signSpecificInputs": {
-      "inscriptions_you_send": "These are inscriptions, which you will send"
-    }
+    "to_address": "To address"
   }
 }

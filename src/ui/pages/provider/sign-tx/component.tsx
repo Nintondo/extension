@@ -45,10 +45,11 @@ const SignTx = () => {
               <label className="mb-2 block text-gray-300 pl-2">{f.label}</label>
               <div
                 className={cn(
-                  "rounded-xl px-5 py-2 break-all w-full flex justify-center",
+                  "rounded-xl px-5 py-2 break-all w-full flex justify-center border-2 bg-input-bg",
                   {
-                    "bg-green-700": !f.input,
-                    "bg-input-bg": f.input,
+                    // "border-lime-800": !f.input && f.important,
+                    // "border-violet-950": f.input && f.important,
+                    "border-input-bg": true,
                   }
                 )}
               >
@@ -60,14 +61,25 @@ const SignTx = () => {
                           src={`${PREVIEW_URL}/${k.inscription_id}`}
                           className="object-cover w-full"
                         />
-                        <span>{f.value.value}</span>
+                        <p>
+                          {t("inscription_details.value") + ": "}
+                          {f.value.value}
+                        </p>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div>
-                    <p>{f.value.text}</p>
-                    <span>{f.value.value}</span>
+                    <p>
+                      {f.input
+                        ? "Utxo txid: "
+                        : t("provider.to_address") + ": "}
+                      {f.value.text}
+                    </p>
+                    <p>
+                      {t("inscription_details.value") + ": "}
+                      {f.value.value}
+                    </p>
                   </div>
                 )}
               </div>

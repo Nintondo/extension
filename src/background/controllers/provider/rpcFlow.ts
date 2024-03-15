@@ -11,7 +11,6 @@ const isSignApproval = (type: string) => {
     "SignText",
     "SignPsbt",
     "SignTx",
-    "SignSpecificInputs",
     "SignAllPsbtInputs",
   ];
   return SIGN_APPROVALS.includes(type);

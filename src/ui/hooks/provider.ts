@@ -5,7 +5,6 @@ import { isNotification } from "../utils";
 import { IField, LocationValue } from "@/shared/interfaces/provider";
 import { Psbt } from "belcoinjs-lib";
 import { useGetCurrentAccount } from "../states/walletState";
-import { t } from "i18next";
 
 export const useApproval = () => {
   const navigate = useNavigate();
@@ -75,11 +74,8 @@ export const useDecodePsbtInputs = () => {
     const psbt = Psbt.fromBase64(approval.params.data.psbtBase64);
     const inputFields: IField[] = [];
     const outputFields: IField[] = [];
-    const inputLocations = (approval.params.data.inputsToSign as number[]).map(
-      (f) =>
-        psbt.txInputs[f].hash.reverse().toString("hex") +
-        ":" +
-        psbt.txInputs[f].index
+    const inputLocations = psbt.txInputs.map(
+      (f) => f.hash.reverse().toString("hex") + ":" + f.index
     );
     const inputValues = await apiController.getUtxoValues(inputLocations);
     const locationValue: LocationValue = Object.fromEntries(
@@ -88,65 +84,51 @@ export const useDecodePsbtInputs = () => {
 
     psbt.txOutputs.forEach((f, i) => {
       outputFields.push({
-        input: currentAccount?.address !== f.address,
+        important: currentAccount?.address === f.address,
+        input: false,
         label: `Output #${i}`,
         value: {
-          text: `To ${f.address}`,
+          text: `${f.address}`,
           value: `${f.value / 10 ** 8} BEL`,
         },
       });
     });
 
-    for (const index of approval.params.data.inputsToSign) {
-      const txInput = psbt.txInputs[index];
+    for (const [i, txInput] of psbt.txInputs.entries()) {
       const outpoint =
         txInput.hash.reverse().toString("hex") + ":" + txInput.index;
+      const isImportant = (
+        approval.params.data.inputsToSign as number[]
+      ).includes(i);
 
-      if (psbt.data.inputs[index].sighashType === 131) {
-        // inputFields = [];
-        // outputFields = [];
+      let value;
+      if (psbt.data.inputs[i].sighashType === 131) {
         const foundInscriptions = await apiController.getInscription({
           address: currentAccount.address,
           inscriptionId: outpoint.slice(0, -2) + "i" + txInput.index,
         });
 
         if (foundInscriptions.length) {
-          inputFields.push({
-            input: true,
-            label: t("provider.signSpecificInputs.inscriptions_you_send"),
-            value: {
-              inscriptions: foundInscriptions,
-            },
-          });
+          value = { inscriptions: foundInscriptions };
         } else {
-          inputFields.push({
-            input: true,
-            label: `Input #${index}`,
-            value: {
-              text: `${outpoint.slice(0, -2)}`,
-              value: `${locationValue[outpoint] / 10 ** 8} BEL`,
-            },
-          });
-        }
-        // outputFields.push({
-        //   input: false,
-        //   label: `Output #${index}`,
-        //   value: {
-        //     value: `${psbt.txOutputs[index].value / 10 ** 8} BEL`,
-        //     text: `To ${psbt.txOutputs[index].address}`,
-        //   },
-        // });
-        break;
-      } else {
-        inputFields.push({
-          input: true,
-          label: `Input #${index}`,
-          value: {
+          value = {
             text: `${outpoint.slice(0, -2)}`,
             value: `${locationValue[outpoint] / 10 ** 8} BEL`,
-          },
-        });
+          };
+        }
+      } else {
+        value = {
+          text: `${outpoint.slice(0, -2)}`,
+          value: `${locationValue[outpoint] / 10 ** 8} BEL`,
+        };
       }
+
+      inputFields.push({
+        important: isImportant,
+        input: true,
+        label: `Input #${i}`,
+        value,
+      });
     }
 
     return inputFields.concat(outputFields);
