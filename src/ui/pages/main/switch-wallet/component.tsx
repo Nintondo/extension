@@ -1,5 +1,5 @@
 import { useGetCurrentWallet, useWalletState } from "@/ui/states/walletState";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { TagIcon, KeyIcon, TrashIcon } from "@heroicons/react/24/outline";
 
@@ -39,6 +39,11 @@ const SwitchWallet = () => {
     });
     setRenameId(undefined);
   };
+
+  useEffect(() => {
+    if (wallets.findIndex((f) => f.id === currentWallet.id) > 5)
+      document.getElementById(String(currentWallet.id)).scrollIntoView();
+  }, [currentWallet.id, wallets]);
 
   return (
     <div className={s.switchWalletDiv}>
