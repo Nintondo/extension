@@ -35,7 +35,8 @@ const ConnectedSites = () => {
         <div className={s.sites}>
           {connectedSites.map((f, i) => (
             <div key={i} className={s.site}>
-              <p>{niceUrl(f.origin)}</p>
+              <img src={f.icon} className="rounded-full w-6" />
+              <p className="text-sm">{niceUrl(f.origin)}</p>
               <XMarkIcon
                 className={s.icon}
                 onClick={() => {

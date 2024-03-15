@@ -36,7 +36,8 @@ class PermissionService {
         icon,
         isConnected: true,
       });
-    else this._sites[this._sites.indexOf(alreadyConnectedSite)].isConnected = true;
+    else
+      this._sites[this._sites.indexOf(alreadyConnectedSite)].isConnected = true;
   }
 
   disconnectSites() {
@@ -49,7 +50,7 @@ class PermissionService {
     if (!sites) {
       this._sites = [];
     } else {
-      this._sites = sites.map((f) => ({ ...f, isConnected: false }));
+      this._sites = sites.map((f) => ({ ...f, isConnected: true }));
     }
   }
 
