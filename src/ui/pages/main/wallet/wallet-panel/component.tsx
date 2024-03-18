@@ -6,6 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useGetCurrentWallet } from "@/ui/states/walletState";
+import cn from "classnames";
 
 const WalletPanel = () => {
   const currentWallet = useGetCurrentWallet();
@@ -27,10 +28,18 @@ const WalletPanel = () => {
         </div>
       </Link>
 
-      <div className="flex gap-3">
-        {/* <Link to={"/pages/discover"} className="cursor-pointer">
-          <NewspaperIcon className="w-6 h-6" />
-        </Link> */}
+      <div className="flex gap-3 items-center">
+        <Link
+          to={"/pages/inscriptions"}
+          className="cursor-pointer flex items-center justify-center"
+        >
+          <img
+            src="https://i.ibb.co/W3Scy9R/cyborg-nft-lettering-2-2.png"
+            alt="shit"
+            className={cn("w-12", s.nftImage)}
+          />
+        </Link>
+        <div className="w-[1px] bg-white bg-opacity-25 h-5" />
         <Link to={"/pages/settings"} className="cursor-pointer">
           <Cog6ToothIcon className="w-6 h-6 hover:rotate-90 transition-transform" />
         </Link>

@@ -5,7 +5,7 @@
     "no_inscriptions": "No inscriptions",
     "receive": "Receive",
     "send": "Send",
-    "inscriptions": "Inscriptions",
+    "nft": "NFT",
     "amount_in_transactions": "Cardinal balance",
     "amount_in_inscriptions": "Ordinal balance"
   },
@@ -81,7 +81,8 @@
       "transferable_balance": "Transferable balance",
       "balance": "Balance",
       "create_transfer": "Mint transfer",
-      "send": "Send"
+      "send": "Send",
+      "no_transfers": "No transfers"
     }
   },
   "change_password": {

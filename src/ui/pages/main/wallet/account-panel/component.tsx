@@ -136,10 +136,16 @@ const AccountPanel = () => {
       </div>
 
       <div className={cn(s.receiveSendBtns)}>
-        <Link to={"/pages/receive"} className={s.btn}>
+        <Link
+          to={"/pages/receive"}
+          className={cn(s.btn, "w-full px-3 bg-text text-bg")}
+        >
           {t("wallet_page.receive")}
         </Link>
-        <Link to={"/pages/create-send"} className={s.btn}>
+        <Link
+          to={"/pages/create-send"}
+          className={cn(s.btn, "w-full px-3 hover:bg-text hover:text-bg")}
+        >
           {t("wallet_page.send")}
         </Link>
       </div>

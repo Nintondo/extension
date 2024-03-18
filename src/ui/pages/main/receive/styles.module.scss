@@ -1,5 +1,5 @@
 .receive {
-  @apply h-full pt-4 gap-6 flex flex-col justify-around;
+  @apply h-full pt-4 gap-6 flex flex-col justify-between;
 }
 
 .accTitle {
@@ -7,7 +7,11 @@
 }
 
 .copyButton {
-  @apply flex gap-2 items-center text-sm font-medium mx-auto p-2 rounded-xl hover:bg-text hover:text-bg transition-colors mb-2;
+  @apply flex gap-2 items-center justify-center font-semibold mx-auto p-2 rounded-xl bg-text text-bg transition-colors mb-4 w-full text-center;
+
+  > div:first-child {
+    @apply text-sm;
+  }
 
   svg {
     @apply hidden;

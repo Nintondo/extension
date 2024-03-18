@@ -7,7 +7,7 @@ import {
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
-import { useWalletState } from "@/ui/states/walletState";
+import { useGetCurrentAccount, useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
 import { Menu } from "@headlessui/react";
@@ -34,6 +34,7 @@ export default function PagesLayout() {
   }));
 
   const currentRoute = useLocation();
+  const currentAccount = useGetCurrentAccount();
   const navigate = useNavigate();
   const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
 
@@ -65,7 +66,7 @@ export default function PagesLayout() {
       },
       {
         route: "/pages/receive",
-        title: t("components.layout.receive_bel"),
+        title: currentAccount?.name ?? "Account",
       },
       {
         route: "/pages/switch-wallet",
@@ -120,7 +121,7 @@ export default function PagesLayout() {
         title: t("components.layout.change_language"),
       },
     ],
-    []
+    [currentAccount?.name]
   );
 
   const routeTitles = useMemo(
