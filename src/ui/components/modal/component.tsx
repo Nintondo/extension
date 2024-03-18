@@ -46,15 +46,15 @@ const Modal: FC<Props> = ({ title, children, open, onClose, className }) => {
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center text-center standard:items-start overflow-hidden">
+          <div className="flex min-h-full items-end justify-center text-center standard:items-center overflow-hidden">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300 transform"
-              enterFrom="opacity-0 translate-y-full standard:translate-y-0"
-              enterTo="opacity-100 translate-y-0 standard:translate-y-full"
+              enterFrom="opacity-0 translate-y-full"
+              enterTo="opacity-100 translate-y-0"
               leave="ease-in duration-200 transform"
-              leaveFrom="opacity-100 translate-y-0 standard:translate-y-full"
-              leaveTo="opacity-0 translate-y-full standard:translate-y-0"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-full"
             >
               <Dialog.Panel className="relative w-full max-w-md transform overflow-hidden rounded-t-2xl bg-bg px-3 py-5 text-left align-middle shadow-xl transition-all standard:rounded-2xl standard:p-5">
                 <Dialog.Title
