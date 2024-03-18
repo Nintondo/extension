@@ -4,11 +4,14 @@ export interface IField {
   input: boolean;
   label: string;
   important: boolean;
-  value: {
-    text?: string;
-    inscriptions?: Inscription[];
-    value?: string;
-  };
+  value: IFieldValue;
+}
+
+export interface IFieldValue {
+  text?: string;
+  inscriptions?: Inscription[];
+  value?: string;
+  anyonecanpay?: boolean;
 }
 
 export interface LocationValue {

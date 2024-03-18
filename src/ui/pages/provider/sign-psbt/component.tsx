@@ -8,10 +8,15 @@ import { useDecodePsbtInputs as useGetPsbtFields } from "@/ui/hooks/provider";
 import { PREVIEW_URL } from "@/shared/constant";
 import { t } from "i18next";
 import cn from "classnames";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import Modal from "@/ui/components/modal";
 
 const SignPsbt = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [fields, setFields] = useState<IField[]>([]);
+  const [modalInputIndex, setModalInputIndex] = useState<number | undefined>(
+    undefined
+  );
   const getPsbtFields = useGetPsbtFields();
 
   const updateFields = useCallback(async () => {
@@ -44,13 +49,25 @@ const SignPsbt = () => {
         <div className="flex flex-col gap-4 w-full">
           {fields.map((f, i) => (
             <div key={i}>
-              <label className="mb-2 block text-gray-300 pl-2">
-                {f.label}{" "}
-                {f.important && f.input ? (
-                  <span className="text-light-orange border-2 rounded-lg border-light-orange p-1 ml-2">
-                    To sign
+              <label className="mb-2 flex text-gray-300 pl-2 justify-between">
+                <span>
+                  {f.label}{" "}
+                  {f.important && f.input ? (
+                    <span className="text-light-orange border-2 rounded-lg border-light-orange p-1 ml-2">
+                      To sign
+                    </span>
+                  ) : undefined}
+                </span>
+                {f.value.anyonecanpay && f.important && (
+                  <span>
+                    <ExclamationTriangleIcon
+                      className="w-6 h-6 text-light-orange cursor-pointer"
+                      onClick={() => {
+                        setModalInputIndex(i);
+                      }}
+                    />
                   </span>
-                ) : undefined}
+                )}
               </label>
               <div
                 className={cn(
@@ -99,6 +116,17 @@ const SignPsbt = () => {
           ))}
         </div>
       </div>
+      <Modal
+        open={modalInputIndex !== undefined}
+        onClose={() => {
+          setModalInputIndex(undefined);
+        }}
+        title={t("provider.warning")}
+      >
+        <div className="text-lg font-medium p-6">
+          {t("provider.anyone_can_pay_warning")}
+        </div>
+      </Modal>
     </Layout>
   );
 };

@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react";
 import { isNotification } from "../utils";
 import {
   IField,
+  IFieldValue,
   LocationValue,
   SignPsbtOptions,
 } from "@/shared/interfaces/provider";
@@ -108,7 +109,7 @@ export const useDecodePsbtInputs = () => {
         ?.map((f) => f.index)
         .includes(i);
 
-      let value;
+      let value: IFieldValue;
       if (psbt.data.inputs[i].sighashType === 131) {
         const foundInscriptions = await apiController.getInscription({
           address: currentAccount.address,
@@ -117,11 +118,13 @@ export const useDecodePsbtInputs = () => {
 
         if (foundInscriptions.length) {
           value = {
+            anyonecanpay: true,
             inscriptions: foundInscriptions,
             value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
           };
         } else {
           value = {
+            anyonecanpay: true,
             text: `${outpoint.slice(0, -2)}`,
             value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
           };
