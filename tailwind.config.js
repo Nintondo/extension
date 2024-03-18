@@ -25,6 +25,7 @@ module.exports = {
         panel: "#669bbc",
         hovered: "#a8d0db",
         "hovered-btn": "#fd9343",
+        "light-orange": "#ff863a"
       },
       screens: {
         "standard": "355px",

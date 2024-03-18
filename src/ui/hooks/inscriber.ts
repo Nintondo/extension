@@ -15,10 +15,11 @@ export const useInscribeTransferToken = () => {
 
   return useCallback(
     async (data: ITransferToken, feeRate: number) => {
-      const utxos = await apiController.getUtxos(currentAccount.address);
+      let utxos = await apiController.getUtxos(currentAccount.address);
       for (const utxo of utxos) {
         utxo.rawHex = await apiController.getTransactionHex(utxo.txid);
       }
+      utxos = utxos.sort((a, b) => b.value - a.value);
 
       const txs = await inscribe({
         toAddress: currentAccount.address,

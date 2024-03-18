@@ -1,9 +1,7 @@
 import { IToken } from "@/shared/interfaces/token";
-import { Disclosure } from "@headlessui/react";
-import { ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { t } from "i18next";
 import { FC, useState } from "react";
-import cn from "classnames";
 import Modal from "../modal";
 import { shortAddress } from "@/shared/utils/transactions";
 

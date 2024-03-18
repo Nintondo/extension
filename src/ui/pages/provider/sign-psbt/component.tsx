@@ -44,13 +44,20 @@ const SignPsbt = () => {
         <div className="flex flex-col gap-4 w-full">
           {fields.map((f, i) => (
             <div key={i}>
-              <label className="mb-2 block text-gray-300 pl-2">{f.label}</label>
+              <label className="mb-2 block text-gray-300 pl-2">
+                {f.label}{" "}
+                {f.important && f.input ? (
+                  <span className="text-light-orange border-2 rounded-lg border-light-orange p-1 ml-2">
+                    To sign
+                  </span>
+                ) : undefined}
+              </label>
               <div
                 className={cn(
                   "rounded-xl px-5 py-2 break-all w-full flex justify-center border-2 bg-input-bg",
                   {
                     // "border-lime-800": !f.input && f.important,
-                    // "border-violet-950": f.input && f.important,
+                    // "border-light-orange": f.input && f.important,
                     "border-input-bg": true,
                   }
                 )}
@@ -58,12 +65,15 @@ const SignPsbt = () => {
                 {f.value.inscriptions !== undefined ? (
                   <div className="flex justify-center rounded-xl w-33 h-33 overflow-hidden">
                     {f.value.inscriptions.map((k, j) => (
-                      <div key={j} className="">
+                      <div
+                        key={j}
+                        className="flex flex-col items-center justify-center p-2"
+                      >
                         <img
                           src={`${PREVIEW_URL}/${k.inscription_id}`}
-                          className="object-cover w-full"
+                          className="object-cover w-full rounded-xl"
                         />
-                        <p>
+                        <p className="text-xs">
                           {t("inscription_details.value") + ": "}
                           {f.value.value}
                         </p>

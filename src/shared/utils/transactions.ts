@@ -122,3 +122,21 @@ export function tidoshisToAmount(val: number) {
   const num = new Big(val);
   return num.div(100_000_000).toFixed(8);
 }
+
+export function toFixed(x: number): string {
+  if (Math.abs(x) < 1.0) {
+    const e = parseInt(x.toString().split("e-")[1]);
+    if (e) {
+      x *= Math.pow(10, e - 1);
+      return "0." + "0".repeat(e) + x.toString().substring(2);
+    }
+  } else {
+    let e = parseInt(x.toString().split("+")[1]);
+    if (e > 20) {
+      e -= 20;
+      x /= Math.pow(10, e);
+      x += parseFloat("0." + "0".repeat(e));
+    }
+  }
+  return x.toString();
+}

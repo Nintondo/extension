@@ -281,6 +281,7 @@
     "connecting": "Connecting",
     "connect": "Connect",
     "access_required": "Access required",
-    "to_address": "To address"
+    "to_address": "To address",
+    "connecting_account": "Connecting account"
   }
 }
