@@ -1,6 +1,6 @@
 import { notificationService, storageService } from "@/background/services";
 import PromiseFlow, { underline2Camelcase } from "@/background/utils";
-import { EVENTS } from "@/shared/constant";
+import { EVENTS, NINTONDO_URL } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
 import { ethErrors } from "eth-rpc-errors";
 import providerController from "./controller";
@@ -49,7 +49,10 @@ const flowContext = flow
       mapMethod,
     } = ctx;
     if (!Reflect.getMetadata("SAFE", providerController, mapMethod)) {
-      if (!permissionService.siteIsConnected(origin)) {
+      if (
+        !permissionService.siteIsConnected(origin) &&
+        origin !== NINTONDO_URL
+      ) {
         ctx.request.requestedApproval = true;
         await notificationService.requestApproval(
           {

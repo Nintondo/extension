@@ -57,12 +57,14 @@ export const SATS_DOMAIN = ".sats";
 export const CHANNEL = "chrome";
 
 export const NINTONDO_API_URL =
-  process.env.REACT_APP_API_URL ?? "https://api.nintondo.io/api";
+  process.env.API_URL ?? "https://api.nintondo.io/api";
 export const BELLS_API_URL = "https://bells.quark.blue";
 
 export const PREVIEW_URL =
-  process.env.REACT_APP_PREVIEW_URL ?? "https://static.nintondo.io/pub/preview";
+  process.env.PREVIEW_URL ?? "https://static.nintondo.io/pub/preview";
 export const HTML_PREVIEW_URL =
-  process.env.REACT_APP_PREVIEW_URL ?? "https://static.nintondo.io/pub/html";
+  process.env.PREVIEW_URL ?? "https://static.nintondo.io/pub/html";
 export const CONTENT_URL =
-  process.env.REACT_APP_CONTENT_URL ?? "https://static.nintondo.io/pub/content";
+  process.env.CONTENT_URL ?? "https://static.nintondo.io/pub/content";
+
+export const NINTONDO_URL = process.env.NINTONDO_URL ?? "https://nintondo.io";
