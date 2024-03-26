@@ -302,6 +302,12 @@ class KeyringService {
 
   async signPsbtWithoutFinalizing(psbt: Psbt, inputs?: UserToSignInput[]) {
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
+    if (inputs === undefined)
+      inputs = psbt.txInputs.map((f, i) => ({
+        publicKey: this.exportPublicKey(storageService.currentAccount.address),
+        index: i,
+        sighashTypes: undefined,
+      }));
     try {
       keyring.signInputsWithoutFinalizing(
         psbt,

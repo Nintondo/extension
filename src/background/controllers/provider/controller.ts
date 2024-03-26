@@ -154,7 +154,7 @@ class ProviderController {
     const psbt = Psbt.fromBase64(data.data.params.psbtBase64);
     await keyringService.signPsbtWithoutFinalizing(
       psbt,
-      data.data.params.options.toSignInputs
+      data.data.params.options?.toSignInputs
     );
     return psbt.toBase64();
   };

@@ -58,7 +58,7 @@ class NotificationService extends Events {
   };
 
   // currently it only support one approval at the same time
-  requestApproval = (
+  requestApproval = async (
     data?: any,
     winProps?: OpenNotificationProps
   ): Promise<any> => {
@@ -100,8 +100,8 @@ class NotificationService extends Events {
   };
 
   openNotification = (winProps: OpenNotificationProps) => {
-    // if (this.isLocked) return;
-    // this.lock();
+    if (this.isLocked) return;
+    this.lock();
     if (this.notifiWindowId) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       remove(this.notifiWindowId);

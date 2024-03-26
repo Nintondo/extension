@@ -84,6 +84,8 @@ export const useDecodePsbtInputs = () => {
       (f) => f.hash.reverse().toString("hex") + ":" + f.index
     );
     const inputValues = await apiController.getUtxoValues(inputLocations);
+    console.log(inputValues.reduce((acc, v) => (acc += v), 0));
+    console.log(psbt.txOutputs.reduce((acc, v) => (acc += v.value), 0));
     const locationValue: LocationValue = Object.fromEntries(
       inputLocations.map((f, i) => [f, inputValues[i]])
     );
