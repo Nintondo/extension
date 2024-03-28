@@ -2,10 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { useControllersState } from "../states/controllerState";
 import { useCallback, useEffect } from "react";
 import { isNotification } from "../utils";
-import { IField, LocationValue } from "@/shared/interfaces/provider";
+import {
+  IField,
+  IFieldValue,
+  LocationValue,
+  SignPsbtOptions,
+} from "@/shared/interfaces/provider";
 import { Psbt } from "belcoinjs-lib";
 import { useGetCurrentAccount } from "../states/walletState";
-import { t } from "i18next";
+import { toFixed } from "@/shared/utils/transactions";
 
 export const useApproval = () => {
   const navigate = useNavigate();
@@ -73,75 +78,72 @@ export const useDecodePsbtInputs = () => {
   return useCallback(async (): Promise<IField[] | undefined> => {
     const approval = await notificationController.getApproval();
     const psbt = Psbt.fromBase64(approval.params.data.psbtBase64);
-    let inputFields: IField[] = [];
-    let outputFields: IField[] = [];
-    const inputLocations = (approval.params.data.inputsToSign as number[]).map(
-      (f) =>
-        psbt.txInputs[f].hash.reverse().toString("hex") +
-        ":" +
-        psbt.txInputs[f].index
+    const inputFields: IField[] = [];
+    const outputFields: IField[] = [];
+    const inputLocations = psbt.txInputs.map(
+      (f) => f.hash.reverse().toString("hex") + ":" + f.index
     );
     const inputValues = await apiController.getUtxoValues(inputLocations);
+    console.log(inputValues.reduce((acc, v) => (acc += v), 0));
+    console.log(psbt.txOutputs.reduce((acc, v) => (acc += v.value), 0));
     const locationValue: LocationValue = Object.fromEntries(
       inputLocations.map((f, i) => [f, inputValues[i]])
     );
 
     psbt.txOutputs.forEach((f, i) => {
       outputFields.push({
+        important: currentAccount?.address === f.address,
+        input: false,
         label: `Output #${i}`,
         value: {
-          text: `To ${f.address}`,
-          value: `${f.value / 10 ** 8} BEL`,
+          text: `${f.address}`,
+          value: `${toFixed(f.value / 10 ** 8)} BEL`,
         },
       });
     });
 
-    for (const index of approval.params.data.inputsToSign) {
-      const txInput = psbt.txInputs[index];
+    for (const [i, txInput] of psbt.txInputs.entries()) {
       const outpoint =
-        txInput.hash.reverse().toString("hex") + "i" + txInput.index;
+        txInput.hash.reverse().toString("hex") + ":" + txInput.index;
+      const isImportant = (
+        approval.params.data as { options?: SignPsbtOptions }
+      ).options?.toSignInputs
+        ?.map((f) => f.index)
+        .includes(i);
 
-      if (psbt.data.inputs[index].sighashType === 131) {
-        inputFields = [];
-        outputFields = [];
+      let value: IFieldValue;
+      if (psbt.data.inputs[i].sighashType === 131) {
         const foundInscriptions = await apiController.getInscription({
           address: currentAccount.address,
-          inscriptionId: outpoint,
+          inscriptionId: outpoint.slice(0, -2) + "i" + txInput.index,
         });
 
         if (foundInscriptions.length) {
-          inputFields.push({
-            label: t("provider.signSpecificInputs.inscriptions_you_send"),
-            value: {
-              inscriptions: foundInscriptions,
-            },
-          });
+          value = {
+            anyonecanpay: true,
+            inscriptions: foundInscriptions,
+            value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+          };
         } else {
-          inputFields.push({
-            label: `Input #${index}`,
-            value: {
-              text: `${outpoint}`,
-              value: `${locationValue[outpoint] / 10 ** 8} BEL`,
-            },
-          });
+          value = {
+            anyonecanpay: true,
+            text: `${outpoint.slice(0, -2)}`,
+            value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+          };
         }
-        outputFields.push({
-          label: `Output #${index}`,
-          value: {
-            value: `${psbt.txOutputs[index].value / 10 ** 8} BEL`,
-            text: `To ${psbt.txOutputs[index].address}`,
-          },
-        });
-        break;
       } else {
-        inputFields.push({
-          label: `Input #${index}`,
-          value: {
-            text: `${outpoint}`,
-            value: `${locationValue[outpoint] / 10 ** 8} BEL`,
-          },
-        });
+        value = {
+          text: `${outpoint.slice(0, -2)}`,
+          value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+        };
       }
+
+      inputFields.push({
+        important: isImportant,
+        input: true,
+        label: `Input #${i}`,
+        value,
+      });
     }
 
     return inputFields.concat(outputFields);

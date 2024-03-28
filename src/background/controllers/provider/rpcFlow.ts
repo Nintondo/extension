@@ -7,13 +7,7 @@ import providerController from "./controller";
 import { permissionService } from "@/background/services";
 
 const isSignApproval = (type: string) => {
-  const SIGN_APPROVALS = [
-    "SignText",
-    "SignPsbt",
-    "SignTx",
-    "SignSpecificInputs",
-    "SignAllPsbtInputs",
-  ];
+  const SIGN_APPROVALS = ["SignText", "signPsbt", "SignAllPsbtInputs"];
   return SIGN_APPROVALS.includes(type);
 };
 

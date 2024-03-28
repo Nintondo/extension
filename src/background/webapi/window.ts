@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 
-import { IS_WINDOWS } from "@/shared/constant";
 import {
   browserWindowsOnRemoved,
   browserWindowsGetCurrent,
@@ -21,7 +20,7 @@ browserWindowsOnRemoved((winId: number) => {
 
 const BROWSER_HEADER = 80;
 const WINDOW_SIZE = {
-  width: 350 + (IS_WINDOWS ? 14 : 0),
+  width: 354,
   height: 600,
 };
 

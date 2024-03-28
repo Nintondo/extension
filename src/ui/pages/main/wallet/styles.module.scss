@@ -2,7 +2,7 @@
   @apply w-full h-full pt-4 flex flex-col justify-start max-standard:h-screen px-4 standard:px-6 relative;
 
   .accPanel {
-    @apply flex flex-col mt-4 gap-4;
+    @apply flex flex-col mt-4 gap-5 pb-2;
 
     * {
       @apply m-0;
@@ -19,10 +19,10 @@
     }
 
     .receiveSendBtns {
-      @apply w-full gap-4 pt-4 flex items-center justify-between;
+      @apply w-full gap-3 flex items-center justify-between;
 
       .btn {
-        @apply border transition-colors border-text text-text gap-4 text-lg pr-4 px-3 py-1.5 hover:bg-text hover:text-bg rounded-xl w-full text-center;
+        @apply border transition-colors text-base py-1.5 rounded-xl text-center duration-100 font-medium;
 
         .icon {
           @apply w-6;
@@ -37,15 +37,11 @@
 }
 
 .transactions {
-  @apply text-base mt-3 font-medium mb-2 cursor-pointer transition-colors px-2 py-1 rounded-xl relative border-2 border-transparent;
-}
-
-.active {
-  @apply border-amber-700;
+  @apply text-sm uppercase tracking-widest mt-5 mb-0.5 font-medium select-none px-2;
 }
 
 .transactionsDiv {
-  @apply max-h-full flex flex-col items-center overflow-y-auto;
+  @apply max-h-full flex flex-col items-center overflow-y-auto pt-2;
 }
 
 .transaction {
@@ -74,4 +70,17 @@
 
 .inscriptionButton {
   @apply absolute bottom-0 right-0 w-12 h-12 rounded-full bg-input-bg m-6 flex justify-center items-center cursor-pointer;
+}
+
+@keyframes hueRotate {
+  0% {
+    filter: hue-rotate(0deg) saturate(20%);
+  }
+  100% {
+    filter: hue-rotate(360deg) saturate(20%);
+  }
+}
+
+.nftImage {
+  animation: hueRotate 10s infinite linear;
 }

@@ -3,7 +3,6 @@ import ReactLoading from "react-loading";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation } from "react-router-dom";
 import { ITransaction } from "@/shared/interfaces/api";
-import { getTransactionValue } from "@/shared/utils/transactions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import { FC, useId, useMemo, useState } from "react";
@@ -77,7 +76,7 @@ const TransactionInfo = () => {
                 {t("transaction_info.value_label")}
               </p>
               <span>
-                {getTransactionValue(tx, currentAccount?.address, false)} BEL
+                {tx.vout.reduce((acc, cur) => cur.value + acc, 0) / 10 ** 8} BEL
               </span>
             </div>
 

@@ -20,7 +20,7 @@ interface Props {
 interface FormType {
   address: string;
   txIds: ITransfer[];
-  feeRate: number;
+  feeRate: number | string;
 }
 
 const SendTransferModal: FC<Props> = ({
@@ -42,7 +42,7 @@ const SendTransferModal: FC<Props> = ({
     async ({ address, txIds, feeRate }: FormType) => {
       try {
         setLoading(true);
-        if (feeRate % 1 !== 0) {
+        if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
           return toast.error(t("send.create_send.fee_is_text_error"));
         }
         if (address.trim().length <= 0) {

@@ -47,7 +47,12 @@ const SwitchAccount = () => {
   };
 
   useEffect(() => {
-    document.getElementById(String(currentAccount.id)).scrollIntoView();
+    if (
+      currentWallet.accounts.findIndex(
+        (f) => f.address === currentAccount.address
+      ) > 5
+    )
+      document.getElementById(String(currentAccount.id)).scrollIntoView();
   }, [currentAccount, currentWallet]);
 
   return (

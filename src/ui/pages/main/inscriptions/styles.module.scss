@@ -1,9 +1,9 @@
 .pagination {
-  @apply w-full flex justify-evenly;
+  @apply w-full flex justify-center gap-2 px-2 py-1 rounded-xl;
 }
 
 .gridContainer {
-  @apply grid grid-cols-2 grid-rows-3 text-base w-full gap-2 py-2 pt-4 overflow-y-auto;
+  @apply grid grid-cols-2 grid-rows-3 text-base w-full gap-3 pb-2;
 }
 
 .input {

@@ -5,7 +5,7 @@
     "no_inscriptions": "No inscriptions",
     "receive": "Receive",
     "send": "Send",
-    "inscriptions": "Inscriptions",
+    "nft": "NFT",
     "amount_in_transactions": "Cardinal balance",
     "amount_in_inscriptions": "Ordinal balance"
   },
@@ -81,7 +81,8 @@
       "transferable_balance": "Transferable balance",
       "balance": "Balance",
       "create_transfer": "Mint transfer",
-      "send": "Send"
+      "send": "Send",
+      "no_transfers": "No transfers"
     }
   },
   "change_password": {
@@ -152,7 +153,7 @@
       "inscription_id": "Inscription Id"
     },
     "create_send": {
-      "minimum_amount_error": "Minimum amount is 0.01 BEL",
+      "minimum_amount_error": "Minimum amount is 0.0001 BEL",
       "address_error": "Insert receiver's address",
       "not_enough_money_error": "There's not enough money in your account",
       "not_enough_fee_error": "Increase the fee",
@@ -268,9 +269,21 @@
     "failed_send_transfer": "Failed to send transfer(s)"
   },
   "provider": {
-    "you_will_receive": "You will receive",
-    "signSpecificInputs": {
-      "inscriptions_you_send": "These are inscriptions, which you will send"
-    }
+    "sign_tx": "Sign transaction",
+    "sign_message": "Sign message",
+    "you_are_signing": "You are signing",
+    "resolve": "Resolve",
+    "reject": "Reject",
+    "sign_request": "Sign request",
+    "send_bells": "Send bells",
+    "sign": "Sign",
+    "create_transaction": "Create transaction",
+    "connecting": "Connecting",
+    "connect": "Connect",
+    "access_required": "Access required",
+    "to_address": "To address",
+    "connecting_account": "Connecting account",
+    "warning": "Warning",
+    "anyone_can_pay_warning": "This input has SIGHASH_SINGLE | ANYONECANPAY flag"
   }
 }

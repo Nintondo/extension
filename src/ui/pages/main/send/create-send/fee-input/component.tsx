@@ -6,13 +6,13 @@ import { useAppState } from "@/ui/states/appState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 interface Props {
-  onChange: (value: number) => void;
-  value: number;
+  onChange: (value: number | string) => void;
+  value: number | string;
 }
 
 const FeeInput: FC<Props> = ({ onChange, value }) => {
   const { feeRates } = useTransactionManagerContext();
-  const [selected, setSelected] = useState<number>(feeRates?.slow);
+  const [selected, setSelected] = useState<number>(feeRates?.slow ?? 10);
 
   useEffect(() => {
     if (selected !== 3) {
@@ -24,12 +24,12 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
     {
       title: t("send.create_send.fee_input.slow"),
       description: `${feeRates?.slow ?? "~"} sat/Vb`,
-      value: feeRates?.slow,
+      value: feeRates?.slow ?? 10,
     },
     {
       title: t("send.create_send.fee_input.fast"),
       description: `${feeRates?.fast ?? "~"} sat/Vb`,
-      value: feeRates?.fast,
+      value: feeRates?.fast ?? 100,
     },
     {
       title: t("send.create_send.fee_input.custom"),
@@ -40,13 +40,13 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
   return (
     <div className={s.container}>
       <div className={s.cardWrapper}>
-        {cards.map((i) => (
+        {cards.map((f, i) => (
           <FeeCard
-            key={i.value}
-            description={i.description}
-            title={i.title}
-            onSelect={() => setSelected(i.value as typeof selected)}
-            selected={i.value === selected}
+            key={i}
+            description={f.description}
+            title={f.title}
+            onSelect={() => setSelected(f.value as typeof selected)}
+            selected={f.value === selected}
           />
         ))}
       </div>
@@ -55,7 +55,9 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
         className={cn("input", { hidden: selected !== 3 })}
         placeholder="sat/Vb"
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => {
+          onChange(e.target.value === "" ? "" : Number(e.target.value));
+        }}
       />
     </div>
   );

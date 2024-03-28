@@ -23,7 +23,7 @@ import FinalleSend from "./main/send/finalle-send";
 import CreateSend from "./main/send/create-send";
 import ConfirmSend from "./main/send/confirm-send";
 import Connect from "./provider/connect";
-import Sign from "./provider/sign";
+import SignMessage from "./provider/sign-message";
 import CreateTx from "./provider/create-tx/component";
 import ConnectedSites from "./main/connected-sites";
 import Language from "./main/language";
@@ -32,8 +32,9 @@ import Advanced from "./main/security/advanced";
 import Home from "./main/home";
 import InscriptionDetails from "./main/inscription-details";
 import Inscriptions from "./main/inscriptions";
-import SignTx from "./provider/sign-tx";
+import SignPsbt from "./provider/sign-psbt";
 import RestoreMnemonicOrdinals from "./main/new-wallet/restore-mnemonic-ordinals";
+import TokensComponent from "./main/tokens/component";
 
 export const guestRouter = createHashRouter([
   {
@@ -80,15 +81,19 @@ export const authenticatedRouter = createHashRouter([
       { path: "advanced", element: <Advanced /> },
       { path: "inscription-details", element: <InscriptionDetails /> },
       { path: "inscriptions", element: <Inscriptions /> },
+      {
+        path: "bel-20",
+        element: <TokensComponent />,
+      },
     ],
   },
   {
     path: "provider",
     children: [
       { path: "connect", element: <Connect /> },
-      { path: "signMessage", element: <Sign /> },
+      { path: "signMessage", element: <SignMessage /> },
       { path: "createTx", element: <CreateTx /> },
-      { path: "signTx", element: <SignTx /> },
+      { path: "signPsbt", element: <SignPsbt /> },
     ],
   },
   { path: "*", element: <Navigate to={"/"} /> },

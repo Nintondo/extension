@@ -16,7 +16,7 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="">
+    <div className="overflow-hidden rounded-xl bg-black">
       <div
         className={cn(
           SIZES[size],

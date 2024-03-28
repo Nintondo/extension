@@ -19,18 +19,21 @@ const qrCode = new QRCode({
       rotation: 45,
       colorStops: [
         {
-          color: "#E48F45",
+          color: "#f4a261",
           offset: 0,
         },
         {
-          color: "#F5CCA0",
+          color: "#8d99ae",
           offset: 5,
         },
       ],
     },
   },
+  qrOptions: {
+    errorCorrectionLevel: "M",
+  },
   backgroundOptions: {
-    color: "#2F2F2F00",
+    color: "#ffffff00",
   },
   imageOptions: {
     crossOrigin: "anonymous",
@@ -70,21 +73,19 @@ const Receive = () => {
 
   return (
     <div className={s.receive}>
-      <div>
-        <div className="flex items-center flex-col p-3">
-          <div title={t("receive.click_to_copy")} onClick={onCopy} ref={ref} />
+      <div className="flex items-center flex-col gap-3 p-3 h-3/4 justify-center">
+        <div title={t("receive.click_to_copy")} onClick={onCopy} ref={ref} />
+        <div className="text-center opacity-80 text-xs">
+          {currentAccount?.address}
         </div>
-        <div className={s.accTitle}>{currentAccount?.name ?? "Account"}</div>
       </div>
+
       <div>
         <CopyBtn
           value={currentAccount?.address}
           className={s.copyButton}
           label={t("receive.copy_address")}
         />
-        <p className="text-center opacity-80 text-xs">
-          {currentAccount?.address}
-        </p>
       </div>
     </div>
   );

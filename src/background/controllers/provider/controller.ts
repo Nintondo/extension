@@ -5,6 +5,7 @@ import type { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
 import { fetchBELLMainnet } from "@/shared/utils";
 import permission from "@/background/services/permission";
 import type { SendBEL } from "@/background/services/keyring/types";
+import { SignPsbtOptions } from "@/shared/interfaces/provider";
 
 class ProviderController {
   connect = async () => {
@@ -138,24 +139,22 @@ class ProviderController {
   };
 
   @Reflect.metadata("APPROVAL", [
-    "SignTx",
+    "signPsbt",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (_req: any) => {},
   ])
-  signTx = async (data: {
+  signPsbt = async (data: {
     data: {
       params: {
         psbtBase64: string;
-        inputsToSign: number[];
-        sigHashTypes?: number[][];
+        options?: SignPsbtOptions;
       };
     };
   }) => {
     const psbt = Psbt.fromBase64(data.data.params.psbtBase64);
     await keyringService.signPsbtWithoutFinalizing(
       psbt,
-      data.data.params.inputsToSign,
-      data.data.params.sigHashTypes
+      data.data.params.options?.toSignInputs
     );
     return psbt.toBase64();
   };
