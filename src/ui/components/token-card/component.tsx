@@ -17,13 +17,13 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
   return (
     <>
       <div
-        className="flex w-full justify-between items-center bg-input-bg px-4 py-3 rounded-xl cursor-pointer"
+        className="flex justify-between items-center py-3 px-4 w-full rounded-xl cursor-pointer bg-input-bg"
         onClick={() => {
           setOpen(true);
         }}
       >
         <div>
-          <span className="font-medium text-base">
+          <span className="text-base font-medium">
             {token.tick.toUpperCase()}
           </span>
           <div>
@@ -31,7 +31,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
             <span className="font-medium">{token.balance}</span>
           </div>
         </div>
-        <ChevronRightIcon className="h-5 w-5" />
+        <ChevronRightIcon className="w-5 h-5" />
       </div>
 
       <Modal
@@ -39,9 +39,9 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
         onClose={() => setOpen(false)}
         title={token.tick.toUpperCase()}
       >
-        <div className="pt-3 flex flex-col gap-3">
-          <div className="flex items-center gap-1">
-            <div className="px-4 py-2 flex flex-col gap-1 w-full">
+        <div className="flex flex-col gap-3 pt-3">
+          <div className="flex gap-1 items-center">
+            <div className="flex flex-col gap-1 py-2 px-4 w-full">
               <label htmlFor="token_balance">
                 {t("components.token_card.balance")}:
               </label>
@@ -49,8 +49,8 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
                 {token.balance}
               </span>
             </div>
-            <div className="bg-white bg-opacity-20 w-[1px] h-9"></div>
-            <div className="px-4 py-2 flex flex-col gap-1 w-full">
+            <div className="h-9 bg-white bg-opacity-20 w-[1px]"></div>
+            <div className="flex flex-col gap-1 py-2 px-4 w-full">
               <label htmlFor="transfer_balance">
                 {t("components.token_card.transferable_balance")}:
               </label>
@@ -63,14 +63,14 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
           <div className="pb-3">
             {token.transfers.length ? (
               <>
-                <h3 className="font-light mb-3 uppercase text-sm text-center">
+                <h3 className="mb-3 text-sm font-light text-center uppercase">
                   Transfers
                 </h3>
                 <div className="flex flex-col gap-2">
                   {token.transfers.map((transfer, i) => (
                     <div
                       key={i}
-                      className="flex gap-3 items-center w-full justify-between px-4 py-2 bg-input-light rounded-xl"
+                      className="flex gap-3 justify-between items-center py-2 px-4 w-full rounded-xl bg-input-light"
                     >
                       <span className="text-sm font-medium">
                         {transfer.amount}
@@ -85,12 +85,13 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
             ) : undefined}
           </div>
 
-          <div className="flex items-center gap-3 w-full">
+          <div className="flex gap-3 items-center w-full">
             <button
               disabled={!token.transfers.length}
               className={"btn primary w-full"}
               onClick={() => {
                 openSendModal(token);
+                setOpen(false);
               }}
             >
               {t("components.token_card.send")}
@@ -100,6 +101,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
               className={"btn primary w-full"}
               onClick={() => {
                 openMintModal(token);
+                setOpen(false);
               }}
             >
               {t("components.token_card.create_transfer")}

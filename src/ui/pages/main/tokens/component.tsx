@@ -19,30 +19,26 @@ const TokensComponent = () => {
 
   return (
     <div className={s.inscriptionDiv}>
-      <div className="lex flex-col h-full w-full pb-8 overflow-hidden standard:pb-16">
-        <div className="py-2 pt-4 overflow-y-auto gap-3 flex flex-col">
+      <div className="overflow-hidden flex-col pb-8 w-full h-full lex standard:pb-16">
+        <div className="flex overflow-y-auto flex-col gap-3 py-2 pt-4">
           {(searchTokens === undefined ? tokens : searchTokens).map(
             (f: IToken, i: number) => {
               return (
                 <div key={i}>
                   <TokenCard
-                    openMintModal={(token) => {
-                      setSelectedMintToken(token);
-                    }}
-                    openSendModal={(token) => {
-                      setSelectedSendToken(token);
-                    }}
+                    openMintModal={setSelectedMintToken}
+                    openSendModal={setSelectedSendToken}
                     token={f}
                   />
                 </div>
               );
-            }
+            },
           )}
         </div>
       </div>
       {(searchTokens === undefined && !tokens.length) ||
-      (searchTokens !== undefined && !searchTokens.length) ? (
-        <div className="flex w-full h-4/5 bottom-0 items-center justify-center absolute">
+        (searchTokens !== undefined && !searchTokens.length) ? (
+        <div className="flex absolute bottom-0 justify-center items-center w-full h-4/5">
           <p>{t("inscriptions.tokens_not_found")}</p>
         </div>
       ) : undefined}
