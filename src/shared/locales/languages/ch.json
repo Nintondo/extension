@@ -115,7 +115,7 @@
       "confirm": "确认"
     },
     "create_send": {
-      "minimum_amount_error": "最小金额 - 0.01 BEL",
+      "minimum_amount_error": "最小金额 - 0.0001 BEL",
       "address_error": "请输入收件人地址",
       "not_enough_money_error": "你的账户资金不足",
       "not_enough_fee_error": "请提升费用",

@@ -49,7 +49,7 @@ const CreateSend = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [inscription, setInscription] = useState<Inscription | undefined>(
-    undefined
+    undefined,
   );
   const [inscriptionTransaction, setInscriptionTransaction] =
     useState<boolean>(false);
@@ -63,7 +63,7 @@ const CreateSend = () => {
   }: FormType) => {
     try {
       setLoading(true);
-      if (Number(amount) < 0.01 && !inscriptionTransaction) {
+      if (Number(amount) < 0.00001 && !inscriptionTransaction) {
         return toast.error(t("send.create_send.minimum_amount_error"));
       }
       if (address.trim().length <= 0) {
@@ -81,11 +81,11 @@ const CreateSend = () => {
 
       const { fee, rawtx } = !inscriptionTransaction
         ? await createTx(
-            address,
-            Number(amount) * 10 ** 8,
-            feeRate,
-            includeFeeInAmount
-          )
+          address,
+          Number((Number(amount) * 10 ** 8).toFixed(0)),
+          feeRate,
+          includeFeeInAmount,
+        )
         : await createOrdTx(address, feeRate, inscription);
 
       navigate("/pages/confirm-send", {
@@ -158,7 +158,7 @@ const CreateSend = () => {
   };
 
   return (
-    <div className="flex flex-col h-full justify-between w-full">
+    <div className="flex flex-col justify-between w-full h-full">
       <form
         id={formId}
         className={cn("form", s.send)}
@@ -186,7 +186,7 @@ const CreateSend = () => {
                   <input
                     type="number"
                     placeholder={t("send.create_send.amount_to_send")}
-                    className="input w-full"
+                    className="w-full input"
                     value={formData.amount}
                     onChange={onAmountChange}
                   />
@@ -195,19 +195,18 @@ const CreateSend = () => {
                   </button>
                 </div>
               </div>
-              <div className="p-2 mt-2 bg-input-light rounded-xl text-center">
-                <div className="p-0.5 flex justify-between">
+              <div className="p-2 mt-2 text-center rounded-xl bg-input-light">
+                <div className="flex justify-between p-0.5">
                   <div>{`${t("wallet_page.amount_in_transactions")}: `}</div>
-                  <span className="font-medium text-sm">
+                  <span className="text-sm font-medium">
                     {`${currentAccount.balance?.toFixed(8) ?? "-"} BEL`}
                   </span>
                 </div>
-                <div className="p-0.5 flex justify-between">
+                <div className="flex justify-between p-0.5">
                   <div>{`${t("wallet_page.amount_in_inscriptions")}: `}</div>
-                  <span className="font-medium text-sm">
-                    {`${
-                      currentAccount.inscriptionBalance?.toFixed(8) ?? "-"
-                    } BEL`}
+                  <span className="text-sm font-medium">
+                    {`${currentAccount.inscriptionBalance?.toFixed(8) ?? "-"
+                      } BEL`}
                   </span>
                 </div>
               </div>
@@ -223,7 +222,7 @@ const CreateSend = () => {
             <FeeInput
               onChange={useCallback(
                 (v) => setFormData((prev) => ({ ...prev, feeAmount: v })),
-                [setFormData]
+                [setFormData],
               )}
               value={formData.feeAmount}
             />
@@ -242,7 +241,7 @@ const CreateSend = () => {
 
           <Switch
             label={t(
-              "send.create_send.save_address_for_the_next_payments_label"
+              "send.create_send.save_address_for_the_next_payments_label",
             )}
             value={isSaveAddress}
             onChange={setIsSaveAddress}
@@ -252,7 +251,7 @@ const CreateSend = () => {
       </form>
 
       {loading ? (
-        <div className="w-full flex justify-center">
+        <div className="flex justify-center w-full">
           <Loading />
         </div>
       ) : (
