@@ -61,7 +61,7 @@ const AccountPanel = () => {
                   />
                 ) : (
                   (currentAccount?.balance ?? 0).toFixed(
-                    currentAccount.balance?.toFixed(0).toString().length > 4
+                    currentAccount.balance?.toFixed(0).toString().length >= 4
                       ? 8 -
                           currentAccount.balance?.toFixed(0)?.toString()
                             .length <
