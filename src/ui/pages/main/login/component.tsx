@@ -90,7 +90,7 @@ const Login = () => {
         />
         <div className="w-full flex justify-center">
           <button
-            className="bg-text text-bg rounded-xl font-medium py-1 px-9 text-base standard:mx-auto"
+            className="bg-primary text-bg rounded-xl font-medium py-1.5 px-9 text-sm font-[Roboto] uppercase standard:mx-auto"
             type="submit"
           >
             {t("login.login")}
