@@ -69,19 +69,34 @@ const Login = () => {
   };
 
   return (
-    <form className={cn(s.form, "mt-5")} onSubmit={handleSubmit(login)}>
-      <div className="w-full justify-center flex text-lg">
-        {t("login.welcome_back")}
+    <form
+      className={cn("mt-5 flex flex-col w-full gap-11")}
+      onSubmit={handleSubmit(login)}
+    >
+      <div className="flex flex-col gap-7 items-center w-full">
+        <div className="flex justify-center p-2 rounded-xl bg-input-bg">
+          <img alt="Nintondo" src="icon.ico" className="w-10 h-10" />
+        </div>
+        <div className="text-lg text-center font-[Roboto] uppercase tracking-widest">
+          {t("login.welcome_back")}
+        </div>
       </div>
-      <PasswordInput
-        showSeparateLabel={false}
-        register={register}
-        label={t("login.password")}
-        name="password"
-      />
-      <button className="btn primary standard:mx-auto" type="submit">
-        {t("login.login")}
-      </button>
+      <div className={cn(s.form, "mb-20 w-full items-center justify-center")}>
+        <PasswordInput
+          showSeparateLabel={false}
+          register={register}
+          label={t("login.password")}
+          name="password"
+        />
+        <div className="w-full flex justify-center">
+          <button
+            className="bg-text text-bg rounded-xl font-medium py-1 px-9 text-base standard:mx-auto"
+            type="submit"
+          >
+            {t("login.login")}
+          </button>
+        </div>
+      </div>
     </form>
   );
 };
