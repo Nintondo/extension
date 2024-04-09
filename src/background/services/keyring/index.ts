@@ -324,6 +324,15 @@ class KeyringService {
       console.error(e);
     }
   }
+
+  verifyMessage(message: string, signatureHex: string) {
+    const keyring = this.getKeyringByIndex(storageService.currentAccount.id);
+    return keyring.verifyMessage(
+      storageService.currentAccount.address,
+      message,
+      signatureHex
+    );
+  }
 }
 
 export default new KeyringService();

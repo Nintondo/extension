@@ -215,6 +215,16 @@ export class NintondoProvider extends EventEmitter {
       },
     });
   };
+
+  verifyMessage = async (message: string, signatureHex: string) => {
+    return this._request({
+      method: "verifyMessage",
+      params: {
+        message,
+        signatureHex,
+      },
+    });
+  };
 }
 
 declare global {

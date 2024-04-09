@@ -101,6 +101,17 @@ class ProviderController {
     return keyringService.exportPublicKey(_account.address);
   };
 
+  @Reflect.metadata("SAFE", true)
+  verifyMessage = async ({
+    session: { origin },
+    data: {
+      params: { message, signatureHex },
+    },
+  }) => {
+    if (!permission.siteIsConnected(origin)) return undefined;
+    return keyringService.verifyMessage(message, signatureHex);
+  };
+
   @Reflect.metadata("APPROVAL", [
     "SignText",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
