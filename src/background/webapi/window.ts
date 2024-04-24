@@ -11,6 +11,7 @@ import {
   CreateNotificationProps,
   OpenNotificationProps,
 } from "@/shared/interfaces/notification";
+import { IS_WINDOWS } from "@/shared/constant";
 
 export const event = new EventEmitter();
 
@@ -20,8 +21,8 @@ browserWindowsOnRemoved((winId: number) => {
 
 const BROWSER_HEADER = 80;
 const WINDOW_SIZE = {
-  width: 354,
-  height: 600,
+  width: IS_WINDOWS ? 360 : 354,
+  height: IS_WINDOWS ? 605 : 600,
 };
 
 const create = async ({

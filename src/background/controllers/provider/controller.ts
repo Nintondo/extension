@@ -101,17 +101,6 @@ class ProviderController {
     return keyringService.exportPublicKey(_account.address);
   };
 
-  @Reflect.metadata("SAFE", true)
-  verifyMessage = async ({
-    session: { origin },
-    data: {
-      params: { message, signatureHex },
-    },
-  }) => {
-    if (!permission.siteIsConnected(origin)) return undefined;
-    return keyringService.verifyMessage(message, signatureHex);
-  };
-
   @Reflect.metadata("APPROVAL", [
     "SignText",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -168,6 +157,19 @@ class ProviderController {
       data.data.params.options?.toSignInputs
     );
     return psbt.toBase64();
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Reflect.metadata("APPROVAL", ["inscribeTransfer", (_req: any) => {}])
+  inscribeTransfer = async (data: {
+    data: {
+      params: {
+        tick: string;
+        amount: number;
+      };
+    };
+  }) => {
+    return "shit";
   };
 }
 
