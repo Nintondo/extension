@@ -24,7 +24,7 @@ import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import Loading from "react-loading";
 
-export interface FormType {
+interface FormType {
   address: string;
   amount: string;
   feeAmount: number | string;
@@ -49,7 +49,7 @@ const CreateSend = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [inscription, setInscription] = useState<Inscription | undefined>(
-    undefined,
+    undefined
   );
   const [inscriptionTransaction, setInscriptionTransaction] =
     useState<boolean>(false);
@@ -81,11 +81,11 @@ const CreateSend = () => {
 
       const { fee, rawtx } = !inscriptionTransaction
         ? await createTx(
-          address,
-          Number((Number(amount) * 10 ** 8).toFixed(0)),
-          feeRate,
-          includeFeeInAmount,
-        )
+            address,
+            Number((Number(amount) * 10 ** 8).toFixed(0)),
+            feeRate,
+            includeFeeInAmount
+          )
         : await createOrdTx(address, feeRate, inscription);
 
       navigate("/pages/confirm-send", {
@@ -205,8 +205,9 @@ const CreateSend = () => {
                 <div className="flex justify-between p-0.5">
                   <div>{`${t("wallet_page.amount_in_inscriptions")}: `}</div>
                   <span className="text-sm font-medium">
-                    {`${currentAccount.inscriptionBalance?.toFixed(8) ?? "-"
-                      } BEL`}
+                    {`${
+                      currentAccount.inscriptionBalance?.toFixed(8) ?? "-"
+                    } BEL`}
                   </span>
                 </div>
               </div>
@@ -222,7 +223,7 @@ const CreateSend = () => {
             <FeeInput
               onChange={useCallback(
                 (v) => setFormData((prev) => ({ ...prev, feeAmount: v })),
-                [setFormData],
+                [setFormData]
               )}
               value={formData.feeAmount}
             />
@@ -241,7 +242,7 @@ const CreateSend = () => {
 
           <Switch
             label={t(
-              "send.create_send.save_address_for_the_next_payments_label",
+              "send.create_send.save_address_for_the_next_payments_label"
             )}
             value={isSaveAddress}
             onChange={setIsSaveAddress}

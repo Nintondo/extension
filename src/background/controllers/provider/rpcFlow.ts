@@ -7,11 +7,15 @@ import providerController from "./controller";
 import { permissionService } from "@/background/services";
 
 const isSignApproval = (type: string) => {
-  const SIGN_APPROVALS = ["SignText", "signPsbt", "SignAllPsbtInputs"];
+  const SIGN_APPROVALS = [
+    "SignText",
+    "signPsbt",
+    "SignAllPsbtInputs",
+    "InscribeTransfer",
+  ];
   return SIGN_APPROVALS.includes(type);
 };
 
-const windowHeight = 600;
 const flow = new PromiseFlow();
 const flowContext = flow
   .use(async (ctx, next) => {
@@ -59,7 +63,7 @@ const flowContext = flow
               session: { origin, name, icon },
             },
           },
-          { height: windowHeight, route: "/provider/connect" }
+          { route: "/provider/connect" }
         );
         permissionService.addConnectedSite(origin, name, icon);
       }
@@ -94,7 +98,7 @@ const flowContext = flow
           },
           origin,
         },
-        { height: windowHeight, route: `/provider/${method}` }
+        { route: `/provider/${method}` }
       );
       // if (isSignApproval(approvalType)) {
       //   permissionService.updateConnectSite(origin, { isSigned: true }, true);

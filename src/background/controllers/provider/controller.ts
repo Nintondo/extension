@@ -1,5 +1,5 @@
 import { Psbt } from "belcoinjs-lib";
-import { keyringService, sessionService, storageService } from "../../services";
+import { keyringService, storageService } from "../../services";
 import "reflect-metadata/lite";
 import type { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
 import { fetchBELLMainnet } from "@/shared/utils";
@@ -12,7 +12,7 @@ class ProviderController {
     if (storageService.currentWallet === undefined) return undefined;
     const _account = storageService.currentAccount.address;
     const account = _account ? _account : "";
-    sessionService.broadcastEvent("accountsChanged", account);
+    // sessionService.broadcastEvent("accountsChanged", account);
     return account;
   };
 
@@ -161,15 +161,10 @@ class ProviderController {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Reflect.metadata("APPROVAL", ["inscribeTransfer", (_req: any) => {}])
-  inscribeTransfer = async (data: {
-    data: {
-      params: {
-        tick: string;
-        amount: number;
-      };
-    };
-  }) => {
-    return "shit";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  inscribeTransfer = async (data: { approvalRes }) => {
+    console.log(data);
+    return { mintedAmount: data.approvalRes?.mintedAmount };
   };
 }
 

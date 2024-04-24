@@ -3,10 +3,16 @@ import Modal from "@/ui/components/modal";
 import { useAppState } from "@/ui/states/appState";
 import { MinusCircleIcon } from "@heroicons/react/24/outline";
 import { FC } from "react";
-import { FormType } from "../component";
 
 import s from "./styles.module.scss";
 import { t } from "i18next";
+
+// interface FormType {
+//   address: string;
+//   amount: string;
+//   feeAmount: number | string;
+//   includeFeeInAmount: boolean;
+// }
 
 interface Props {
   isOpen: boolean;

@@ -215,6 +215,15 @@ export class NintondoProvider extends EventEmitter {
       },
     });
   };
+
+  inscribeTransfer = async (tick: string) => {
+    return this._request({
+      method: "inscribeTransfer",
+      params: {
+        tick,
+      },
+    });
+  };
 }
 
 declare global {
