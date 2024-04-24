@@ -21,8 +21,8 @@ browserWindowsOnRemoved((winId: number) => {
 
 const BROWSER_HEADER = 80;
 const WINDOW_SIZE = {
-  width: IS_WINDOWS ? 360 : 354,
-  height: IS_WINDOWS ? 605 : 600,
+  width: 354 + (IS_WINDOWS ? 16 : 0),
+  height: 600 + (IS_WINDOWS ? 40 : 0),
 };
 
 const create = async ({
