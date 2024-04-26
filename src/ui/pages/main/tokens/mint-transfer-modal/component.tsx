@@ -1,4 +1,5 @@
 import { IToken } from "@/shared/interfaces/token";
+import MintTransferForm from "@/ui/components/mint-transfer-form";
 import Modal from "@/ui/components/modal";
 import { t } from "i18next";
 import { FC } from "react";
@@ -18,7 +19,7 @@ const MintTransferModal: FC<Props> = ({
       onClose={() => setSelectedMintToken(undefined)}
       title={t("inscriptions.mint_token_modal_title")}
     >
-      <MintTransferModal
+      <MintTransferForm
         selectedMintToken={selectedMintToken}
         setSelectedMintToken={setSelectedMintToken}
       />
