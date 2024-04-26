@@ -50,7 +50,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
     e.preventDefault();
     setFormData((prev) => ({
       ...prev,
-      amount: selectedMintToken.balance.toString(),
+      amount: selectedMintToken?.balance.toString(),
     }));
   };
 
@@ -64,7 +64,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         if (Number(amount) % 1 !== 0) {
           return toast.error(t("inscriptions.amount_cannot_be_fractional"));
         }
-        if (Number(amount) > selectedMintToken.balance) {
+        if (Number(amount) > selectedMintToken?.balance) {
           return toast.error(t("inscriptions.amount_exceeds_balance"));
         }
         if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
@@ -74,7 +74,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
           {
             p: "bel-20",
             op: "transfer",
-            tick: selectedMintToken.tick,
+            tick: selectedMintToken?.tick,
             amt: amount,
           },
           formData.feeRate as number
@@ -131,7 +131,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
               <div className="flex justify-between p-0.5 items-center">
                 <div>{`${t("components.token_card.balance")}: `}</div>
                 <span className="text-sm font-medium">
-                  {`${selectedMintToken.balance ?? "-"}`}
+                  {`${selectedMintToken?.balance ?? "-"}`}
                 </span>
               </div>
             </div>

@@ -32,12 +32,12 @@ const TokensComponent = () => {
                   />
                 </div>
               );
-            },
+            }
           )}
         </div>
       </div>
       {(searchTokens === undefined && !tokens.length) ||
-        (searchTokens !== undefined && !searchTokens.length) ? (
+      (searchTokens !== undefined && !searchTokens.length) ? (
         <div className="flex absolute bottom-0 justify-center items-center w-full h-4/5">
           <p>{t("inscriptions.tokens_not_found")}</p>
         </div>
