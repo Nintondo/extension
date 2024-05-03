@@ -75,77 +75,86 @@ export const useDecodePsbtInputs = () => {
     })
   );
 
-  return useCallback(async (): Promise<IField[] | undefined> => {
+  return useCallback(async (): Promise<IField[][] | undefined> => {
     const approval = await notificationController.getApproval();
-    const psbt = Psbt.fromBase64(approval.params.data.psbtBase64);
-    const inputFields: IField[] = [];
-    const outputFields: IField[] = [];
-    const inputLocations = psbt.txInputs.map(
-      (f) => f.hash.reverse().toString("hex") + ":" + f.index
-    );
-    const inputValues = await apiController.getUtxoValues(inputLocations);
-    console.log(inputValues.reduce((acc, v) => (acc += v), 0));
-    console.log(psbt.txOutputs.reduce((acc, v) => (acc += v.value), 0));
-    const locationValue: LocationValue = Object.fromEntries(
-      inputLocations.map((f, i) => [f, inputValues[i]])
-    );
+    const psbtsToApprove: Psbt[] = [];
+    const result: IField[][] = [];
+    if (approval.approvalComponent !== "multiPsbtSign") {
+      psbtsToApprove.push(Psbt.fromBase64(approval.params.data.psbtBase64));
+    } else {
+      for (const psbtBase64 of approval.params.data.data) {
+        psbtsToApprove.push(Psbt.fromBase64(psbtBase64.psbtBase64));
+      }
+    }
 
-    psbt.txOutputs.forEach((f, i) => {
-      outputFields.push({
-        important: currentAccount?.address === f.address,
-        input: false,
-        label: `Output #${i}`,
-        value: {
-          text: `${f.address}`,
-          value: `${toFixed(f.value / 10 ** 8)} BEL`,
-        },
-      });
-    });
+    for (const psbt of psbtsToApprove) {
+      const inputFields: IField[] = [];
+      const outputFields: IField[] = [];
+      const inputLocations = psbt.txInputs.map(
+        (f) => f.hash.reverse().toString("hex") + ":" + f.index
+      );
+      const inputValues = await apiController.getUtxoValues(inputLocations);
+      const locationValue: LocationValue = Object.fromEntries(
+        inputLocations.map((f, i) => [f, inputValues[i]])
+      );
 
-    for (const [i, txInput] of psbt.txInputs.entries()) {
-      const outpoint =
-        txInput.hash.reverse().toString("hex") + ":" + txInput.index;
-      const isImportant = (
-        approval.params.data as { options?: SignPsbtOptions }
-      ).options?.toSignInputs
-        ?.map((f) => f.index)
-        .includes(i);
-
-      let value: IFieldValue;
-      if (psbt.data.inputs[i].sighashType === 131) {
-        const foundInscriptions = await apiController.getInscription({
-          address: currentAccount.address,
-          inscriptionId: outpoint.slice(0, -2) + "i" + txInput.index,
+      psbt.txOutputs.forEach((f, i) => {
+        outputFields.push({
+          important: currentAccount?.address === f.address,
+          input: false,
+          label: `Output #${i}`,
+          value: {
+            text: `${f.address}`,
+            value: `${toFixed(f.value / 10 ** 8)} BEL`,
+          },
         });
+      });
 
-        if (foundInscriptions.length) {
-          value = {
-            anyonecanpay: true,
-            inscriptions: foundInscriptions,
-            value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
-          };
+      for (const [i, txInput] of psbt.txInputs.entries()) {
+        const outpoint =
+          txInput.hash.reverse().toString("hex") + ":" + txInput.index;
+        const isImportant = (
+          approval.params.data as { options?: SignPsbtOptions }
+        ).options?.toSignInputs
+          ?.map((f) => f.index)
+          .includes(i);
+
+        let value: IFieldValue;
+        if (psbt.data.inputs[i].sighashType === 131) {
+          const foundInscriptions = await apiController.getInscription({
+            address: currentAccount.address,
+            inscriptionId: outpoint.slice(0, -2) + "i" + txInput.index,
+          });
+
+          if (foundInscriptions.length) {
+            value = {
+              anyonecanpay: true,
+              inscriptions: foundInscriptions,
+              value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+            };
+          } else {
+            value = {
+              anyonecanpay: true,
+              text: `${outpoint.slice(0, -2)}`,
+              value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+            };
+          }
         } else {
           value = {
-            anyonecanpay: true,
             text: `${outpoint.slice(0, -2)}`,
             value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
           };
         }
-      } else {
-        value = {
-          text: `${outpoint.slice(0, -2)}`,
-          value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
-        };
+
+        inputFields.push({
+          important: isImportant,
+          input: true,
+          label: `Input #${i}`,
+          value,
+        });
       }
-
-      inputFields.push({
-        important: isImportant,
-        input: true,
-        label: `Input #${i}`,
-        value,
-      });
+      result.push(inputFields.concat(outputFields));
     }
-
-    return inputFields.concat(outputFields);
+    return result;
   }, [notificationController, apiController, currentAccount]);
 };

@@ -224,6 +224,17 @@ export class NintondoProvider extends EventEmitter {
       },
     });
   };
+
+  multiPsbtSign = async (
+    data: { psbtBase65: string; options: SignPsbtOptions }[]
+  ) => {
+    return this._request({
+      method: "multiPsbtSign",
+      params: {
+        data,
+      },
+    });
+  };
 }
 
 declare global {

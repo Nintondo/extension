@@ -286,6 +286,7 @@
     "to_address": "To address",
     "connecting_account": "Connecting account",
     "warning": "Warning",
-    "anyone_can_pay_warning": "This input has SIGHASH_SINGLE | ANYONECANPAY flag"
+    "anyone_can_pay_warning": "This input has SIGHASH_SINGLE | ANYONECANPAY flag",
+    "multi_psbt_sign": "Sign multiple transactions"
   }
 }

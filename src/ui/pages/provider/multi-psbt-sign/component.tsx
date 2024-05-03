@@ -9,9 +9,9 @@ import { t } from "i18next";
 import Modal from "@/ui/components/modal";
 import SignPsbtFileds from "@/ui/components/sign-psbt-fileds";
 
-const SignPsbt = () => {
+const MultiPsbtSign = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [fields, setFields] = useState<IField[]>([]);
+  const [fields, setFields] = useState<IField[][]>([]);
   const [modalInputIndex, setModalInputIndex] = useState<number | undefined>(
     undefined
   );
@@ -21,7 +21,7 @@ const SignPsbt = () => {
     if (fields.length <= 0) setLoading(true);
     const resultFields = await getPsbtFields();
     if (resultFields === undefined) return;
-    setFields(resultFields[0]);
+    setFields(resultFields);
     setLoading(false);
   }, [getPsbtFields, fields]);
 
@@ -42,12 +42,18 @@ const SignPsbt = () => {
       <div className="flex flex-col overflow-y-scroll max-h-[420px] standard:max-h-full standard:overflow-hidden items-center gap-3 p-3 text-sm">
         <div className="flex items-center justify-center gap-3 mb-3">
           <KeyIcon className="w-8 h-8 text-orange-500" />
-          <h4 className="text-xl font-medium">{t("provider.sign_tx")}</h4>
+          <h4 className="text-xl font-medium">
+            {t("provider.multi_psbt_sign")}
+          </h4>
         </div>
-        <SignPsbtFileds
-          fields={fields}
-          setModalInputIndexHandler={setModalInputIndex}
-        />
+        {fields.map((fieldsArr, i) => (
+          <div key={i}>
+            <SignPsbtFileds
+              fields={fieldsArr}
+              setModalInputIndexHandler={setModalInputIndex}
+            />
+          </div>
+        ))}
       </div>
       <Modal
         open={modalInputIndex !== undefined}
@@ -64,4 +70,4 @@ const SignPsbt = () => {
   );
 };
 
-export default SignPsbt;
+export default MultiPsbtSign;

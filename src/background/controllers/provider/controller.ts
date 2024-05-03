@@ -163,8 +163,27 @@ class ProviderController {
   @Reflect.metadata("APPROVAL", ["inscribeTransfer", (_req: any) => {}])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   inscribeTransfer = async (data: { approvalRes }) => {
-    console.log(data);
     return { mintedAmount: data.approvalRes?.mintedAmount };
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Reflect.metadata("APPROVAL", ["multiPsbtSign", (_req: any) => {}])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  multiPsbtSign = async (data: {
+    data: {
+      params: { data: { psbtBase64: string; options?: SignPsbtOptions }[] };
+    };
+  }) => {
+    return await Promise.all(
+      data.data.params.data.map(async (f) => {
+        const psbt = Psbt.fromBase64(f.psbtBase64);
+        await keyringService.signPsbtWithoutFinalizing(
+          psbt,
+          f.options?.toSignInputs
+        );
+        return psbt.toBase64();
+      })
+    );
   };
 }
 

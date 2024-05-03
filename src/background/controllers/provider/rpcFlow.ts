@@ -12,6 +12,7 @@ const isSignApproval = (type: string) => {
     "signPsbt",
     "SignAllPsbtInputs",
     "InscribeTransfer",
+    "multiPsbtSign",
   ];
   return SIGN_APPROVALS.includes(type);
 };

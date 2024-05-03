@@ -36,6 +36,7 @@ import SignPsbt from "./provider/sign-psbt";
 import RestoreMnemonicOrdinals from "./main/new-wallet/restore-mnemonic-ordinals";
 import TokensComponent from "./main/tokens/component";
 import InscribeTransfer from "./provider/inscribe-transfer";
+import MultiPsbtSign from "./provider/multi-psbt-sign";
 
 export const guestRouter = createHashRouter([
   {
@@ -96,6 +97,7 @@ export const authenticatedRouter = createHashRouter([
       { path: "createTx", element: <CreateTx /> },
       { path: "signPsbt", element: <SignPsbt /> },
       { path: "inscribeTransfer", element: <InscribeTransfer /> },
+      { path: "multiPsbtSign", element: <MultiPsbtSign /> },
     ],
   },
   { path: "*", element: <Navigate to={"/"} /> },
