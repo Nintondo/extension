@@ -17,16 +17,8 @@ class ProviderController {
   };
 
   @Reflect.metadata("SAFE", true)
-  getAccounts = async () => {
-    if (storageService.currentWallet === undefined) return undefined;
-    const _account = storageService.currentWallet.accounts[0];
-    const account = _account ? _account.address : "";
-    return account;
-  };
-
-  @Reflect.metadata("SAFE", true)
-  getNetwork = async () => {
-    return "NINTONDO";
+  getVersion = async () => {
+    return process.env.VERSION ?? "0.0.1";
   };
 
   @Reflect.metadata("SAFE", true)

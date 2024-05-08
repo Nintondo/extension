@@ -24,6 +24,7 @@ const extraManifest = await readJsonFile(
   chrome ? chromeManifestPath : firefoxManifestPath
 );
 
+const version = process.env.npm_package_version ?? "0.0.1";
 const isDev = Bun.argv.includes("--watch") || Bun.argv.includes("-w");
 
 function mergeManifests(): Plugin {
@@ -33,7 +34,7 @@ function mergeManifests(): Plugin {
       const content = {
         ...baseManifest,
         ...extraManifest,
-        version: process.env.npm_package_version ?? "0.0.1",
+        version,
       };
       if (Bun.argv.includes("--watch") && !Bun.argv.includes("--firefox")) {
         content.chrome_url_overrides = {
@@ -65,6 +66,7 @@ function dotenvPlugin(): Plugin {
       const isExists = await envFile.exists();
 
       let env: Record<string, string> = {};
+      env["process.env.VERSION"] = JSON.stringify(version);
 
       if (isExists) {
         let content = await envFile.text();

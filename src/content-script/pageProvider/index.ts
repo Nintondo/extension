@@ -235,6 +235,12 @@ export class NintondoProvider extends EventEmitter {
       },
     });
   };
+
+  getVersion = async () => {
+    return this._request({
+      method: "getVersion",
+    });
+  };
 }
 
 declare global {

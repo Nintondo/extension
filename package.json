@@ -1,6 +1,6 @@
 {
   "name": "nintondo-extension",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": true,
   "scripts": {
     "dev": "bun build.ts --watch",
@@ -34,7 +34,7 @@
     "@heroicons/react": "2.1.1",
     "@noble/hashes": "1.3.3",
     "bel-ord-utils": "0.2.0",
-    "bellhdw": "0.5.24",
+    "bellhdw": "0.5.25",
     "bells-inscriber": "0.0.5",
     "big.js": "6.2.1",
     "bip39": "3.1.0",

@@ -15,13 +15,15 @@ const SignPsbt = () => {
   const [modalInputIndex, setModalInputIndex] = useState<number | undefined>(
     undefined
   );
+  const [fee, setFee] = useState<string>("");
   const getPsbtFields = useGetPsbtFields();
 
   const updateFields = useCallback(async () => {
     if (fields.length <= 0) setLoading(true);
     const resultFields = await getPsbtFields();
     if (resultFields === undefined) return;
-    setFields(resultFields[0]);
+    setFields(resultFields.fields[0]);
+    setFee(resultFields.fee.toString() + " BEL");
     setLoading(false);
   }, [getPsbtFields, fields]);
 
@@ -40,7 +42,7 @@ const SignPsbt = () => {
       resolveBtnText={t("provider.sign")}
     >
       <div className="flex flex-col overflow-y-scroll max-h-[420px] standard:max-h-full standard:overflow-hidden items-center gap-3 p-3 text-sm">
-        <div className="flex items-center justify-center gap-3 mb-3">
+        <div className="flex items-center justify-center gap-4 mb-3">
           <KeyIcon className="w-8 h-8 text-orange-500" />
           <h4 className="text-xl font-medium">{t("provider.sign_tx")}</h4>
         </div>
@@ -48,6 +50,14 @@ const SignPsbt = () => {
           fields={fields}
           setModalInputIndexHandler={setModalInputIndex}
         />
+        <div className="w-full">
+          <label className="mb-2 flex text-gray-300 pl-2 justify-between">
+            {t("provider.fee") + ":"}
+          </label>
+          <div className="rounded-xl px-5 py-2 break-all w-full flex gap-1 bg-input-bg">
+            <p className="text-light-orange">{fee}</p>
+          </div>
+        </div>
       </div>
       <Modal
         open={modalInputIndex !== undefined}

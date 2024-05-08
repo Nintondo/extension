@@ -75,7 +75,9 @@ export const useDecodePsbtInputs = () => {
     })
   );
 
-  return useCallback(async (): Promise<IField[][] | undefined> => {
+  return useCallback(async (): Promise<
+    { fields: IField[][]; fee: number } | undefined
+  > => {
     const approval = await notificationController.getApproval();
     const psbtsToApprove: Psbt[] = [];
     const result: IField[][] = [];
@@ -86,6 +88,9 @@ export const useDecodePsbtInputs = () => {
         psbtsToApprove.push(Psbt.fromBase64(psbtBase64.psbtBase64));
       }
     }
+
+    let totalInputValue = 0;
+    let totalOutputValue = 0;
 
     for (const psbt of psbtsToApprove) {
       const inputFields: IField[] = [];
@@ -99,6 +104,7 @@ export const useDecodePsbtInputs = () => {
       );
 
       psbt.txOutputs.forEach((f, i) => {
+        totalOutputValue += f.value / 10 ** 8;
         outputFields.push({
           important: currentAccount?.address === f.address,
           input: false,
@@ -120,6 +126,9 @@ export const useDecodePsbtInputs = () => {
           .includes(i);
 
         let value: IFieldValue;
+        const inputValue = locationValue[outpoint] / 10 ** 8;
+        if (isImportant) totalInputValue += inputValue;
+
         if (psbt.data.inputs[i].sighashType === 131) {
           const foundInscriptions = await apiController.getInscription({
             address: currentAccount.address,
@@ -130,19 +139,19 @@ export const useDecodePsbtInputs = () => {
             value = {
               anyonecanpay: true,
               inscriptions: foundInscriptions,
-              value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+              value: `${toFixed(inputValue)} BEL`,
             };
           } else {
             value = {
               anyonecanpay: true,
               text: `${outpoint.slice(0, -2)}`,
-              value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+              value: `${toFixed(inputValue)} BEL`,
             };
           }
         } else {
           value = {
             text: `${outpoint.slice(0, -2)}`,
-            value: `${toFixed(locationValue[outpoint] / 10 ** 8)} BEL`,
+            value: `${toFixed(inputValue)} BEL`,
           };
         }
 
@@ -155,6 +164,8 @@ export const useDecodePsbtInputs = () => {
       }
       result.push(inputFields.concat(outputFields));
     }
-    return result;
+
+    const fee = totalInputValue - totalOutputValue;
+    return { fields: result, fee: fee < 0 ? 0 : fee };
   }, [notificationController, apiController, currentAccount]);
 };

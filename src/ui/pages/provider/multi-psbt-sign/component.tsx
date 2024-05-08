@@ -12,6 +12,7 @@ import SignPsbtFileds from "@/ui/components/sign-psbt-fileds";
 const MultiPsbtSign = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [fields, setFields] = useState<IField[][]>([]);
+  const [fee, setFee] = useState<string>("");
   const [modalInputIndex, setModalInputIndex] = useState<number | undefined>(
     undefined
   );
@@ -21,7 +22,8 @@ const MultiPsbtSign = () => {
     if (fields.length <= 0) setLoading(true);
     const resultFields = await getPsbtFields();
     if (resultFields === undefined) return;
-    setFields(resultFields);
+    setFields(resultFields.fields);
+    setFee(resultFields.fee.toString() + " BEL");
     setLoading(false);
   }, [getPsbtFields, fields]);
 
@@ -47,13 +49,24 @@ const MultiPsbtSign = () => {
           </h4>
         </div>
         {fields.map((fieldsArr, i) => (
-          <div key={i}>
+          <div key={i} className="w-full flex flex-col items-center">
+            <span className="text-light-orange">{`- Transaction${
+              i + 1
+            } -`}</span>
             <SignPsbtFileds
               fields={fieldsArr}
               setModalInputIndexHandler={setModalInputIndex}
             />
           </div>
         ))}
+        <div className="w-full">
+          <label className="mb-2 flex text-gray-300 pl-2 justify-between">
+            {t("provider.fee") + ":"}
+          </label>
+          <div className="rounded-xl px-5 py-2 break-all w-full flex gap-1 bg-input-bg">
+            <p className="text-light-orange">{fee}</p>
+          </div>
+        </div>
       </div>
       <Modal
         open={modalInputIndex !== undefined}
