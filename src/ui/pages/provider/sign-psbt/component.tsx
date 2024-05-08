@@ -23,7 +23,7 @@ const SignPsbt = () => {
     const resultFields = await getPsbtFields();
     if (resultFields === undefined) return;
     setFields(resultFields.fields[0]);
-    setFee(resultFields.fee.toString() + " BEL");
+    setFee(resultFields.fee + " BEL");
     setLoading(false);
   }, [getPsbtFields, fields]);
 

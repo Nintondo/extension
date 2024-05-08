@@ -23,7 +23,7 @@ const MultiPsbtSign = () => {
     const resultFields = await getPsbtFields();
     if (resultFields === undefined) return;
     setFields(resultFields.fields);
-    setFee(resultFields.fee.toString() + " BEL");
+    setFee(resultFields.fee + " BEL");
     setLoading(false);
   }, [getPsbtFields, fields]);
 

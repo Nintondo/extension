@@ -76,7 +76,7 @@ export const useDecodePsbtInputs = () => {
   );
 
   return useCallback(async (): Promise<
-    { fields: IField[][]; fee: number } | undefined
+    { fields: IField[][]; fee: string } | undefined
   > => {
     const approval = await notificationController.getApproval();
     const psbtsToApprove: Psbt[] = [];
@@ -127,7 +127,7 @@ export const useDecodePsbtInputs = () => {
 
         let value: IFieldValue;
         const inputValue = locationValue[outpoint] / 10 ** 8;
-        if (isImportant) totalInputValue += inputValue;
+        totalInputValue += inputValue;
 
         if (psbt.data.inputs[i].sighashType === 131) {
           const foundInscriptions = await apiController.getInscription({
@@ -166,6 +166,6 @@ export const useDecodePsbtInputs = () => {
     }
 
     const fee = totalInputValue - totalOutputValue;
-    return { fields: result, fee: fee < 0 ? 0 : fee };
+    return { fields: result, fee: fee < 0 ? "0" : toFixed(fee) };
   }, [notificationController, apiController, currentAccount]);
 };
