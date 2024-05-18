@@ -41,11 +41,13 @@ export interface IApiController {
 
 class ApiController implements IApiController {
   async getAccountBalance(address: string) {
-    const data = await fetchBELLMainnet<ApiUTXO[]>({
-      path: `/address/${address}/utxo`,
+    const data = await fetchBELLMainnet<
+      { amount: number; count: number; balance: number } | undefined
+    >({
+      path: `/address/${address}/stats`,
     });
 
-    return data.reduce((acc, utxo) => acc + utxo.value, 0);
+    return data.balance;
   }
 
   async getUtxos(address: string) {
