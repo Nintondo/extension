@@ -3,9 +3,17 @@ import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
 import { fetchBELLMainnet } from "@/shared/utils";
 
+export interface UtxoQueryParams {
+  hex?: boolean;
+  amount?: number;
+}
+
 export interface IApiController {
   getAccountBalance(address: string): Promise<number | undefined>;
-  getUtxos(address: string): Promise<ApiUTXO[] | undefined>;
+  getUtxos(
+    address: string,
+    params?: UtxoQueryParams
+  ): Promise<ApiUTXO[] | undefined>;
   getOrdUtxos(address: string): Promise<ApiOrdUTXO[] | undefined>;
   pushTx(rawTx: string): Promise<{ txid: string } | undefined>;
   getTransactions(address: string): Promise<ITransaction[] | undefined>;
@@ -50,9 +58,11 @@ class ApiController implements IApiController {
     return data.balance;
   }
 
-  async getUtxos(address: string) {
+  async getUtxos(address: string, params?: UtxoQueryParams) {
+    console.log(params);
     const data = await fetchBELLMainnet<ApiUTXO[]>({
       path: `/address/${address}/utxo`,
+      params: params as Record<string, string>,
     });
     return data;
   }

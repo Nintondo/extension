@@ -9,7 +9,6 @@ import { Inscription } from "@/shared/interfaces/inscriptions";
 import { ITransfer } from "@/shared/interfaces/token";
 import toast from "react-hot-toast";
 import { gptFeeCalculate } from "../utils";
-import { ApiUTXO } from "@/shared/interfaces/api";
 
 export function useCreateBellsTxCallback() {
   const currentAccount = useGetCurrentAccount();
@@ -32,7 +31,9 @@ export function useCreateBellsTxCallback() {
       if (selectedWallet === undefined || selectedAccount === undefined)
         throw new Error("Failed to get current wallet or account");
       const fromAddress = currentAccount?.address;
-      const utxos = await apiController.getUtxos(fromAddress);
+      const utxos = await apiController.getUtxos(fromAddress, {
+        amount: toAmount,
+      });
       const safeBalance = (utxos ?? []).reduce(
         (pre, cur) => pre + cur.value,
         0
@@ -90,7 +91,9 @@ export function useCreateOrdTx() {
       if (selectedWallet === undefined || selectedAccount === undefined)
         throw new Error("Failed to get current wallet or account");
       const fromAddress = currentAccount?.address;
-      const utxos = await apiController.getUtxos(fromAddress);
+      const utxos = await apiController.getUtxos(fromAddress, {
+        amount: gptFeeCalculate(3, 2, feeRate),
+      });
 
       const psbtHex = await keyringController.sendOrd({
         to: toAddress,
@@ -123,12 +126,13 @@ export const useSendTransferTokens = () => {
     keyringController: v.keyringController,
   }));
 
-  const getUtxos = useGetUtxosForTransfer();
-
   return useCallback(
     async (toAddress: string, txIds: ITransfer[], feeRate: number) => {
       const fee = gptFeeCalculate(1, txIds.length + 1, feeRate);
-      const utxos = await getUtxos(fee);
+      const utxos = await apiController.getUtxos(currentAccount.address, {
+        amount: fee,
+        hex: true,
+      });
       if (!utxos) return;
       const inscriptions: Inscription[] = [];
       for (const transferToken of txIds) {
@@ -153,7 +157,7 @@ export const useSendTransferTokens = () => {
         toast.success(t("inscriptions.success_send_transfer"));
       else toast.error(t("inscriptions.failed_send_transfer"));
     },
-    [apiController, currentAccount, keyringController, getUtxos]
+    [apiController, currentAccount, keyringController]
   );
 };
 
@@ -172,31 +176,5 @@ export function usePushBellsTxCallback() {
       }
     },
     [apiController]
-  );
-}
-
-export function useGetUtxosForTransfer() {
-  const { apiController } = useControllersState((v) => ({
-    apiController: v.apiController,
-  }));
-  const currentAccount = useGetCurrentAccount();
-
-  return useCallback(
-    async (value: number): Promise<ApiUTXO[] | undefined> => {
-      let totalValue = 0;
-      const selectedUtxos: ApiUTXO[] = [];
-      const utxos = await apiController.getUtxos(currentAccount.address);
-      while (value > totalValue) {
-        const utxo = utxos.shift();
-        totalValue += utxo.value;
-        selectedUtxos.push(utxo);
-        if (!utxos.length) return;
-      }
-      for (const utxo of selectedUtxos) {
-        utxo.rawHex = await apiController.getTransactionHex(utxo.txid);
-      }
-      return selectedUtxos;
-    },
-    [apiController, currentAccount.address]
   );
 }

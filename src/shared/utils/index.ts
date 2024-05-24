@@ -22,7 +22,15 @@ export const fetchBELLMainnet = async <T>({
   ...props
 }: fetchProps): Promise<T | undefined> => {
   const url = `${NINTONDO_API_URL}${path}`;
-  const res = await fetch(url.toString(), { ...props });
+  const params = props.params
+    ? Object.entries(props.params)
+        .map((k) => `${k[0]}=${k[1]}`)
+        .join("&")
+    : "";
+  const res = await fetch(
+    `${url.toString()}${Number(params.length) > 0 ? "?" : ""}${params ?? ""}`,
+    { ...props }
+  );
 
   if (!json) return (await res.text()) as T;
 

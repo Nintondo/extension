@@ -268,7 +268,8 @@
     "success_send_transfer": "Successfully sended transfer(s)",
     "failed_send_transfer": "Failed to send transfer(s)",
     "inscribe": "Inscribe",
-    "transfer": "transfer"
+    "transfer": "transfer",
+    "not_enough_balance": "Not enough balance"
   },
   "provider": {
     "sign_tx": "Sign transaction",
