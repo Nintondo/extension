@@ -5,6 +5,8 @@ import { useGetCurrentAccount } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
 import toast from "react-hot-toast";
 import { t } from "i18next";
+import { useGetUtxosForTransfer } from "./transactions";
+import { gptFeeCalculate } from "../utils";
 
 export const useInscribeTransferToken = () => {
   const currentAccount = useGetCurrentAccount();
@@ -12,14 +14,18 @@ export const useInscribeTransferToken = () => {
     apiController: v.apiController,
     keyringController: v.keyringController,
   }));
+  const getUtxos = useGetUtxosForTransfer();
 
   return useCallback(
     async (data: ITransferToken, feeRate: number) => {
-      let utxos = await apiController.getUtxos(currentAccount.address);
-      for (const utxo of utxos) {
-        utxo.rawHex = await apiController.getTransactionHex(utxo.txid);
-      }
-      utxos = utxos.sort((a, b) => b.value - a.value);
+      const cost =
+        1000 * 2 +
+        1000000 +
+        gptFeeCalculate(2, 3, feeRate) +
+        gptFeeCalculate(1, 2, feeRate);
+
+      const utxos = getUtxos(cost);
+      if (!utxos) return;
 
       const txs = await inscribe({
         toAddress: currentAccount.address,
@@ -42,6 +48,6 @@ export const useInscribeTransferToken = () => {
         toast.success(t("inscriptions.transfer_inscribed"));
       else toast.error(t("inscriptions.failed_inscribe_transfer"));
     },
-    [apiController, currentAccount, keyringController]
+    [apiController, currentAccount, keyringController, getUtxos]
   );
 };

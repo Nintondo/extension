@@ -162,18 +162,20 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     const inc = inscriptions[inscriptions.length - 1];
 
     if (
-      inscriptions.length < 60 ||
-      inscriptionLocations.includes(`${inc.txid}:${inc.vout}:${inc.offset}`)
+      (inscriptions.length < 60 && inscriptionLocations.length) ||
+      inscriptionLocations.includes(
+        `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`
+      )
     )
       return;
 
     const additionalInscriptions = await apiController.getPaginatedInscriptions(
       currentAccount?.address,
-      `${inc.txid}:${inc.vout}:${inc.offset}`
+      `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`
     );
     setInscriptionLocations([
       ...inscriptionLocations,
-      `${inc.txid}:${inc.vout}:${inc.offset}`,
+      `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`,
     ]);
     if (!additionalInscriptions) return;
     if (additionalInscriptions.length > 0) {
