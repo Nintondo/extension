@@ -6,7 +6,6 @@ import {
   useGetCurrentWallet,
 } from "@/ui/states/walletState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
-import Loading from "react-loading";
 import { shortAddress } from "@/shared/utils/transactions";
 import CopyBtn from "@/ui/components/copy-btn";
 import { t } from "i18next";
@@ -50,15 +49,11 @@ const AccountPanel = () => {
               onMouseLeave={() => handleLeave(open)}
             >
               <Popover.Button ref={triggerRef}></Popover.Button>
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center gap-2">
                 {currentAccount?.balance === undefined ? (
-                  <Loading
-                    type="spin"
-                    color="#ffbc42"
-                    width={"2.5rem"}
-                    height={"2rem"}
-                    className="react-loading pr-2"
-                  />
+                  <div className="pb-1">
+                    <div className="animate-pulse w-40 h-8 rounded-md bg-gray-600 bg-opacity-70" />
+                  </div>
                 ) : (
                   (currentAccount?.balance ?? 0).toFixed(
                     currentAccount.balance?.toFixed(0).toString().length >= 4
