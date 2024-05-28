@@ -4,7 +4,7 @@ import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
 import type { IPrivateWallet } from "@/shared/interfaces";
 import type { AddressType } from "bellhdw";
 import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
-import { ApiUTXO } from "bells-inscriber/lib/types";
+import { ApiUTXO } from "@/shared/interfaces/api";
 
 export interface IKeyringController {
   init(password: string): Promise<IPrivateWallet[]>;

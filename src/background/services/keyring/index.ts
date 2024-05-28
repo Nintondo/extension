@@ -14,7 +14,7 @@ import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
 import { INewWalletProps } from "@/shared/interfaces";
 import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
-import { ApiUTXO } from "bells-inscriber/lib/types";
+import { ApiUTXO } from "@/shared/interfaces/api";
 
 export const KEYRING_SDK_TYPES = {
   SimpleKey,
@@ -259,14 +259,14 @@ class KeyringService {
         ...utxos.map((f) => ({
           txId: f.txid,
           satoshis: f.value,
-          rawHex: f.rawHex,
+          rawHex: f.hex,
           outputIndex: f.vout,
           ords: [],
         })),
         ...ordUtxos.map((f) => ({
           txId: f.txid,
           satoshis: f.value,
-          rawHex: f.rawHex,
+          rawHex: f.hex,
           outputIndex: f.vout,
           ords: [
             {

@@ -143,7 +143,7 @@ export const useSendTransferTokens = () => {
         const txid = foundInscriptons[0].txid;
         inscriptions.push({
           ...foundInscriptons[0],
-          rawHex: await apiController.getTransactionHex(txid),
+          hex: await apiController.getTransactionHex(txid),
         });
       }
       const tx = await keyringController.createSendMultiOrd(

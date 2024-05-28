@@ -59,7 +59,6 @@ class ApiController implements IApiController {
   }
 
   async getUtxos(address: string, params?: UtxoQueryParams) {
-    console.log(params);
     const data = await fetchBELLMainnet<ApiUTXO[]>({
       path: `/address/${address}/utxo`,
       params: params as Record<string, string>,

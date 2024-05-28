@@ -26,7 +26,7 @@ export const useInscribeTransferToken = () => {
         amount: cost,
         hex: true,
       });
-      if (!utxos || utxos.length) {
+      if (!utxos || !utxos.length) {
         toast.error(t("inscriptions.not_enough_balance"));
         return;
       }
@@ -36,7 +36,10 @@ export const useInscribeTransferToken = () => {
         fromAddress: currentAccount.address,
         data: Buffer.from(JSON.stringify(data)),
         feeRate,
-        utxos: utxos as unknown as any,
+        utxos: utxos.map(f => ({
+          ...f,
+          rawHex: f.hex
+        })),
         contentType: "application/json; charset=utf-8",
         publicKey: Buffer.from(
           await keyringController.exportPublicKey(currentAccount.address),
