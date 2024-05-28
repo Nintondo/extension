@@ -7,16 +7,14 @@ interface ISession {
 }
 
 class Session implements ISession {
-  origin = "";
-  icon = "";
-  name = "";
+  origin: string;
+  icon: string;
+  name: string;
 
-  constructor(data?: ISession) {
-    if (data) {
-      this.origin = data.origin;
-      this.icon = data.icon;
-      this.name = data.name;
-    }
+  constructor(data: ISession) {
+    this.origin = data.origin;
+    this.icon = data.icon;
+    this.name = data.name;
   }
 }
 
@@ -27,15 +25,8 @@ class SessionMap {
     this.sessionMap = new Map();
   }
 
-  getSession(id: number) {
+  getSession(id: number): ISession | undefined {
     return this.sessionMap.get(id);
-  }
-
-  getOrCreateSession(id: number) {
-    if (this.sessionMap.has(id)) {
-      return this.sessionMap.get(id);
-    }
-    this.createSession(id);
   }
 
   createSession(id: number, data?: ISession) {

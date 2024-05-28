@@ -70,7 +70,12 @@ browserRuntimeOnConnect((port: any) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   pm.listen(async (data) => {
     const sessionId = port.sender?.tab?.id;
-    const session = sessionService.getOrCreateSession(sessionId);
+    if (data.method === "tabCheckin") {
+      sessionService.createSession(sessionId, data.params);
+      return;
+    }
+    const session = sessionService.getSession(sessionId);
+    if (!session) throw new Error("Session was not initialized");
 
     const req = { data, session };
     // for background push to respective page
