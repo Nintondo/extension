@@ -30,7 +30,8 @@ const qrCode = new QRCode({
     },
   },
   qrOptions: {
-    errorCorrectionLevel: "M",
+    errorCorrectionLevel: "H",
+    typeNumber: 4,
   },
   backgroundOptions: {
     color: "#ffffff00",
@@ -38,6 +39,7 @@ const qrCode = new QRCode({
   imageOptions: {
     crossOrigin: "anonymous",
     margin: 5,
+    imageSize: 0.25,
   },
 });
 
