@@ -257,8 +257,11 @@
     "mint_token_modal_title": "Mint transfer token",
     "send_token_modal_title": "Send token",
     "amount_to_mint": "Amount to mint",
+    "transfers_count": "Amount of transfer",
     "amount_is_text_error": "Amount should be integer",
+    "transfer_count_is_text_error": "Transfer count should be integer",
     "amount_cannot_be_fractional": "Amount cannot be fractional",
+    "transfer_countcannot_be_fractional": "Transfer count cannot be fractional",
     "amount_exceeds_balance": "Amount exceeds balance",
     "transfer_inscribed": "Transfer inscribed successfully",
     "failed_inscribe_transfer": "Failed to inscribe transfer",
@@ -269,7 +272,11 @@
     "failed_send_transfer": "Failed to send transfer(s)",
     "inscribe": "Inscribe",
     "transfer": "transfer",
-    "not_enough_balance": "Not enough balance"
+    "not_enough_balance": "Not enough balance",
+    "not_enough_token_balance": "Token balance is not enough",
+    "minimum_transfer_count": "Minimum transfer amount is 1",
+    "minimum_amount_error": "Minimum token amount is 1",
+    "input_amount_first": "Input amount first"
   },
   "provider": {
     "sign_tx": "Sign transaction",

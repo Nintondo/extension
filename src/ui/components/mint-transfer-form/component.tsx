@@ -18,6 +18,7 @@ import s from "./styles.module.scss";
 interface FormType {
   amount: string;
   feeRate: number | string;
+  transferCount: number | string;
 }
 
 interface MintTransferModalProps {
@@ -33,6 +34,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<FormType>({
     amount: "",
+    transferCount: "",
     feeRate: 10,
   });
   const formId = useId();
@@ -46,6 +48,13 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
     }));
   };
 
+  const onTransferCountChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      transferCount: normalizeAmount(e.target.value),
+    }));
+  };
+
   const onMaxClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     setFormData((prev) => ({
@@ -54,21 +63,52 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
     }));
   };
 
+  const onMaxTransferClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    if (Number(formData.amount) < 1)
+      return toast.error("inscriptions.input_amount_first");
+    const maximum = selectedMintToken?.balance / Number(formData.amount);
+    setFormData((prev) => ({
+      ...prev,
+      transferCount: Math.floor(maximum).toString(),
+    }));
+  };
+
   const inscribe = useCallback(
-    async ({ amount, feeRate }: FormType) => {
+    async ({ amount, feeRate, transferCount }: FormType) => {
       try {
         setLoading(true);
         if (Number.isNaN(Number(amount))) {
           return toast.error(t("inscriptions.amount_is_text_error"));
         }
+        if (Number.isNaN(Number(transferCount))) {
+          return toast.error(t("inscriptions.transfer_count_is_text_error"));
+        }
         if (Number(amount) % 1 !== 0) {
           return toast.error(t("inscriptions.amount_cannot_be_fractional"));
+        }
+        if (Number(transferCount) % 1 !== 0) {
+          return toast.error(
+            t("inscriptions.transfer_countcannot_be_fractional")
+          );
         }
         if (Number(amount) > selectedMintToken?.balance) {
           return toast.error(t("inscriptions.amount_exceeds_balance"));
         }
         if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
           return toast.error(t("send.create_send.fee_is_text_error"));
+        }
+        if (Number(amount) < 1) {
+          return toast.error(t("inscriptions.minimum_amount_error"));
+        }
+        if (Number(transferCount) < 1) {
+          return toast.error(t("inscriptions.minimum_transfer_count"));
+        }
+        if (
+          Number(transferCount) * Number(amount) >
+          selectedMintToken?.balance
+        ) {
+          return toast.error(t("inscriptions.not_enough_token_balance"));
         }
         await inscribeTransferToken(
           {
@@ -77,12 +117,14 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
             tick: selectedMintToken?.tick,
             amt: amount,
           },
-          formData.feeRate as number
+          formData.feeRate as number,
+          formData.transferCount as number
         );
         setSelectedMintToken(undefined);
         if (mintedHandler) mintedHandler(Number(amount));
         setFormData({
           amount: "",
+          transferCount: "",
           feeRate: 10,
         });
       } catch (e) {
@@ -93,7 +135,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
     },
     [
       setLoading,
-      formData.feeRate,
+      formData,
       inscribeTransferToken,
       selectedMintToken,
       setSelectedMintToken,
@@ -124,6 +166,18 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
                 onChange={onAmountChange}
               />
               <button className={s.maxAmount} onClick={onMaxClick}>
+                {t("send.create_send.max_amount")}
+              </button>
+            </div>
+            <div className="flex gap-2 w-full mt-2">
+              <input
+                type="number"
+                placeholder={t("inscriptions.transfers_count")}
+                className="input w-full"
+                value={formData.transferCount}
+                onChange={onTransferCountChange}
+              />
+              <button className={s.maxAmount} onClick={onMaxTransferClick}>
                 {t("send.create_send.max_amount")}
               </button>
             </div>
