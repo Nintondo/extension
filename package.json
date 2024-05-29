@@ -35,7 +35,7 @@
     "@noble/hashes": "1.3.3",
     "bel-ord-utils": "0.2.0",
     "bellhdw": "0.5.24",
-    "bells-inscriber": "0.0.4",
+    "bells-inscriber": "0.1.2",
     "big.js": "6.2.1",
     "bip39": "3.1.0",
     "classnames": "2.5.1",
