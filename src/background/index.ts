@@ -130,3 +130,16 @@ setInterval(() => {
     }
   }
 }, 5000);
+
+// setInterval(async () => {
+//   const unpushedHexes = JSON.parse(localStorage.getItem("topush")) as string[];
+//   console.log(unpushedHexes);
+//   const failedToPush: string[] = [];
+//   for (const hex of unpushedHexes) {
+//     const txid = (await apiController.pushTx(hex)).txid ?? "";
+//     if (txid.length !== 64 || txid.includes("RPC error"))
+//       failedToPush.push(hex);
+//   }
+//   if (failedToPush.length)
+//     localStorage.setItem("topush", JSON.stringify(failedToPush));
+// }, 1000);

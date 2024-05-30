@@ -130,7 +130,7 @@ export const useInscribeTransferToken = () => {
             for (const txhex of i) {
               const txid = (await apiController.pushTx(txhex)).txid ?? "";
               if (txid.length !== 64 || txid.includes("RPC error"))
-                unpushedHexes.push(txid);
+                unpushedHexes.push(txhex);
               txids.push(txid);
             }
             return txids;
@@ -142,8 +142,8 @@ export const useInscribeTransferToken = () => {
       if (!txIds.some((id) => id.length !== 64 || id.includes("RPC error")))
         toast.success(t("inscriptions.transfer_inscribed"));
       else {
-        toast(t("inscriptions.failed_inscribe_transfer"));
-        toast(t("inscriptions.failed_inscribe_transfer2"));
+        toast.error(t("inscriptions.failed_inscribe_transfer2"));
+        toast.error(t("inscriptions.failed_inscribe_transfer"));
       }
     },
     [

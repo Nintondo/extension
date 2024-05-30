@@ -22,5 +22,6 @@ export interface StorageInterface {
     pendingWallet?: string;
     connectedSites: ConnectedSite[];
     language?: string;
+    unpushedHexes?: string[];
   };
 }

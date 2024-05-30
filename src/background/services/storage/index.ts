@@ -220,7 +220,7 @@ class StorageService {
     return current[index].phrase;
   }
 
-  async getLocalValues() {
+  async getLocalValues(): Promise<StorageInterface> {
     const data = await browserStorageLocalGet<StorageInterface>(undefined);
     if (data.cache === undefined) {
       return {
@@ -230,6 +230,7 @@ class StorageService {
           selectedAccount: 0,
           wallets: [],
           connectedSites: [],
+          unpushedHexes: [],
         },
         enc: undefined,
       };
