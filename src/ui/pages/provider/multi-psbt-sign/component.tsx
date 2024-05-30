@@ -50,7 +50,7 @@ const MultiPsbtSign = () => {
         </div>
         {fields.map((fieldsArr, i) => (
           <div key={i} className="w-full flex flex-col items-center">
-            <span className="text-light-orange">{`- Transaction${
+            <span className="text-light-orange">{`- Transaction ${
               i + 1
             } -`}</span>
             <SignPsbtFileds
