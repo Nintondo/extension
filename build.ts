@@ -100,6 +100,7 @@ const buildOptions: BuildOptions = {
   minify: !isDev,
   bundle: true,
   logLevel: "info",
+  external: ["fonts/*"],
   define: {
     "import.meta.url": '""',
     "process.browser": "false",
