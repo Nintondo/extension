@@ -44,6 +44,7 @@ class StorageService {
 
   get currentAccount(): IAccount | undefined {
     if (
+      !this._walletState.wallets.length ||
       this._walletState.selectedWallet === undefined ||
       this._walletState.selectedAccount === undefined
     )

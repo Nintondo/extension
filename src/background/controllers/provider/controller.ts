@@ -1,7 +1,7 @@
 import { Psbt } from "belcoinjs-lib";
 import { keyringService, storageService } from "../../services";
 import "reflect-metadata/lite";
-import type { AccountBalanceResponse, ApiUTXO } from "@/shared/interfaces/api";
+import type { ApiUTXO } from "@/shared/interfaces/api";
 import { fetchBELLMainnet } from "@/shared/utils";
 import permission from "@/background/services/permission";
 import type { SendBEL } from "@/background/services/keyring/types";
@@ -26,19 +26,14 @@ class ProviderController {
     if (!permission.siteIsConnected(origin)) return undefined;
     const account = storageService.currentAccount;
     if (!account) return null;
-    const data = await fetchBELLMainnet<AccountBalanceResponse>({
-      path: `/address/${account.address}`,
-    });
-
-    if (!data) return undefined;
-
+    if (account.balance !== undefined) return account.balance * 10 ** 8;
     return (
-      (data.chain_stats.funded_txo_sum -
-        data.chain_stats.spent_txo_sum +
-        data.mempool_stats.funded_txo_sum -
-        data.mempool_stats.spent_txo_sum) /
-      10 ** 8
-    );
+      await fetchBELLMainnet<
+        { amount: number; count: number; balance: number } | undefined
+      >({
+        path: `/address/${account.address}/stats`,
+      })
+    ).balance;
   };
 
   @Reflect.metadata("SAFE", true)

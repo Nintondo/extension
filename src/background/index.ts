@@ -1,7 +1,7 @@
 import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
 import { Message } from "@/shared/utils/message";
-import { sessionService } from "@/background/services";
+import { sessionService, storageService } from "@/background/services";
 import {
   browserRuntimeOnConnect,
   browserRuntimeOnInstalled,
@@ -12,6 +12,7 @@ import stateController from "./controllers/stateController";
 import { keyringController } from "./controllers";
 import { providerController } from "./controllers";
 import notificationController from "./controllers/notificationController";
+import { fetchBELLMainnet } from "@/shared/utils";
 
 const { PortMessage } = Message;
 
@@ -105,7 +106,7 @@ browserRuntimeOnInstalled((details) => {
 const INTERNAL_STAYALIVE_PORT = "CT_Internal_port_alive";
 let alivePort: any = null;
 
-setInterval(() => {
+setInterval(async () => {
   if (alivePort == null) {
     alivePort = chrome.runtime.connect({ name: INTERNAL_STAYALIVE_PORT });
 
@@ -118,6 +119,19 @@ setInterval(() => {
 
       alivePort = null;
     });
+  }
+
+  if (
+    storageService.currentAccount !== undefined &&
+    storageService.currentAccount.address !== undefined
+  ) {
+    storageService.currentAccount.balance = (
+      await fetchBELLMainnet<
+        { amount: number; count: number; balance: number } | undefined
+      >({
+        path: `/address/${storageService.currentAccount.address}/stats`,
+      })
+    ).balance;
   }
 
   if (alivePort) {

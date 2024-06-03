@@ -287,7 +287,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     if (!currentAccount?.address) return;
     const interval = setInterval(async () => {
       await Promise.all([
-        updateAccountBalance(),
         updateTransactions(),
         updateLastBlock(),
         inscriptionIntervalUpdate(),
@@ -299,7 +298,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       clearInterval(interval);
     };
   }, [
-    updateAccountBalance,
     updateTransactions,
     updateLastBlock,
     inscriptionIntervalUpdate,
