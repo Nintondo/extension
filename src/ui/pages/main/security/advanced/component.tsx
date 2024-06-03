@@ -45,6 +45,7 @@ const Advanced = () => {
         }),
         selectedAccount: 0,
       });
+      await walletController.saveWallets();
       trottledUpdate(true);
       navigate("/");
     } catch (e) {
