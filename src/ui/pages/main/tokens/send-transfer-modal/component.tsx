@@ -23,6 +23,14 @@ interface FormType {
   feeRate: number | string;
 }
 
+function formatAmount(amount: number) {
+  if (amount >= 1e12) return (amount / 1e12).toFixed(1) + "T";
+  if (amount >= 1e9) return (amount / 1e9).toFixed(1) + "B";
+  if (amount >= 1e6) return (amount / 1e6).toFixed(1) + "M";
+  if (amount >= 1e3) return (amount / 1e3).toFixed(1) + "K";
+  return amount.toString();
+}
+
 const SendTransferModal: FC<Props> = ({
   selectedSendToken,
   setSelectedSendToken,
@@ -123,7 +131,7 @@ const SendTransferModal: FC<Props> = ({
                 )}
               >
                 <span>${selectedSendToken.tick.toUpperCase()}</span>
-                <span>{tx.amount}</span>
+                <span>{formatAmount(tx.amount)}</span>
               </div>
             ))}
           </div>
