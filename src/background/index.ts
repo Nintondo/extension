@@ -121,6 +121,16 @@ setInterval(async () => {
     });
   }
 
+  if (alivePort) {
+    alivePort.postMessage({ content: "keep alive~" });
+
+    if (chrome.runtime.lastError) {
+      //
+    } else {
+      //
+    }
+  }
+
   if (
     storageService.currentAccount !== undefined &&
     storageService.currentAccount.address !== undefined
@@ -132,16 +142,6 @@ setInterval(async () => {
         path: `/address/${storageService.currentAccount.address}/stats`,
       })
     ).balance;
-  }
-
-  if (alivePort) {
-    alivePort.postMessage({ content: "keep alive~" });
-
-    if (chrome.runtime.lastError) {
-      //
-    } else {
-      //
-    }
   }
 }, 5000);
 

@@ -26,7 +26,7 @@ class ProviderController {
     if (!permission.siteIsConnected(origin)) return undefined;
     const account = storageService.currentAccount;
     if (!account) return null;
-    if (account.balance !== undefined) return account.balance * 10 ** 8;
+    if (account.balance !== undefined) return account.balance;
     return (
       await fetchBELLMainnet<
         { amount: number; count: number; balance: number } | undefined
