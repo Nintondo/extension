@@ -264,7 +264,7 @@
     "transfer_countcannot_be_fractional": "Transfer count cannot be fractional",
     "amount_exceeds_balance": "Amount exceeds balance",
     "transfer_inscribed": "Transfer inscribed successfully",
-    "failed_inscribe_transfer": "Failed to push few transactions",
+    "failed_inscribe_transfer": "Failed to create transfer",
     "failed_inscribe_transfer2": "These transactions will be pushed later",
     "choose_transfer": "Choose transfers to send",
     "total_amount": "Total amount",
