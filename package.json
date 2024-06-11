@@ -76,7 +76,7 @@
     "esbuild-sass-plugin": "2.16.1",
     "esbuild-svg": "1.0.3",
     "eslint": "8.57.0",
-    "eslint-plugin-react": "7.33.2",
+    "eslint-plugin-react": "7.34.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "postcss-modules": "6.0.0",
     "sass": "1.69.7",
