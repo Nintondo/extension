@@ -120,6 +120,14 @@ export default function PagesLayout() {
         route: "/pages/language",
         title: t("components.layout.change_language"),
       },
+      {
+        route: "/pages/wallet-settings",
+        title: t("components.layout.wallet_settings"),
+      },
+      {
+        route: "/pages/network-settings",
+        title: t("components.layout.network_settings"),
+      },
     ],
     [currentAccount?.name]
   );

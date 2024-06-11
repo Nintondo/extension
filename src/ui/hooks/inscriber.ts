@@ -6,6 +6,7 @@ import { useControllersState } from "../states/controllerState";
 import toast from "react-hot-toast";
 import { t } from "i18next";
 import { gptFeeCalculate } from "../utils";
+import { networks } from "belcoinjs-lib";
 
 export const useInscribeTransferToken = () => {
   const currentAccount = useGetCurrentAccount();
@@ -46,6 +47,7 @@ export const useInscribeTransferToken = () => {
           "hex"
         ),
         signPsbtHex: keyringController.signAllInputs,
+        network: networks.bellcoin,
       });
 
       const txIds: string[] = [];

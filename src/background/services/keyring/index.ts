@@ -29,7 +29,7 @@ class KeyringService {
   }
 
   async init(password: string) {
-    const wallets = await storageService.importWallets(password);
+    const { wallets, network } = await storageService.importWallets(password);
     for (const i of wallets) {
       let wallet: HDPrivateKey | SimpleKey;
       if (i.data.seed) {
@@ -37,6 +37,7 @@ class KeyringService {
           ...i.data,
           hideRoot: i.hideRoot,
           addressType: i.data.addressType ?? i.addressType,
+          network,
         });
       } else {
         wallet = HDSimpleKey.deserialize(i.data) as any as HDSimpleKey;
@@ -178,7 +179,7 @@ class KeyringService {
       toAddress: data.to,
       toAmount: data.amount,
       signTransaction: this.signPsbt.bind(this),
-      network: networks.bitcoin,
+      network: networks.bellcoin,
       changeAddress: account.address,
       receiverToPayFee: data.receiverToPayFee,
       pubkey: this.exportPublicKey(account.address),
@@ -227,7 +228,7 @@ class KeyringService {
         (i) => (i as ApiOrdUTXO & { isOrd: boolean }).isOrd
       )?.value,
       signTransaction: this.signPsbt.bind(this),
-      network: networks.bitcoin,
+      network: networks.bellcoin,
       changeAddress: account.address,
       pubkey: this.exportPublicKey(account.address),
       feeRate: data.feeRate,

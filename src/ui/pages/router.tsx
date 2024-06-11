@@ -7,7 +7,6 @@ import CreatePassword from "@/ui/pages/main/create-password";
 import CreateNewAccount from "@/ui/pages/main/new-account";
 import SwitchAccount from "@/ui/pages/main/switch-account";
 import PagesLayout from "@/ui/components/layout";
-import ChangePassword from "./main/security/change-password";
 import Receive from "./main/receive";
 import SwitchWallet from "./main/switch-wallet";
 import NewWallet from "./main/new-wallet";
@@ -17,7 +16,7 @@ import RestorePrivKey from "./main/new-wallet/restore-priv-key";
 import Settings from "./main/settings";
 import ShowPk from "@/ui/pages/main/switch-account/show-pk";
 import ShowMnemonic from "./main/switch-wallet/show-mnemonic";
-import ChangeAddrType from "@/ui/pages/main/change-addr-type";
+import ChangeAddrType from "@/ui/pages/main/settings/change-addr-type";
 import TransactionInfo from "./main/transaction-info";
 import FinalleSend from "./main/send/finalle-send";
 import CreateSend from "./main/send/create-send";
@@ -25,10 +24,8 @@ import ConfirmSend from "./main/send/confirm-send";
 import Connect from "./provider/connect";
 import SignMessage from "./provider/sign-message";
 import CreateTx from "./provider/create-tx/component";
-import ConnectedSites from "./main/connected-sites";
-import Language from "./main/language";
-import Security from "./main/security";
-import Advanced from "./main/security/advanced";
+import ConnectedSites from "./main/settings/connected-sites";
+import Language from "./main/settings/language";
 import Home from "./main/home";
 import InscriptionDetails from "./main/inscription-details";
 import Inscriptions from "./main/inscriptions";
@@ -37,6 +34,11 @@ import RestoreMnemonicOrdinals from "./main/new-wallet/restore-mnemonic-ordinals
 import TokensComponent from "./main/tokens/component";
 import InscribeTransfer from "./provider/inscribe-transfer";
 import MultiPsbtSign from "./provider/multi-psbt-sign";
+import ChangePassword from "./main/settings/security/change-password";
+import Security from "./main/settings/security";
+import Advanced from "./main/settings/security/advanced";
+import WalletSettings from "./main/settings/wallet/component";
+import NetworkSettings from "./main/settings/wallet/network/component";
 
 export const guestRouter = createHashRouter([
   {
@@ -83,6 +85,8 @@ export const authenticatedRouter = createHashRouter([
       { path: "advanced", element: <Advanced /> },
       { path: "inscription-details", element: <InscriptionDetails /> },
       { path: "inscriptions", element: <Inscriptions /> },
+      { path: "wallet-settings", element: <WalletSettings /> },
+      { path: "network-settings", element: <NetworkSettings /> },
       {
         path: "bel-20",
         element: <TokensComponent />,

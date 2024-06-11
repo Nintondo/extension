@@ -16,7 +16,6 @@ const SignMessage = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
-      console.log(approval.params.data.text);
       setMessage(approval.params.data.text);
     })();
   }, [notificationController]);

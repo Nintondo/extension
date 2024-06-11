@@ -1,3 +1,4 @@
+import { Network, networks } from "belcoinjs-lib";
 import { AddressType } from "bellhdw/src/hd/types";
 
 export const KEYRING_TYPE = {
@@ -11,6 +12,11 @@ export const IS_CHROME = /Chrome\//i.test(navigator.userAgent);
 export const IS_LINUX = /linux/i.test(navigator.userAgent);
 
 export const IS_WINDOWS = /windows/i.test(navigator.userAgent);
+
+export const NETOWRKS: { name: string; network: Network }[] = [
+  { name: "MAINNET", network: networks.bellcoin },
+  { name: "TESTNET", network: networks.testnet },
+];
 
 export const ADDRESS_TYPES: {
   value: AddressType;
@@ -35,6 +41,12 @@ export const ADDRESS_TYPES: {
     label: "P2PKH",
     name: "Legacy (P2PKH)",
     hdPath: "m/44'/0'/0'/0",
+  },
+  {
+    value: AddressType.P2WPKH,
+    label: "P2WPKH",
+    name: "Native Segwit (P2WPKH)",
+    hdPath: "m/49'/0'/0'/0",
   },
 ];
 

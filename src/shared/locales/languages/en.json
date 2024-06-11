@@ -27,6 +27,7 @@
       "change_address_type": "Change Address Type",
       "create_new_account": "Create New Account",
       "change_password": "Change Password",
+      "network_settings": "Network Settings",
       "receive_bel": "Receive BEL",
       "switch_wallet": "Switch Wallet",
       "transaction_info": "Transaction Info",
@@ -38,7 +39,8 @@
       "security": "Security",
       "advanced": "Advanced",
       "discover": "Discover",
-      "inscriptions": "Inscriptions"
+      "inscriptions": "Inscriptions",
+      "wallet_settings": "Wallet Settings"
     },
     "check_password": {
       "incorrect_password_error": "Incorrect password",

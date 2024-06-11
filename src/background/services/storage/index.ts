@@ -11,6 +11,7 @@ import { keyringService, permissionService, storageService } from "..";
 import { excludeKeysFromObj, pickKeysFromObj } from "@/shared/utils";
 import eventBus from "@/shared/eventBus";
 import { EVENTS } from "@/shared/constant";
+import { Network } from "belcoinjs-lib";
 
 interface SaveWallets {
   password: string;
@@ -117,7 +118,8 @@ class StorageService {
     if (
       state.addressBook !== undefined ||
       state.pendingWallet !== undefined ||
-      state.language !== undefined
+      state.language !== undefined ||
+      state.network !== undefined
     ) {
       const localState = await this.getLocalValues();
       const cache: StorageInterface["cache"] = {
@@ -129,6 +131,7 @@ class StorageService {
       if (state.pendingWallet !== undefined)
         cache.pendingWallet = state.pendingWallet;
       if (state.language !== undefined) cache.language = state.language;
+      if (state.network !== undefined) cache.network = state.network;
 
       const payload: StorageInterface = {
         cache: cache,
@@ -239,9 +242,11 @@ class StorageService {
     return data;
   }
 
-  async importWallets(password: string): Promise<IPrivateWallet[]> {
+  async importWallets(
+    password: string
+  ): Promise<{ network?: Network; wallets: IPrivateWallet[] }> {
     const encrypted = await this.getLocalValues();
-    if (!encrypted) return [];
+    if (!encrypted) return { wallets: [] };
 
     this._appState = {
       ...this._appState,
@@ -258,15 +263,18 @@ class StorageService {
 
     const secrets = await this.getSecrets(encrypted, password);
 
-    return encrypted.cache.wallets.map((i, index: number) => {
-      const current = secrets?.find((i) => i.id === index);
-      return {
-        ...i,
-        id: index,
-        phrase: current?.phrase,
-        data: current?.data,
-      };
-    });
+    return {
+      wallets: encrypted.cache.wallets.map((i, index: number) => {
+        const current = secrets?.find((i) => i.id === index);
+        return {
+          ...i,
+          id: index,
+          phrase: current?.phrase,
+          data: current?.data,
+        };
+      }),
+      network: encrypted.cache.network,
+    };
   }
 
   getUniqueName(kind: "Wallet" | "Account"): string {

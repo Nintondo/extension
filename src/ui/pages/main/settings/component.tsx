@@ -1,20 +1,18 @@
-import { browserTabsCreate } from "@/shared/utils/browser";
-import s from "./styles.module.scss";
 import { useAppState } from "@/ui/states/appState";
 
 import {
   UserIcon,
-  ArrowsPointingOutIcon,
   ArrowLeftOnRectangleIcon,
   PuzzlePieceIcon,
   LanguageIcon,
   ShieldCheckIcon,
+  WalletIcon,
 } from "@heroicons/react/24/solid";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
 
-import config from "../../../../../package.json";
 import { t } from "i18next";
+import SettingsLayout from "@/ui/components/settings-layout";
 
 const ICON_SIZE = 8;
 const ICON_CN = `w-${ICON_SIZE} h-${ICON_SIZE}`;
@@ -23,12 +21,6 @@ const Settings = () => {
   const { logout } = useAppState((v) => ({
     logout: v.logout,
   }));
-
-  const expandView = async () => {
-    await browserTabsCreate({
-      url: "index.html",
-    });
-  };
 
   const items: TileProps[] = [
     {
@@ -42,9 +34,9 @@ const Settings = () => {
       link: "/pages/security",
     },
     {
-      icon: <ArrowsPointingOutIcon className={ICON_CN} />,
-      label: t("settings.expand_view"),
-      onClick: expandView,
+      icon: <WalletIcon className={ICON_CN} />,
+      label: t("components.layout.wallet_settings"),
+      link: "/pages/wallet-settings",
     },
     {
       icon: <PuzzlePieceIcon className={ICON_CN} />,
@@ -64,27 +56,11 @@ const Settings = () => {
   ];
 
   return (
-    <div className={s.wrapper}>
-      <div className={s.settings}>
-        {items.map((i) => (
-          <Tile key={i.label} {...i} />
-        ))}
-      </div>
-      <div className={s.version}>
-        Version <span>{config.version}</span> | By{" "}
-        <a
-          href="#"
-          onClick={async () => {
-            await browserTabsCreate({
-              url: `https://nintondo.io`,
-              active: true,
-            });
-          }}
-        >
-          Nintondo team
-        </a>
-      </div>
-    </div>
+    <SettingsLayout>
+      {items.map((i) => (
+        <Tile key={i.label} {...i} />
+      ))}
+    </SettingsLayout>
   );
 };
 

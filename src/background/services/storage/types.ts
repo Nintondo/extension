@@ -1,3 +1,4 @@
+import { Network } from "belcoinjs-lib";
 import type { ConnectedSite } from "../permission";
 import type { IWallet } from "@/shared/interfaces";
 
@@ -23,5 +24,6 @@ export interface StorageInterface {
     connectedSites: ConnectedSite[];
     language?: string;
     unpushedHexes?: string[];
+    network?: Network;
   };
 }
