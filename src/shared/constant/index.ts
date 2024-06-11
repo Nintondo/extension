@@ -46,7 +46,7 @@ export const ADDRESS_TYPES: {
     value: AddressType.P2WPKH,
     label: "P2WPKH",
     name: "Native Segwit (P2WPKH)",
-    hdPath: "m/49'/0'/0'/0",
+    hdPath: "m/84'/0'/0'/0",
   },
 ];
 
