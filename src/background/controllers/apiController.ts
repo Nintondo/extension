@@ -1,7 +1,7 @@
 import type { ApiUTXO, ITransaction } from "@/shared/interfaces/api";
 import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
-import { fetchBELLMainnet } from "@/shared/utils";
+import { fetchProps } from "@/shared/utils";
 
 export interface UtxoQueryParams {
   hex?: boolean;
@@ -48,8 +48,15 @@ export interface IApiController {
 }
 
 class ApiController implements IApiController {
+  testnet: boolean;
+  private fetch: <T>(props: fetchProps) => Promise<T | undefined>;
+
+  setTestnet(testnet: boolean) {
+    this.testnet = testnet;
+  }
+
   async getAccountBalance(address: string) {
-    const data = await fetchBELLMainnet<
+    const data = await this.fetch<
       { amount: number; count: number; balance: number } | undefined
     >({
       path: `/address/${address}/stats`,
@@ -59,7 +66,7 @@ class ApiController implements IApiController {
   }
 
   async getUtxos(address: string, params?: UtxoQueryParams) {
-    const data = await fetchBELLMainnet<ApiUTXO[]>({
+    const data = await this.fetch<ApiUTXO[]>({
       path: `/address/${address}/utxo`,
       params: params as Record<string, string>,
     });
@@ -67,14 +74,14 @@ class ApiController implements IApiController {
   }
 
   async getOrdUtxos(address: string) {
-    const data = await fetchBELLMainnet<ApiOrdUTXO[]>({
+    const data = await this.fetch<ApiOrdUTXO[]>({
       path: `/address/${address}/ords`,
     });
     return data;
   }
 
   async getFees() {
-    const data = await fetchBELLMainnet({
+    const data = await this.fetch({
       path: "/fee-estimates",
     });
     return {
@@ -84,7 +91,7 @@ class ApiController implements IApiController {
   }
 
   async pushTx(rawTx: string) {
-    const data = await fetchBELLMainnet<string>({
+    const data = await this.fetch<string>({
       path: "/tx",
       method: "POST",
       headers: {
@@ -99,14 +106,14 @@ class ApiController implements IApiController {
   }
 
   async getTransactions(address: string): Promise<ITransaction[] | undefined> {
-    return await fetchBELLMainnet<ITransaction[]>({
+    return await this.fetch<ITransaction[]>({
       path: `/address/${address}/txs`,
       // path: `/address/TSofqS7nm8Vnk1fk8jU7YgqQcGuWA7wtnK/txs`,
     });
   }
 
   async getInscriptions(address: string): Promise<Inscription[] | undefined> {
-    return await fetchBELLMainnet<Inscription[]>({
+    return await this.fetch<Inscription[]>({
       path: `/address/${address}/ords`,
     });
   }
@@ -116,7 +123,7 @@ class ApiController implements IApiController {
     txid: string
   ): Promise<ITransaction[] | undefined> {
     try {
-      return await fetchBELLMainnet<ITransaction[]>({
+      return await this.fetch<ITransaction[]>({
         path: `/address/${address}/txs/chain/${txid}`,
       });
     } catch (e) {
@@ -129,7 +136,7 @@ class ApiController implements IApiController {
     location: string
   ): Promise<Inscription[] | undefined> {
     try {
-      return await fetchBELLMainnet<Inscription[]>({
+      return await this.fetch<Inscription[]>({
         path: `/address/${address}/ords/chain/${location}`,
       });
     } catch (e) {
@@ -139,7 +146,7 @@ class ApiController implements IApiController {
 
   async getLastBlockBEL(): Promise<number> {
     return Number(
-      await fetchBELLMainnet<string>({
+      await this.fetch<string>({
         path: "/blocks/tip/height",
       })
     );
@@ -149,7 +156,7 @@ class ApiController implements IApiController {
     return {
       bellscoin: {
         usd: (
-          await fetchBELLMainnet<{ price_usd: number }>({
+          await this.fetch<{ price_usd: number }>({
             path: "/last-price",
           })
         ).price_usd,
@@ -158,14 +165,14 @@ class ApiController implements IApiController {
   }
 
   async getDiscovery(): Promise<Inscription[] | undefined> {
-    return await fetchBELLMainnet<Inscription[]>({ path: "/discovery" });
+    return await this.fetch<Inscription[]>({ path: "/discovery" });
   }
 
   async getInscriptionCounter(
     address: string
   ): Promise<{ amount: number; count: number }> {
     try {
-      const result = await fetchBELLMainnet<
+      const result = await this.fetch<
         { amount: number; count: number } | undefined
       >({
         path: `/address/${address}/stats`,
@@ -185,7 +192,7 @@ class ApiController implements IApiController {
     inscriptionId?: string;
     address: string;
   }): Promise<Inscription[] | undefined> {
-    return await fetchBELLMainnet<Inscription[]>({
+    return await this.fetch<Inscription[]>({
       path: `/address/${address}/ords?search=${
         inscriptionId ?? inscriptionNumber
       }`,
@@ -193,20 +200,20 @@ class ApiController implements IApiController {
   }
 
   async getTokens(address: string): Promise<IToken[] | undefined> {
-    return await fetchBELLMainnet<IToken[]>({
+    return await this.fetch<IToken[]>({
       path: `/address/${address}/tokens`,
     });
   }
 
   async getTransactionHex(txid: string): Promise<string> {
-    return await fetchBELLMainnet<string>({
+    return await this.fetch<string>({
       path: "/tx/" + txid + "/hex",
       json: false,
     });
   }
 
   async getUtxoValues(outpoints: string[]): Promise<number[] | undefined> {
-    const result = await fetchBELLMainnet<{ values: number[] }>({
+    const result = await this.fetch<{ values: number[] }>({
       path: "/prev",
       body: JSON.stringify({ locations: outpoints }),
       method: "POST",

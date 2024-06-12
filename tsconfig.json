@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "types": ["bun-types"],
+    "target": "ESNext",
+    "module": "commonjs",
+    "outDir": "./src",
+    "declaration": true,
+    "rootDir": "./ts_src",
+    "types": ["node"],
+    "allowJs": false,
+    "strict": true,
     "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "experimentalDecorators": true,
-    "noUnusedLocals": false,
-    "noImplicitAny": true
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
-  "exclude": ["./src/**/*", "./node_modules/**/*"],
-  "include": ["./build.ts"]
+  "include": ["build.ts"],
+  "exclude": ["src/**/*", "node_modules/**/*"]
 }

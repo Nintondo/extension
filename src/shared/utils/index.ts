@@ -7,7 +7,7 @@ export const format = (str: string, ...args: any[]) => {
   return args.reduce((m, n) => m.replace("_s_", n), str);
 };
 
-interface fetchProps extends RequestInit {
+export interface fetchProps extends RequestInit {
   method?: "POST" | "GET" | "PUT" | "DELETE";
   headers?: HeadersInit;
   path: string;
@@ -35,6 +35,14 @@ export const fetchBELLMainnet = async <T>({
   if (!json) return (await res.text()) as T;
 
   return await res.json();
+};
+
+const fetchShit = (shit: string) => {
+  return async (props: fetchProps) =>
+    await fetchBELLMainnet({
+      ...props,
+      shit,
+    });
 };
 
 export const excludeKeysFromObj = <
