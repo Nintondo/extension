@@ -1,7 +1,7 @@
 import type { ApiUTXO, ITransaction } from "@/shared/interfaces/api";
 import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
-import { fetchProps } from "@/shared/utils";
+import { fetchBELLMainnet, fetchProps } from "@/shared/utils";
 
 export interface UtxoQueryParams {
   hex?: boolean;
@@ -25,14 +25,14 @@ export interface IApiController {
     address: string,
     location: string
   ): Promise<Inscription[] | undefined>;
-  getBELPrice(): Promise<{ bellscoin?: { usd: number } }>;
+  getBELPrice(): Promise<{ bellscoin?: { usd: number } } | undefined>;
   getLastBlockBEL(): Promise<number>;
   getFees(): Promise<{ fast: number; slow: number }>;
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
   getDiscovery(): Promise<Inscription[] | undefined>;
   getInscriptionCounter(
     address: string
-  ): Promise<{ amount: number; count: number }>;
+  ): Promise<{ amount: number; count: number } | undefined>;
   getInscription({
     inscriptionNumber,
     inscriptionId,
@@ -47,9 +47,18 @@ export interface IApiController {
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
 }
 
+type FetchType = <T>(
+  props: Omit<fetchProps, "testnet">
+) => Promise<T | undefined>;
+
 class ApiController implements IApiController {
-  testnet: boolean;
-  private fetch: <T>(props: fetchProps) => Promise<T | undefined>;
+  testnet: boolean = false;
+  private fetch: FetchType = (p: Omit<fetchProps, "testnet">) => {
+    return fetchBELLMainnet({
+      ...p,
+      testnet: this.testnet,
+    });
+  };
 
   setTestnet(testnet: boolean) {
     this.testnet = testnet;
@@ -62,7 +71,7 @@ class ApiController implements IApiController {
       path: `/address/${address}/stats`,
     });
 
-    return data.balance;
+    return data?.balance;
   }
 
   async getUtxos(address: string, params?: UtxoQueryParams) {
@@ -81,12 +90,12 @@ class ApiController implements IApiController {
   }
 
   async getFees() {
-    const data = await this.fetch({
+    const data = await this.fetch<Record<string, number>>({
       path: "/fee-estimates",
     });
     return {
-      slow: Number((data["6"] as number)?.toFixed(0)),
-      fast: Number((data["2"] as number)?.toFixed(0)) + 1,
+      slow: Number(data?.["6"]?.toFixed(0) ?? 0),
+      fast: Number(data?.["2"]?.toFixed(0) ?? 0) + 1,
     };
   }
 
@@ -100,6 +109,9 @@ class ApiController implements IApiController {
       json: false,
       body: rawTx,
     });
+    if (!data) {
+      return undefined;
+    }
     return {
       txid: data,
     };
@@ -152,14 +164,16 @@ class ApiController implements IApiController {
     );
   }
 
-  async getBELPrice(): Promise<{ bellscoin?: { usd: number } }> {
+  async getBELPrice() {
+    const data = await this.fetch<{ price_usd: number }>({
+      path: "/last-price",
+    });
+    if (!data) {
+      return undefined;
+    }
     return {
       bellscoin: {
-        usd: (
-          await this.fetch<{ price_usd: number }>({
-            path: "/last-price",
-          })
-        ).price_usd,
+        usd: data.price_usd,
       },
     };
   }
@@ -170,7 +184,7 @@ class ApiController implements IApiController {
 
   async getInscriptionCounter(
     address: string
-  ): Promise<{ amount: number; count: number }> {
+  ): Promise<{ amount: number; count: number } | undefined> {
     try {
       const result = await this.fetch<
         { amount: number; count: number } | undefined
@@ -205,20 +219,20 @@ class ApiController implements IApiController {
     });
   }
 
-  async getTransactionHex(txid: string): Promise<string> {
+  async getTransactionHex(txid: string) {
     return await this.fetch<string>({
       path: "/tx/" + txid + "/hex",
       json: false,
     });
   }
 
-  async getUtxoValues(outpoints: string[]): Promise<number[] | undefined> {
+  async getUtxoValues(outpoints: string[]) {
     const result = await this.fetch<{ values: number[] }>({
       path: "/prev",
       body: JSON.stringify({ locations: outpoints }),
       method: "POST",
     });
-    return result.values;
+    return result?.values;
   }
 }
 

@@ -48,7 +48,9 @@ const Receive = () => {
   const ref = useRef(null);
 
   useEffect(() => {
-    qrCode.append(ref.current);
+    if (ref.current) {
+      qrCode.append(ref.current);
+    }
   }, []);
 
   useEffect(() => {
@@ -65,11 +67,13 @@ const Receive = () => {
       },
     });
     const blob = await newQr.getRawData();
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        [blob.type]: blob,
-      }),
-    ]);
+    if (blob) {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+    }
     toast.success("Copied");
   };
 

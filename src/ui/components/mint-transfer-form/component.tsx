@@ -50,7 +50,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
     e.preventDefault();
     setFormData((prev) => ({
       ...prev,
-      amount: selectedMintToken?.balance.toString(),
+      amount: (selectedMintToken?.balance ?? "").toString(),
     }));
   };
 
@@ -64,7 +64,10 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         if (Number(amount) % 1 !== 0) {
           return toast.error(t("inscriptions.amount_cannot_be_fractional"));
         }
-        if (Number(amount) > selectedMintToken?.balance) {
+        if (
+          selectedMintToken?.balance &&
+          Number(amount) > selectedMintToken?.balance
+        ) {
           return toast.error(t("inscriptions.amount_exceeds_balance"));
         }
         if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
@@ -72,6 +75,9 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         }
         if (Number(amount) < 1) {
           return toast.error(t("inscriptions.minimum_amount_error"));
+        }
+        if (!selectedMintToken?.tick) {
+          return toast.error("inscriptions.tick_is_not_set");
         }
         await inscribeTransferToken(
           {
@@ -89,7 +95,8 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
           feeRate: 10,
         });
       } catch (e) {
-        toast.error(e.message);
+        if (e instanceof Error) toast.error(e.message);
+        else throw e;
       } finally {
         setLoading(false);
       }

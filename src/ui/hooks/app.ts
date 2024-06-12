@@ -9,6 +9,7 @@ export const useUpdateAddressBook = () => {
 
   return useCallback(
     async (address?: string) => {
+      if (!address) return;
       if (addressBook.length >= 6) addressBook.splice(5, 1);
       if (addressBook.includes(address.trim())) return;
       addressBook.unshift(address.trim() ?? "");

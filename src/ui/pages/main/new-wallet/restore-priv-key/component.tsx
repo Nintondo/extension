@@ -63,7 +63,7 @@ const RestorePrivKey = () => {
           register={register}
           name="privKey"
         />
-        <Select
+        <Select<"wif" | "hex">
           label={t("new_wallet.restore_from_label")}
           values={waysToRestore}
           selected={selectedWayToRestore}

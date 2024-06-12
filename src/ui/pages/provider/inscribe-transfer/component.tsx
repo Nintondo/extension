@@ -2,6 +2,7 @@ import { IToken } from "@/shared/interfaces/token";
 import MintTransferForm from "@/ui/components/mint-transfer-form";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
+import { ethErrors } from "eth-rpc-errors";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import Loading from "react-loading";
@@ -28,8 +29,13 @@ const InscribeTransfer = () => {
     (async () => {
       setLoading(true);
       if (!currentAccount?.address) return;
-      const tick = (await notificationController.getApproval()).params?.data
-        .tick as string;
+      const approval = await notificationController.getApproval();
+      if (!approval)
+        throw ethErrors.provider.custom({
+          message: "Approval is not defined",
+          code: 228,
+        });
+      const tick = approval.params?.data.tick as string;
       const userTokens = await apiController.getTokens(currentAccount.address);
       if (userTokens !== undefined && userTokens.length) {
         const token = userTokens.find(

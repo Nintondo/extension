@@ -13,7 +13,7 @@ interface Props {
 }
 
 const AddressInput: FC<Props> = ({ address, onChange, onOpenModal }) => {
-  const [filtered, setFiltered] = useState([]);
+  const [filtered, setFiltered] = useState<string[]>([]);
 
   const { addressBook } = useAppState((v) => ({
     addressBook: v.addressBook,

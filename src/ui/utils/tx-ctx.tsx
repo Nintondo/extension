@@ -280,7 +280,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const data = await apiController.getBELPrice();
-      if (data.bellscoin) {
+      if (data?.bellscoin) {
         setCurrentPrice(data.bellscoin.usd);
       }
       await updateLastBlock();

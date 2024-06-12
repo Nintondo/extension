@@ -21,7 +21,7 @@ type PathOf<T> = T extends object
   : "";
 
 interface InscField<T, K extends PathOf<T> = PathOf<T>> {
-  key?: K;
+  key: K;
   link?: boolean;
   defaultValue?: any;
 }
@@ -106,7 +106,7 @@ const InscriptionDetails = () => {
   const getValue = <T,>(key: string) => {
     let current = inscription;
     for (const i of key.split(".")) {
-      current = current[i];
+      current = (current as any)[i];
     }
     if (key === "status.block_time")
       return new Date((current as unknown as number) * 1000).toLocaleString();

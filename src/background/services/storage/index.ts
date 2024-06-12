@@ -212,7 +212,8 @@ class StorageService {
       password,
       JSON.stringify(encrypted.enc)
     )) as string | undefined;
-    return JSON.parse(loaded) as DecryptedSecrets | undefined;
+    if (!loaded) return undefined;
+    return JSON.parse(loaded) as DecryptedSecrets;
   }
 
   async getWalletPhrase(index: number, password: string) {

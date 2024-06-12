@@ -17,6 +17,7 @@ export const useInscribeTransferToken = () => {
 
   return useCallback(
     async (data: ITransferToken, feeRate: number) => {
+      if (!currentAccount || !currentAccount.address) return;
       const cost =
         1000 * 2 +
         1000000 +
@@ -39,7 +40,7 @@ export const useInscribeTransferToken = () => {
         feeRate,
         utxos: utxos.map((f) => ({
           ...f,
-          hex: f.hex,
+          hex: f.hex!,
         })),
         contentType: "application/json; charset=utf-8",
         publicKey: Buffer.from(
@@ -52,7 +53,7 @@ export const useInscribeTransferToken = () => {
 
       const txIds: string[] = [];
       for (const i of txs) {
-        txIds.push((await apiController.pushTx(i)).txid ?? "");
+        txIds.push((await apiController.pushTx(i))?.txid ?? "");
       }
       if (
         !txIds.filter((f) => f.length !== 64 || f.includes("RPC error")).length

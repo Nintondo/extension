@@ -1,4 +1,4 @@
-import { NINTONDO_API_URL } from "@/shared/constant";
+import { NINTONDO_API_URL, TESTNET_NINTONDO_API_URL } from "@/shared/constant";
 import browser from "./browser";
 
 export const t = (name: string) => browser.i18n.getMessage(name);
@@ -14,14 +14,16 @@ export interface fetchProps extends RequestInit {
   params?: Record<string, string>;
   error?: boolean;
   json?: boolean;
+  testnet: boolean;
 }
 
 export const fetchBELLMainnet = async <T>({
   path,
   json = true,
+  testnet,
   ...props
 }: fetchProps): Promise<T | undefined> => {
-  const url = `${NINTONDO_API_URL}${path}`;
+  const url = `${testnet ? TESTNET_NINTONDO_API_URL : NINTONDO_API_URL}${path}`;
   const params = props.params
     ? Object.entries(props.params)
         .map((k) => `${k[0]}=${k[1]}`)
@@ -35,14 +37,6 @@ export const fetchBELLMainnet = async <T>({
   if (!json) return (await res.text()) as T;
 
   return await res.json();
-};
-
-const fetchShit = (shit: string) => {
-  return async (props: fetchProps) =>
-    await fetchBELLMainnet({
-      ...props,
-      shit,
-    });
 };
 
 export const excludeKeysFromObj = <

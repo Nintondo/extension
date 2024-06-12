@@ -59,6 +59,7 @@ export const useUpdateCurrentWallet = () => {
 
   return useCallback(
     async (wallet: Partial<IWallet>) => {
+      if (selectedWallet === undefined) return;
       wallets[selectedWallet] = { ...wallets[selectedWallet], ...wallet };
       await updateWalletState({
         wallets: [...wallets],
@@ -83,6 +84,8 @@ export const useCreateNewAccount = () => {
     async (name?: string) => {
       if (!currentWallet) return;
       const createdAccount = await walletController.createNewAccount(name);
+      if (!createdAccount)
+        throw new Error("Internal error: failed to create new account");
       const updatedWallet: IWallet = {
         ...currentWallet,
         accounts: [...currentWallet.accounts, createdAccount].map((f, i) => ({
@@ -204,6 +207,7 @@ export const useUpdateCurrentAccountBalance = () => {
 
   const updateCurrentAccount = useCallback(
     async (account: Partial<IAccount>) => {
+      if (selectedWallet === undefined || selectedAccount === undefined) return;
       if (!wallets[selectedWallet]) return;
       wallets[selectedWallet].accounts[selectedAccount] = {
         ...wallets[selectedWallet].accounts[selectedAccount],
@@ -219,12 +223,19 @@ export const useUpdateCurrentAccountBalance = () => {
 
   return useCallback(
     async (address?: string) => {
+      if (
+        address === undefined &&
+        (currentAccount === undefined || currentAccount.address === undefined)
+      )
+        requestAnimationFrame;
       const balance = await apiController.getAccountBalance(
         address ? address : currentAccount?.address ?? ""
       );
-      const { count, amount } = await apiController.getInscriptionCounter(
-        currentAccount?.address
+      const data = await apiController.getInscriptionCounter(
+        currentAccount!.address!
       );
+      if (!data) return;
+      const { count, amount } = data;
       if (balance === undefined || !currentAccount) return;
       await updateCurrentAccount({
         balance: balance / 10 ** 8,
@@ -271,7 +282,7 @@ export const useDeleteWallet = () => {
       updateWalletState,
       wallets.length,
       switchWallet,
-      currentAccount.id,
+      currentAccount,
     ]
   );
 };

@@ -28,6 +28,7 @@ const SearchInscriptions = () => {
 
   const searchInscription = useCallback(
     async (search: string) => {
+      if (!currentAccount || !currentAccount.address) return;
       if (!search || !search.trim().length) {
         setSearchInscriptions(undefined);
         return;
@@ -45,12 +46,7 @@ const SearchInscriptions = () => {
       );
       setCurrentPage(1);
     },
-    [
-      apiController,
-      setCurrentPage,
-      currentAccount.address,
-      setSearchInscriptions,
-    ]
+    [apiController, setCurrentPage, currentAccount, setSearchInscriptions]
   );
 
   const searchToken = useCallback(
@@ -67,8 +63,14 @@ const SearchInscriptions = () => {
     [setCurrentPage, tokens, setSearchTokens]
   );
 
-  const tokenDebounce = useDebounce(searchToken, 10);
-  const inscriptionDebounce = useDebounce(searchInscription, 200);
+  const tokenDebounce = useDebounce<string, typeof searchToken>(
+    searchToken,
+    10
+  );
+  const inscriptionDebounce = useDebounce<string, typeof searchInscription>(
+    searchInscription,
+    200
+  );
 
   if (open) {
     return (

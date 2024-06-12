@@ -82,6 +82,8 @@ class KeyringService {
   }
 
   exportAccount(address: Hex) {
+    if (storageService.currentWallet?.id === undefined)
+      throw new Error("Internal error: Current wallet is not defined");
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     if (!keyring.exportAccount) {
       throw new Error(KeyringServiceError.UnsupportedExportAccount);
@@ -112,6 +114,10 @@ class KeyringService {
   }
 
   signPsbt(psbt: Psbt) {
+    if (storageService.currentWallet?.id === undefined)
+      throw new Error("Internal error: Current wallet is not defined");
+    if (storageService.currentAccount?.address === undefined)
+      throw new Error("Internal error: Current account is not defined");
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     const publicKey = this.exportPublicKey(
       storageService.currentAccount.address
@@ -127,6 +133,10 @@ class KeyringService {
   }
 
   signAllPsbtInputs(psbt: Psbt) {
+    if (storageService.currentWallet?.id === undefined)
+      throw new Error("Internal error: Current wallet is not defined");
+    if (storageService.currentAccount?.address === undefined)
+      throw new Error("Internal error: Current account is not defined");
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     return keyring.signAllInputsInPsbt(
       psbt,
@@ -135,11 +145,15 @@ class KeyringService {
   }
 
   signMessage(msgParams: { from: string; data: string }) {
+    if (storageService.currentWallet?.id === undefined)
+      throw new Error("Internal error: Current wallet is not defined");
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     return keyring.signMessage(msgParams.from, msgParams.data);
   }
 
   signPersonalMessage(msgParams: { from: string; data: string }) {
+    if (storageService.currentWallet?.id === undefined)
+      throw new Error("Internal error: Current wallet is not defined");
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     if (!keyring.signPersonalMessage) {
       throw new Error(KeyringServiceError.UnsupportedSignPersonalMessage);
@@ -149,6 +163,8 @@ class KeyringService {
   }
 
   exportPublicKey(address: Hex) {
+    if (storageService.currentWallet?.id === undefined)
+      throw new Error("Internal error: Current wallet is not defined");
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     return keyring.exportPublicKey(address);
   }
@@ -156,10 +172,19 @@ class KeyringService {
   async sendBEL(data: SendBEL) {
     const account = storageService.currentAccount;
     const wallet = storageService.currentWallet;
-    if (!account || !account.address)
-      throw new Error("Error when trying to get the current account");
+    if (!account?.address || !wallet)
+      throw new Error(
+        "Error when trying to get the current account or current account address or wallet"
+      );
 
     const publicKey = this.exportPublicKey(account.address);
+
+    const scriptPk = getScriptForAddress(
+      Buffer.from(publicKey, "hex"),
+      wallet.addressType
+    );
+    if (!scriptPk)
+      throw new Error("Internal error: Failed to get script for address");
 
     const psbt = await createSendBEL({
       utxos: data.utxos.map((v) => {
@@ -167,18 +192,17 @@ class KeyringService {
           txId: v.txid,
           outputIndex: v.vout,
           satoshis: v.value,
-          scriptPk: getScriptForAddress(
-            Buffer.from(publicKey, "hex"),
-            wallet.addressType
-          ).toString("hex"),
+          scriptPk: scriptPk.toString("hex"),
           addressType: wallet?.addressType,
-          address: account.address,
+          address: account.address!,
           ords: [],
         };
       }),
       toAddress: data.to,
       toAmount: data.amount,
-      signTransaction: this.signPsbt.bind(this),
+      signTransaction: this.signPsbt.bind(this) as (
+        psbt: Psbt
+      ) => Promise<void>,
       network: networks.bellcoin,
       changeAddress: account.address,
       receiverToPayFee: data.receiverToPayFee,
@@ -196,10 +220,25 @@ class KeyringService {
   async sendOrd(data: Omit<SendOrd, "amount">) {
     const account = storageService.currentAccount;
     const wallet = storageService.currentWallet;
-    if (!account || !account.address)
-      throw new Error("Error when trying to get the current account");
+    if (!account?.address || !wallet)
+      throw new Error(
+        "Error when trying to get the current account or current account address or wallet"
+      );
 
     const publicKey = this.exportPublicKey(account.address);
+
+    const scriptPk = getScriptForAddress(
+      Buffer.from(publicKey, "hex"),
+      wallet.addressType
+    );
+    if (!scriptPk)
+      throw new Error("Internal error: Failed to get script for address");
+
+    const inscriptionUtxoValue = data.utxos.find(
+      (i) => (i as ApiOrdUTXO & { isOrd: boolean }).isOrd
+    )?.value;
+    if (inscriptionUtxoValue === undefined)
+      throw new Error("Internal error: Inscription utxo was not found");
 
     const psbt = await createSendOrd({
       utxos: data.utxos.map((v) => {
@@ -207,12 +246,9 @@ class KeyringService {
           txId: v.txid,
           outputIndex: v.vout,
           satoshis: v.value,
-          scriptPk: getScriptForAddress(
-            Buffer.from(publicKey, "hex"),
-            wallet.addressType
-          ).toString("hex"),
+          scriptPk: scriptPk.toString("hex"),
           addressType: wallet?.addressType,
-          address: account.address,
+          address: account.address!,
           ords: (v as ApiOrdUTXO & { isOrd: boolean }).isOrd
             ? [
                 {
@@ -224,10 +260,10 @@ class KeyringService {
         };
       }),
       toAddress: data.to,
-      outputValue: data.utxos.find(
-        (i) => (i as ApiOrdUTXO & { isOrd: boolean }).isOrd
-      )?.value,
-      signTransaction: this.signPsbt.bind(this),
+      outputValue: inscriptionUtxoValue,
+      signTransaction: this.signPsbt.bind(this) as (
+        psbt: Psbt
+      ) => Promise<void>,
       network: networks.bellcoin,
       changeAddress: account.address,
       pubkey: this.exportPublicKey(account.address),
@@ -247,6 +283,8 @@ class KeyringService {
     ordUtxos: ApiOrdUTXO[],
     utxos: ApiUTXO[]
   ) {
+    if (!storageService.currentAccount?.address)
+      throw new Error("Error when trying to get the current account or wallet");
     return await createMultisendOrd({
       changeAddress: storageService.currentAccount.address,
       feeRate,
@@ -286,6 +324,8 @@ class KeyringService {
   }
 
   async deleteWallet(id: number) {
+    if (storageService.appState.password === undefined)
+      throw new Error("Internal error: Password is not defined");
     let wallets = storageService.walletState.wallets.filter((i) => i.id !== id);
     await storageService.saveWallets({
       password: storageService.appState.password,
@@ -297,15 +337,26 @@ class KeyringService {
   }
 
   async toogleRootAcc() {
+    if (storageService.currentWallet?.id === undefined)
+      throw new Error("Error when trying to get the current wallet");
     const currentWallet = storageService.currentWallet.id;
-    this.keyrings[currentWallet].toggleHideRoot();
+    (this.keyrings[currentWallet] as HDPrivateKey).toggleHideRoot();
   }
 
   async signPsbtWithoutFinalizing(psbt: Psbt, inputs?: UserToSignInput[]) {
+    if (
+      !storageService.currentAccount?.address ||
+      !storageService.currentWallet
+    )
+      throw new Error(
+        "Error when trying to get the current account or current account address or wallet"
+      );
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
     if (inputs === undefined)
-      inputs = psbt.txInputs.map((f, i) => ({
-        publicKey: this.exportPublicKey(storageService.currentAccount.address),
+      inputs = psbt.txInputs.map((_, i) => ({
+        publicKey: this.exportPublicKey(
+          storageService.currentAccount!.address!
+        ),
         index: i,
         sighashTypes: undefined,
       }));
@@ -327,6 +378,8 @@ class KeyringService {
   }
 
   verifyMessage(message: string, signatureHex: string) {
+    if (!storageService.currentAccount?.address)
+      throw new Error("Error when trying to get the current account");
     const keyring = this.getKeyringByIndex(storageService.currentAccount.id);
     return keyring.verifyMessage(
       storageService.currentAccount.address,

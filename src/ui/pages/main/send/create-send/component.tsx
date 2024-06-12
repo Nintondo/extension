@@ -61,6 +61,7 @@ const CreateSend = () => {
     feeAmount: feeRate,
     includeFeeInAmount,
   }: FormType) => {
+    if (!inscription) return;
     try {
       setLoading(true);
       if (Number(amount) < 0.00001 && !inscriptionTransaction) {
@@ -79,7 +80,7 @@ const CreateSend = () => {
         return toast.error(t("send.create_send.fee_is_text_error"));
       }
 
-      const { fee, rawtx } = !inscriptionTransaction
+      const data = !inscriptionTransaction
         ? await createTx(
             address,
             Number((Number(amount) * 10 ** 8).toFixed(0)),
@@ -87,6 +88,8 @@ const CreateSend = () => {
             includeFeeInAmount
           )
         : await createOrdTx(address, feeRate, inscription);
+      if (!data) return;
+      const { fee, rawtx } = data;
 
       navigate("/pages/confirm-send", {
         state: {
@@ -112,6 +115,8 @@ const CreateSend = () => {
   };
 
   useEffect(() => {
+    if (!currentAccount || !currentAccount.address || !currentAccount.balance)
+      return;
     if (location.state && location.state.toAddress) {
       setFormData({
         address: location.state.toAddress,
@@ -129,14 +134,16 @@ const CreateSend = () => {
       setInscription(location.state);
       setInscriptionTransaction(true);
     }
-  }, [location.state, setFormData, currentAccount?.balance]);
+  }, [location.state, setFormData, currentAccount]);
 
   const onAmountChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!currentAccount || !currentAccount.address || !currentAccount.balance)
+      return;
     setFormData((prev) => ({
       ...prev,
       amount: normalizeAmount(e.target.value),
     }));
-    if (currentAccount?.balance > Number(e.target.value)) {
+    if (currentAccount.balance > Number(e.target.value)) {
       setIncludeFeeLocked(false);
     } else {
       setIncludeFeeLocked(true);
@@ -149,12 +156,14 @@ const CreateSend = () => {
 
   const onMaxClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    setFormData((prev) => ({
-      ...prev,
-      amount: currentAccount?.balance.toString(),
-      includeFeeInAmount: true,
-    }));
-    setIncludeFeeLocked(true);
+    if (currentAccount?.balance) {
+      setFormData((prev) => ({
+        ...prev,
+        amount: currentAccount.balance!.toString(),
+        includeFeeInAmount: true,
+      }));
+      setIncludeFeeLocked(true);
+    }
   };
 
   return (
@@ -199,14 +208,14 @@ const CreateSend = () => {
                 <div className="flex justify-between p-0.5">
                   <div>{`${t("wallet_page.amount_in_transactions")}: `}</div>
                   <span className="text-sm font-medium">
-                    {`${currentAccount.balance?.toFixed(8) ?? "-"} BEL`}
+                    {`${currentAccount?.balance?.toFixed(8) ?? "-"} BEL`}
                   </span>
                 </div>
                 <div className="flex justify-between p-0.5">
                   <div>{`${t("wallet_page.amount_in_inscriptions")}: `}</div>
                   <span className="text-sm font-medium">
                     {`${
-                      currentAccount.inscriptionBalance?.toFixed(8) ?? "-"
+                      currentAccount?.inscriptionBalance?.toFixed(8) ?? "-"
                     } BEL`}
                   </span>
                 </div>

@@ -51,7 +51,7 @@ const create = async ({
   });
 
   // shim firefox
-  if (win.left !== left) {
+  if (win.left !== left && win.id !== undefined) {
     await browserWindowsUpdate(win.id, { left, top });
   }
   return win.id;

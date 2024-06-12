@@ -27,7 +27,7 @@ class StateController implements IStateController {
     return await storageService.getPengingWallet();
   }
 
-  async getWalletPhrase(index: number, password: string): Promise<string> {
+  async getWalletPhrase(index: number, password: string) {
     return await storageService.getWalletPhrase(index, password);
   }
 

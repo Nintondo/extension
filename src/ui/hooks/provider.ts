@@ -79,6 +79,13 @@ export const useDecodePsbtInputs = () => {
     { fields: IField[][]; fee: string } | undefined
   > => {
     const approval = await notificationController.getApproval();
+    if (
+      !approval ||
+      !approval.params ||
+      !currentAccount ||
+      !currentAccount.address
+    )
+      return;
     const psbtsToApprove: Psbt[] = [];
     const result: IField[][] = [];
     if (approval.approvalComponent !== "multiPsbtSign") {
@@ -99,6 +106,7 @@ export const useDecodePsbtInputs = () => {
         (f) => f.hash.reverse().toString("hex") + ":" + f.index
       );
       const inputValues = await apiController.getUtxoValues(inputLocations);
+      if (!inputValues) return;
       const locationValue: LocationValue = Object.fromEntries(
         inputLocations.map((f, i) => [f, inputValues[i]])
       );
@@ -135,7 +143,7 @@ export const useDecodePsbtInputs = () => {
             inscriptionId: outpoint.slice(0, -2) + "i" + txInput.index,
           });
 
-          if (foundInscriptions.length) {
+          if (foundInscriptions && foundInscriptions.length) {
             value = {
               anyonecanpay: true,
               inscriptions: foundInscriptions,
@@ -156,7 +164,7 @@ export const useDecodePsbtInputs = () => {
         }
 
         inputFields.push({
-          important: isImportant,
+          important: isImportant ?? false,
           input: true,
           label: `Input #${i}`,
           value,

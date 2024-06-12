@@ -6,7 +6,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "types": ["chrome", "react", "react-dom"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -28,5 +28,6 @@
     ],
     "experimentalDecorators": true
   },
-  "include": ["./**/*"]
+  "include": ["./**/*"],
+  "exclude": ["../node_modules/**/*"]
 }

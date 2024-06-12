@@ -48,6 +48,8 @@ const Login = () => {
       const exportedWallets = await walletController.importWallets(password);
       const { walletState } = await syncStorages();
       const selectedWallet = walletState.selectedWallet;
+      if (selectedWallet === undefined)
+        throw Error("Selected wallet is not defined");
       exportedWallets[selectedWallet].accounts =
         await walletController.loadAccountsData(
           selectedWallet,
@@ -64,7 +66,8 @@ const Login = () => {
       if (!isNotification()) navigate("/");
       else await notificationController.resolveApproval();
     } catch (e) {
-      toast.error(e.message);
+      if (e instanceof Error) toast.error(e.message);
+      else throw e;
     }
   };
 

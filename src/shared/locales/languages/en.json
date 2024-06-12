@@ -279,7 +279,8 @@
     "not_enough_token_balance": "Token balance is not enough",
     "minimum_transfer_count": "Minimum transfer amount is 1",
     "minimum_amount_error": "Minimum token amount is 1",
-    "input_amount_first": "Input amount first"
+    "input_amount_first": "Input amount first",
+    "tick_is_not_set": "Tick is not defined"
   },
   "provider": {
     "sign_tx": "Sign transaction",

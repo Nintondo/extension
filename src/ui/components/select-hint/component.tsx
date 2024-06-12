@@ -11,8 +11,8 @@ export interface Props {
 }
 
 const SelectWithHint: FC<Props> = ({ selected, setSelected }) => {
-  const [query, setQuery] = useState("");
-  const [filtered, setFiltered] = useState([]);
+  const [query, setQuery] = useState<string>("");
+  const [filtered, setFiltered] = useState<string[]>([]);
   const [unblured, setUnblured] = useState(false);
 
   const getFiltered = useCallback((word: string) => {

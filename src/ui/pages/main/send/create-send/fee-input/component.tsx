@@ -33,6 +33,7 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
     },
     {
       title: t("send.create_send.fee_input.custom"),
+      description: "",
       value: 3,
     },
   ];

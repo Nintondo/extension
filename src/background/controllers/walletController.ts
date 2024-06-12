@@ -9,7 +9,7 @@ import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
 import type { DecryptedSecrets } from "../services/storage/types";
 import * as bip39 from "bip39";
-import { AddressType } from "bellhdw";
+import { AddressType, HDPrivateKey } from "bellhdw";
 
 class WalletController implements IWalletController {
   async isVaultEmpty() {
@@ -44,6 +44,8 @@ class WalletController implements IWalletController {
   }
 
   async saveWallets(data?: DecryptedSecrets, newPassword?: string) {
+    if (storageService.appState.password === undefined)
+      throw new Error("Internal error: Missing password");
     await storageService.saveWallets({
       password: storageService.appState.password,
       wallets: storageService.walletState.wallets,
@@ -82,7 +84,7 @@ class WalletController implements IWalletController {
       });
   }
 
-  async createNewAccount(name?: string): Promise<IAccount> {
+  async createNewAccount(name?: string) {
     const wallet = storageService.currentWallet;
     if (!wallet) {
       throw new Error("No one selected wallet");
@@ -90,9 +92,9 @@ class WalletController implements IWalletController {
     const accName = !name?.length
       ? storageService.getUniqueName("Account")
       : name;
-    const addresses = keyringService
-      .getKeyringByIndex(wallet.id)
-      .addAccounts(1);
+    const addresses = (
+      keyringService.getKeyringByIndex(wallet.id) as HDPrivateKey
+    ).addAccounts(1);
 
     return {
       id: wallet.accounts[wallet.accounts.length - 1].id + 1,
@@ -114,6 +116,7 @@ class WalletController implements IWalletController {
   }
 
   async getAccounts(): Promise<string[]> {
+    if (storageService.currentWallet?.id === undefined) return [];
     const keyring = keyringService.getKeyringByIndex(
       storageService.currentWallet.id
     );

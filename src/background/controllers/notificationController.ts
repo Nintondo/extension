@@ -1,7 +1,4 @@
-import type {
-  ApprovalData,
-  INotificationController,
-} from "@/shared/interfaces/notification";
+import type { INotificationController } from "@/shared/interfaces/notification";
 import {
   notificationService,
   permissionService,
@@ -11,7 +8,7 @@ import {
 import type { ConnectedSite } from "../services/permission";
 
 class NotificationController implements INotificationController {
-  async getApproval(): Promise<ApprovalData> {
+  async getApproval() {
     return notificationService.getApproval();
   }
 

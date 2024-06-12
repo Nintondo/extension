@@ -70,7 +70,6 @@ export const CHANNEL = "chrome";
 
 export const NINTONDO_API_URL =
   process.env.API_URL ?? "https://electrs.nintondo.io/api";
-export const BELLS_API_URL = "https://bells.quark.blue";
 
 export const PREVIEW_URL =
   process.env.PREVIEW_URL ?? "https://content.nintondo.io/api/pub/preview";
@@ -80,3 +79,16 @@ export const CONTENT_URL =
   process.env.CONTENT_URL ?? "https://content.nintondo.io/api/pub/content/";
 
 export const NINTONDO_URL = process.env.NINTONDO_URL ?? "https://nintondo.io";
+
+export const TESTNET_NINTONDO_API_URL =
+  process.env.TESTNET_API_URL ?? "https://testnet-electrs.nintondo.io/api";
+
+export const TESTNET_PREVIEW_URL =
+  process.env.TESTNET_PREVIEW_URL ??
+  "https://testnet-content.nintondo.io/api/pub/preview";
+export const TESTNET_HTML_PREVIEW_URL =
+  process.env.TESTNET_PREVIEW_URL ??
+  "https://testnet-content.nintondo.io/api/pub/html";
+export const TESTNET_CONTENT_URL =
+  process.env.TESTNET_CONTENT_URL ??
+  "https://testnet-content.nintondo.io/api/pub/content/";

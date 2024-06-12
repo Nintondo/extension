@@ -14,7 +14,7 @@ interface StorageWalletItem extends Omit<IWallet, "accounts" | "id"> {
 export type DecryptedSecrets = { id: number; data: any; phrase?: string }[];
 
 export interface StorageInterface {
-  enc: Record<"data" | "iv" | "salt", string>;
+  enc?: Record<"data" | "iv" | "salt", string>;
   cache: {
     wallets: StorageWalletItem[];
     addressBook: string[];

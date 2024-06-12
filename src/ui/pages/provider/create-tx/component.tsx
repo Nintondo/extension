@@ -5,6 +5,7 @@ import { KeyIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
 import type { CreateTxProps } from "@/shared/interfaces/notification";
 import { t } from "i18next";
+import { ethErrors } from "eth-rpc-errors";
 
 const CreateTx = () => {
   const [psbt, setPsbt] = useState<CreateTxProps>();
@@ -17,6 +18,11 @@ const CreateTx = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
+      if (!approval)
+        throw ethErrors.provider.custom({
+          message: "Approval is not defined",
+          code: 228,
+        });
       setPsbt(approval.params?.data);
     })();
   }, [notificationController]);

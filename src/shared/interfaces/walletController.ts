@@ -8,7 +8,7 @@ export interface IWalletController {
   isVaultEmpty(): Promise<boolean>;
   importWallets(password: string): Promise<Omit<IPrivateWallet, "data">[]>;
   loadAccountsData(walletId: number, accounts: IAccount[]): Promise<IAccount[]>;
-  createNewAccount(name?: string): Promise<IAccount>;
+  createNewAccount(name?: string): Promise<IAccount | undefined>;
   generateMnemonicPhrase(): Promise<string>;
   deleteWallet(id: number): Promise<IWallet[]>;
   toogleRootAccount(): Promise<void>;

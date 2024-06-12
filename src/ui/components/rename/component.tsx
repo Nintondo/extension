@@ -30,13 +30,13 @@ const Rename: FC<Props> = ({ handler, active, onClose, currentName }) => {
   };
 
   const onSubmit = () => {
-    if (errors.name) {
+    if (errors.name?.message) {
       toast.error(errors.name.message);
     }
   };
 
   useEffect(() => {
-    setValue("name", currentName);
+    setValue("name", currentName ?? "");
   }, [currentName, setValue]);
 
   return (

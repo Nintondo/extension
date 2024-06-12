@@ -28,12 +28,18 @@ export function useCreateBellsTxCallback() {
       feeRate: number,
       receiverToPayFee = false
     ) => {
-      if (selectedWallet === undefined || selectedAccount === undefined)
+      if (
+        selectedWallet === undefined ||
+        selectedAccount === undefined ||
+        currentAccount === undefined ||
+        currentAccount.address === undefined
+      )
         throw new Error("Failed to get current wallet or account");
-      const fromAddress = currentAccount?.address;
+      const fromAddress = currentAccount.address;
       const utxos = await apiController.getUtxos(fromAddress, {
         amount: toAmount,
       });
+      if (!utxos) return;
       const safeBalance = (utxos ?? []).reduce(
         (pre, cur) => pre + cur.value,
         0
@@ -88,12 +94,18 @@ export function useCreateOrdTx() {
 
   return useCallback(
     async (toAddress: Hex, feeRate: number, inscription: Inscription) => {
-      if (selectedWallet === undefined || selectedAccount === undefined)
+      if (
+        selectedWallet === undefined ||
+        selectedAccount === undefined ||
+        currentAccount === undefined ||
+        currentAccount.address === undefined
+      )
         throw new Error("Failed to get current wallet or account");
       const fromAddress = currentAccount?.address;
       const utxos = await apiController.getUtxos(fromAddress, {
         amount: gptFeeCalculate(3, 2, feeRate),
       });
+      if (!utxos) return;
 
       const psbtHex = await keyringController.sendOrd({
         to: toAddress,
@@ -128,6 +140,7 @@ export const useSendTransferTokens = () => {
 
   return useCallback(
     async (toAddress: string, txIds: ITransfer[], feeRate: number) => {
+      if (!currentAccount || !currentAccount.address) return;
       const fee = gptFeeCalculate(1, txIds.length + 1, feeRate);
       const utxos = await apiController.getUtxos(currentAccount.address, {
         amount: fee,
@@ -140,6 +153,7 @@ export const useSendTransferTokens = () => {
           inscriptionId: transferToken.inscription_id,
           address: currentAccount.address,
         });
+        if (!foundInscriptons) return;
         const txid = foundInscriptons[0].txid;
         inscriptions.push({
           ...foundInscriptons[0],

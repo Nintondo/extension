@@ -29,7 +29,7 @@ class SessionMap {
     return this.sessionMap.get(id);
   }
 
-  createSession(id: number, data?: ISession) {
+  createSession(id: number, data: ISession) {
     const session = new Session(data);
     this.sessionMap.set(id, session);
     return session;
@@ -55,7 +55,7 @@ class SessionMap {
 
     sessions.forEach((session) => {
       try {
-        session.pushMessage(ev, data);
+        if (session.pushMessage) session.pushMessage(ev, data);
       } catch (e) {
         if (this.sessionMap.has(session.key)) {
           this.deleteSession(session.key);

@@ -2,7 +2,7 @@ import type { ConnectedSite } from "@/background/services/permission";
 import type { EthereumProviderError } from "eth-rpc-errors";
 
 export interface INotificationController {
-  getApproval(): Promise<ApprovalData>;
+  getApproval(): Promise<ApprovalData | undefined>;
   rejectApproval(
     err?: string,
     stay?: boolean,
