@@ -5,16 +5,16 @@ class ReadyPromise {
     fn(): Promise<any>;
   }[] = [];
 
-  constructor(count) {
+  constructor(count: number) {
     this._allCheck = [...Array(count)];
   }
 
-  check = (index) => {
+  check = (index: number) => {
     this._allCheck[index - 1] = true;
     this._proceed();
   };
 
-  uncheck = (index) => {
+  uncheck = (index: number) => {
     this._allCheck[index - 1] = false;
   };
 
@@ -24,12 +24,14 @@ class ReadyPromise {
     }
 
     while (this._tasks.length) {
-      const { resolve, fn } = this._tasks.shift();
+      const data = this._tasks.shift();
+      if (!data) return;
+      const { resolve, fn } = data;
       resolve(fn());
     }
   };
 
-  call = (fn) => {
+  call = (fn: () => Promise<void>) => {
     return new Promise((resolve) => {
       this._tasks.push({
         fn,

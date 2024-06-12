@@ -3,12 +3,13 @@ import * as internalMethod from "./internalMethod";
 import rpcFlow from "./rpcFlow";
 import { sessionService, storageService } from "@/background/services";
 import { tabEvent } from "@/background/webapi";
+import { ISession } from "@/background/services/session";
 
 tabEvent.on("tabRemove", (id) => {
   sessionService.deleteSession(id);
 });
 
-export default async (req) => {
+export default async (req: { data: any; session: ISession }) => {
   const {
     data: { method },
   } = req;

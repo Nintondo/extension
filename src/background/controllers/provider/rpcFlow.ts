@@ -173,7 +173,7 @@ const flowContext = flow
   })
   .callback();
 
-export default (request) => {
+export default (request: any) => {
   const ctx: any = { request: { ...request, requestedApproval: false } };
   return flowContext(ctx).finally(() => {
     if (ctx.request.requestedApproval) {

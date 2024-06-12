@@ -1,4 +1,4 @@
-interface ISession {
+export interface ISession {
   origin: string;
   icon: string;
   name: string;

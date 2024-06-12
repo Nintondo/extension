@@ -114,7 +114,13 @@ export class NintondoProvider extends EventEmitter {
     }
   };
 
-  private _handleBackgroundMessage = ({ event, data }) => {
+  private _handleBackgroundMessage = ({
+    event,
+    data,
+  }: {
+    event: string;
+    data: any;
+  }) => {
     if (this._pushEventHandlers[event]) {
       return this._pushEventHandlers[event](data);
     }
@@ -122,7 +128,7 @@ export class NintondoProvider extends EventEmitter {
     this.emit(event, data);
   };
 
-  _request = async (data) => {
+  _request = async (data: any) => {
     if (!data) {
       throw ethErrors.rpc.invalidRequest();
     }

@@ -12,7 +12,6 @@ import stateController from "./controllers/stateController";
 import { keyringController } from "./controllers";
 import { providerController } from "./controllers";
 import notificationController from "./controllers/notificationController";
-import { fetchBELLMainnet } from "@/shared/utils";
 
 const { PortMessage } = Message;
 
@@ -34,19 +33,37 @@ browserRuntimeOnConnect((port: any) => {
             eventBus.emit(data.method, data.params);
             break;
           case "openapi":
-            return apiController[data.method].apply(null, data.params);
+            return (
+              apiController[data.method as keyof typeof apiController] as any
+            )(...data.params);
           case "keyring":
-            return keyringController[data.method].apply(null, data.params);
+            return (
+              keyringController[
+                data.method as keyof typeof keyringController
+              ] as any
+            )(...data.params);
           case "state":
-            return stateController[data.method].apply(null, data.params);
+            return (
+              stateController[
+                data.method as keyof typeof stateController
+              ] as any
+            )(...data.params);
           case "notification":
-            return notificationController[data.method].apply(null, data.params);
+            return (
+              notificationController[
+                data.method as keyof typeof notificationController
+              ] as any
+            )(...data.params);
           default:
-            if (!walletController[data.method])
+            if (!walletController[data.method as keyof typeof walletController])
               throw new Error(
                 `Method ${data.method} is not founded in the walletController`
               );
-            return walletController[data.method].apply(null, data.params);
+            return (
+              walletController[
+                data.method as keyof typeof walletController
+              ] as any
+            )(...data.params);
         }
       }
     });
@@ -69,7 +86,7 @@ browserRuntimeOnConnect((port: any) => {
 
   const pm = new PortMessage(port);
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  pm.listen(async (data) => {
+  pm.listen(async (data: { method: string; params: any }) => {
     const sessionId = port.sender?.tab?.id;
     if (data.method === "tabCheckin") {
       sessionService.createSession(sessionId, data.params);
@@ -97,7 +114,7 @@ const addAppInstalledEvent = () => {
   return;
 };
 
-browserRuntimeOnInstalled((details) => {
+browserRuntimeOnInstalled((details: { reason: string }) => {
   if (details.reason === "install") {
     addAppInstalledEvent();
   }
@@ -135,13 +152,10 @@ setInterval(async () => {
     storageService.currentAccount !== undefined &&
     storageService.currentAccount.address !== undefined
   ) {
-    storageService.currentAccount.balance = (
-      await fetchBELLMainnet<
-        { amount: number; count: number; balance: number } | undefined
-      >({
-        path: `/address/${storageService.currentAccount.address}/stats`,
-      })
-    ).balance;
+    storageService.currentAccount.balance =
+      await apiController.getAccountBalance(
+        storageService.currentAccount.address
+      );
   }
 }, 5000);
 

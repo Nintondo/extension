@@ -24,6 +24,7 @@ abstract class Message extends EventEmitter {
       throw ethErrors.rpc.limitExceeded();
     }
     const ident = this._requestIdPool.shift();
+    if (!ident) return;
 
     return new Promise((resolve, reject) => {
       this._waitingMap.set(ident, {
@@ -42,14 +43,16 @@ abstract class Message extends EventEmitter {
       return;
     }
 
-    const { resolve, reject } = this._waitingMap.get(ident);
+    const data = this._waitingMap.get(ident);
+    if (!data) return;
+    const { resolve, reject } = data;
 
     this._requestIdPool.push(ident);
     this._waitingMap.delete(ident);
     err ? reject(err) : resolve(res);
   };
 
-  onRequest = async ({ ident, data }) => {
+  onRequest = async ({ ident, data }: { ident: number; data: any }) => {
     if (this.listenCallback) {
       let res: any, err: any;
 

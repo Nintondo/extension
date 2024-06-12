@@ -5,17 +5,17 @@ import type { NintondoProvider } from "./index";
 class PushEventHandlers {
   provider: NintondoProvider;
 
-  constructor(provider) {
+  constructor(provider: NintondoProvider) {
     this.provider = provider;
   }
 
-  _emit(event, data) {
+  _emit(event: string, data: any) {
     if (this.provider._initialized) {
       this.provider.emit(event, data);
     }
   }
 
-  connect = (data) => {
+  connect = (data: any) => {
     if (!this.provider._isConnected) {
       this.provider._isConnected = true;
       this.provider._state.isConnected = true;
@@ -54,7 +54,7 @@ class PushEventHandlers {
     this._emit("accountsChanged", accounts);
   };
 
-  networkChanged = ({ network }) => {
+  networkChanged = ({ network }: { network: string }) => {
     this.connect({});
 
     if (network !== this.provider._network) {

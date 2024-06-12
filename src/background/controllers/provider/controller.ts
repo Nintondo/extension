@@ -1,19 +1,20 @@
 import { Psbt } from "belcoinjs-lib";
 import { keyringService, storageService } from "../../services";
 import "reflect-metadata/lite";
-import type { ApiUTXO } from "@/shared/interfaces/api";
-import { fetchBELLMainnet } from "@/shared/utils";
 import permission from "@/background/services/permission";
 import type { SendBEL } from "@/background/services/keyring/types";
 import { SignPsbtOptions } from "@/shared/interfaces/provider";
+import apiController from "../apiController";
 
 class ProviderController {
   connect = async () => {
-    if (storageService.currentWallet === undefined) return undefined;
-    const _account = storageService.currentAccount.address;
-    const account = _account ? _account : "";
-    // sessionService.broadcastEvent("accountsChanged", account);
-    return account;
+    if (
+      storageService.currentWallet === undefined ||
+      !storageService.currentAccount
+    )
+      return undefined;
+    const account = storageService.currentAccount.address;
+    return account ?? "";
   };
 
   @Reflect.metadata("SAFE", true)
@@ -22,22 +23,26 @@ class ProviderController {
   };
 
   @Reflect.metadata("SAFE", true)
-  getBalance = async ({ session: { origin } }) => {
-    if (!permission.siteIsConnected(origin)) return undefined;
-    const account = storageService.currentAccount;
-    if (!account) return null;
-    if (account.balance !== undefined) return account.balance;
-    return (
-      await fetchBELLMainnet<
-        { amount: number; count: number; balance: number } | undefined
-      >({
-        path: `/address/${account.address}/stats`,
-      })
-    ).balance;
+  getBalance = async ({
+    session: { origin },
+  }: {
+    session: { origin: string };
+  }) => {
+    if (!permission.siteIsConnected(origin)) return;
+    if (!storageService.currentAccount?.address) return;
+    if (storageService.currentAccount.balance !== undefined)
+      return storageService.currentAccount.balance;
+    return await apiController.getAccountBalance(
+      storageService.currentAccount.address
+    );
   };
 
   @Reflect.metadata("SAFE", true)
-  getAccountName = async ({ session: { origin } }) => {
+  getAccountName = async ({
+    session: { origin },
+  }: {
+    session: { origin: string };
+  }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
     const account = storageService.currentAccount;
     if (!account) return null;
@@ -45,12 +50,20 @@ class ProviderController {
   };
 
   @Reflect.metadata("SAFE", true)
-  isConnected = async ({ session: { origin } }) => {
+  isConnected = async ({
+    session: { origin },
+  }: {
+    session: { origin: string };
+  }) => {
     return permission.siteIsConnected(origin);
   };
 
   @Reflect.metadata("SAFE", true)
-  getAccount = async ({ session: { origin } }) => {
+  getAccount = async ({
+    session: { origin },
+  }: {
+    session: { origin: string };
+  }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
     if (storageService.currentWallet === undefined) return undefined;
     const _account = storageService.currentWallet.accounts[0];
@@ -64,6 +77,11 @@ class ProviderController {
     data: {
       params: { hex, feeRate },
     },
+  }: {
+    session: { origin: string };
+    data: {
+      params: { hex: string; feeRate: number };
+    };
   }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
     const psbt = Psbt.fromHex(hex);
@@ -81,10 +99,14 @@ class ProviderController {
   };
 
   @Reflect.metadata("SAFE", true)
-  getPublicKey = async ({ session: { origin } }) => {
+  getPublicKey = async ({
+    session: { origin },
+  }: {
+    session: { origin: string };
+  }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
     const _account = storageService.currentAccount;
-    if (!_account) return undefined;
+    if (!_account || !_account.address) return undefined;
     return keyringService.exportPublicKey(_account.address);
   };
 
@@ -97,6 +119,10 @@ class ProviderController {
     data: {
       params: { text },
     },
+  }: {
+    data: {
+      params: { text: string };
+    };
   }) => {
     const account = storageService.currentAccount;
     if (!account || !account.address) return;
@@ -112,15 +138,10 @@ class ProviderController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (_req: any) => {},
   ])
-  createTx = async (data: any) => {
+  createTx = async ({ data: { params } }: { data: { params: SendBEL } }) => {
     const account = storageService.currentAccount;
     if (!account) return;
-    const utxos = await fetchBELLMainnet<ApiUTXO[]>({
-      path: `/address/${account.address}/utxo`,
-    });
-    const transactionData = { ...data.data.params, utxos } as SendBEL;
-    transactionData.amount = transactionData.amount * 10 ** 8;
-    const tx = await keyringService.sendBEL(transactionData);
+    const tx = await keyringService.sendBEL(params);
     const psbt = Psbt.fromHex(tx);
     return psbt.extractTransaction().toHex();
   };
@@ -149,7 +170,9 @@ class ProviderController {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Reflect.metadata("APPROVAL", ["inscribeTransfer", (_req: any) => {}])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  inscribeTransfer = async (data: { approvalRes }) => {
+  inscribeTransfer = async (data: {
+    approvalRes: { mintedAmount: number };
+  }) => {
     return { mintedAmount: data.approvalRes?.mintedAmount };
   };
 
