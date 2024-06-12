@@ -56,7 +56,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const updateFn = <T,>(
     onUpdate: Dispatch<SetStateAction<T[]>>,
-    retrieveFn: (address: string) => Promise<T[]>,
+    retrieveFn: (address: string) => Promise<T[] | undefined>,
     currentValue: T[],
     compareKey: keyof T
   ) => {
@@ -112,7 +112,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const updateTokens = useCallback(async () => {
     if (!currentAccount?.address) return;
     const tokens = await apiController.getTokens(currentAccount.address);
-    setTokens(tokens);
+    setTokens(tokens ?? []);
   }, [apiController, currentAccount?.address]);
 
   const updateAll = useCallback(
@@ -139,13 +139,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const throttleUpdate = useDebounceCall(updateAll, 300);
 
   const loadMoreTransactions = useCallback(async () => {
+    if (!currentAccount || !currentAccount.address) return;
     if (
       transactions.length < 50 ||
       transactionTxIds.includes(transactions[transactions.length - 1]?.txid)
     )
       return;
     const additionalTransactions = await apiController.getPaginatedTransactions(
-      currentAccount?.address,
+      currentAccount.address,
       transactions[transactions.length - 1]?.txid
     );
     setTransactionTxIds([
@@ -156,9 +157,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     if (additionalTransactions.length > 0) {
       setTransactions((prev) => [...prev, ...additionalTransactions]);
     }
-  }, [transactions, apiController, currentAccount?.address, transactionTxIds]);
+  }, [transactions, apiController, transactionTxIds, currentAccount]);
 
   const loadMoreInscriptions = useCallback(async () => {
+    if (!currentAccount || !currentAccount.address) return;
     const inc = inscriptions[inscriptions.length - 1];
 
     if (
@@ -203,6 +205,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       location: string,
       index: number
     ) => {
+      if (!currentAccount || !currentAccount.address) return;
       const receivedInscriptions = await apiController.getPaginatedInscriptions(
         currentAccount.address,
         location
@@ -248,6 +251,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       const receivedInscriptions = await apiController.getInscriptions(
         currentAccount.address
       );
+      if (!receivedInscriptions) return;
       if (!inscriptionLocations.length) {
         setInscriptions(receivedInscriptions);
       } else {
@@ -264,9 +268,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     inscriptionLocations,
     inscriptions,
     currentPage,
-    currentAccount?.address,
     apiController,
     forceUpdateInscriptions,
+    currentAccount,
   ]);
 
   useEffect(() => {

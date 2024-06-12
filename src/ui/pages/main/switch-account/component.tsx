@@ -27,6 +27,7 @@ const SwitchAccount = () => {
   const updateCurrentWallet = useUpdateCurrentWallet();
 
   const onRename = async (name: string) => {
+    if (!currentWallet) return;
     if (currentWallet.accounts.map((i) => i.name).includes(name.trim()))
       return toast.error(t("switch_account.name_already_taken_error"));
 
@@ -47,12 +48,17 @@ const SwitchAccount = () => {
   };
 
   useEffect(() => {
+    if (!currentWallet || !currentAccount) return;
     if (
       currentWallet.accounts.findIndex(
         (f) => f.address === currentAccount.address
       ) > 5
-    )
-      document.getElementById(String(currentAccount.id)).scrollIntoView();
+    ) {
+      const element = document.getElementById(String(currentAccount.id));
+      if (element) {
+        element.scrollIntoView();
+      }
+    }
   }, [currentAccount, currentWallet]);
 
   return (
@@ -96,7 +102,7 @@ const SwitchAccount = () => {
                 ),
               },
             ]}
-            name={acc.name}
+            name={acc.name ?? "Error"}
             onClick={async () => {
               await switchAccount(acc.id);
             }}
@@ -105,7 +111,7 @@ const SwitchAccount = () => {
               !currentWallet.hideRoot &&
               acc.id === 0
             }
-            selected={currentAccount.id === acc.id}
+            selected={currentAccount?.id === acc.id}
             address={shortAddress(acc.address, 7)}
           />
         ))}
@@ -115,7 +121,7 @@ const SwitchAccount = () => {
         active={renameId !== undefined}
         currentName={(() => {
           if (renameId === undefined) return "";
-          return currentWallet.accounts[renameId].name;
+          return currentWallet?.accounts[renameId].name;
         })()}
         handler={onRename}
         onClose={() => setRenameId(undefined)}

@@ -62,7 +62,7 @@ const SendTransferModal: FC<Props> = ({
         await sendTransferTokens(address, txIds, feeRate);
         setSelectedSendToken(undefined);
       } catch (e) {
-        toast.error(e.message);
+        toast.error((e as Error).message);
       } finally {
         setLoading(false);
       }

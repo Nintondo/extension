@@ -24,15 +24,25 @@ const AccountPanel = () => {
   const enterTimeOutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleEnter = (isOpen: boolean) => {
+    if (
+      !currentAccount ||
+      currentAccount.address ||
+      leaveTimeOutRef.current === null
+    )
+      return;
     if (currentAccount.balance === undefined) return;
-    clearTimeout(leaveTimeOutRef.current);
+    if (leaveTimeOutRef.current !== null) {
+      clearTimeout(leaveTimeOutRef.current);
+    }
     enterTimeOutRef.current = setTimeout(() => {
       !isOpen && triggerRef.current?.click();
     }, 240);
   };
 
   const handleLeave = (isOpen: boolean) => {
-    clearTimeout(enterTimeOutRef.current);
+    if (enterTimeOutRef.current !== null) {
+      clearTimeout(enterTimeOutRef.current);
+    }
     leaveTimeOutRef.current = setTimeout(() => {
       isOpen && triggerRef.current?.click();
     }, 240);
@@ -93,11 +103,11 @@ const AccountPanel = () => {
               >
                 <p>
                   {`${t("wallet_page.amount_in_transactions")}: `}
-                  {`${currentAccount.balance?.toFixed(8)} BEL`}
+                  {`${currentAccount?.balance?.toFixed(8)} BEL`}
                 </p>
                 <p>
                   {`${t("wallet_page.amount_in_inscriptions")}: `}
-                  {`${currentAccount.inscriptionBalance?.toFixed(8)} BEL`}
+                  {`${currentAccount?.inscriptionBalance?.toFixed(8)} BEL`}
                 </p>
               </Popover.Panel>
             </Transition>
@@ -115,11 +125,11 @@ const AccountPanel = () => {
         ) : undefined}
         <div>
           <p>
-            {currentAccount.id === 0 &&
-            !currentWallet.hideRoot &&
-            currentWallet.type === "root"
+            {currentAccount?.id === 0 &&
+            !currentWallet?.hideRoot &&
+            currentWallet?.type === "root"
               ? "Root account"
-              : currentAccount.name}
+              : currentAccount?.name}
           </p>
           <CopyBtn
             title={currentAccount?.address}

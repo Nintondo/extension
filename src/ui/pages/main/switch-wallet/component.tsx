@@ -25,12 +25,13 @@ const SwitchWallet = () => {
   const [deleteWalletId, setDeleteWalletId] = useState<number>();
 
   const onDelete = async () => {
+    if (deleteWalletId === undefined) return;
     setDeleteWalletId(undefined);
-
     await deleteWallet(wallets[deleteWalletId].id);
   };
 
   const onRename = async (name: string) => {
+    if (renameId === undefined) return;
     if (wallets.map((i) => i.name).includes(name))
       return toast.error(t("switch_account.name_already_taken_error"));
 
@@ -41,9 +42,14 @@ const SwitchWallet = () => {
   };
 
   useEffect(() => {
-    if (wallets.findIndex((f) => f.id === currentWallet.id) > 5)
-      document.getElementById(String(currentWallet.id)).scrollIntoView();
-  }, [currentWallet.id, wallets]);
+    if (!currentWallet || currentWallet.id === undefined) return;
+    if (wallets.findIndex((f) => f.id === currentWallet.id) > 5) {
+      const element = document.getElementById(String(currentWallet.id));
+      if (element) {
+        element.scrollIntoView();
+      }
+    }
+  }, [currentWallet, wallets]);
 
   return (
     <div className={s.switchWalletDiv}>
@@ -94,7 +100,7 @@ const SwitchWallet = () => {
               await switchWallet(i);
               navigate("/home");
             }}
-            selected={wallet.id === currentWallet.id}
+            selected={wallet.id === currentWallet?.id}
           />
         ))}
       </div>

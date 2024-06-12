@@ -13,6 +13,7 @@ import { useGetCurrentAccount } from "@/ui/states/walletState";
 import cn from "classnames";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import ReactLoading from "react-loading";
 
 const TransactionList = () => {
   const { lastBlock, transactions, loadMoreTransactions } =
@@ -24,6 +25,9 @@ const TransactionList = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (inView) loadMoreTransactions();
   }, [inView, loadMoreTransactions]);
+
+  if (!transactions || !lastBlock || !currentAccount || !currentAccount.address)
+    return <ReactLoading type="spin" color="#ffbc42" />;
 
   if (!transactions.length)
     return (
@@ -69,12 +73,12 @@ const TransactionList = () => {
           </div>
           <div
             className={cn(s.value, {
-              "text-green-500": isIncomeTx(t, currentAccount.address),
-              "text-red-500": !isIncomeTx(t, currentAccount.address),
+              "text-green-500": isIncomeTx(t, currentAccount.address ?? ""),
+              "text-red-500": !isIncomeTx(t, currentAccount.address ?? ""),
             })}
           >
-            {isIncomeTx(t, currentAccount.address) ? "+ " : "- "}
-            {getTransactionValue(t, currentAccount.address)} BEL
+            {isIncomeTx(t, currentAccount.address ?? "") ? "+ " : "- "}
+            {getTransactionValue(t, currentAccount.address ?? "")} BEL
           </div>
         </Link>
       ))}

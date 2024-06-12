@@ -19,7 +19,7 @@ const ShowPk = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
-      const address = currentWallet.accounts[Number(accId)].address;
+      const address = currentWallet?.accounts[Number(accId)].address;
       setSecret(await keyringController.exportAccount(address ?? ""));
     })();
   }, [setSecret, keyringController, accId, currentWallet]);

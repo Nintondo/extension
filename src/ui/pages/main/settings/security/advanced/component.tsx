@@ -28,7 +28,7 @@ const Advanced = () => {
       const accounts = await walletController.getAccounts();
       await updateWalletState({
         wallets: wallets.map((i) => {
-          if (i.id !== currentWallet.id) return i;
+          if (i.id !== currentWallet?.id) return i;
           return {
             ...i,
             hideRoot: !i.hideRoot,
@@ -59,10 +59,10 @@ const Advanced = () => {
 
   return (
     <div className={s.wrapper}>
-      {currentWallet.type === "root" ? (
+      {currentWallet?.type === "root" ? (
         <Switch
           label={t("advanced.root_acc_warning")}
-          value={!currentWallet.hideRoot}
+          value={!currentWallet?.hideRoot}
           onChange={() => {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             toogleRootAccount();

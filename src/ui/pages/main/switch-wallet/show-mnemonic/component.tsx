@@ -18,7 +18,8 @@ const ShowMnemonic = () => {
   const [walletType, setWalletType] = useState<"simple" | "root">("root");
 
   const onLogin = useCallback(
-    async (password: string) => {
+    async (password: string | undefined) => {
+      if (!password) return;
       setPhrase(
         (await stateController.getWalletPhrase(Number(walletId), password)) ??
           ""

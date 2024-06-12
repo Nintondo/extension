@@ -18,7 +18,7 @@ const ConfirmSend = () => {
   const confirmSend = async () => {
     setLoading(true);
     try {
-      const txId = (await pushTx(location.state.hex)).txid;
+      const txId = (await pushTx(location.state.hex))?.txid;
       if (!txId) throw new Error("Failed pushing transaction");
 
       navigate(`/pages/finalle-send/${txId}`);
@@ -27,7 +27,7 @@ const ConfirmSend = () => {
         await updateAddressBook(location.state.toAddress);
       }
     } catch (e) {
-      toast.error(e.message);
+      toast.error((e as Error).message);
       console.error(e);
       navigate(-1);
     }

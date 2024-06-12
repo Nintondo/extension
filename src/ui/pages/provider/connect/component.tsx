@@ -19,7 +19,7 @@ const Connect = () => {
       <p className="text-lg text-center">
         {t("provider.connecting_account") + ": "}
         <span className="text-light-orange">
-          {shortAddress(currentAccount.address)}
+          {shortAddress(currentAccount?.address)}
         </span>
       </p>
     </Layout>

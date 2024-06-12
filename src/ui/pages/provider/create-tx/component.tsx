@@ -17,7 +17,7 @@ const CreateTx = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
-      setPsbt(approval.params.data);
+      setPsbt(approval.params?.data);
     })();
   }, [notificationController]);
 

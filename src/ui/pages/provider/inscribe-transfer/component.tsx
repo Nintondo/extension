@@ -27,7 +27,8 @@ const InscribeTransfer = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       setLoading(true);
-      const tick = (await notificationController.getApproval()).params.data
+      if (!currentAccount?.address) return;
+      const tick = (await notificationController.getApproval()).params?.data
         .tick as string;
       const userTokens = await apiController.getTokens(currentAccount.address);
       if (userTokens !== undefined && userTokens.length) {
@@ -40,7 +41,7 @@ const InscribeTransfer = () => {
       } else await notificationController.rejectApproval();
       setLoading(false);
     })();
-  }, [notificationController, apiController, currentAccount.address]);
+  }, [notificationController, apiController, currentAccount?.address]);
 
   if (loading)
     return (

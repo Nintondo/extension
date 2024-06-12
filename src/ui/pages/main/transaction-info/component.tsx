@@ -34,10 +34,13 @@ const TransactionInfo = () => {
     const txValues: Record<string, number> = {};
 
     tx.vin.forEach((i) => {
-      if (txValues[i.prevout?.scriptpubkey_address]) {
-        txValues[i.prevout?.scriptpubkey_address] += i.prevout?.value;
-      } else {
-        txValues[i.prevout?.scriptpubkey_address] = i.prevout?.value;
+      const address = i.prevout?.scriptpubkey_address;
+      if (address) {
+        if (txValues[address]) {
+          txValues[address] += i.prevout?.value || 0;
+        } else {
+          txValues[address] = i.prevout?.value || 0;
+        }
       }
     });
 
@@ -92,12 +95,12 @@ const TransactionInfo = () => {
               <div className={s.tableContainer}>
                 <TableItem
                   label={t("transaction_info.inputs")}
-                  currentAddress={currentAccount.address}
+                  currentAddress={currentAccount?.address}
                   items={filteredInput}
                 />
                 <TableItem
                   label={t("transaction_info.outputs")}
-                  currentAddress={currentAccount.address}
+                  currentAddress={currentAccount?.address}
                   items={tx.vout}
                 />
               </div>
