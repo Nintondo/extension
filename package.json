@@ -56,7 +56,7 @@
     "zustand": "4.4.7"
   },
   "devDependencies": {
-    "@dotenv-run/esbuild": "1.3.4",
+    "@dotenv-run/esbuild": "1.4.0",
     "@types/big.js": "6.2.2",
     "@types/chrome": "0.0.263",
     "@types/koa-compose": "3.2.8",
