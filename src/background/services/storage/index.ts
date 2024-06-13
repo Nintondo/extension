@@ -62,21 +62,16 @@ class StorageService {
       ...this._walletState,
       ...pickKeysFromObj(data.cache, ["selectedAccount", "selectedWallet"]),
     };
+
     this._appState = {
       ...this._appState,
       ...pickKeysFromObj(data.cache, [
         "addressBook",
         "pendingWallet",
         "network",
+        "language",
       ]),
     };
-
-    if (data?.cache?.language) {
-      this._appState = {
-        ...this._appState,
-        language: data.cache.language,
-      };
-    }
   }
 
   async updateWalletState(state: Partial<IWalletStateBase>) {

@@ -39,11 +39,14 @@ export default function App() {
     stateController: v.stateController,
   }));
   const setupApp = useCallback(async () => {
-    const stateController = setupStateProxy();
     const walletController = setupWalletProxy();
     const apiController = setupOpenAPIProxy();
+    const stateController = setupStateProxy();
     const keyringController = setupKeyringProxy();
     const notificationController = setupNotificationProxy();
+
+    console.log("FIRST");
+    console.log(await stateController.getAppState());
 
     updateControllers({
       walletController,
@@ -54,6 +57,7 @@ export default function App() {
     });
 
     await stateController.init();
+    console.log((await stateController.getAppState()).network);
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
     await i18n.changeLanguage(appState.language ?? "en");
