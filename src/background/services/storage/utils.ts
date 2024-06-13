@@ -1,4 +1,5 @@
 import type { IAppStateBase, IWalletStateBase } from "@/shared/interfaces";
+import { networks } from "belcoinjs-lib";
 
 export function emptyWalletState(): IWalletStateBase {
   return {
@@ -14,5 +15,6 @@ export function emptyAppState(): IAppStateBase {
     vault: [],
     addressBook: [],
     language: "en",
+    network: networks.bellcoin,
   };
 }

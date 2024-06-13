@@ -11,7 +11,7 @@ import { keyringService, permissionService, storageService } from "..";
 import { excludeKeysFromObj, pickKeysFromObj } from "@/shared/utils";
 import eventBus from "@/shared/eventBus";
 import { EVENTS } from "@/shared/constant";
-import { Network } from "belcoinjs-lib";
+import { Network, networks } from "belcoinjs-lib";
 
 interface SaveWallets {
   password: string;
@@ -64,7 +64,11 @@ class StorageService {
     };
     this._appState = {
       ...this._appState,
-      ...pickKeysFromObj(data.cache, ["addressBook", "pendingWallet"]),
+      ...pickKeysFromObj(data.cache, [
+        "addressBook",
+        "pendingWallet",
+        "network",
+      ]),
     };
 
     if (data?.cache?.language) {
@@ -236,6 +240,7 @@ class StorageService {
           wallets: [],
           connectedSites: [],
           unpushedHexes: [],
+          network: networks.bellcoin,
         },
         enc: undefined,
       };

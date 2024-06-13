@@ -1,6 +1,7 @@
 import type { DecryptedSecrets } from "@/background/services/storage/types";
 import type { IAccount } from "./accounts";
 import type { INewWalletProps, IPrivateWallet, IWallet } from "./wallets";
+import { Network } from "belcoinjs-lib";
 
 export interface IWalletController {
   createNewWallet(props: INewWalletProps): Promise<IWallet>;
@@ -13,4 +14,5 @@ export interface IWalletController {
   deleteWallet(id: number): Promise<IWallet[]>;
   toogleRootAccount(): Promise<void>;
   getAccounts(): Promise<string[]>;
+  switchNetwork(network: Network): Promise<void>;
 }

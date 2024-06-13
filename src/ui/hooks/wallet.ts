@@ -131,12 +131,10 @@ export const useSwitchWallet = () => {
     async (key: number, accKey?: number) => {
       const wallet = wallets.find((f) => f.id === key);
       if (!wallet) return;
-      if (!wallet.accounts[0].address) {
-        wallet.accounts = await walletController.loadAccountsData(
-          wallet.id,
-          wallet.accounts
-        );
-      }
+      wallet.accounts = await walletController.loadAccountsData(
+        wallet.id,
+        wallet.accounts
+      );
       await updateWalletState({
         selectedWallet: wallet.id,
         wallets: wallets.with(key, wallet),

@@ -12,6 +12,7 @@ import { t } from "i18next";
 import cn from "classnames";
 import { Popover, Transition, useClose } from "@headlessui/react";
 import { Fragment, useRef } from "react";
+import { calcBalanceLength } from "@/ui/utils";
 
 const AccountPanel = () => {
   const currentWallet = useGetCurrentWallet();
@@ -50,7 +51,7 @@ const AccountPanel = () => {
 
   return (
     <div className={s.accPanel}>
-      {/* <Popover className="relative w-full flex">
+      <Popover className="relative w-full flex">
         {({ open }) => (
           <>
             <div
@@ -64,17 +65,7 @@ const AccountPanel = () => {
                     <div className="animate-pulse w-40 h-8 rounded-md bg-gray-600 bg-opacity-70" />
                   </div>
                 ) : (
-                  (currentAccount?.balance ?? 0).toFixed(
-                    currentAccount.balance?.toFixed(0).toString().length >= 4
-                      ? 8 -
-                          currentAccount.balance?.toFixed(0)?.toString()
-                            .length <
-                        0
-                        ? 0
-                        : 8 -
-                          currentAccount.balance?.toFixed(0)?.toString().length
-                      : 8
-                  )
+                  calcBalanceLength((currentAccount?.balance ?? 0) / 10 ** 8)
                 )}
                 <span className="text-xl pb-0.5 text-slate-300">BEL</span>
               </div>
@@ -82,7 +73,11 @@ const AccountPanel = () => {
             {currentAccount?.balance !== undefined ? (
               currentPrice !== undefined ? (
                 <div className="text-gray-500 text-sm">
-                  ~{(currentAccount.balance * currentPrice)?.toFixed(3)}$
+                  ~
+                  {((currentAccount.balance / 10 ** 8) * currentPrice)?.toFixed(
+                    3
+                  )}
+                  $
                 </div>
               ) : undefined
             ) : undefined}
@@ -112,48 +107,7 @@ const AccountPanel = () => {
             </Transition>
           </>
         )}
-      </Popover> */}
-      {/* <Tooltip
-        content={
-          <>
-            <p>
-              {`${t("wallet_page.amount_in_transactions")}: `}
-              {`${currentAccount?.balance?.toFixed(8)} BEL`}
-            </p>
-            <p>
-              {`${t("wallet_page.amount_in_inscriptions")}: `}
-              {`${currentAccount?.inscriptionBalance?.toFixed(8)} BEL`}
-            </p>
-          </>
-        }
-      >
-        <>
-          <div className="flex items-center justify-center gap-2">
-            {currentAccount?.balance === undefined ? (
-              <div className="pb-1">
-                <div className="animate-pulse w-40 h-8 rounded-md bg-gray-600 bg-opacity-70" />
-              </div>
-            ) : (
-              (currentAccount?.balance ?? 0).toFixed(
-                currentAccount.balance?.toFixed(0).toString().length >= 4
-                  ? 8 - currentAccount.balance?.toFixed(0)?.toString().length <
-                    0
-                    ? 0
-                    : 8 - currentAccount.balance?.toFixed(0)?.toString().length
-                  : 8
-              )
-            )}
-            <span className="text-xl pb-0.5 text-slate-300">BEL</span>
-          </div>
-          {currentAccount?.balance !== undefined ? (
-            currentPrice !== undefined ? (
-              <div className="text-gray-500 text-sm">
-                ~{(currentAccount.balance * currentPrice)?.toFixed(3)}$
-              </div>
-            ) : undefined
-          ) : undefined}
-        </>
-      </Tooltip> */}
+      </Popover>
       <div className="flex gap-3 items-center">
         {currentWallet?.type === "root" ? (
           <Link to={"/pages/switch-account"}>

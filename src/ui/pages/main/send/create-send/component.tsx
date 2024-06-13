@@ -208,15 +208,18 @@ const CreateSend = () => {
                 <div className="flex justify-between p-0.5">
                   <div>{`${t("wallet_page.amount_in_transactions")}: `}</div>
                   <span className="text-sm font-medium">
-                    {`${currentAccount?.balance?.toFixed(8) ?? "-"} BEL`}
+                    {`${((currentAccount?.balance ?? 0) / 10 ** 8).toFixed(
+                      8
+                    )} BEL`}
                   </span>
                 </div>
                 <div className="flex justify-between p-0.5">
                   <div>{`${t("wallet_page.amount_in_inscriptions")}: `}</div>
                   <span className="text-sm font-medium">
-                    {`${
-                      currentAccount?.inscriptionBalance?.toFixed(8) ?? "-"
-                    } BEL`}
+                    {`${(
+                      (currentAccount?.inscriptionBalance ?? 0) /
+                      10 ** 8
+                    ).toFixed(8)} BEL`}
                   </span>
                 </div>
               </div>

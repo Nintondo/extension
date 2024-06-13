@@ -17,6 +17,7 @@ import { guestRouter, authenticatedRouter } from "@/ui/pages/router";
 import { useControllersState } from "./states/controllerState";
 import { excludeKeysFromObj } from "@/shared/utils";
 import i18n from "../shared/locales/i18n";
+import { networks } from "belcoinjs-lib";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
@@ -38,9 +39,9 @@ export default function App() {
     stateController: v.stateController,
   }));
   const setupApp = useCallback(async () => {
+    const stateController = setupStateProxy();
     const walletController = setupWalletProxy();
     const apiController = setupOpenAPIProxy();
-    const stateController = setupStateProxy();
     const keyringController = setupKeyringProxy();
     const notificationController = setupNotificationProxy();
 
@@ -56,6 +57,10 @@ export default function App() {
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
     await i18n.changeLanguage(appState.language ?? "en");
+    await apiController.setTestnet(
+      (appState.network ?? networks.bellcoin).pubKeyHash === 33 &&
+        (appState.network ?? networks.bellcoin).scriptHash === 22
+    );
     if (
       appState.isReady &&
       appState.isUnlocked &&

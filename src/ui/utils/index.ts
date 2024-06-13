@@ -31,3 +31,13 @@ export function gptFeeCalculate(
 
   return fee;
 }
+
+export function calcBalanceLength(balance: number) {
+  return balance.toFixed(
+    balance.toFixed(0).toString().length >= 4
+      ? 8 - balance.toFixed(0)?.toString().length < 0
+        ? 0
+        : 8 - balance.toFixed(0)?.toString().length
+      : 8
+  );
+}

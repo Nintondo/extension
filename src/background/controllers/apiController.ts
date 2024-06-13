@@ -45,6 +45,7 @@ export interface IApiController {
   getTokens(address: string): Promise<IToken[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
+  setTestnet(testnet: boolean): Promise<void>;
 }
 
 type FetchType = <T>(
@@ -60,7 +61,7 @@ class ApiController implements IApiController {
     });
   };
 
-  setTestnet(testnet: boolean) {
+  async setTestnet(testnet: boolean) {
     this.testnet = testnet;
   }
 

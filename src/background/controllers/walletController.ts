@@ -10,6 +10,7 @@ import { excludeKeysFromObj } from "@/shared/utils";
 import type { DecryptedSecrets } from "../services/storage/types";
 import * as bip39 from "bip39";
 import { AddressType, HDPrivateKey } from "bellhdw";
+import { Network } from "belcoinjs-lib";
 
 class WalletController implements IWalletController {
   async isVaultEmpty() {
@@ -121,6 +122,10 @@ class WalletController implements IWalletController {
       storageService.currentWallet.id
     );
     return keyring.getAccounts();
+  }
+
+  async switchNetwork(network: Network) {
+    keyringService.switchNetwork(network);
   }
 }
 

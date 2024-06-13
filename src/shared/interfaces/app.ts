@@ -8,7 +8,7 @@ export interface IAppStateBase {
   addressBook: string[];
   pendingWallet?: string;
   language: string;
-  network?: Network;
+  network: Network;
 }
 
 export interface IAppState extends IAppStateBase {

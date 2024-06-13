@@ -1,7 +1,7 @@
 import { KeyringServiceError } from "./consts";
 import type { Hex, Json, SendBEL, SendOrd, UserToSignInput } from "./types";
 import { storageService } from "@/background/services";
-import { Psbt } from "belcoinjs-lib";
+import { Network, Psbt } from "belcoinjs-lib";
 import { networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
 import {
@@ -386,6 +386,10 @@ class KeyringService {
       message,
       signatureHex
     );
+  }
+
+  switchNetwork(network: Network) {
+    this.keyrings.map((f) => f.setNetwork(network));
   }
 }
 
