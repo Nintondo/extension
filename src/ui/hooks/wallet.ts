@@ -223,13 +223,10 @@ export const useUpdateCurrentAccountBalance = () => {
 
   return useCallback(
     async (address?: string) => {
-      if (
-        address === undefined &&
-        (currentAccount === undefined || currentAccount.address === undefined)
-      )
-        requestAnimationFrame;
+      if (address === undefined && currentAccount?.address === undefined)
+        return;
       const balance = await apiController.getAccountBalance(
-        address ? address : currentAccount?.address ?? ""
+        address ?? currentAccount!.address!
       );
       const data = await apiController.getInscriptionCounter(
         currentAccount!.address!
@@ -238,7 +235,7 @@ export const useUpdateCurrentAccountBalance = () => {
       const { count, amount } = data;
       if (balance === undefined || !currentAccount) return;
       await updateCurrentAccount({
-        balance: balance / 10 ** 8,
+        balance: balance,
         inscriptionCounter: count,
         inscriptionBalance: amount / 10 ** 8,
       });

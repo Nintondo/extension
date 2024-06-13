@@ -27,7 +27,11 @@ const TransactionList = () => {
   }, [inView, loadMoreTransactions]);
 
   if (!transactions || !lastBlock || !currentAccount || !currentAccount.address)
-    return <ReactLoading type="spin" color="#ffbc42" />;
+    return (
+      <div className="min-h-[50vh] w-full flex justify-center items-center">
+        <ReactLoading type="spinningBubbles" color="white" />
+      </div>
+    );
 
   if (!transactions.length)
     return (

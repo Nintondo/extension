@@ -121,8 +121,14 @@ export class NintondoProvider extends EventEmitter {
     event: string;
     data: any;
   }) => {
-    if (this._pushEventHandlers[event]) {
-      return this._pushEventHandlers[event](data);
+    if (
+      this._pushEventHandlers[event as keyof typeof this._pushEventHandlers]
+    ) {
+      return (
+        this._pushEventHandlers[
+          event as keyof typeof this._pushEventHandlers
+        ] as any
+      )(data);
     }
 
     this.emit(event, data);
@@ -135,15 +141,12 @@ export class NintondoProvider extends EventEmitter {
 
     this._requestPromiseCheckVisibility();
 
-    return this._requestPromise.call(() => {
-      return this._bcm
-        .request(data)
-        .then((res) => {
-          return res;
-        })
-        .catch((err) => {
-          throw serializeError(err);
-        });
+    return this._requestPromise.call(async () => {
+      try {
+        await this._bcm.request(data);
+      } catch (e) {
+        throw serializeError(e);
+      }
     });
   };
 

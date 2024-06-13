@@ -30,7 +30,7 @@
     ]
   },
   "dependencies": {
-    "@headlessui/react": "1.7.18",
+    "@headlessui/react": "2.0.4",
     "@heroicons/react": "2.1.1",
     "@noble/hashes": "1.3.3",
     "bel-ord-utils": "0.2.3",

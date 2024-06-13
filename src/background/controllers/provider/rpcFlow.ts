@@ -25,7 +25,7 @@ const flowContext = flow
     } = ctx.request;
     ctx.mapMethod = underline2Camelcase(method);
 
-    if (!providerController[ctx.mapMethod]) {
+    if (!providerController[ctx.mapMethod as keyof typeof providerController]) {
       throw ethErrors.rpc.methodNotFound({
         message: `method [${method}] doesn't has corresponding handler`,
         data: ctx.request.data,
@@ -120,7 +120,7 @@ const flowContext = flow
       session: { origin },
     } = request;
     const requestDefer = Promise.resolve(
-      providerController[mapMethod]({
+      providerController[mapMethod as keyof typeof providerController]({
         ...request,
         approvalRes,
       })
@@ -150,7 +150,7 @@ const flowContext = flow
           });
         }
       });
-    async function requestApprovalLoop({ uiRequestComponent, ...rest }) {
+    async function requestApprovalLoop({ uiRequestComponent, ...rest }: any) {
       ctx.request.requestedApproval = true;
       const res = await notificationService.requestApproval({
         approvalComponent: uiRequestComponent,

@@ -10,7 +10,7 @@ import { shortAddress } from "@/shared/utils/transactions";
 import CopyBtn from "@/ui/components/copy-btn";
 import { t } from "i18next";
 import cn from "classnames";
-import { Popover, Transition } from "@headlessui/react";
+import { Popover, Transition, useClose } from "@headlessui/react";
 import { Fragment, useRef } from "react";
 
 const AccountPanel = () => {
@@ -19,7 +19,7 @@ const AccountPanel = () => {
 
   const { currentPrice } = useTransactionManagerContext();
 
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const close = useClose();
   const leaveTimeOutRef = useRef<NodeJS.Timeout | null>(null);
   const enterTimeOutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -35,7 +35,7 @@ const AccountPanel = () => {
       clearTimeout(leaveTimeOutRef.current);
     }
     enterTimeOutRef.current = setTimeout(() => {
-      !isOpen && triggerRef.current?.click();
+      !isOpen && close();
     }, 240);
   };
 
@@ -44,13 +44,13 @@ const AccountPanel = () => {
       clearTimeout(enterTimeOutRef.current);
     }
     leaveTimeOutRef.current = setTimeout(() => {
-      isOpen && triggerRef.current?.click();
+      isOpen && close();
     }, 240);
   };
 
   return (
     <div className={s.accPanel}>
-      <Popover className="relative w-full flex">
+      {/* <Popover className="relative w-full flex">
         {({ open }) => (
           <>
             <div
@@ -58,7 +58,6 @@ const AccountPanel = () => {
               onMouseEnter={() => handleEnter(open)}
               onMouseLeave={() => handleLeave(open)}
             >
-              <Popover.Button ref={triggerRef}></Popover.Button>
               <div className="flex items-center justify-center gap-2">
                 {currentAccount?.balance === undefined ? (
                   <div className="pb-1">
@@ -113,7 +112,48 @@ const AccountPanel = () => {
             </Transition>
           </>
         )}
-      </Popover>
+      </Popover> */}
+      {/* <Tooltip
+        content={
+          <>
+            <p>
+              {`${t("wallet_page.amount_in_transactions")}: `}
+              {`${currentAccount?.balance?.toFixed(8)} BEL`}
+            </p>
+            <p>
+              {`${t("wallet_page.amount_in_inscriptions")}: `}
+              {`${currentAccount?.inscriptionBalance?.toFixed(8)} BEL`}
+            </p>
+          </>
+        }
+      >
+        <>
+          <div className="flex items-center justify-center gap-2">
+            {currentAccount?.balance === undefined ? (
+              <div className="pb-1">
+                <div className="animate-pulse w-40 h-8 rounded-md bg-gray-600 bg-opacity-70" />
+              </div>
+            ) : (
+              (currentAccount?.balance ?? 0).toFixed(
+                currentAccount.balance?.toFixed(0).toString().length >= 4
+                  ? 8 - currentAccount.balance?.toFixed(0)?.toString().length <
+                    0
+                    ? 0
+                    : 8 - currentAccount.balance?.toFixed(0)?.toString().length
+                  : 8
+              )
+            )}
+            <span className="text-xl pb-0.5 text-slate-300">BEL</span>
+          </div>
+          {currentAccount?.balance !== undefined ? (
+            currentPrice !== undefined ? (
+              <div className="text-gray-500 text-sm">
+                ~{(currentAccount.balance * currentPrice)?.toFixed(3)}$
+              </div>
+            ) : undefined
+          ) : undefined}
+        </>
+      </Tooltip> */}
       <div className="flex gap-3 items-center">
         {currentWallet?.type === "root" ? (
           <Link to={"/pages/switch-account"}>

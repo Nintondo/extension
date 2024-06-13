@@ -14,8 +14,8 @@ export default async (req: { data: any; session: ISession }) => {
     data: { method },
   } = req;
 
-  if (internalMethod[method]) {
-    return internalMethod[method](req);
+  if (internalMethod[method as keyof typeof internalMethod]) {
+    return internalMethod[method as keyof typeof internalMethod]();
   }
 
   const hasVault = (await storageService.getLocalValues()).enc !== undefined;
