@@ -65,10 +65,8 @@ class ProviderController {
     session: { origin: string };
   }) => {
     if (!permission.siteIsConnected(origin)) return undefined;
-    if (storageService.currentWallet === undefined) return undefined;
-    const _account = storageService.currentWallet.accounts[0];
-    const account = _account ? _account.address : "";
-    return account;
+    if (storageService.currentAccount?.address === undefined) return undefined;
+    return storageService.currentAccount.address;
   };
 
   @Reflect.metadata("SAFE", true)
