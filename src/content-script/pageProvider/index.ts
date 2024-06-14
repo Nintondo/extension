@@ -27,6 +27,11 @@ interface StateProvider {
   isPermanentlyDisconnected: boolean;
 }
 
+interface NintondoProviderProps {
+  maxListeners?: number;
+  onInit?: () => void;
+}
+
 export class NintondoProvider extends EventEmitter {
   _selectedAddress: string | null = null;
   _network: string | null = null;
@@ -47,15 +52,15 @@ export class NintondoProvider extends EventEmitter {
 
   private _bcm = new BroadcastChannelMessage(channelName);
 
-  constructor({ maxListeners = 100 } = {}) {
+  constructor({ maxListeners = 100, onInit }: NintondoProviderProps) {
     super();
     this.setMaxListeners(maxListeners);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.initialize();
+    this.initialize(onInit);
     this._pushEventHandlers = new PushEventHandlers(this);
   }
 
-  initialize = async () => {
+  initialize = async (onInit?: () => void) => {
     document.addEventListener(
       "visibilitychange",
       this._requestPromiseCheckVisibility
@@ -78,6 +83,9 @@ export class NintondoProvider extends EventEmitter {
           method: "tabCheckin",
           params: { icon, name, origin },
         });
+        if (onInit) {
+          onInit();
+        }
       } catch {
         //
       }
@@ -258,13 +266,14 @@ declare global {
   }
 }
 
-const provider = new NintondoProvider();
-
-Object.defineProperty(window, "nintondo", {
-  value: new Proxy(provider, {
-    deleteProperty: () => true,
-  }),
-  writable: false,
+const provider = new NintondoProvider({
+  onInit: () => {
+    Object.defineProperty(window, "nintondo", {
+      value: new Proxy(provider, {
+        deleteProperty: () => true,
+      }),
+      writable: false,
+    });
+    window.dispatchEvent(new Event("nintondo#initialized"));
+  },
 });
-
-window.dispatchEvent(new Event("nintondo#initialized"));

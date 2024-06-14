@@ -123,6 +123,6 @@ if (shouldInjectProvider()) {
   try {
     injectScript();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }

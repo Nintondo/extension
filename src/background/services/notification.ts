@@ -62,12 +62,11 @@ class NotificationService extends Events {
     data?: any,
     winProps?: OpenNotificationProps
   ): Promise<any> => {
-    // if (this.approval) {
-    //   // this.approval = null;
-    //   throw ethErrors.provider.userRejectedRequest(
-    //     "please request after user close current popup"
-    //   );
-    // }
+    if (this.approval) {
+      throw ethErrors.provider.userRejectedRequest(
+        "please request after user close current popup"
+      );
+    }
 
     // We will just override the existing open approval with the new one coming in
     return new Promise((resolve, reject) => {
@@ -77,10 +76,7 @@ class NotificationService extends Events {
         reject,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      if (winProps) {
-        this.openNotification(winProps);
-      }
+      this.openNotification(winProps);
     });
   };
 
@@ -101,7 +97,7 @@ class NotificationService extends Events {
     this.isLocked = true;
   };
 
-  openNotification = (winProps: OpenNotificationProps) => {
+  openNotification = (winProps?: OpenNotificationProps) => {
     if (this.isLocked) return;
     this.lock();
     if (this.notifiWindowId) {
@@ -115,7 +111,7 @@ class NotificationService extends Events {
           this.notifiWindowId = winId;
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
   };
 }
 

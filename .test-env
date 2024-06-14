@@ -1,0 +1,5 @@
+PREVIEW_URL="http://192.168.0.108:8111/pub/preview"
+CONTENT_URL="http://localhost:8111/pub/content"
+API_URL="http://localhost:3001"
+HTML_PREVIEW_URL="http://192.168.0.108:8111/pub/html"
+NINTONDO_URL="http://192.168.0.108:5173"

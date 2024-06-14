@@ -161,7 +161,6 @@ setInterval(async () => {
 
 // setInterval(async () => {
 //   const unpushedHexes = JSON.parse(localStorage.getItem("topush")) as string[];
-//   console.log(unpushedHexes);
 //   const failedToPush: string[] = [];
 //   for (const hex of unpushedHexes) {
 //     const txid = (await apiController.pushTx(hex)).txid ?? "";
