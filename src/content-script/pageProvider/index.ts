@@ -151,7 +151,7 @@ export class NintondoProvider extends EventEmitter {
 
     return this._requestPromise.call(async () => {
       try {
-        await this._bcm.request(data);
+        return await this._bcm.request(data);
       } catch (e) {
         throw serializeError(e);
       }

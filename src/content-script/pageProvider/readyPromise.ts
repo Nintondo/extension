@@ -31,7 +31,7 @@ class ReadyPromise {
     }
   };
 
-  call = (fn: () => Promise<void>) => {
+  call = (fn: () => Promise<any>) => {
     return new Promise((resolve) => {
       this._tasks.push({
         fn,
