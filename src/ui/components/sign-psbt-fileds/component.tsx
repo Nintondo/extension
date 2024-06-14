@@ -1,10 +1,12 @@
 import { FC } from "react";
 
 import { IField } from "@/shared/interfaces/provider";
-import { PREVIEW_URL } from "@/shared/constant";
+import { PREVIEW_URL, TESTNET_HTML_PREVIEW_URL } from "@/shared/constant";
 import { t } from "i18next";
 import cn from "classnames";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { useAppState } from "@/ui/states/appState";
+import { isTestnet } from "@/ui/utils";
 
 interface SignPsbtFiledsProps {
   fields: IField[];
@@ -15,6 +17,8 @@ const SignPsbtFileds: FC<SignPsbtFiledsProps> = ({
   fields,
   setModalInputIndexHandler,
 }) => {
+  const { network } = useAppState((v) => ({ network: v.network }));
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {fields.map((f, i) => (
@@ -57,7 +61,11 @@ const SignPsbtFileds: FC<SignPsbtFiledsProps> = ({
                     className="flex flex-col items-center justify-center p-2"
                   >
                     <img
-                      src={`${PREVIEW_URL}/${k.inscription_id}`}
+                      src={`${
+                        isTestnet(network)
+                          ? TESTNET_HTML_PREVIEW_URL
+                          : PREVIEW_URL
+                      }/${k.inscription_id}`}
                       className="object-cover w-full rounded-xl"
                     />
                     <p className="text-xs">

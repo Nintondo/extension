@@ -1,3 +1,5 @@
+import { Network, networks } from "belcoinjs-lib";
+
 export const isNotification = (): boolean => {
   return window.location.pathname.includes("notification.html");
 };
@@ -39,5 +41,12 @@ export function calcBalanceLength(balance: number) {
         ? 0
         : 8 - balance.toFixed(0)?.toString().length
       : 8
+  );
+}
+
+export function isTestnet(network: Network) {
+  return (
+    network.pubKeyHash === networks.testnet.pubKeyHash &&
+    network.scriptHash === networks.testnet.scriptHash
   );
 }

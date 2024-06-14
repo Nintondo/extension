@@ -8,9 +8,16 @@ import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "react-loading";
-import { CONTENT_URL, HTML_PREVIEW_URL, PREVIEW_URL } from "@/shared/constant";
+import {
+  CONTENT_URL,
+  HTML_PREVIEW_URL,
+  PREVIEW_URL,
+  TESTNET_HTML_PREVIEW_URL,
+} from "@/shared/constant";
 import s from "./styles.module.scss";
 import Iframe from "@/ui/components/iframe";
+import { useAppState } from "@/ui/states/appState";
+import { isTestnet } from "@/ui/utils";
 
 type PathOf<T> = T extends object
   ? {
@@ -75,6 +82,7 @@ const InscriptionDetails = () => {
   const [inscription, setInscription] = useState<
     CompletedInscription | undefined
   >(undefined);
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   const convertToCompletedInscription = useCallback(
     (inscription: Inscription): CompletedInscription => {
@@ -119,7 +127,9 @@ const InscriptionDetails = () => {
     <div className="flex flex-col justify-center items-center break-all gap-5 px-4 pb-3 rounded-xl">
       <div className="flex justify-center w-[318px] h-[318px] rounded-xl overflow-hidden">
         <Iframe
-          preview={`${HTML_PREVIEW_URL}/${inscription.inscription_id}`}
+          preview={`${
+            isTestnet(network) ? TESTNET_HTML_PREVIEW_URL : HTML_PREVIEW_URL
+          }/${inscription.inscription_id}`}
           size="big"
         />
       </div>
@@ -138,9 +148,13 @@ const InscriptionDetails = () => {
               <div
                 onClick={async () => {
                   await openContent(
-                    `${f.key === "content" ? CONTENT_URL : PREVIEW_URL}/${
-                      inscription.inscription_id
-                    }`
+                    `${
+                      f.key === "content"
+                        ? CONTENT_URL
+                        : isTestnet(network)
+                        ? TESTNET_HTML_PREVIEW_URL
+                        : PREVIEW_URL
+                    }/${inscription.inscription_id}`
                   );
                 }}
                 className="text-orange-400 cursor-pointer pl-1 text-sm font-medium"

@@ -2,7 +2,9 @@ import { Inscription } from "@/shared/interfaces/inscriptions";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { shortAddress } from "@/shared/utils/transactions";
-import { PREVIEW_URL } from "@/shared/constant";
+import { PREVIEW_URL, TESTNET_HTML_PREVIEW_URL } from "@/shared/constant";
+import { useAppState } from "@/ui/states/appState";
+import { isTestnet } from "@/ui/utils";
 
 interface Props {
   inscription: Inscription;
@@ -10,6 +12,7 @@ interface Props {
 
 const InscriptionCard: FC<Props> = ({ inscription }) => {
   const navigate = useNavigate();
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   return (
     <div className="flex justify-center w-full">
@@ -21,7 +24,9 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
       >
         <div className="rounded-xl w-full bg-slate-950 bg-opacity-50">
           <img
-            src={`${PREVIEW_URL}/${inscription.inscription_id}`}
+            src={`${
+              isTestnet(network) ? TESTNET_HTML_PREVIEW_URL : PREVIEW_URL
+            }/${inscription.inscription_id}`}
             alt="content"
             className="object-cover rounded-xl h-38 w-38"
             style={{

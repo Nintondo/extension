@@ -125,8 +125,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     async (force = false) => {
       setLoading(true);
       if (force) {
-        setInscriptions([]);
-        setTransactions([]);
+        setInscriptions(undefined);
+        setTransactions(undefined);
       }
       await Promise.all([
         updateAccountBalance(),
@@ -342,10 +342,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     trottledUpdate: throttleUpdate,
     feeRates,
     loading,
-    resetTransactions: () => {
-      setTransactions([]);
-      setInscriptions([]);
-    },
     setCurrentPage,
     currentPage,
     tokens,
@@ -370,7 +366,6 @@ interface TransactionManagerContextType {
     fast: number;
     slow: number;
   };
-  resetTransactions: () => void;
   setCurrentPage: (page: number) => void;
   currentPage: number;
   tokens: IToken[];
@@ -402,8 +397,8 @@ export const useTransactionManagerContext = () => {
   if (!context) {
     return {
       lastBlock: undefined,
-      transactions: [],
-      inscriptions: [],
+      transactions: undefined,
+      inscriptions: undefined,
       currentPrice: undefined,
       loadMoreTransactions: () => {},
       loadMoreInscriptions: () => {},
