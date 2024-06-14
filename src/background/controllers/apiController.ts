@@ -62,7 +62,7 @@ class ApiController implements IApiController {
           storageService.appState.network.pubKeyHash ===
             networks.testnet.pubKeyHash &&
           storageService.appState.network.scriptHash ===
-            networks.testnet.pubKeyHash,
+            networks.testnet.scriptHash,
       });
     } catch {
       return;

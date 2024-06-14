@@ -17,7 +17,6 @@ import { guestRouter, authenticatedRouter } from "@/ui/pages/router";
 import { useControllersState } from "./states/controllerState";
 import { excludeKeysFromObj } from "@/shared/utils";
 import i18n from "../shared/locales/i18n";
-import { networks } from "belcoinjs-lib";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
