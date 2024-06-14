@@ -119,6 +119,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const updateAll = useCallback(
     async (force = false) => {
       setLoading(true);
+      setInscriptions([]);
+      setTransactions([]);
       await Promise.all([
         updateAccountBalance(),
         updateTransactions(force),
