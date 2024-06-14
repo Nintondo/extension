@@ -23,6 +23,7 @@ const Inscriptions = () => {
 
   const changePage = useCallback(
     async (page: number) => {
+      if (!inscriptions) return;
       if (!loadingMoreInscriptions) {
         if (
           inscriptions.length <= page * 6 &&
@@ -37,14 +38,17 @@ const Inscriptions = () => {
     },
     [
       currentAccount?.inscriptionCounter,
-      inscriptions.length,
       loadMoreInscriptions,
       loadingMoreInscriptions,
       setCurrentPage,
+      inscriptions,
     ]
   );
 
-  if (currentAccount?.inscriptionCounter === undefined && managerLoading)
+  if (
+    (currentAccount?.inscriptionCounter === undefined && managerLoading) ||
+    !inscriptions
+  )
     return <Loading />;
 
   return (

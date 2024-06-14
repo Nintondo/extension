@@ -30,13 +30,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     slow: number;
   }>();
 
-  const [transactions, setTransactions] = useState<ITransaction[]>([]);
-  const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
+  const [transactions, setTransactions] = useState<ITransaction[] | undefined>(
+    undefined
+  );
+  const [inscriptions, setInscriptions] = useState<Inscription[] | undefined>(
+    undefined
+  );
   const [tokens, setTokens] = useState<IToken[]>([]);
 
-  // const [tokenHandler, setTokenHandler] = useState<(v: IToken[]) => void>();
-  // const [inscriptionHandler, setInscriptionHandler] =
-  //   useState<(v: Inscription[]) => void>();
   const [searchInscriptions, setSearchInscriptions] = useState<
     Inscription[] | undefined
   >(undefined);
@@ -55,9 +56,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const updateFn = <T,>(
-    onUpdate: Dispatch<SetStateAction<T[]>>,
+    onUpdate: Dispatch<SetStateAction<T[] | undefined>>,
     retrieveFn: (address: string) => Promise<T[] | undefined>,
-    currentValue: T[],
+    currentValue: T[] | undefined,
     compareKey: keyof T
   ) => {
     return useCallback(
@@ -65,15 +66,19 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
         const receivedItems = await retrieveFn(currentAccount?.address ?? "");
         if (receivedItems !== undefined) {
           if (
-            currentValue.length > 0 &&
-            currentValue[0][compareKey] !== receivedItems[0][compareKey] &&
+            (currentValue ?? []).length > 0 &&
+            (currentValue ?? [])[0][compareKey] !==
+              receivedItems[0][compareKey] &&
             !force
           ) {
             const oldIndex = receivedItems.findIndex(
-              (f) => f[compareKey] === currentValue[0][compareKey]
+              (f) => f[compareKey] === (currentValue ?? [])[0][compareKey]
             );
-            onUpdate([...receivedItems.slice(0, oldIndex), ...currentValue]);
-          } else if (currentValue.length < 50 || force)
+            onUpdate([
+              ...receivedItems.slice(0, oldIndex),
+              ...(currentValue ?? []),
+            ]);
+          } else if ((currentValue ?? []).length < 50 || force)
             onUpdate(receivedItems ?? []);
         }
       },
@@ -119,8 +124,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const updateAll = useCallback(
     async (force = false) => {
       setLoading(true);
-      setInscriptions([]);
-      setTransactions([]);
+      if (force) {
+        setInscriptions([]);
+        setTransactions([]);
+      }
       await Promise.all([
         updateAccountBalance(),
         updateTransactions(force),
@@ -142,7 +149,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const throttleUpdate = useDebounceCall(updateAll, 300);
 
   const loadMoreTransactions = useCallback(async () => {
-    if (!currentAccount || !currentAccount.address) return;
+    if (!currentAccount || !currentAccount.address || !transactions) return;
     if (
       transactions.length < 50 ||
       transactionTxIds.includes(transactions[transactions.length - 1]?.txid)
@@ -158,12 +165,12 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     ]);
     if (!additionalTransactions) return;
     if (additionalTransactions.length > 0) {
-      setTransactions((prev) => [...prev, ...additionalTransactions]);
+      setTransactions((prev) => [...(prev ?? []), ...additionalTransactions]);
     }
   }, [transactions, apiController, transactionTxIds, currentAccount]);
 
   const loadMoreInscriptions = useCallback(async () => {
-    if (!currentAccount || !currentAccount.address) return;
+    if (!currentAccount || !currentAccount.address || !inscriptions) return;
     const inc = inscriptions[inscriptions.length - 1];
 
     if (
@@ -184,7 +191,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     ]);
     if (!additionalInscriptions) return;
     if (additionalInscriptions.length > 0) {
-      setInscriptions((prev) => [...prev, ...additionalInscriptions]);
+      setInscriptions((prev) => [...(prev ?? []), ...additionalInscriptions]);
     }
   }, [apiController, currentAccount, inscriptions, inscriptionLocations]);
 
@@ -195,7 +202,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       receivedInscriptions: Inscription[],
       index: number
     ) => {
-      const updatedInscriptions = [...inscriptions];
+      const updatedInscriptions = [...(inscriptions ?? [])];
       updatedInscriptions.splice(
         index,
         receivedInscriptions.length,
@@ -220,7 +227,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       return false;
     };
 
-    if (currentPage > 10) {
+    if (currentPage > 10 && inscriptions && inscriptions.length) {
       const chainIndex = Math.floor(currentPage / 10) - 1;
       let isUpdated = await fetchAndUpdateInscriptions(
         inscriptionLocations[chainIndex],
@@ -260,9 +267,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       } else {
         setInscriptions([
           ...receivedInscriptions,
-          ...inscriptions.slice(
+          ...(inscriptions ?? []).slice(
             receivedInscriptions?.length,
-            inscriptions.length
+            (inscriptions ?? []).length
           ),
         ]);
       }
@@ -352,8 +359,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
 interface TransactionManagerContextType {
   lastBlock: number;
-  transactions: ITransaction[];
-  inscriptions: Inscription[];
+  transactions: ITransaction[] | undefined;
+  inscriptions: Inscription[] | undefined;
   currentPrice: number | undefined;
   loadMoreTransactions: () => Promise<void>;
   loadMoreInscriptions: () => Promise<void>;

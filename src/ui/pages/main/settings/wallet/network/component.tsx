@@ -6,6 +6,7 @@ import { Network } from "belcoinjs-lib";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useWalletState } from "@/ui/states/walletState";
 import { useNavigate } from "react-router-dom";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 const NetworkSettings = () => {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ const NetworkSettings = () => {
     updateAppState: v.updateAppState,
     password: v.password,
   }));
-
   const { updateWalletState, selectedWallet, wallets } = useWalletState(
     (v) => ({
       updateWalletState: v.updateWalletState,
@@ -23,11 +23,11 @@ const NetworkSettings = () => {
       wallets: v.wallets,
     })
   );
-
   const { walletController } = useControllersState((v) => ({
     walletController: v.walletController,
     apiController: v.apiController,
   }));
+  const { trottledUpdate } = useTransactionManagerContext();
 
   const switchNetwork = async (network: Network) => {
     if (selectedWallet === undefined) return;
@@ -42,6 +42,7 @@ const NetworkSettings = () => {
         updatedWallets[selectedWallet].accounts
       );
     await updateWalletState({ wallets: updatedWallets });
+    trottledUpdate(true);
     navigate("/");
   };
 

@@ -52,7 +52,7 @@ const ChangeAddrType = () => {
         addresses[currentAccount?.id as any as number]
       );
       await notificationController.changedAccount();
-      trottledUpdate();
+      trottledUpdate(true);
       navigate("/");
     },
     [
