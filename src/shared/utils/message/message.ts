@@ -24,7 +24,7 @@ abstract class Message extends EventEmitter {
       throw ethErrors.rpc.limitExceeded();
     }
     const ident = this._requestIdPool.shift();
-    if (!ident) return;
+    if (ident === undefined || ident === null) return;
 
     return new Promise((resolve, reject) => {
       this._waitingMap.set(ident, {
