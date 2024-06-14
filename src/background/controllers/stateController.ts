@@ -4,7 +4,7 @@ import { storageService } from "../services";
 
 class StateController implements IStateController {
   async init() {
-    await storageService.init();
+    return await storageService.init();
   }
 
   async updateAppState(state: Partial<IAppStateBase>) {

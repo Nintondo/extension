@@ -34,6 +34,7 @@ export const fetchBELLMainnet = async <T>({
     { ...props }
   );
 
+  if (!res.ok) return;
   if (!json) return (await res.text()) as T;
 
   return await res.json();

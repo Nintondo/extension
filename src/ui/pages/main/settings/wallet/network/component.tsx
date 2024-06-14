@@ -5,8 +5,11 @@ import { useAppState } from "@/ui/states/appState";
 import { Network } from "belcoinjs-lib";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useWalletState } from "@/ui/states/walletState";
+import { useNavigate } from "react-router-dom";
 
 const NetworkSettings = () => {
+  const navigate = useNavigate();
+
   const { network, updateAppState } = useAppState((v) => ({
     network: v.network,
     updateAppState: v.updateAppState,
@@ -21,7 +24,7 @@ const NetworkSettings = () => {
     })
   );
 
-  const { walletController, apiController } = useControllersState((v) => ({
+  const { walletController } = useControllersState((v) => ({
     walletController: v.walletController,
     apiController: v.apiController,
   }));
@@ -32,9 +35,6 @@ const NetworkSettings = () => {
     await Promise.all([
       updateAppState({ network }),
       walletController.switchNetwork(network),
-      apiController.setTestnet(
-        network.pubKeyHash === 33 && network.scriptHash === 22
-      ),
     ]);
     updatedWallets[selectedWallet].accounts =
       await walletController.loadAccountsData(
@@ -42,6 +42,7 @@ const NetworkSettings = () => {
         updatedWallets[selectedWallet].accounts
       );
     await updateWalletState({ wallets: updatedWallets });
+    navigate("/");
   };
 
   return (

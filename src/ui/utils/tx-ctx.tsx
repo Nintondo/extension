@@ -102,7 +102,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   }, [updateInscriptions]);
 
   const updateLastBlock = useCallback(async () => {
-    setLastBlock(await apiController.getLastBlockBEL());
+    const data = await apiController.getLastBlockBEL();
+    if (data) setLastBlock(data);
   }, [apiController]);
 
   const updateFeeRates = useCallback(async () => {
@@ -340,10 +341,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPage,
     tokens,
     forceUpdateInscriptions,
-    // inscriptionHandler,
-    // setInscriptionHandler,
-    // tokenHandler,
-    // setTokenHandler,
     setSearchInscriptions,
     setSearchTokens,
     searchInscriptions,

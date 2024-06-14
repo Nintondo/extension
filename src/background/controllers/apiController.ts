@@ -2,6 +2,8 @@ import type { ApiUTXO, ITransaction } from "@/shared/interfaces/api";
 import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
 import { fetchBELLMainnet, fetchProps } from "@/shared/utils";
+import { storageService } from "../services";
+import { networks } from "belcoinjs-lib";
 
 export interface UtxoQueryParams {
   hex?: boolean;
@@ -26,8 +28,8 @@ export interface IApiController {
     location: string
   ): Promise<Inscription[] | undefined>;
   getBELPrice(): Promise<{ bellscoin?: { usd: number } } | undefined>;
-  getLastBlockBEL(): Promise<number>;
-  getFees(): Promise<{ fast: number; slow: number }>;
+  getLastBlockBEL(): Promise<number | undefined>;
+  getFees(): Promise<{ fast: number; slow: number } | undefined>;
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
   getDiscovery(): Promise<Inscription[] | undefined>;
   getInscriptionCounter(
@@ -45,7 +47,6 @@ export interface IApiController {
   getTokens(address: string): Promise<IToken[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
-  setTestnet(testnet: boolean): Promise<void>;
 }
 
 type FetchType = <T>(
@@ -53,17 +54,20 @@ type FetchType = <T>(
 ) => Promise<T | undefined>;
 
 class ApiController implements IApiController {
-  testnet: boolean = false;
-  private fetch: FetchType = (p: Omit<fetchProps, "testnet">) => {
-    return fetchBELLMainnet({
-      ...p,
-      testnet: this.testnet,
-    });
+  private fetch: FetchType = async (p: Omit<fetchProps, "testnet">) => {
+    try {
+      return await fetchBELLMainnet({
+        ...p,
+        testnet:
+          storageService.appState.network.pubKeyHash ===
+            networks.testnet.pubKeyHash &&
+          storageService.appState.network.scriptHash ===
+            networks.testnet.pubKeyHash,
+      });
+    } catch {
+      return;
+    }
   };
-
-  async setTestnet(testnet: boolean) {
-    this.testnet = testnet;
-  }
 
   async getAccountBalance(address: string) {
     const data = await this.fetch<
@@ -94,10 +98,12 @@ class ApiController implements IApiController {
     const data = await this.fetch<Record<string, number>>({
       path: "/fee-estimates",
     });
-    return {
-      slow: Number(data?.["6"]?.toFixed(0) ?? 0),
-      fast: Number(data?.["2"]?.toFixed(0) ?? 0) + 1,
-    };
+    if (data) {
+      return {
+        slow: Number(data["6"].toFixed(0)),
+        fast: Number(data["2"].toFixed(0)) + 1,
+      };
+    }
   }
 
   async pushTx(rawTx: string) {
@@ -110,12 +116,11 @@ class ApiController implements IApiController {
       json: false,
       body: rawTx,
     });
-    if (!data) {
-      return undefined;
+    if (data) {
+      return {
+        txid: data,
+      };
     }
-    return {
-      txid: data,
-    };
   }
 
   async getTransactions(address: string): Promise<ITransaction[] | undefined> {
@@ -157,12 +162,13 @@ class ApiController implements IApiController {
     }
   }
 
-  async getLastBlockBEL(): Promise<number> {
-    return Number(
-      await this.fetch<string>({
-        path: "/blocks/tip/height",
-      })
-    );
+  async getLastBlockBEL() {
+    const data = await this.fetch<string>({
+      path: "/blocks/tip/height",
+    });
+    if (data) {
+      return Number(data);
+    }
   }
 
   async getBELPrice() {

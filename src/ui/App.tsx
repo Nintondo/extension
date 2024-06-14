@@ -53,14 +53,9 @@ export default function App() {
       notificationController,
     });
 
-    await stateController.init();
-    const appState = await stateController.getAppState();
-    const walletState = await stateController.getWalletState();
+    const [appState, walletState] = await stateController.init();
     await i18n.changeLanguage(appState.language ?? "en");
-    await apiController.setTestnet(
-      (appState.network ?? networks.bellcoin).pubKeyHash === 33 &&
-        (appState.network ?? networks.bellcoin).scriptHash === 22
-    );
+
     if (
       appState.isReady &&
       appState.isUnlocked &&

@@ -55,7 +55,7 @@ class StorageService {
     ];
   }
 
-  async init() {
+  async init(): Promise<[IAppStateBase, IWalletStateBase]> {
     const data = await this.getLocalValues();
 
     this._walletState = {
@@ -72,6 +72,8 @@ class StorageService {
         "language",
       ]),
     };
+
+    return [this._appState, this._walletState];
   }
 
   async updateWalletState(state: Partial<IWalletStateBase>) {
