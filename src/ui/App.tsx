@@ -45,9 +45,6 @@ export default function App() {
     const keyringController = setupKeyringProxy();
     const notificationController = setupNotificationProxy();
 
-    console.log("FIRST");
-    console.log(await stateController.getAppState());
-
     updateControllers({
       walletController,
       apiController,
@@ -57,7 +54,6 @@ export default function App() {
     });
 
     await stateController.init();
-    console.log((await stateController.getAppState()).network);
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
     await i18n.changeLanguage(appState.language ?? "en");
