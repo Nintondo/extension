@@ -62,11 +62,11 @@ class NotificationService extends Events {
     data?: any,
     winProps?: OpenNotificationProps
   ): Promise<any> => {
-    if (this.approval) {
-      throw ethErrors.provider.userRejectedRequest(
-        "please request after user close current popup"
-      );
-    }
+    // if (this.approval) {
+    //   throw ethErrors.provider.userRejectedRequest(
+    //     "please request after user close current popup"
+    //   );
+    // }
 
     // We will just override the existing open approval with the new one coming in
     return new Promise((resolve, reject) => {
