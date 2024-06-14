@@ -231,7 +231,7 @@ export const useUpdateCurrentAccountBalance = () => {
       );
       if (!data) return;
       const { count, amount } = data;
-      if (balance === undefined || !currentAccount) return;
+      if (!currentAccount) return;
       await updateCurrentAccount({
         balance: balance,
         inscriptionCounter: count,

@@ -61,7 +61,6 @@ const CreateSend = () => {
     feeAmount: feeRate,
     includeFeeInAmount,
   }: FormType) => {
-    if (!inscription) return;
     try {
       setLoading(true);
       if (Number(amount) < 0.00001 && !inscriptionTransaction) {
@@ -87,7 +86,7 @@ const CreateSend = () => {
             feeRate,
             includeFeeInAmount
           )
-        : await createOrdTx(address, feeRate, inscription);
+        : await createOrdTx(address, feeRate, inscription!);
       if (!data) return;
       const { fee, rawtx } = data;
 
@@ -96,7 +95,7 @@ const CreateSend = () => {
           toAddress: address,
           amount: !inscriptionTransaction
             ? Number(amount)
-            : inscription.inscription_id,
+            : inscription!.inscription_id,
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",
           feeAmount: fee,

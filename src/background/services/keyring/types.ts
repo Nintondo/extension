@@ -1,5 +1,6 @@
 import type { ApiUTXO } from "@/shared/interfaces/api";
 import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import { Network } from "belcoinjs-lib";
 
 export type Json = any;
 export type Hex = string;
@@ -16,6 +17,7 @@ interface SendBase {
   amount: number;
   receiverToPayFee: boolean;
   feeRate: number;
+  network: Network;
 }
 
 export interface SendBEL extends SendBase {

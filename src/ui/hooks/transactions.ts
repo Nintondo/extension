@@ -9,6 +9,7 @@ import { Inscription } from "@/shared/interfaces/inscriptions";
 import { ITransfer } from "@/shared/interfaces/token";
 import toast from "react-hot-toast";
 import { gptFeeCalculate } from "../utils";
+import { useAppState } from "../states/appState";
 
 export function useCreateBellsTxCallback() {
   const currentAccount = useGetCurrentAccount();
@@ -20,6 +21,7 @@ export function useCreateBellsTxCallback() {
     apiController: v.apiController,
     keyringController: v.keyringController,
   }));
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   return useCallback(
     async (
@@ -62,6 +64,7 @@ export function useCreateBellsTxCallback() {
         utxos,
         receiverToPayFee,
         feeRate,
+        network,
       });
       const psbt = Psbt.fromHex(psbtHex);
       const tx = psbt.extractTransaction();
@@ -77,6 +80,7 @@ export function useCreateBellsTxCallback() {
       selectedAccount,
       selectedWallet,
       keyringController,
+      network,
     ]
   );
 }
@@ -91,6 +95,7 @@ export function useCreateOrdTx() {
     apiController: v.apiController,
     keyringController: v.keyringController,
   }));
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   return useCallback(
     async (toAddress: Hex, feeRate: number, inscription: Inscription) => {
@@ -112,6 +117,7 @@ export function useCreateOrdTx() {
         utxos: [...utxos, { ...inscription, isOrd: true }],
         receiverToPayFee: false,
         feeRate,
+        network,
       });
       const psbt = Psbt.fromHex(psbtHex);
       const tx = psbt.extractTransaction();
@@ -127,6 +133,7 @@ export function useCreateOrdTx() {
       selectedAccount,
       selectedWallet,
       keyringController,
+      network,
     ]
   );
 }

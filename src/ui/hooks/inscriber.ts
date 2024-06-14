@@ -6,7 +6,7 @@ import { useControllersState } from "../states/controllerState";
 import toast from "react-hot-toast";
 import { t } from "i18next";
 import { gptFeeCalculate } from "../utils";
-import { networks } from "belcoinjs-lib";
+import { useAppState } from "../states/appState";
 
 export const useInscribeTransferToken = () => {
   const currentAccount = useGetCurrentAccount();
@@ -14,6 +14,7 @@ export const useInscribeTransferToken = () => {
     apiController: v.apiController,
     keyringController: v.keyringController,
   }));
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   return useCallback(
     async (data: ITransferToken, feeRate: number) => {
@@ -48,7 +49,7 @@ export const useInscribeTransferToken = () => {
           "hex"
         ),
         signPsbtHex: keyringController.signAllInputs,
-        network: networks.bellcoin,
+        network,
       });
 
       const txIds: string[] = [];
@@ -61,6 +62,6 @@ export const useInscribeTransferToken = () => {
         toast.success(t("inscriptions.transfer_inscribed"));
       else toast.error(t("inscriptions.failed_inscribe_transfer"));
     },
-    [apiController, currentAccount, keyringController]
+    [apiController, currentAccount, keyringController, network]
   );
 };

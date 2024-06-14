@@ -100,8 +100,8 @@ class ApiController implements IApiController {
     });
     if (data) {
       return {
-        slow: Number(data["6"].toFixed(0)),
-        fast: Number(data["2"].toFixed(0)) + 1,
+        slow: "6" in data ? Number(data["6"].toFixed(0)) : 0,
+        fast: "2" in data ? Number(data["2"].toFixed(0)) + 1 : 0,
       };
     }
   }

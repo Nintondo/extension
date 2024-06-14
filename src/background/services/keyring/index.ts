@@ -2,7 +2,6 @@ import { KeyringServiceError } from "./consts";
 import type { Hex, Json, SendBEL, SendOrd, UserToSignInput } from "./types";
 import { storageService } from "@/background/services";
 import { Network, Psbt } from "belcoinjs-lib";
-import { networks } from "belcoinjs-lib";
 import { getScriptForAddress } from "@/shared/utils/transactions";
 import {
   createMultisendOrd,
@@ -36,7 +35,10 @@ class KeyringService {
         wallet = HDPrivateKey.deserialize({
           ...i.data,
           hideRoot: i.hideRoot,
-          addressType: i.data.addressType ?? i.addressType,
+          addressType:
+            i.data.addressType === undefined
+              ? i.data.addressType
+              : i.addressType,
           network,
         });
       } else {
@@ -203,7 +205,7 @@ class KeyringService {
       signTransaction: this.signPsbt.bind(this) as (
         psbt: Psbt
       ) => Promise<void>,
-      network: networks.bellcoin,
+      network: data.network,
       changeAddress: account.address,
       receiverToPayFee: data.receiverToPayFee,
       pubkey: this.exportPublicKey(account.address),
@@ -264,7 +266,7 @@ class KeyringService {
       signTransaction: this.signPsbt.bind(this) as (
         psbt: Psbt
       ) => Promise<void>,
-      network: networks.bellcoin,
+      network: data.network,
       changeAddress: account.address,
       pubkey: this.exportPublicKey(account.address),
       feeRate: data.feeRate,
