@@ -63,13 +63,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   ) => {
     return useCallback(
       async (force?: boolean) => {
-        const receivedItems = await retrieveFn(currentAccount?.address ?? "");
+        if (!currentAccount?.address) return;
+        const receivedItems = await retrieveFn(currentAccount.address);
         if (receivedItems !== undefined) {
           if (
-            (currentValue ?? []).length > 0 &&
-            (currentValue ?? [])[0][compareKey] !==
-              receivedItems[0][compareKey] &&
-            !force
+            !force &&
+            currentValue &&
+            currentValue.length > 0 &&
+            currentValue[0][compareKey] !== receivedItems[0][compareKey]
           ) {
             const oldIndex = receivedItems.findIndex(
               (f) => f[compareKey] === (currentValue ?? [])[0][compareKey]
@@ -127,6 +128,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       if (force) {
         setInscriptions(undefined);
         setTransactions(undefined);
+        setTransactionTxIds([]);
+        setInscriptionLocations([]);
       }
       await Promise.all([
         updateAccountBalance(),
@@ -146,7 +149,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     ]
   );
 
-  const throttleUpdate = useDebounceCall(updateAll, 300);
+  const trottledUpdate = useDebounceCall(updateAll, 300);
 
   const loadMoreTransactions = useCallback(async () => {
     if (!currentAccount || !currentAccount.address || !transactions) return;
@@ -339,7 +342,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPrice,
     loadMoreTransactions,
     loadMoreInscriptions,
-    trottledUpdate: throttleUpdate,
+    trottledUpdate,
     feeRates,
     loading,
     setCurrentPage,

@@ -16,10 +16,12 @@ export const useCreateNewWallet = () => {
     wallets: v.wallets,
     updateWalletState: v.updateWalletState,
   }));
-  const { walletController, keyringController } = useControllersState((v) => ({
-    walletController: v.walletController,
-    keyringController: v.keyringController,
-  }));
+  const { walletController, keyringController, notificationController } =
+    useControllersState((v) => ({
+      walletController: v.walletController,
+      keyringController: v.keyringController,
+      notificationController: v.notificationController,
+    }));
   const { trottledUpdate } = useTransactionManagerContext();
 
   return useCallback(
@@ -34,6 +36,7 @@ export const useCreateNewWallet = () => {
       await walletController.saveWallets([
         { id: wallet.id, phrase: props.payload, data: keyring },
       ]);
+      await notificationController.changedAccount();
       trottledUpdate(true);
     },
     [
@@ -41,6 +44,7 @@ export const useCreateNewWallet = () => {
       updateWalletState,
       walletController,
       keyringController,
+      notificationController,
       trottledUpdate,
     ]
   );
@@ -73,9 +77,12 @@ export const useCreateNewAccount = () => {
   }));
   const updateCurrentWallet = useUpdateCurrentWallet();
   const currentWallet = useGetCurrentWallet();
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-  }));
+  const { walletController, notificationController } = useControllersState(
+    (v) => ({
+      walletController: v.walletController,
+      notificationController: v.notificationController,
+    })
+  );
   const { trottledUpdate } = useTransactionManagerContext();
 
   return useCallback(
@@ -98,6 +105,7 @@ export const useCreateNewAccount = () => {
         selectedAccount:
           updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
       });
+      await notificationController.changedAccount();
       trottledUpdate(true);
     },
     [
@@ -106,6 +114,7 @@ export const useCreateNewAccount = () => {
       walletController,
       updateWalletState,
       trottledUpdate,
+      notificationController,
     ]
   );
 };
