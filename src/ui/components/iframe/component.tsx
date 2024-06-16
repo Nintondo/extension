@@ -16,19 +16,18 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-xl bg-black">
+    <div className="overflow-hidden rounded-xl bg-black relative">
       <div
         className={cn(
-          SIZES[size],
-          "bg-input-bg flex justify-center items-center",
+          "bg-input-bg flex justify-center items-center inset-0 absolute",
           {
-            ["absolute"]: !loaded,
-            ["hidden"]: loaded,
+            hidden: loaded,
           }
         )}
       >
         <Loading />
       </div>
+
       <iframe
         id="frame"
         onClick={(e) => e.preventDefault()}
