@@ -8,12 +8,13 @@ import WalletPanel from "./wallet-panel";
 import AccountPanel from "./account-panel";
 
 const Wallet = () => {
-  const { trottledUpdate } = useTransactionManagerContext();
+  const { trottledUpdate, inscriptions } = useTransactionManagerContext();
   const currentAccount = useGetCurrentAccount();
 
   useEffect(() => {
-    if (currentAccount?.balance === undefined) trottledUpdate();
-  }, [trottledUpdate, currentAccount]);
+    if (currentAccount?.balance === undefined || inscriptions === undefined)
+      trottledUpdate();
+  }, [trottledUpdate, currentAccount, inscriptions]);
 
   if (!currentAccount) return <Loading />;
 
