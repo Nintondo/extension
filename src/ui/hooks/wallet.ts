@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
 import { useTransactionManagerContext } from "../utils/tx-ctx";
+import { Network } from "belcoinjs-lib";
+import { useAppState } from "../states/appState";
 
 export const useCreateNewWallet = () => {
   const { wallets, updateWalletState } = useWalletState((v) => ({
@@ -276,6 +278,55 @@ export const useDeleteWallet = () => {
       wallets.length,
       switchWallet,
       currentAccount,
+    ]
+  );
+};
+
+export const useSwitchNetwork = () => {
+  const navigate = useNavigate();
+  const { updateAppState } = useAppState((v) => ({
+    network: v.network,
+    updateAppState: v.updateAppState,
+    password: v.password,
+  }));
+  const { updateWalletState, selectedWallet, wallets } = useWalletState(
+    (v) => ({
+      updateWalletState: v.updateWalletState,
+      selectedWallet: v.selectedWallet,
+      wallets: v.wallets,
+    })
+  );
+  const { walletController } = useControllersState((v) => ({
+    walletController: v.walletController,
+    apiController: v.apiController,
+  }));
+  const { trottledUpdate } = useTransactionManagerContext();
+
+  return useCallback(
+    async (network: Network) => {
+      if (selectedWallet === undefined) return;
+      const updatedWallets = wallets;
+      await Promise.all([
+        updateAppState({ network }),
+        walletController.switchNetwork(network),
+      ]);
+      updatedWallets[selectedWallet].accounts =
+        await walletController.loadAccountsData(
+          selectedWallet,
+          updatedWallets[selectedWallet].accounts
+        );
+      await updateWalletState({ wallets: updatedWallets });
+      navigate("/");
+      trottledUpdate(true);
+    },
+    [
+      navigate,
+      selectedWallet,
+      trottledUpdate,
+      updateAppState,
+      updateWalletState,
+      walletController,
+      wallets,
     ]
   );
 };

@@ -62,7 +62,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     compareKey: keyof T
   ) => {
     return useCallback(
-      async (force?: boolean) => {
+      async (force = false) => {
         if (!currentAccount?.address) return;
         const receivedItems = await retrieveFn(currentAccount.address);
         if (receivedItems !== undefined) {
@@ -126,8 +126,8 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     async (force = false) => {
       setLoading(true);
       if (force) {
-        setInscriptions(undefined);
         setTransactions(undefined);
+        setInscriptions(undefined);
         setTransactionTxIds([]);
         setInscriptionLocations([]);
       }

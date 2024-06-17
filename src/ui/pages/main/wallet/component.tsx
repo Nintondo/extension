@@ -12,8 +12,8 @@ const Wallet = () => {
   const currentAccount = useGetCurrentAccount();
 
   useEffect(() => {
-    trottledUpdate();
-  }, [trottledUpdate]);
+    if (currentAccount?.balance === undefined) trottledUpdate();
+  }, [trottledUpdate, currentAccount]);
 
   if (!currentAccount) return <Loading />;
 

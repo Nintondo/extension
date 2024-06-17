@@ -2,49 +2,13 @@ import { NETOWRKS } from "@/shared/constant";
 import s from "./styles.module.scss";
 import cn from "classnames";
 import { useAppState } from "@/ui/states/appState";
-import { Network } from "belcoinjs-lib";
-import { useControllersState } from "@/ui/states/controllerState";
-import { useWalletState } from "@/ui/states/walletState";
-import { useNavigate } from "react-router-dom";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import { useSwitchNetwork } from "@/ui/hooks/wallet";
 
 const NetworkSettings = () => {
-  const navigate = useNavigate();
-
-  const { network, updateAppState } = useAppState((v) => ({
+  const { network } = useAppState((v) => ({
     network: v.network,
-    updateAppState: v.updateAppState,
-    password: v.password,
   }));
-  const { updateWalletState, selectedWallet, wallets } = useWalletState(
-    (v) => ({
-      updateWalletState: v.updateWalletState,
-      selectedWallet: v.selectedWallet,
-      wallets: v.wallets,
-    })
-  );
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-    apiController: v.apiController,
-  }));
-  const { trottledUpdate } = useTransactionManagerContext();
-
-  const switchNetwork = async (network: Network) => {
-    if (selectedWallet === undefined) return;
-    const updatedWallets = wallets;
-    await Promise.all([
-      updateAppState({ network }),
-      walletController.switchNetwork(network),
-    ]);
-    updatedWallets[selectedWallet].accounts =
-      await walletController.loadAccountsData(
-        selectedWallet,
-        updatedWallets[selectedWallet].accounts
-      );
-    await updateWalletState({ wallets: updatedWallets });
-    trottledUpdate(true);
-    navigate("/");
-  };
+  const switchNetwork = useSwitchNetwork();
 
   return (
     <div className={s.allTypes}>
