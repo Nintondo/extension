@@ -267,9 +267,12 @@ export const useDeleteWallet = () => {
         id === currentWallet.id ? 0 : newWalletId,
         id === currentWallet.id ? 0 : currentAccount?.id ?? 0
       );
-      await updateWalletState({
-        wallets: await walletController.deleteWallet(id),
-      });
+      await updateWalletState(
+        {
+          wallets: await walletController.deleteWallet(id),
+        },
+        false
+      );
     },
     [
       currentWallet,

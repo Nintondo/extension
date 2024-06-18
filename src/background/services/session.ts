@@ -55,8 +55,11 @@ class SessionMap {
 
     sessions.forEach((session) => {
       try {
-        if (session.pushMessage) session.pushMessage(ev, data);
+        if (session.pushMessage) {
+          session.pushMessage(ev, data);
+        }
       } catch (e) {
+        console.error(e);
         if (this.sessionMap.has(session.key)) {
           this.deleteSession(session.key);
         }
