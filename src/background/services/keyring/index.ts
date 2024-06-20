@@ -58,6 +58,7 @@ class KeyringService {
     restoreFrom,
     hdPath,
     passphrase = undefined,
+    network,
   }: INewWalletProps) {
     let keyring: HDPrivateKey | HDSimpleKey;
     if (walletType === "root") {
@@ -77,6 +78,7 @@ class KeyringService {
     }
     keyring.addressType =
       typeof addressType === "number" ? addressType : AddressType.P2PKH;
+    keyring.setNetwork(network);
     this.keyrings.push(keyring);
     if (!keyring.getAccounts().length)
       return (keyring as HDPrivateKey).addAccounts(1)[0];

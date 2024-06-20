@@ -11,7 +11,6 @@ import {
 } from "@/ui/hooks/wallet";
 import { useCallback } from "react";
 import { AddressType } from "bellhdw";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { useNavigate } from "react-router-dom";
 
 const ChangeAddrType = () => {
@@ -29,7 +28,6 @@ const ChangeAddrType = () => {
   const udpateCurrentWallet = useUpdateCurrentWallet();
   const updateCurrentAccountBalance = useUpdateCurrentAccountBalance();
   const currentAccount = useGetCurrentAccount();
-  const { trottledUpdate } = useTransactionManagerContext();
   const navigate = useNavigate();
 
   const onSwitchAddress = useCallback(
@@ -52,7 +50,6 @@ const ChangeAddrType = () => {
         addresses[currentAccount?.id as any as number]
       );
       await notificationController.changedAccount();
-      trottledUpdate(true);
       navigate("/");
     },
     [
@@ -63,7 +60,6 @@ const ChangeAddrType = () => {
       currentAccount?.id,
       currentWallet,
       selectedWallet,
-      trottledUpdate,
       navigate,
     ]
   );

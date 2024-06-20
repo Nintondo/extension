@@ -1,5 +1,6 @@
 import type { AddressType } from "bellhdw/src/hd/types";
 import type { IAccount } from "./accounts";
+import { Network } from "belcoinjs-lib";
 
 export interface IWallet {
   id: number;
@@ -38,4 +39,5 @@ export interface INewWalletProps {
   restoreFrom?: "wif" | "hex";
   hdPath?: string;
   passphrase?: string;
+  network: Network;
 }

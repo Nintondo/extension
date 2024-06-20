@@ -37,7 +37,7 @@ const NewAccount = () => {
     setLoading(true);
     await createNewAccount(name);
     toast.success(t("new_account.account_created_message"));
-    navigate("/home");
+    navigate("/");
   };
 
   if (loading) {

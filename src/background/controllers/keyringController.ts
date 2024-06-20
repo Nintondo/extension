@@ -1,4 +1,4 @@
-import { Psbt } from "belcoinjs-lib";
+import { Network, Psbt } from "belcoinjs-lib";
 import { keyringService } from "../services";
 import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
 import type { IPrivateWallet } from "@/shared/interfaces";
@@ -11,6 +11,7 @@ export interface IKeyringController {
   newKeyring(
     type: "simple" | "root",
     payload: string,
+    network: Network,
     hdPath?: string
   ): Promise<string | undefined>;
   exportAccount(address: Hex): Promise<string>;
@@ -58,9 +59,10 @@ class KeyringController implements IKeyringController {
   async newKeyring(
     walletType: "simple" | "root",
     payload: string,
+    network: Network,
     hdPath?: string
   ): Promise<string | undefined> {
-    return keyringService.newKeyring({ walletType, payload, hdPath });
+    return keyringService.newKeyring({ walletType, payload, hdPath, network });
   }
 
   /**

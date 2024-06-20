@@ -23,8 +23,9 @@ const NewMnemonic = () => {
   const { updateWalletState } = useWalletState((v) => ({
     updateWalletState: v.updateWalletState,
   }));
-  const { updateAppState } = useAppState((v) => ({
+  const { updateAppState, network } = useAppState((v) => ({
     updateAppState: v.updateAppState,
+    network: v.network,
   }));
   const { walletController, stateController } = useControllersState((v) => ({
     walletController: v.walletController,
@@ -75,11 +76,12 @@ const NewMnemonic = () => {
       walletType: "root",
       addressType,
       hideRoot: true,
+      network,
     });
     await updateWalletState({ vaultIsEmpty: false });
     await stateController.clearPendingWallet();
     setLoading(false);
-    navigate("/home");
+    navigate("/");
   };
 
   const onSwitch = () => {

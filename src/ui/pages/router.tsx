@@ -26,7 +26,6 @@ import SignMessage from "./provider/sign-message";
 import CreateTx from "./provider/create-tx/component";
 import ConnectedSites from "./main/settings/connected-sites";
 import Language from "./main/settings/language";
-import Home from "./main/home";
 import InscriptionDetails from "./main/inscription-details";
 import Inscriptions from "./main/inscriptions";
 import SignPsbt from "./provider/sign-psbt";
@@ -39,6 +38,7 @@ import Security from "./main/settings/security";
 import Advanced from "./main/settings/security/advanced";
 import WalletSettings from "./main/settings/wallet/component";
 import NetworkSettings from "./main/settings/wallet/network/component";
+import Home from "./main/home";
 
 export const guestRouter = createHashRouter([
   {

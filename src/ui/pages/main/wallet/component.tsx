@@ -6,15 +6,16 @@ import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import TransactionList from "./transactions-list";
 import WalletPanel from "./wallet-panel";
 import AccountPanel from "./account-panel";
+import { useLocation } from "react-router-dom";
 
 const Wallet = () => {
-  const { trottledUpdate, inscriptions } = useTransactionManagerContext();
+  const { trottledUpdate } = useTransactionManagerContext();
   const currentAccount = useGetCurrentAccount();
+  const location = useLocation();
 
   useEffect(() => {
-    if (currentAccount?.balance === undefined || inscriptions === undefined)
-      trottledUpdate();
-  }, [trottledUpdate, currentAccount, inscriptions]);
+    trottledUpdate(!!location.state?.force);
+  }, [trottledUpdate, location]);
 
   if (!currentAccount) return <Loading />;
 

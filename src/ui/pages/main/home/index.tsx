@@ -23,7 +23,7 @@ const Home = () => {
           },
         });
       } else if (currentWallet) {
-        navigate("/home");
+        navigate("/home", { state: { force: true } });
       }
     })();
   }, [stateController, navigate, currentWallet]);

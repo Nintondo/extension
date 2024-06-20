@@ -10,6 +10,7 @@ import SelectWithHint from "@/ui/components/select-hint/component";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Loading from "react-loading";
+import { useAppState } from "@/ui/states/appState";
 
 const RestoreMnemonicOrdinals = () => {
   const [step, setStep] = useState(1);
@@ -23,6 +24,7 @@ const RestoreMnemonicOrdinals = () => {
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   const setMnemonic = useCallback(
     (v: string, index: number) => {
@@ -52,9 +54,10 @@ const RestoreMnemonicOrdinals = () => {
         hideRoot: false,
         hdPath: "m/44'/3'/0'/0/0",
         passphrase: "",
+        network,
       });
       await updateWalletState({ vaultIsEmpty: false });
-      navigate("/home");
+      navigate("/");
     } catch (e) {
       toast.error(t("new_wallet.restore_mnemonic.invalid_words_error"));
       setStep(1);

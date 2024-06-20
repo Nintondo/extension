@@ -26,7 +26,7 @@ const FinalleSend = () => {
       </div>
 
       <div className={s.btnContainer}>
-        <Link to={"/home"} className="btn primary flex-3">
+        <Link to={"/"} className="btn primary flex-3">
           {t("send.finalle_send.back")}
         </Link>
         <button className="btn primary flex-3" onClick={onClick}>

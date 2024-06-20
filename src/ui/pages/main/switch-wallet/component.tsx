@@ -98,7 +98,6 @@ const SwitchWallet = () => {
             name={wallet.name}
             onClick={async () => {
               await switchWallet(i);
-              navigate("/home");
             }}
             selected={wallet.id === currentWallet?.id}
           />

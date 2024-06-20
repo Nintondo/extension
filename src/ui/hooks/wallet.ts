@@ -24,7 +24,7 @@ export const useCreateNewWallet = () => {
       keyringController: v.keyringController,
       notificationController: v.notificationController,
     }));
-  const { trottledUpdate } = useTransactionManagerContext();
+  const navigate = useNavigate();
 
   return useCallback(
     async (props: INewWalletProps) => {
@@ -39,7 +39,7 @@ export const useCreateNewWallet = () => {
         { id: wallet.id, phrase: props.payload, data: keyring },
       ]);
       await notificationController.changedAccount();
-      trottledUpdate(true);
+      navigate("/");
     },
     [
       wallets,
@@ -47,7 +47,7 @@ export const useCreateNewWallet = () => {
       walletController,
       keyringController,
       notificationController,
-      trottledUpdate,
+      navigate,
     ]
   );
 };
@@ -85,7 +85,7 @@ export const useCreateNewAccount = () => {
       notificationController: v.notificationController,
     })
   );
-  const { trottledUpdate } = useTransactionManagerContext();
+  const navigate = useNavigate();
 
   return useCallback(
     async (name?: string) => {
@@ -108,15 +108,15 @@ export const useCreateNewAccount = () => {
           updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
       });
       await notificationController.changedAccount();
-      trottledUpdate(true);
+      navigate("/");
     },
     [
       currentWallet,
       updateCurrentWallet,
       walletController,
       updateWalletState,
-      trottledUpdate,
       notificationController,
+      navigate,
     ]
   );
 };
@@ -132,7 +132,7 @@ export const useSwitchWallet = () => {
       notificationController: v.notificationController,
     })
   );
-  const { trottledUpdate } = useTransactionManagerContext();
+  const navigate = useNavigate();
 
   return useCallback(
     async (key: number, accKey?: number) => {
@@ -148,14 +148,14 @@ export const useSwitchWallet = () => {
         selectedAccount: accKey ?? 0,
       });
       await notificationController.changedAccount();
-      trottledUpdate(true);
+      navigate("/");
     },
     [
       wallets,
       updateWalletState,
       walletController,
       notificationController,
-      trottledUpdate,
+      navigate,
     ]
   );
 };
@@ -168,7 +168,6 @@ export const useSwitchAccount = () => {
   const { notificationController } = useControllersState((v) => ({
     notificationController: v.notificationController,
   }));
-  const { trottledUpdate } = useTransactionManagerContext();
   const { setCurrentPage } = useTransactionManagerContext();
 
   return useCallback(
@@ -177,18 +176,11 @@ export const useSwitchAccount = () => {
         selectedAccount: id,
       });
 
-      navigate("/home");
       await notificationController.changedAccount();
-      trottledUpdate(true);
+      navigate("/");
       setCurrentPage(1);
     },
-    [
-      updateWalletState,
-      navigate,
-      notificationController,
-      trottledUpdate,
-      setCurrentPage,
-    ]
+    [updateWalletState, navigate, notificationController, setCurrentPage]
   );
 };
 
@@ -303,7 +295,6 @@ export const useSwitchNetwork = () => {
     walletController: v.walletController,
     apiController: v.apiController,
   }));
-  const { trottledUpdate } = useTransactionManagerContext();
 
   return useCallback(
     async (network: Network) => {
@@ -320,12 +311,10 @@ export const useSwitchNetwork = () => {
         );
       await updateWalletState({ wallets: updatedWallets });
       navigate("/");
-      trottledUpdate(true);
     },
     [
       navigate,
       selectedWallet,
-      trottledUpdate,
       updateAppState,
       updateWalletState,
       walletController,

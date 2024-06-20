@@ -11,6 +11,7 @@ import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Loading from "react-loading";
 import Switch from "@/ui/components/switch";
+import { useAppState } from "@/ui/states/appState";
 
 const RestoreMnemonic = () => {
   const [step, setStep] = useState(1);
@@ -25,6 +26,7 @@ const RestoreMnemonic = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [showRootAcc, setShowRootAcc] = useState<boolean>(false);
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   const setMnemonic = useCallback(
     (v: string, index: number) => {
@@ -52,6 +54,7 @@ const RestoreMnemonic = () => {
         walletType: "root",
         addressType,
         hideRoot: !showRootAcc,
+        network,
       });
       await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
