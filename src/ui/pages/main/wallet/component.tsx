@@ -15,6 +15,9 @@ const Wallet = () => {
 
   useEffect(() => {
     trottledUpdate(!!location.state?.force);
+    if (location.state?.force) {
+      window.history.replaceState({}, "");
+    }
   }, [trottledUpdate, location]);
 
   if (!currentAccount) return <Loading />;
