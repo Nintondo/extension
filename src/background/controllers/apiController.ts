@@ -1,4 +1,8 @@
-import type { ApiUTXO, ITransaction } from "@/shared/interfaces/api";
+import type {
+  ApiUTXO,
+  IAccountStats,
+  ITransaction,
+} from "@/shared/interfaces/api";
 import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
 import { fetchBELLMainnet, fetchProps } from "@/shared/utils";
@@ -11,7 +15,6 @@ export interface UtxoQueryParams {
 }
 
 export interface IApiController {
-  getAccountBalance(address: string): Promise<number | undefined>;
   getUtxos(
     address: string,
     params?: UtxoQueryParams
@@ -32,9 +35,7 @@ export interface IApiController {
   getFees(): Promise<{ fast: number; slow: number } | undefined>;
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
   getDiscovery(): Promise<Inscription[] | undefined>;
-  getInscriptionCounter(
-    address: string
-  ): Promise<{ amount: number; count: number } | undefined>;
+  getAccountStats(address: string): Promise<IAccountStats | undefined>;
   getInscription({
     inscriptionNumber,
     inscriptionId,
@@ -68,16 +69,6 @@ class ApiController implements IApiController {
       return;
     }
   };
-
-  async getAccountBalance(address: string) {
-    const data = await this.fetch<
-      { amount: number; count: number; balance: number } | undefined
-    >({
-      path: `/address/${address}/stats`,
-    });
-
-    return data?.balance;
-  }
 
   async getUtxos(address: string, params?: UtxoQueryParams) {
     const data = await this.fetch<ApiUTXO[]>({
@@ -126,7 +117,6 @@ class ApiController implements IApiController {
   async getTransactions(address: string): Promise<ITransaction[] | undefined> {
     return await this.fetch<ITransaction[]>({
       path: `/address/${address}/txs`,
-      // path: `/address/TSofqS7nm8Vnk1fk8jU7YgqQcGuWA7wtnK/txs`,
     });
   }
 
@@ -189,18 +179,13 @@ class ApiController implements IApiController {
     return await this.fetch<Inscription[]>({ path: "/discovery" });
   }
 
-  async getInscriptionCounter(
-    address: string
-  ): Promise<{ amount: number; count: number } | undefined> {
+  async getAccountStats(address: string): Promise<IAccountStats | undefined> {
     try {
-      const result = await this.fetch<
-        { amount: number; count: number } | undefined
-      >({
+      return await this.fetch({
         path: `/address/${address}/stats`,
       });
-      return result;
     } catch {
-      return { amount: 0, count: 0 };
+      return { amount: 0, count: 0, balance: 0 };
     }
   }
 

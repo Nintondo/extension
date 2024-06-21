@@ -6,7 +6,6 @@ import { useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useSyncStorages } from "@/ui/utils/setup";
 import { isNotification } from "@/ui/utils";
 import cn from "classnames";
 import PasswordInput from "@/ui/components/password-input";
@@ -26,8 +25,9 @@ const Login = () => {
     updateAppState: v.updateAppState,
   }));
 
-  const { vaultIsEmpty } = useWalletState((v) => ({
+  const { vaultIsEmpty, updateWalletState } = useWalletState((v) => ({
     vaultIsEmpty: v.vaultIsEmpty,
+    updateWalletState: v.updateWalletState,
   }));
   const navigate = useNavigate();
   const { walletController, notificationController } = useControllersState(
@@ -36,7 +36,6 @@ const Login = () => {
       notificationController: v.notificationController,
     })
   );
-  const syncStorages = useSyncStorages();
 
   useEffect(() => {
     if (vaultIsEmpty) navigate("/account/create-password");
@@ -44,8 +43,15 @@ const Login = () => {
 
   const login = async ({ password }: FormType) => {
     try {
-      await walletController.importWallets(password);
-      await syncStorages();
+      const exportedWallets = await walletController.importWallets(password);
+      // await syncStorages();
+
+      await updateWalletState(
+        {
+          wallets: exportedWallets,
+        },
+        false
+      );
 
       await updateAppState({
         isUnlocked: true,

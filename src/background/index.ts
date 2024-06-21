@@ -152,10 +152,9 @@ setInterval(async () => {
     storageService.currentAccount !== undefined &&
     storageService.currentAccount.address !== undefined
   ) {
-    storageService.currentAccount.balance =
-      await apiController.getAccountBalance(
-        storageService.currentAccount.address
-      );
+    storageService.currentAccount.balance = (
+      await apiController.getAccountStats(storageService.currentAccount.address)
+    )?.balance;
   }
 }, 5000);
 

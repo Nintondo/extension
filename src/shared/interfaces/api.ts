@@ -110,3 +110,9 @@ export interface ISend {
   includeFeeInAmount: boolean;
   hex: string;
 }
+
+export interface IAccountStats {
+  balance: number;
+  amount: number;
+  count: number;
+}

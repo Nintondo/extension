@@ -32,9 +32,9 @@ class ProviderController {
     if (!storageService.currentAccount?.address) return;
     if (storageService.currentAccount.balance !== undefined)
       return storageService.currentAccount.balance;
-    return await apiController.getAccountBalance(
-      storageService.currentAccount.address
-    );
+    return (
+      await apiController.getAccountStats(storageService.currentAccount.address)
+    )?.balance;
   };
 
   @Reflect.metadata("SAFE", true)

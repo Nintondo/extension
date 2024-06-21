@@ -64,9 +64,11 @@ export const useUpdateCurrentWallet = () => {
   return useCallback(
     async (wallet: Partial<IWallet>) => {
       if (selectedWallet === undefined) return;
-      wallets[selectedWallet] = { ...wallets[selectedWallet], ...wallet };
       await updateWalletState({
-        wallets: [...wallets],
+        wallets: wallets.with(selectedWallet, {
+          ...wallets[selectedWallet],
+          ...wallet,
+        }),
       });
     },
     [updateWalletState, selectedWallet, wallets]
@@ -201,14 +203,15 @@ export const useUpdateCurrentAccountBalance = () => {
   const updateCurrentAccount = useCallback(
     async (account: Partial<IAccount>) => {
       if (selectedWallet === undefined || selectedAccount === undefined) return;
-      if (!wallets[selectedWallet]) return;
-      wallets[selectedWallet].accounts[selectedAccount] = {
-        ...wallets[selectedWallet].accounts[selectedAccount],
-        ...account,
-      };
 
       await updateWalletState({
-        wallets: [...wallets],
+        wallets: wallets.with(selectedWallet, {
+          ...wallets[selectedWallet],
+          accounts: wallets[selectedWallet].accounts.with(selectedAccount, {
+            ...wallets[selectedWallet].accounts[selectedAccount],
+            ...account,
+          }),
+        }),
       });
     },
     [updateWalletState, selectedAccount, selectedWallet, wallets]
@@ -218,12 +221,10 @@ export const useUpdateCurrentAccountBalance = () => {
     async (address?: string) => {
       if (address === undefined && currentAccount?.address === undefined)
         return;
-      const balance = await apiController.getAccountBalance(
-        address ?? currentAccount!.address!
-      );
-      const { count, amount } = (await apiController.getInscriptionCounter(
+
+      const { count, amount, balance } = (await apiController.getAccountStats(
         currentAccount!.address!
-      )) ?? { amount: 0, count: 0 };
+      )) ?? { amount: 0, count: 0, balance: 0 };
       await updateCurrentAccount({
         balance: balance,
         inscriptionCounter: count,
