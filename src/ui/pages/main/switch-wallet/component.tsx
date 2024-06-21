@@ -35,8 +35,13 @@ const SwitchWallet = () => {
     if (wallets.map((i) => i.name).includes(name))
       return toast.error(t("switch_account.name_already_taken_error"));
 
+    wallets[renameId] = {
+      ...wallets[renameId],
+      name,
+    };
+
     await updateWalletState({
-      wallets: wallets.with(renameId, { ...wallets[renameId], name }),
+      wallets,
     });
     setRenameId(undefined);
   };

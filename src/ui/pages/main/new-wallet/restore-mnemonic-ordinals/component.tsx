@@ -1,7 +1,7 @@
 import s from "./styles.module.scss";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
 import { useWalletState } from "@/ui/states/walletState";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import cn from "classnames";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -26,17 +26,18 @@ const RestoreMnemonicOrdinals = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { network } = useAppState((v) => ({ network: v.network }));
 
-  const setMnemonic = useCallback(
-    (v: string, index: number) => {
-      if (!v) {
-        return;
-      }
-      const phrase = v.split(" ");
-      if (phrase.length === 12) setMnemonicPhrase(phrase);
-      else setMnemonicPhrase(mnemonicPhrase.with(index, v));
-    },
-    [mnemonicPhrase]
-  );
+  const setMnemonic = (v: string, index: number) => {
+    if (!v) {
+      return;
+    }
+    const phrase = v.split(" ");
+    if (phrase.length === 12) setMnemonicPhrase(phrase);
+    else
+      setMnemonicPhrase((prev) => {
+        prev[index] = v;
+        return prev;
+      });
+  };
 
   const onNextStep = () => {
     if (mnemonicPhrase.findIndex((f) => f === undefined) !== -1)

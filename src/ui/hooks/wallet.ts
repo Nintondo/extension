@@ -64,11 +64,12 @@ export const useUpdateCurrentWallet = () => {
   return useCallback(
     async (wallet: Partial<IWallet>) => {
       if (selectedWallet === undefined) return;
+      wallets[selectedWallet] = {
+        ...wallets[selectedWallet],
+        ...wallet,
+      };
       await updateWalletState({
-        wallets: wallets.with(selectedWallet, {
-          ...wallets[selectedWallet],
-          ...wallet,
-        }),
+        wallets,
       });
     },
     [updateWalletState, selectedWallet, wallets]
@@ -140,13 +141,13 @@ export const useSwitchWallet = () => {
     async (key: number, accKey?: number) => {
       const wallet = wallets.find((f) => f.id === key);
       if (!wallet) return;
-      wallet.accounts = await walletController.loadAccountsData(
+      wallets[key].accounts = await walletController.loadAccountsData(
         wallet.id,
         wallet.accounts
       );
       await updateWalletState({
         selectedWallet: wallet.id,
-        wallets: wallets.with(key, wallet),
+        wallets,
         selectedAccount: accKey ?? 0,
       });
       await notificationController.changedAccount();
@@ -204,14 +205,13 @@ export const useUpdateCurrentAccountBalance = () => {
     async (account: Partial<IAccount>) => {
       if (selectedWallet === undefined || selectedAccount === undefined) return;
 
+      wallets[selectedWallet].accounts[selectedAccount] = {
+        ...wallets[selectedWallet].accounts[selectedAccount],
+        ...account,
+      };
+
       await updateWalletState({
-        wallets: wallets.with(selectedWallet, {
-          ...wallets[selectedWallet],
-          accounts: wallets[selectedWallet].accounts.with(selectedAccount, {
-            ...wallets[selectedWallet].accounts[selectedAccount],
-            ...account,
-          }),
-        }),
+        wallets,
       });
     },
     [updateWalletState, selectedAccount, selectedWallet, wallets]
