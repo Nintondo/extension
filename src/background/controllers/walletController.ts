@@ -57,7 +57,15 @@ class WalletController implements IWalletController {
 
   async importWallets(password: string) {
     const wallets = await keyringService.init(password);
-    return wallets.map((i) => excludeKeysFromObj(i, ["data"]));
+    const importedWallets = wallets.map((i) => excludeKeysFromObj(i, ["data"]));
+    importedWallets[storageService.walletState.selectedWallet!].accounts =
+      await this.loadAccountsData(
+        storageService.walletState.selectedWallet!,
+        importedWallets[storageService.walletState.selectedWallet!].accounts
+      );
+    storageService.walletState.wallets = importedWallets;
+
+    return importedWallets;
   }
 
   async loadAccountsData(

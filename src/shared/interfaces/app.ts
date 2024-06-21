@@ -3,7 +3,6 @@ import { Network } from "belcoinjs-lib";
 export interface IAppStateBase {
   isReady: boolean;
   isUnlocked: boolean;
-  vault: string[];
   password?: string;
   addressBook: string[];
   pendingWallet?: string;

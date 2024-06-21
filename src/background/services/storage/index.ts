@@ -109,13 +109,18 @@ class StorageService {
         enc: localState.enc,
       };
 
-      eventBus.emit(EVENTS.broadcastToUI, { method: "updateFromStore" });
+      eventBus.emit(EVENTS.broadcastToUI, {
+        method: "updateFromWalletState",
+        params: [state],
+      });
+
       await browserStorageLocalSet(payload);
     }
   }
 
   async updateAppState(state: Partial<IAppStateBase>) {
     this._appState = { ...this._appState, ...state };
+
     if (
       state.addressBook !== undefined ||
       state.pendingWallet !== undefined ||
@@ -139,7 +144,11 @@ class StorageService {
         enc: localState.enc,
       };
 
-      eventBus.emit(EVENTS.broadcastToUI, { method: "updateFromStore" });
+      eventBus.emit(EVENTS.broadcastToUI, {
+        method: "updateFromAppState",
+        params: [state],
+      });
+
       await browserStorageLocalSet(payload);
     }
   }

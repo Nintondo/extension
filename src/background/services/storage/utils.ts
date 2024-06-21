@@ -12,7 +12,6 @@ export function emptyAppState(): IAppStateBase {
   return {
     isReady: false,
     isUnlocked: false,
-    vault: [],
     addressBook: [],
     language: "en",
     network: networks.bellcoin,

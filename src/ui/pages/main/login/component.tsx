@@ -26,8 +26,7 @@ const Login = () => {
     updateAppState: v.updateAppState,
   }));
 
-  const { updateWalletState, vaultIsEmpty } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
+  const { vaultIsEmpty } = useWalletState((v) => ({
     vaultIsEmpty: v.vaultIsEmpty,
   }));
   const navigate = useNavigate();
@@ -45,19 +44,9 @@ const Login = () => {
 
   const login = async ({ password }: FormType) => {
     try {
-      const exportedWallets = await walletController.importWallets(password);
-      const { walletState } = await syncStorages();
-      const selectedWallet = walletState.selectedWallet;
-      if (selectedWallet === undefined)
-        throw Error("Selected wallet is not defined");
-      exportedWallets[selectedWallet].accounts =
-        await walletController.loadAccountsData(
-          selectedWallet,
-          exportedWallets[selectedWallet].accounts
-        );
-      await updateWalletState({
-        wallets: exportedWallets,
-      });
+      await walletController.importWallets(password);
+      await syncStorages();
+
       await updateAppState({
         isUnlocked: true,
         password: password,

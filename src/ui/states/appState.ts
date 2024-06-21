@@ -8,7 +8,6 @@ const proxy = setupStateProxy();
 export const useAppState = create<IAppState>()((set) => ({
   isReady: false,
   isUnlocked: false,
-  vault: [],
   addressBook: [],
   language: "en",
   activeTabs: [],

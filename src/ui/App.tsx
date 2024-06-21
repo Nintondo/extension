@@ -7,7 +7,6 @@ import {
   setupKeyringProxy,
   setupNotificationProxy,
   setupOpenAPIProxy,
-  setupPm,
   setupStateProxy,
   setupWalletProxy,
 } from "@/ui/utils/setup";
@@ -17,6 +16,7 @@ import { guestRouter, authenticatedRouter } from "@/ui/pages/router";
 import { useControllersState } from "./states/controllerState";
 import { excludeKeysFromObj } from "@/shared/utils";
 import i18n from "../shared/locales/i18n";
+import PortMessage from "@/shared/utils/message/portMessage";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
@@ -34,9 +34,6 @@ export default function App() {
     updateWalletState: v.updateWalletState,
   }));
 
-  const { stateController } = useControllersState((v) => ({
-    stateController: v.stateController,
-  }));
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
     const apiController = setupOpenAPIProxy();
@@ -69,37 +66,39 @@ export default function App() {
       });
       await updateAppState({
         isReady: true,
-        ...excludeKeysFromObj(appState, [
-          "isReady",
-          "isUnlocked",
-          "password",
-          "vault",
-        ]),
+        ...excludeKeysFromObj(appState, ["isReady", "isUnlocked", "password"]),
       });
     }
   }, [updateWalletState, updateAppState, updateControllers]);
 
-  const updateFromStore = useCallback(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (isReady && isUnlocked) {
-      const appState = await stateController.getAppState();
-      const walletState = await stateController.getWalletState();
-      await updateWalletState(walletState, false);
-      await updateAppState(appState, false);
-    }
-  }, [isReady, isUnlocked, stateController, updateAppState, updateWalletState]);
+  const updateFromStore = useCallback(
+    async (type: "app" | "wallet", params: any[]) => {
+      if (isReady && isUnlocked) {
+        if (type === "wallet") {
+          await updateWalletState(params[0], false);
+        } else {
+          await updateAppState(params[0], false);
+        }
+      }
+    },
+    [isReady, isUnlocked, updateAppState, updateWalletState]
+  );
 
   useEffect(() => {
-    const pm = setupPm();
+    const pm = new PortMessage().connect("popup");
     //eslint-disable-next-line @typescript-eslint/no-floating-promises
-    pm.listen((data: { method: string; params: any[]; type: string }) => {
-      if (data.type === "broadcast") {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        if (data.method === "updateFromStore") updateFromStore();
+    pm.listen(async (data: { method: string; params: any[]; type: string }) => {
+      if (data.type !== "broadcast") {
+        return;
+      }
+      if (data.method === "updateFromAppState") {
+        await updateFromStore("app", data.params);
+      } else if (data.method === "updateFromWalletState") {
+        await updateFromStore("wallet", data.params);
       }
     });
     return () => {
-      pm.removeAllListeners();
+      pm.dispose();
     };
   }, [updateFromStore]);
 
@@ -121,7 +120,7 @@ export default function App() {
   return (
     <div>
       <div className="uppercase text-center hidden standard:block font-medium text-xl mb-6 select-none">
-        Bells
+        nintondo
       </div>
       <div className="app">
         {isReady ? (
