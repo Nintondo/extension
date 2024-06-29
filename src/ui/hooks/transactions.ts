@@ -144,6 +144,9 @@ export const useSendTransferTokens = () => {
     apiController: v.apiController,
     keyringController: v.keyringController,
   }));
+  const { network } = useAppState((v) => ({
+    network: v.network,
+  }));
 
   return useCallback(
     async (toAddress: string, txIds: ITransfer[], feeRate: number) => {
@@ -171,14 +174,15 @@ export const useSendTransferTokens = () => {
         toAddress,
         feeRate,
         inscriptions,
-        utxos as any
+        utxos as any,
+        network
       );
       const result = await apiController.pushTx(tx);
       if (result?.txid !== undefined)
         toast.success(t("inscriptions.success_send_transfer"));
       else toast.error(t("inscriptions.failed_send_transfer"));
     },
-    [apiController, currentAccount, keyringController]
+    [apiController, currentAccount, keyringController, network]
   );
 };
 

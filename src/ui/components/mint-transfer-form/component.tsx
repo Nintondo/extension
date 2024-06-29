@@ -61,9 +61,6 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         if (Number.isNaN(Number(amount))) {
           return toast.error(t("inscriptions.amount_is_text_error"));
         }
-        if (Number(amount) % 1 !== 0) {
-          return toast.error(t("inscriptions.amount_cannot_be_fractional"));
-        }
         if (
           selectedMintToken?.balance &&
           Number(amount) > selectedMintToken?.balance

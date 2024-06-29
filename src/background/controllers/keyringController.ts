@@ -36,7 +36,8 @@ export interface IKeyringController {
     toAddress: string,
     feeRate: number,
     ordUtxos: ApiOrdUTXO[],
-    utxos: ApiUTXO[]
+    utxos: ApiUTXO[],
+    network: Network
   ): Promise<string>;
 }
 
@@ -133,9 +134,16 @@ class KeyringController implements IKeyringController {
     toAddress: string,
     feeRate: number,
     ordUtxos: ApiOrdUTXO[],
-    utxos: ApiUTXO[]
+    utxos: ApiUTXO[],
+    network: Network
   ): Promise<string> {
-    return keyringService.sendMultiOrd(toAddress, feeRate, ordUtxos, utxos);
+    return keyringService.sendMultiOrd(
+      toAddress,
+      feeRate,
+      ordUtxos,
+      utxos,
+      network
+    );
   }
 }
 

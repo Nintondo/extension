@@ -285,7 +285,8 @@ class KeyringService {
     toAddress: string,
     feeRate: number,
     ordUtxos: ApiOrdUTXO[],
-    utxos: ApiUTXO[]
+    utxos: ApiUTXO[],
+    network: Network
   ) {
     if (!storageService.currentAccount?.address)
       throw new Error("Error when trying to get the current account or wallet");
@@ -319,6 +320,7 @@ class KeyringService {
           ],
         })),
       ],
+      network,
     });
   }
 
