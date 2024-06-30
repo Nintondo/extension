@@ -71,15 +71,20 @@ const NewMnemonic = () => {
       return;
     }
     setLoading(true);
-    await createNewWallet({
-      payload: mnemonicPhrase,
-      walletType: "root",
-      addressType,
-      hideRoot: true,
-      network,
-    });
-    await updateWalletState({ vaultIsEmpty: false });
-    await stateController.clearPendingWallet();
+    try {
+      await createNewWallet({
+        payload: mnemonicPhrase,
+        walletType: "root",
+        addressType,
+        hideRoot: true,
+        network,
+      });
+      await updateWalletState({ vaultIsEmpty: false });
+      await stateController.clearPendingWallet();
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Error) toast.error(e.message);
+    }
     setLoading(false);
     navigate("/");
   };
@@ -104,7 +109,7 @@ const NewMnemonic = () => {
       </div>
       {step === 1 ? (
         <div className={cn(s.step, "justify-between")}>
-          <div>
+          <div className="px-4">
             <p className={s.warning}>{t("new_wallet.new_mnemonic.warning")}</p>
             <div className={s.phrase}>
               {mnemonicPhrase.split(" ").map((word, index) => (
@@ -126,27 +131,28 @@ const NewMnemonic = () => {
             value={savedPhrase}
             className={s.savePhrase}
           />
-          <div className={s.continueWrapper}>
-            <button
-              className="btn primary w-full"
-              onClick={() => setStep(2)}
-              disabled={!savedPhrase}
-            >
-              {t("new_wallet.continue")}
-            </button>
-          </div>
+          <button
+            className="w-full border-t border-neutral-700 py-3 text-center disabled:cursor-not-allowed"
+            onClick={() => setStep(2)}
+            disabled={!savedPhrase}
+          >
+            {t("new_wallet.continue")}
+          </button>
         </div>
       ) : (
         <div className={s.step}>
-          <SwitchAddressType
-            handler={setAddressType}
-            selectedType={addressType}
-          />
-          <div className={s.continueWrapper}>
-            <button onClick={onCreate} className="btn primary w-full">
-              {t("new_wallet.continue")}
-            </button>
+          <div className="px-4">
+            <SwitchAddressType
+              handler={setAddressType}
+              selectedType={addressType}
+            />
           </div>
+          <button
+            onClick={onCreate}
+            className="w-full border-t border-neutral-700 py-3 text-center"
+          >
+            {t("new_wallet.continue")}
+          </button>
         </div>
       )}
     </div>

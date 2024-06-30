@@ -35,10 +35,7 @@ class WalletController implements IWalletController {
       name: !props.name ? storageService.getUniqueName("Wallet") : props.name,
       id: walletId,
       type: props.walletType,
-      addressType:
-        typeof props.addressType === "number"
-          ? props.addressType
-          : AddressType.P2PKH,
+      addressType: props.addressType ?? AddressType.P2PKH,
       accounts: [account],
       hideRoot: props.hideRoot,
     };
@@ -58,11 +55,20 @@ class WalletController implements IWalletController {
   async importWallets(password: string) {
     const wallets = await keyringService.init(password);
     const importedWallets = wallets.map((i) => excludeKeysFromObj(i, ["data"]));
-    importedWallets[storageService.walletState.selectedWallet!].accounts =
-      await this.loadAccountsData(
-        storageService.walletState.selectedWallet!,
-        importedWallets[storageService.walletState.selectedWallet!].accounts
-      );
+    const selected = storageService.walletState.selectedWallet;
+
+    if (typeof selected === "undefined")
+      throw new Error("Importing wallets: No selected wallet");
+
+    const wallet = keyringService.getKeyringByIndex(selected);
+    const addresses = wallet.getAccounts();
+    importedWallets[selected!].accounts = importedWallets[
+      selected!
+    ].accounts.map((i, idx) => ({
+      ...i,
+      address: addresses[idx],
+    }));
+
     storageService.walletState.wallets = importedWallets;
 
     return importedWallets;
@@ -73,24 +79,13 @@ class WalletController implements IWalletController {
     accounts: IAccount[]
   ): Promise<IAccount[]> {
     const wallet = keyringService.getKeyringByIndex(walletId);
-
     const addresses = wallet.getAccounts();
-    const prevAccs: string[] = [];
 
-    return accounts
-      .map((i, idx) => ({
-        ...i,
-        id: idx,
-        address: addresses[i.id],
-      }))
-      .filter((i) => {
-        if (prevAccs.includes(i.address)) {
-          return false;
-        } else {
-          prevAccs.push(i.address);
-        }
-        return i.address !== undefined;
-      });
+    return addresses.map((i, idx) => ({
+      id: idx,
+      address: i,
+      name: accounts[idx] ? accounts[idx].name : `Account ${idx + 1}`,
+    }));
   }
 
   async createNewAccount(name?: string) {

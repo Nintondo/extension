@@ -332,14 +332,15 @@ class KeyringService {
   async deleteWallet(id: number) {
     if (storageService.appState.password === undefined)
       throw new Error("Internal error: Password is not defined");
-    let wallets = storageService.walletState.wallets.filter((i) => i.id !== id);
+    const wallets = storageService.walletState.wallets.filter(
+      (i) => i.id !== id
+    );
+    this.keyrings.splice(id, 1);
     await storageService.saveWallets({
       password: storageService.appState.password,
       wallets,
     });
-    this.keyrings.splice(id, 1);
-    wallets = wallets.map((f, i) => ({ ...f, id: i }));
-    return wallets;
+    return wallets.map((f, i) => ({ ...f, id: i }));
   }
 
   async toogleRootAcc() {

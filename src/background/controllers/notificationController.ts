@@ -21,16 +21,18 @@ class NotificationController implements INotificationController {
   }
 
   async resolveApproval(data?: any, forceReject = false): Promise<void> {
-    const password = storageService.appState.password;
-    if (
-      (await notificationService.resolveApproval(data, forceReject)) &&
-      password
-    ) {
-      await storageService.saveWallets({
-        wallets: storageService.walletState.wallets,
-        password,
-      });
-    }
+    await notificationService.resolveApproval(data, forceReject);
+    // ! Probably it will break the code
+    // const password = storageService.appState.password;
+    // if (
+    //   (await notificationService.resolveApproval(data, forceReject)) &&
+    //   password
+    // ) {
+    //   await storageService.saveWallets({
+    //     wallets: storageService.walletState.wallets,
+    //     password,
+    //   });
+    // }
   }
 
   async changedAccount(): Promise<void> {
@@ -49,10 +51,11 @@ class NotificationController implements INotificationController {
     const password = storageService.appState.password;
     if (password) {
       permissionService.removeSite(origin);
-      await storageService.saveWallets({
-        wallets: storageService.walletState.wallets,
-        password,
-      });
+      // ! This shit i don't understand too
+      // await storageService.saveWallets({
+      //   wallets: storageService.walletState.wallets,
+      //   password,
+      // });
     }
     return permissionService.allSites;
   }

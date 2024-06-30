@@ -3,7 +3,7 @@
 }
 
 .choice {
-  @apply grid grid-cols-2 grid-rows-2 text-base gap-2 w-full px-6;
+  @apply grid grid-cols-2 grid-rows-2 text-base w-full px-6;
 
   .choiceDiv {
     @apply w-full flex justify-center flex-col items-center;

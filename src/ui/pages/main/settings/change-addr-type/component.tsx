@@ -5,62 +5,65 @@ import {
   useGetCurrentWallet,
   useWalletState,
 } from "@/ui/states/walletState";
-import {
-  useUpdateCurrentAccountBalance,
-  useUpdateCurrentWallet,
-} from "@/ui/hooks/wallet";
+import { useUpdateCurrentWallet } from "@/ui/hooks/wallet";
 import { useCallback } from "react";
 import { AddressType } from "bellhdw";
 import { useNavigate } from "react-router-dom";
 
 const ChangeAddrType = () => {
-  const { keyringController, notificationController } = useControllersState(
-    (v) => ({
+  const { keyringController, notificationController, apiController } =
+    useControllersState((v) => ({
       keyringController: v.keyringController,
       walletController: v.walletController,
       notificationController: v.notificationController,
-    })
-  );
+      apiController: v.apiController,
+    }));
   const currentWallet = useGetCurrentWallet();
   const { selectedWallet } = useWalletState((v) => ({
     selectedWallet: v.selectedWallet,
   }));
-  const udpateCurrentWallet = useUpdateCurrentWallet();
-  const updateCurrentAccountBalance = useUpdateCurrentAccountBalance();
+  const updateCurrentWallet = useUpdateCurrentWallet();
   const currentAccount = useGetCurrentAccount();
   const navigate = useNavigate();
 
   const onSwitchAddress = useCallback(
     async (type: AddressType) => {
-      if (selectedWallet === undefined) return;
+      if (
+        typeof selectedWallet === "undefined" ||
+        typeof currentAccount?.id === "undefined"
+      )
+        return;
       const addresses = await keyringController.changeAddressType(
         selectedWallet,
         type
       );
-      await udpateCurrentWallet({
+      const newStats = await apiController.getAccountStats(
+        addresses[currentAccount.id]
+      );
+      await updateCurrentWallet({
         ...currentWallet,
         addressType: type,
         accounts: currentWallet?.accounts.map((f, idx) => ({
           ...f,
           id: idx,
           address: addresses[f.id],
+          balance: newStats?.balance ?? f.balance,
+          inscriptionBalance: newStats?.amount ?? f.inscriptionBalance,
+          inscriptionCounter: newStats?.count ?? f.inscriptionCounter,
         })),
       });
-      await updateCurrentAccountBalance(
-        addresses[currentAccount?.id as any as number]
-      );
       await notificationController.changedAccount();
       navigate("/");
     },
     [
-      udpateCurrentWallet,
+      updateCurrentWallet,
       keyringController,
-      updateCurrentAccountBalance,
       notificationController,
-      currentAccount?.id,
       currentWallet,
       selectedWallet,
       navigate,
+      apiController,
+      currentAccount?.id,
     ]
   );
 

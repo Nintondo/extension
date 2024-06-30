@@ -77,10 +77,10 @@ export const useUpdateCurrentWallet = () => {
 };
 
 export const useCreateNewAccount = () => {
-  const { updateWalletState } = useWalletState((v) => ({
+  const { updateWalletState, wallets } = useWalletState((v) => ({
     updateWalletState: v.updateWalletState,
+    wallets: v.wallets,
   }));
-  const updateCurrentWallet = useUpdateCurrentWallet();
   const currentWallet = useGetCurrentWallet();
   const { walletController, notificationController } = useControllersState(
     (v) => ({
@@ -104,18 +104,20 @@ export const useCreateNewAccount = () => {
         })),
       };
 
-      await updateCurrentWallet(updatedWallet);
-      await walletController.saveWallets();
       await updateWalletState({
         selectedAccount:
           updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
+        wallets: wallets.map((f) =>
+          f.id === currentWallet.id ? updatedWallet : f
+        ),
       });
+      await walletController.saveWallets();
       await notificationController.changedAccount();
       navigate("/");
     },
     [
       currentWallet,
-      updateCurrentWallet,
+      wallets,
       walletController,
       updateWalletState,
       notificationController,
@@ -141,10 +143,12 @@ export const useSwitchWallet = () => {
     async (key: number, accKey?: number) => {
       const wallet = wallets.find((f) => f.id === key);
       if (!wallet) return;
-      wallets[key].accounts = await walletController.loadAccountsData(
-        wallet.id,
-        wallet.accounts
-      );
+      if (wallets[key].accounts.filter((i) => !!i.address).length === 0) {
+        wallets[key].accounts = await walletController.loadAccountsData(
+          wallet.id,
+          wallet.accounts
+        );
+      }
       await updateWalletState({
         selectedWallet: wallet.id,
         wallets,
@@ -236,16 +240,19 @@ export const useUpdateCurrentAccountBalance = () => {
 };
 
 export const useDeleteWallet = () => {
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-  }));
+  const { walletController, notificationController } = useControllersState(
+    (v) => ({
+      walletController: v.walletController,
+      notificationController: v.notificationController,
+    })
+  );
   const { updateWalletState } = useWalletState((v) => ({
     updateWalletState: v.updateWalletState,
   }));
-  const currentWallet = useGetCurrentWallet();
-  const currentAccount = useGetCurrentAccount();
-  const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
-  const switchWallet = useSwitchWallet();
+  const { wallets, selectedWallet } = useWalletState((v) => ({
+    wallets: v.wallets,
+    selectedWallet: v.selectedWallet,
+  }));
 
   return useCallback(
     async (id: number) => {
@@ -253,27 +260,40 @@ export const useDeleteWallet = () => {
         toast.error(t("hooks.wallet.last_wallet_error"));
         return;
       }
-      if (currentWallet?.id === undefined) throw new Error("Unreachable");
-      const newWalletId =
-        currentWallet.id > id ? currentWallet.id - 1 : currentWallet.id;
-      await switchWallet(
-        id === currentWallet.id ? 0 : newWalletId,
-        id === currentWallet.id ? 0 : currentAccount?.id ?? 0
-      );
+      if (typeof selectedWallet === "undefined")
+        throw Error("Internal Error: Selected wallet is not defined");
+      const newWallets = await walletController.deleteWallet(id);
+      const newWalletIdx =
+        selectedWallet > newWallets.length - 1
+          ? selectedWallet - 1
+          : selectedWallet;
+
+      if (
+        newWallets[newWalletIdx].accounts.filter((i) => !!i.address).length ===
+        0
+      ) {
+        newWallets[newWalletIdx].accounts =
+          await walletController.loadAccountsData(
+            newWalletIdx,
+            newWallets[newWalletIdx].accounts
+          );
+      }
       await updateWalletState(
         {
-          wallets: await walletController.deleteWallet(id),
+          wallets: newWallets,
+          selectedAccount: 0,
+          selectedWallet: newWalletIdx,
         },
         false
       );
+      await notificationController.changedAccount();
     },
     [
-      currentWallet,
       walletController,
       updateWalletState,
       wallets.length,
-      switchWallet,
-      currentAccount,
+      notificationController,
+      selectedWallet,
     ]
   );
 };
@@ -292,10 +312,13 @@ export const useSwitchNetwork = () => {
       wallets: v.wallets,
     })
   );
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-    apiController: v.apiController,
-  }));
+  const { walletController, notificationController } = useControllersState(
+    (v) => ({
+      walletController: v.walletController,
+      apiController: v.apiController,
+      notificationController: v.notificationController,
+    })
+  );
 
   return useCallback(
     async (network: Network) => {
@@ -311,6 +334,7 @@ export const useSwitchNetwork = () => {
           updatedWallets[selectedWallet].accounts
         );
       await updateWalletState({ wallets: updatedWallets });
+      await notificationController.changedAccount();
       navigate("/");
     },
     [
@@ -320,6 +344,7 @@ export const useSwitchNetwork = () => {
       updateWalletState,
       walletController,
       wallets,
+      notificationController,
     ]
   );
 };

@@ -194,7 +194,7 @@ class StorageService {
 
     const keyringsToSave = wallets.map((i, idx) => ({
       id: idx,
-      data: keyringService.serializeById(i.id),
+      data: keyringService.serializeById(idx),
       phrase: payload?.find((d) => d.id === i.id)?.phrase,
     }));
     const encrypted = await encryptorUtils.encrypt(
@@ -202,11 +202,26 @@ class StorageService {
       JSON.stringify(keyringsToSave)
     );
 
+    let shouldUpdateSelectedWallet = false;
+    if (this._walletState.selectedWallet) {
+      shouldUpdateSelectedWallet =
+        this._walletState.selectedWallet > walletsToSave.length - 1;
+    }
+
+    if (shouldUpdateSelectedWallet) {
+      this._walletState.selectedWallet = this._walletState.selectedWallet! - 1;
+      this._walletState.selectedAccount = 0;
+    }
+
     const data: StorageInterface = {
       enc: JSON.parse(encrypted),
       cache: {
         ...local.cache,
         wallets: walletsToSave,
+        selectedWallet: shouldUpdateSelectedWallet
+          ? this._walletState.selectedWallet! - 1
+          : this._walletState.selectedWallet,
+        selectedAccount: 0,
         addressBook: this.appState.addressBook,
         connectedSites: permissionService.allSites,
         language: storageService.appState.language ?? "en",

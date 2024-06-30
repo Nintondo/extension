@@ -44,7 +44,6 @@ const Login = () => {
   const login = async ({ password }: FormType) => {
     try {
       const exportedWallets = await walletController.importWallets(password);
-      // await syncStorages();
 
       await updateWalletState(
         {

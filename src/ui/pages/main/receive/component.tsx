@@ -87,13 +87,11 @@ const Receive = () => {
         </div>
       </div>
 
-      <div>
-        <CopyBtn
-          value={currentAccount?.address}
-          className={s.copyButton}
-          label={t("receive.copy_address")}
-        />
-      </div>
+      <CopyBtn
+        value={currentAccount?.address}
+        className={s.copyButton}
+        label={t("receive.copy_address")}
+      />
     </div>
   );
 };

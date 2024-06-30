@@ -1,5 +1,5 @@
 .newMnemonic {
-  @apply w-full h-full flex flex-col items-center gap-4 standard:gap-8 text-base p-4 pb-0;
+  @apply w-full h-full flex flex-col items-center gap-4 standard:gap-8 text-base;
 }
 
 .phrase {
@@ -25,10 +25,6 @@
 .savePhrase,
 .saveToClipboard {
   @apply flex items-center w-full justify-center cursor-pointer select-none;
-}
-
-.continueWrapper {
-  @apply w-full flex justify-center pt-4 pb-2;
 }
 
 .warning {
