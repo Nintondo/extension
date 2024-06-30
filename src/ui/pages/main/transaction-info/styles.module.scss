@@ -19,7 +19,7 @@
 }
 
 .explorerBtn {
-  @apply px-5 py-2 rounded-xl font-medium bg-text text-bg text-sm mb-6 max-standard:w-full;
+  @apply pb-4 py-3 border-t border-t-neutral-700 font-medium text-sm max-standard:w-full fixed bottom-0 right-0 left-0 text-center;
 }
 
 .summary {

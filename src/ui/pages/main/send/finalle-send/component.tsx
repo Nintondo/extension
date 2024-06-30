@@ -26,10 +26,10 @@ const FinalleSend = () => {
       </div>
 
       <div className={s.btnContainer}>
-        <Link to={"/"} className="btn primary flex-3">
+        <Link to={"/"} className={s.btn}>
           {t("send.finalle_send.back")}
         </Link>
-        <button className="btn primary flex-3" onClick={onClick}>
+        <button className={s.btn} onClick={onClick}>
           {t("send.finalle_send.explorer")}
         </button>
       </div>

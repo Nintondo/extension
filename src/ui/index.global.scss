@@ -154,3 +154,7 @@ input[type="number"] {
 .inscription-card {
   @apply w-[318px] h-[318px];
 }
+
+.input-span {
+  @apply uppercase text-gray-400 my-1;
+}

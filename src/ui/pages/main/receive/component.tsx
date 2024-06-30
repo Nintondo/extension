@@ -14,20 +14,21 @@ const qrCode = new QRCode({
   image: "/icon.ico",
   dotsOptions: {
     type: "extra-rounded",
-    gradient: {
-      type: "linear",
-      rotation: 45,
-      colorStops: [
-        {
-          color: "#f4a261",
-          offset: 0,
-        },
-        {
-          color: "#8d99ae",
-          offset: 5,
-        },
-      ],
-    },
+    // gradient: {
+    //   type: "linear",
+    //   rotation: 45,
+    //   colorStops: [
+    //     {
+    //       color: "#f4a261",
+    //       offset: 0,
+    //     },
+    //     {
+    //       color: "#8d99ae",
+    //       offset: 5,
+    //     },
+    //   ],
+    // },
+    color: "#d8a48f",
   },
   qrOptions: {
     errorCorrectionLevel: "H",

@@ -1,12 +1,12 @@
 .container {
-  @apply text-sm flex-col h-full flex justify-between items-center px-6 w-full pb-3;
+  @apply text-sm flex-col h-full flex items-center w-full;
 }
 
 .btn {
-  @apply bg-text text-bg rounded-xl w-full py-2 border-none font-medium text-sm text-center;
+  @apply w-full border-none font-medium text-sm text-center border-t border-neutral-700 py-3 first:border-r last:border-l;
 
   &Container {
-    @apply flex items-center gap-3 w-full;
+    @apply flex items-center w-full fixed bottom-0 right-0 left-0;
 
     > * {
       @apply px-0 w-full;

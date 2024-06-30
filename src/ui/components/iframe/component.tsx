@@ -17,21 +17,20 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
 
   return (
     <div className="overflow-hidden rounded-xl bg-black relative">
-      <div
-        className={cn(
-          "bg-input-bg flex justify-center items-center inset-0 absolute",
-          {
-            hidden: loaded,
-          }
-        )}
-      >
-        <Loading />
-      </div>
+      {!loaded && (
+        <div
+          className={cn(
+            "bg-input-bg flex justify-center items-center inset-0 absolute"
+          )}
+        >
+          <Loading />
+        </div>
+      )}
 
       <iframe
         id="frame"
         onClick={(e) => e.preventDefault()}
-        className={cn("pointer-events-none", SIZES[size])}
+        className={cn(SIZES[size])}
         src={preview}
         sandbox="allow-scripts"
         scrolling="no"

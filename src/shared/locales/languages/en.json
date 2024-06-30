@@ -6,8 +6,7 @@
     "receive": "Receive",
     "send": "Send",
     "nft": "NFT",
-    "amount_in_transactions": "Cardinal balance",
-    "amount_in_inscriptions": "Ordinal balance"
+    "amount_in_transactions": "Balance"
   },
   "settings": {
     "language": "Language",
@@ -165,7 +164,7 @@
       "amount": "Amount",
       "amount_to_send": "Amount to send",
       "max_amount": "MAX",
-      "fee_label": "Fee:",
+      "fee_label": "Fee",
       "include_fee_in_the_amount_label": "Include fee in the amount",
       "save_address_for_the_next_payments_label": "Save address for the next payments",
       "continue": "Continue",
@@ -213,7 +212,7 @@
   "transaction_info": {
     "txid": "TxId",
     "confirmations_label": "Confirmations:",
-    "fee_label": "Fee:",
+    "fee_label": "Fee",
     "value_label": "Value:",
     "open_in_explorer": "Open in explorer",
     "copied": "Copied",

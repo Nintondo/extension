@@ -2,7 +2,6 @@ import { usePushBellsTxCallback } from "@/ui/hooks/transactions";
 import s from "./styles.module.scss";
 import cn from "classnames";
 import { useState } from "react";
-import ReactLoading from "react-loading";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useUpdateAddressBook } from "@/ui/hooks/app";
@@ -64,26 +63,25 @@ const ConfirmSend = () => {
 
   return (
     <div className={s.wrapper}>
-      {!loading ? (
+      <div className={s.container}>
         <div className={s.container}>
-          <div className={s.container}>
-            {fields.map((i) => (
-              <div key={i.label} className={s.item}>
-                <div className={s.label}>{i.label}:</div>
-                <div className={s.input}>{i.value}</div>
-              </div>
-            ))}
-          </div>
-          <button
-            className={cn("btn primary", s.confirmBtn)}
-            onClick={confirmSend}
-          >
-            {t("send.confirm_send.confirm")}
-          </button>
+          {fields.map((i) => (
+            <div key={i.label} className={s.item}>
+              <div className={cn(s.label, "input-span")}>{i.label}</div>
+              <div className={s.input}>{i.value}</div>
+            </div>
+          ))}
         </div>
-      ) : (
-        <ReactLoading type="spin" color="#ffbc42" />
-      )}
+        <button
+          disabled={loading}
+          className={
+            "border-t border-neutral-700 py-3 text-sm font-medium standard:m-6 standard:mb-3 w-full fixed bottom-0 left-0 right-0 disabled:cursor-wait"
+          }
+          onClick={confirmSend}
+        >
+          {t("send.confirm_send.confirm")}
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,12 +1,16 @@
 .card {
-  @apply bg-input-bg flex flex-col gap-0.5 p-3 rounded-xl justify-center w-full select-none cursor-pointer;
+  @apply bg-input-bg flex flex-col gap-0.5 p-3 rounded-xl justify-center w-full select-none cursor-pointer transition-colors;
 
   &Wrapper {
     @apply flex gap-2 w-full;
   }
 
   &Selected {
-    @apply bg-gray-500;
+    @apply bg-text text-bg bg-opacity-90;
+
+    .description {
+      @apply text-gray-700;
+    }
   }
 }
 

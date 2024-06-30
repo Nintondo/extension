@@ -7,7 +7,7 @@
 }
 
 .copyButton {
-  @apply flex gap-2 items-center justify-center font-semibold mx-auto p-2 rounded-xl bg-text text-bg transition-colors mb-4 w-full text-center;
+  @apply flex gap-2 items-center justify-center font-semibold mx-auto pb-4 pt-3 border-t border-neutral-700 fixed bottom-0 right-0 left-0 transition-colors w-full text-center;
 
   > div:first-child {
     @apply text-sm;

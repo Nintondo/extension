@@ -74,7 +74,7 @@ const SearchInscriptions = () => {
 
   if (open) {
     return (
-      <div className="absolute left-0 right-0 top-0 p-3 flex gap-2 bg-bg items-center">
+      <div className="absolute left-0 right-0 top-0 p-4 flex gap-2 bg-bg items-center">
         <input
           className="input w-full h-8"
           type="text"

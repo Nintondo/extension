@@ -30,11 +30,11 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
             alt="content"
             className="object-cover rounded-xl h-38 w-38"
             style={{
-              imageRendering: "pixelated",
+              imageRendering: "auto",
             }}
           />
         </div>
-        <div className="absolute top-2 left-5 right-5 text-sm bg-slate-100 bg-opacity-40 backdrop-blur-sm rounded-md text-white text-center">
+        <div className="absolute bottom-0 px-1 bg-black/50 backdrop-blur-sm left-0 text-xs text-white">
           {shortAddress(inscription.inscription_id, 6)}
         </div>
       </div>

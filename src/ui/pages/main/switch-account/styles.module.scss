@@ -1,9 +1,9 @@
 .switchAccDiv {
-  @apply flex justify-items-start flex-col items-center w-full h-full;
+  @apply flex justify-items-start flex-col items-center w-full h-full mt-2;
 }
 
 .accounts {
-  @apply flex flex-col gap-4 p-4 w-full;
+  @apply flex flex-col w-full;
 }
 
 .mainAcc {

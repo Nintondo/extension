@@ -1,5 +1,5 @@
 .menu {
-  @apply flex justify-center gap-6 items-center absolute z-10 top-0 left-full bottom-0 transition-all duration-200 w-full bg-text rounded-xl;
+  @apply flex justify-between px-1 gap-6 items-center absolute z-10 top-0 left-full bottom-0 transition-all duration-200 w-full bg-text;
 }
 
 .active {

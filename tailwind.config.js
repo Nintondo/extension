@@ -15,7 +15,7 @@ module.exports = {
         38.1: "9.6875rem",
       },
       colors: {
-        bg: "#1A1A1A",
+        bg: "#0d0c0c",
         "input-bg": "#3d3d3d95",
         "input-light": "#3d3d3d35",
         "toast-bg": "#3d3d3d",

@@ -22,7 +22,6 @@ import AddressInput from "./address-input";
 import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
-import Loading from "react-loading";
 
 interface FormType {
   address: string;
@@ -69,7 +68,7 @@ const CreateSend = () => {
       if (address.trim().length <= 0) {
         return toast.error(t("send.create_send.address_error"));
       }
-      if (Number(amount) > (currentAccount?.balance ?? 0)) {
+      if (Number(amount) > (currentAccount?.balance ?? 0) / 10 ** 8) {
         return toast.error(t("send.create_send.not_enough_money_error"));
       }
       if (typeof feeRate !== "number" || !feeRate || feeRate < 1) {
@@ -126,7 +125,7 @@ const CreateSend = () => {
       if (location.state.save) {
         setIsSaveAddress(true);
       }
-      if (currentAccount?.balance <= location.state.amount)
+      if (currentAccount?.balance / 10 ** 8 <= location.state.amount)
         setIncludeFeeLocked(true);
     }
     if (location.state && location.state.inscription_id) {
@@ -142,7 +141,7 @@ const CreateSend = () => {
       ...prev,
       amount: normalizeAmount(e.target.value),
     }));
-    if (currentAccount.balance > Number(e.target.value)) {
+    if (currentAccount.balance / 10 ** 8 > Number(e.target.value)) {
       setIncludeFeeLocked(false);
     } else {
       setIncludeFeeLocked(true);
@@ -158,7 +157,7 @@ const CreateSend = () => {
     if (currentAccount?.balance) {
       setFormData((prev) => ({
         ...prev,
-        amount: currentAccount.balance!.toString(),
+        amount: (currentAccount.balance! / 10 ** 8).toString(),
         includeFeeInAmount: true,
       }));
       setIncludeFeeLocked(true);
@@ -203,25 +202,6 @@ const CreateSend = () => {
                   </button>
                 </div>
               </div>
-              <div className="p-2 mt-2 text-center rounded-xl bg-input-light">
-                <div className="flex justify-between p-0.5">
-                  <div>{`${t("wallet_page.amount_in_transactions")}: `}</div>
-                  <span className="text-sm font-medium">
-                    {`${((currentAccount?.balance ?? 0) / 10 ** 8).toFixed(
-                      8
-                    )} BEL`}
-                  </span>
-                </div>
-                <div className="flex justify-between p-0.5">
-                  <div>{`${t("wallet_page.amount_in_inscriptions")}: `}</div>
-                  <span className="text-sm font-medium">
-                    {`${(
-                      (currentAccount?.inscriptionBalance ?? 0) /
-                      10 ** 8
-                    ).toFixed(8)} BEL`}
-                  </span>
-                </div>
-              </div>
             </div>
           )}
         </div>
@@ -262,19 +242,28 @@ const CreateSend = () => {
         </div>
       </form>
 
-      {loading ? (
-        <div className="flex justify-center w-full">
-          <Loading />
-        </div>
-      ) : (
+      <div>
+        {!inscriptionTransaction && (
+          <div className="flex justify-between py-2 px-4">
+            <div className="text-xs uppercase text-gray-400">{`${t(
+              "wallet_page.amount_in_transactions"
+            )}`}</div>
+            <span className="text-sm font-medium">
+              {`${((currentAccount?.balance ?? 0) / 10 ** 8).toFixed(8)} BEL`}
+            </span>
+          </div>
+        )}
         <button
+          disabled={loading}
           type="submit"
-          className={"btn primary mx-4 mb-4 standard:m-6 standard:mb-3"}
+          className={
+            "border-t border-neutral-700 py-3 text-sm font-medium standard:m-6 standard:mb-3 w-full disabled:cursor-wait"
+          }
           form={formId}
         >
           {t("send.create_send.continue")}
         </button>
-      )}
+      </div>
 
       <AddressBookModal
         isOpen={isOpenModal}
