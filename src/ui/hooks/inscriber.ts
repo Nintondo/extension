@@ -22,6 +22,7 @@ export const useInscribeTransferToken = () => {
       const cost =
         1000 * 2 +
         1000000 +
+        1000 +
         gptFeeCalculate(2, 3, feeRate) +
         gptFeeCalculate(1, 2, feeRate);
 
