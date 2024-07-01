@@ -12,6 +12,8 @@ import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
 import { Menu } from "@headlessui/react";
 import SearchInscriptions from "../search-inscriptions";
+import { useCreateNewAccount } from "@/ui/hooks/wallet";
+import toast from "react-hot-toast";
 
 interface IRouteTitle {
   route: string | RegExp;
@@ -37,17 +39,10 @@ export default function PagesLayout() {
   const currentAccount = useGetCurrentAccount();
   const navigate = useNavigate();
   const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
+  const createNewAccount = useCreateNewAccount();
 
   const defaultTitles: IRouteTitle[] = useMemo(
     () => [
-      {
-        route: "/pages/switch-account",
-        title: t("components.layout.switch_account"),
-        action: {
-          icon: <PlusCircleIcon className="w-8 h-8" />,
-          link: "/pages/create-new-account",
-        },
-      },
       {
         route: "/pages/change-addr-type",
         title: t("components.layout.change_address_type"),
@@ -59,6 +54,13 @@ export default function PagesLayout() {
       {
         route: "/pages/change-password",
         title: t("components.layout.change_password"),
+      },
+      {
+        backAction: () => {
+          navigate("/home");
+        },
+        route: "/pages/finalle-send/@",
+        title: t("components.layout.send"),
       },
       {
         route: "/pages/security",
@@ -128,8 +130,35 @@ export default function PagesLayout() {
         route: "/pages/network-settings",
         title: t("components.layout.network_settings"),
       },
+      {
+        route: "/pages/create-send",
+        title: t("components.layout.send"),
+        backAction: () => {
+          navigate("/home");
+        },
+      },
+      {
+        route: /\/pages\/(inscriptions|bel-20)/,
+        title: t("components.layout.inscriptions"),
+        dropdown: [
+          {
+            name: "Inscriptions",
+            link: "/pages/inscriptions",
+          },
+          {
+            name: "BEL-20",
+            link: "/pages/bel-20",
+          },
+        ],
+        action: {
+          icon: <SearchInscriptions />,
+        },
+        backAction: () => {
+          navigate("/home");
+        },
+      },
     ],
-    [currentAccount?.name]
+    [currentAccount?.name, navigate]
   );
 
   const routeTitles = useMemo(
@@ -153,13 +182,6 @@ export default function PagesLayout() {
         },
         {
           backAction: () => {
-            navigate("/home");
-          },
-          route: "/pages/finalle-send/@",
-          title: t("components.layout.send"),
-        },
-        {
-          backAction: () => {
             navigate("/pages/create-send", {
               state: currentRoute.state,
             });
@@ -174,34 +196,30 @@ export default function PagesLayout() {
             ` #${currentRoute.state?.inscription_number}`,
         },
         {
-          route: "/pages/create-send",
-          title: t("components.layout.send"),
-          backAction: () => {
-            navigate("/home");
-          },
-        },
-        {
-          route: /\/pages\/(inscriptions|bel-20)/,
-          title: t("components.layout.inscriptions"),
-          dropdown: [
-            {
-              name: "Inscriptions",
-              link: "/pages/inscriptions",
-            },
-            {
-              name: "BEL-20",
-              link: "/pages/bel-20",
-            },
-          ],
+          route: "/pages/switch-account",
+          title: t("components.layout.switch_account"),
           action: {
-            icon: <SearchInscriptions />,
-          },
-          backAction: () => {
-            navigate("/home");
+            icon: (
+              <PlusCircleIcon
+                className="w-8 h-8 cursor-pointer"
+                onClick={async () => {
+                  navigate("/");
+                  await createNewAccount();
+                  toast.success(t("new_account.account_created_message"));
+                }}
+              />
+            ),
           },
         },
       ] as IRouteTitle[],
-    [navigate, stateController, currentRoute, wallets.length, defaultTitles]
+    [
+      navigate,
+      stateController,
+      currentRoute,
+      wallets.length,
+      defaultTitles,
+      createNewAccount,
+    ]
   );
 
   const currentRouteTitle = useMemo(
