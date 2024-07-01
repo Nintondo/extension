@@ -8,6 +8,7 @@ import { IToken } from "@/shared/interfaces/token";
 import { fetchBELLMainnet, fetchProps } from "@/shared/utils";
 import { storageService } from "../services";
 import { networks } from "belcoinjs-lib";
+import { DEFAULT_FEES } from "@/shared/constant";
 
 export interface UtxoQueryParams {
   hex?: boolean;
@@ -91,8 +92,9 @@ class ApiController implements IApiController {
     });
     if (data) {
       return {
-        slow: "6" in data ? Number(data["6"].toFixed(0)) : 1000,
-        fast: "2" in data ? Number(data["2"].toFixed(0)) + 1 : 2000,
+        slow: "6" in data ? Number(data["6"].toFixed(0)) : DEFAULT_FEES.slow,
+        fast:
+          "2" in data ? Number(data["2"].toFixed(0)) + 1 : DEFAULT_FEES.fast,
       };
     }
   }

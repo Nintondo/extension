@@ -92,3 +92,10 @@ export const TESTNET_HTML_PREVIEW_URL =
 export const TESTNET_CONTENT_URL =
   process.env.TESTNET_CONTENT_URL ??
   "https://testnet-content.nintondo.io/api/pub/content/";
+
+export const DEFAULT_FEES = {
+  fast: 5000,
+  slow: 2000,
+};
+
+export const DEFAULT_SERVICE_FEE = 1_000_000;

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { t } from "i18next";
 import { gptFeeCalculate } from "../utils";
 import { useAppState } from "../states/appState";
+import { DEFAULT_SERVICE_FEE } from "@/shared/constant";
 
 export const useInscribeTransferToken = () => {
   const currentAccount = useGetCurrentAccount();
@@ -18,11 +19,12 @@ export const useInscribeTransferToken = () => {
 
   return useCallback(
     async (data: ITransferToken, feeRate: number) => {
+      const ORD_VALUE = 1000;
+      const TX_COUNT = 2;
       if (!currentAccount || !currentAccount.address) return;
       const cost =
-        1000 * 2 +
-        1000000 +
-        1000 +
+        ORD_VALUE * TX_COUNT +
+        DEFAULT_SERVICE_FEE +
         gptFeeCalculate(2, 3, feeRate) +
         gptFeeCalculate(1, 2, feeRate);
 

@@ -4,6 +4,7 @@ import s from "./styles.module.scss";
 import { t } from "i18next";
 import { useAppState } from "@/ui/states/appState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import { DEFAULT_FEES } from "@/shared/constant";
 
 interface Props {
   onChange: (value: number | string) => void;
@@ -12,7 +13,9 @@ interface Props {
 
 const FeeInput: FC<Props> = ({ onChange, value }) => {
   const { feeRates } = useTransactionManagerContext();
-  const [selected, setSelected] = useState<number>(feeRates?.slow ?? 10);
+  const [selected, setSelected] = useState<number>(
+    feeRates?.slow ?? DEFAULT_FEES.slow
+  );
 
   useEffect(() => {
     if (selected !== 3) {
@@ -24,12 +27,12 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
     {
       title: t("send.create_send.fee_input.slow"),
       description: `${feeRates?.slow ?? "~"} sat/Vb`,
-      value: feeRates?.slow ?? 10,
+      value: feeRates?.slow ?? DEFAULT_FEES.slow,
     },
     {
       title: t("send.create_send.fee_input.fast"),
       description: `${feeRates?.fast ?? "~"} sat/Vb`,
-      value: feeRates?.fast ?? 100,
+      value: feeRates?.fast ?? DEFAULT_FEES.fast,
     },
     {
       title: t("send.create_send.fee_input.custom"),

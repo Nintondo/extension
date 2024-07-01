@@ -53,7 +53,13 @@ const Card: FC<Props> = ({
       <Menu
         active={active}
         items={[
-          ...menuItems,
+          ...menuItems.map((i) => ({
+            ...i,
+            action: () => {
+              if (i.action) i.action();
+              setActive(false);
+            },
+          })),
           {
             action: () => {
               setActive(false);

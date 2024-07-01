@@ -1,5 +1,5 @@
 import { Inscription } from "@/shared/interfaces/inscriptions";
-import { FC } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { shortAddress } from "@/shared/utils/transactions";
 import { PREVIEW_URL, TESTNET_HTML_PREVIEW_URL } from "@/shared/constant";
@@ -10,9 +10,31 @@ interface Props {
   inscription: Inscription;
 }
 
+const applyPixelation = (img?: HTMLImageElement) => {
+  if (!img) return;
+
+  if (img.naturalWidth < 100 || img.naturalHeight < 100) {
+    img.style.imageRendering = "pixelated";
+  }
+};
+
 const InscriptionCard: FC<Props> = ({ inscription }) => {
   const navigate = useNavigate();
   const { network } = useAppState((v) => ({ network: v.network }));
+
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imageRef.current) {
+      if (imageRef.current.complete) {
+        applyPixelation(imageRef.current);
+      } else {
+        imageRef.current.onload = () => {
+          applyPixelation(imageRef.current!);
+        };
+      }
+    }
+  });
 
   return (
     <div className="flex justify-center w-full">
@@ -24,6 +46,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
       >
         <div className="rounded-xl w-full bg-slate-950 bg-opacity-50">
           <img
+            ref={imageRef}
             src={`${
               isTestnet(network) ? TESTNET_HTML_PREVIEW_URL : PREVIEW_URL
             }/${inscription.inscription_id}`}
