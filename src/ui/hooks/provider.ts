@@ -78,6 +78,8 @@ export const useDecodePsbtInputs = () => {
   return useCallback(async (): Promise<
     { fields: IField[][]; fee: string } | undefined
   > => {
+    if (!currentAccount?.address)
+      await notificationController.rejectApproval("This will never happen");
     const approval = await notificationController.getApproval();
     if (
       !approval ||
@@ -86,27 +88,34 @@ export const useDecodePsbtInputs = () => {
       !currentAccount.address
     )
       return;
-    const psbtsToApprove: Psbt[] = [];
-    const result: IField[][] = [];
+    const psbtsToApprove: [Psbt, SignPsbtOptions?][] = [];
     if (approval.approvalComponent !== "multiPsbtSign") {
-      psbtsToApprove.push(Psbt.fromBase64(approval.params.data[0]));
+      psbtsToApprove.push([
+        Psbt.fromBase64(approval.params.data[0]),
+        approval.params.data[1],
+      ]);
     } else {
       for (const psbt of approval.params.data[0]) {
-        psbtsToApprove.push(Psbt.fromBase64(psbt[0]));
+        psbtsToApprove.push([Psbt.fromBase64(psbt.psbtBase64), psbt.options]);
       }
     }
 
     let totalInputValue = 0;
     let totalOutputValue = 0;
 
-    for (const psbt of psbtsToApprove) {
+    const result = psbtsToApprove.map(async ([psbt, options]) => {
       const inputFields: IField[] = [];
       const outputFields: IField[] = [];
       const inputLocations = psbt.txInputs.map(
         (f) => f.hash.reverse().toString("hex") + ":" + f.index
       );
       const inputValues = await apiController.getUtxoValues(inputLocations);
-      if (!inputValues) return;
+      if (!inputValues) {
+        await notificationController.rejectApproval(
+          "Failed to find txids from psbt"
+        );
+        return [];
+      }
       const locationValue: LocationValue = Object.fromEntries(
         inputLocations.map((f, i) => [f, inputValues[i]])
       );
@@ -127,9 +136,7 @@ export const useDecodePsbtInputs = () => {
       for (const [i, txInput] of psbt.txInputs.entries()) {
         const outpoint =
           txInput.hash.reverse().toString("hex") + ":" + txInput.index;
-        const isImportant = (
-          approval.params.data[1] as SignPsbtOptions | undefined
-        )?.toSignInputs
+        const isImportant = options?.toSignInputs
           ?.map((f) => f.index)
           .includes(i);
 
@@ -139,7 +146,7 @@ export const useDecodePsbtInputs = () => {
 
         if (psbt.data.inputs[i].sighashType === 131) {
           const foundInscriptions = await apiController.getInscription({
-            address: currentAccount.address,
+            address: currentAccount!.address!,
             inscriptionId: outpoint.slice(0, -2) + "i" + txInput.index,
           });
 
@@ -170,10 +177,13 @@ export const useDecodePsbtInputs = () => {
           value,
         });
       }
-      result.push(inputFields.concat(outputFields));
-    }
+      return inputFields.concat(outputFields);
+    });
 
     const fee = totalInputValue - totalOutputValue;
-    return { fields: result, fee: fee < 0 ? "0" : toFixed(fee) };
+    return {
+      fields: await Promise.all(result),
+      fee: fee < 0 ? "0" : toFixed(fee),
+    };
   }, [notificationController, apiController, currentAccount]);
 };

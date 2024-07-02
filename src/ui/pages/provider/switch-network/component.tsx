@@ -16,9 +16,9 @@ const SwitchNetwork = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
-      if (!approval || !approval.params || !approval.params.data.data)
+      if (!approval || !approval.params || !approval.params.data)
         await notificationController.rejectApproval("Invalid network");
-      if (approval!.params!.data.data === "testnet") setNetworkName("TESTNET");
+      if (approval!.params!.data[0] === "testnet") setNetworkName("TESTNET");
       else setNetworkName("MAINNET");
     })();
   }, [notificationController]);
