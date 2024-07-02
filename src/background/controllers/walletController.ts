@@ -1,5 +1,6 @@
 import { storageService } from "@/background/services";
 import type {
+  DeleteWalletResult,
   IAccount,
   INewWalletProps,
   IWallet,
@@ -111,7 +112,7 @@ class WalletController implements IWalletController {
     return bip39.generateMnemonic(128);
   }
 
-  async deleteWallet(id: number): Promise<IWallet[]> {
+  async deleteWallet(id: number): Promise<DeleteWalletResult> {
     return keyringService.deleteWallet(id);
   }
 

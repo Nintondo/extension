@@ -41,3 +41,9 @@ export interface INewWalletProps {
   passphrase?: string;
   network: Network;
 }
+
+export interface DeleteWalletResult {
+  wallets: IWallet[];
+  selectedWallet?: number;
+  selectedAccount: number;
+}

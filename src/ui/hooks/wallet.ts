@@ -249,9 +249,8 @@ export const useDeleteWallet = () => {
   const { updateWalletState } = useWalletState((v) => ({
     updateWalletState: v.updateWalletState,
   }));
-  const { wallets, selectedWallet } = useWalletState((v) => ({
+  const { wallets } = useWalletState((v) => ({
     wallets: v.wallets,
-    selectedWallet: v.selectedWallet,
   }));
 
   return useCallback(
@@ -260,29 +259,31 @@ export const useDeleteWallet = () => {
         toast.error(t("hooks.wallet.last_wallet_error"));
         return;
       }
+
+      const {
+        wallets: newWallets,
+        selectedAccount,
+        selectedWallet,
+      } = await walletController.deleteWallet(id);
+
       if (typeof selectedWallet === "undefined")
         throw Error("Internal Error: Selected wallet is not defined");
-      const newWallets = await walletController.deleteWallet(id);
-      const newWalletIdx =
-        selectedWallet > newWallets.length - 1
-          ? selectedWallet - 1
-          : selectedWallet;
 
       if (
-        newWallets[newWalletIdx].accounts.filter((i) => !!i.address).length ===
-        0
+        newWallets[selectedWallet].accounts.filter((i) => !!i.address)
+          .length === 0
       ) {
-        newWallets[newWalletIdx].accounts =
+        newWallets[selectedWallet].accounts =
           await walletController.loadAccountsData(
-            newWalletIdx,
-            newWallets[newWalletIdx].accounts
+            selectedWallet,
+            newWallets[selectedWallet].accounts
           );
       }
       await updateWalletState(
         {
           wallets: newWallets,
-          selectedAccount: 0,
-          selectedWallet: newWalletIdx,
+          selectedAccount,
+          selectedWallet,
         },
         false
       );
@@ -293,7 +294,6 @@ export const useDeleteWallet = () => {
       updateWalletState,
       wallets.length,
       notificationController,
-      selectedWallet,
     ]
   );
 };

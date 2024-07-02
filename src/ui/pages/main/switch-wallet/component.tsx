@@ -27,7 +27,7 @@ const SwitchWallet = () => {
   const onDelete = async () => {
     if (deleteWalletId === undefined) return;
     setDeleteWalletId(undefined);
-    await deleteWallet(wallets[deleteWalletId].id);
+    await deleteWallet(deleteWalletId);
   };
 
   const onRename = async (name: string) => {
@@ -59,9 +59,9 @@ const SwitchWallet = () => {
   return (
     <div className={s.switchWalletDiv}>
       <div className={s.wallets}>
-        {wallets.map((wallet, i) => (
+        {wallets.map((wallet) => (
           <Card
-            key={`wallet-${i}`}
+            key={`wallet-${wallet.id}`}
             id={wallet.id}
             menuItems={[
               {
@@ -77,7 +77,7 @@ const SwitchWallet = () => {
               },
               {
                 action: () => {
-                  navigate(`/pages/show-mnemonic/${i}`);
+                  navigate(`/pages/show-mnemonic/${wallet.id}`);
                 },
                 icon: (
                   <KeyIcon
@@ -90,7 +90,7 @@ const SwitchWallet = () => {
                 action: () => {
                   if (wallets.length <= 1)
                     toast.error(t("switch_wallet.last_wallet_error"));
-                  else setDeleteWalletId(i);
+                  else setDeleteWalletId(wallet.id);
                 },
                 icon: (
                   <TrashIcon
@@ -102,7 +102,7 @@ const SwitchWallet = () => {
             ]}
             name={wallet.name}
             onClick={async () => {
-              await switchWallet(i);
+              await switchWallet(wallet.id);
             }}
             selected={wallet.id === currentWallet?.id}
           />

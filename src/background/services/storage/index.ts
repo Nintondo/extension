@@ -170,6 +170,9 @@ class StorageService {
 
   async saveWallets({ password, wallets, newPassword, payload }: SaveWallets) {
     if (!password) throw new Error("Password is required");
+    if (typeof storageService._walletState.selectedWallet === "undefined")
+      throw new Error("No selected wallet");
+
     const local = await this.getLocalValues();
     const current = await this.getSecrets(local, password);
 
@@ -202,26 +205,19 @@ class StorageService {
       JSON.stringify(keyringsToSave)
     );
 
-    let shouldUpdateSelectedWallet = false;
-    if (this._walletState.selectedWallet) {
-      shouldUpdateSelectedWallet =
-        this._walletState.selectedWallet > walletsToSave.length - 1;
-    }
-
-    if (shouldUpdateSelectedWallet) {
-      this._walletState.selectedWallet = this._walletState.selectedWallet! - 1;
-      this._walletState.selectedAccount = 0;
-    }
+    const selectedWallet =
+      this._walletState.selectedWallet! > wallets.length - 1
+        ? this._walletState.selectedWallet! - 1
+        : this._walletState.selectedWallet;
+    const selectedAccount = 0;
 
     const data: StorageInterface = {
       enc: JSON.parse(encrypted),
       cache: {
         ...local.cache,
         wallets: walletsToSave,
-        selectedWallet: shouldUpdateSelectedWallet
-          ? this._walletState.selectedWallet! - 1
-          : this._walletState.selectedWallet,
-        selectedAccount: 0,
+        selectedWallet,
+        selectedAccount,
         addressBook: this.appState.addressBook,
         connectedSites: permissionService.allSites,
         language: storageService.appState.language ?? "en",
@@ -229,6 +225,11 @@ class StorageService {
     };
 
     await browserStorageLocalSet(data);
+
+    return {
+      selectedAccount,
+      selectedWallet,
+    };
   }
 
   private async getSecrets(encrypted: StorageInterface, password: string) {
