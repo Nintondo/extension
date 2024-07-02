@@ -1,4 +1,4 @@
-import { Network, Psbt } from "belcoinjs-lib";
+import { networks, Psbt } from "belcoinjs-lib";
 import { keyringService, sessionService, storageService } from "../../services";
 import "reflect-metadata/lite";
 import permission from "@/background/services/permission";
@@ -6,6 +6,8 @@ import type { SendBEL } from "@/background/services/keyring/types";
 import { SignPsbtOptions } from "@/shared/interfaces/provider";
 import apiController from "../apiController";
 import { IAccount } from "@/shared/interfaces";
+import { NetworkType } from "nintondo-sdk";
+import { isTestnet } from "@/ui/utils";
 
 class ProviderController {
   connect = async () => {
@@ -24,8 +26,8 @@ class ProviderController {
   };
 
   @Reflect.metadata("SAFE", true)
-  getNetwork = async () => {
-    return storageService.appState.network;
+  getNetwork = async (): Promise<NetworkType> => {
+    return isTestnet(storageService.appState.network) ? "testnet" : "mainnet";
   };
 
   @Reflect.metadata("SAFE", true)
@@ -205,13 +207,16 @@ class ProviderController {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   switchNetwork = async (data: {
     data: {
-      params: { data: Network };
+      params: { data: NetworkType };
     };
   }) => {
     if (!storageService.currentWallet || !storageService.currentAccount) {
       return;
     }
-    const network = data.data.params.data;
+    const network =
+      data.data.params.data === "testnet"
+        ? networks.testnet
+        : networks.bellcoin;
     keyringService.switchNetwork(network);
     await storageService.updateAppState({ network });
     const wallets = storageService.walletState.wallets;

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { GlobeAltIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
 import { t } from "i18next";
-import { isTestnet } from "@/ui/utils";
 
 const SwitchNetwork = () => {
   const [networkName, setNetworkName] = useState<string>();
@@ -19,7 +18,7 @@ const SwitchNetwork = () => {
       const approval = await notificationController.getApproval();
       if (!approval || !approval.params || !approval.params.data.data)
         await notificationController.rejectApproval("Invalid network");
-      if (isTestnet(approval!.params!.data.data)) setNetworkName("TESTNET");
+      if (approval!.params!.data.data === "testnet") setNetworkName("TESTNET");
       else setNetworkName("MAINNET");
     })();
   }, [notificationController]);
