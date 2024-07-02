@@ -1,10 +1,11 @@
-import { Psbt } from "belcoinjs-lib";
-import { keyringService, storageService } from "../../services";
+import { Network, Psbt } from "belcoinjs-lib";
+import { keyringService, sessionService, storageService } from "../../services";
 import "reflect-metadata/lite";
 import permission from "@/background/services/permission";
 import type { SendBEL } from "@/background/services/keyring/types";
 import { SignPsbtOptions } from "@/shared/interfaces/provider";
 import apiController from "../apiController";
+import { IAccount } from "@/shared/interfaces";
 
 class ProviderController {
   connect = async () => {
@@ -20,6 +21,11 @@ class ProviderController {
   @Reflect.metadata("SAFE", true)
   getVersion = async () => {
     return process.env.VERSION ?? "0.0.1";
+  };
+
+  @Reflect.metadata("SAFE", true)
+  getNetwork = async () => {
+    return storageService.appState.network;
   };
 
   @Reflect.metadata("SAFE", true)
@@ -192,6 +198,42 @@ class ProviderController {
         return psbt.toBase64();
       })
     );
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Reflect.metadata("APPROVAL", ["switchNetwork", (_req: any) => {}])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  switchNetwork = async (data: {
+    data: {
+      params: { data: Network };
+    };
+  }) => {
+    if (!storageService.currentWallet || !storageService.currentAccount) {
+      return;
+    }
+    const network = data.data.params.data;
+    keyringService.switchNetwork(network);
+    await storageService.updateAppState({ network });
+    const wallets = storageService.walletState.wallets;
+    const wallet = keyringService.getKeyringByIndex(
+      storageService.currentWallet.id
+    );
+    const addresses = wallet.getAccounts();
+    const accounts = storageService.currentWallet.accounts;
+    const switchedAccounts = addresses.map(
+      (i, idx): IAccount => ({
+        id: idx,
+        address: i,
+        name: accounts[idx] ? accounts[idx].name : `Account ${idx + 1}`,
+      })
+    );
+    wallets[storageService.currentWallet.id].accounts = switchedAccounts;
+    await storageService.updateWalletState({ wallets });
+    sessionService.broadcastEvent("networkChanged", {
+      network,
+      account: storageService.currentAccount,
+    });
+    return network;
   };
 }
 

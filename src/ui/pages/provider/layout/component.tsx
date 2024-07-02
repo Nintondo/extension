@@ -29,7 +29,10 @@ const Layout: FC<Props> = ({
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
-      if (!approval || !approval.params) return;
+      if (!approval || !approval.params) {
+        await notificationController.rejectApproval("Invalid params");
+        return;
+      }
       setOrigin(approval.params.session.origin);
       setIconUrl(approval.params.session.icon);
     })();

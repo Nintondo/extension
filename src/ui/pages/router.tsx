@@ -39,6 +39,7 @@ import Advanced from "./main/settings/security/advanced";
 import WalletSettings from "./main/settings/wallet/component";
 import NetworkSettings from "./main/settings/wallet/network/component";
 import Home from "./main/home";
+import SwitchNetwork from "./provider/switch-network";
 
 export const guestRouter = createHashRouter([
   {
@@ -102,6 +103,7 @@ export const authenticatedRouter = createHashRouter([
       { path: "signPsbt", element: <SignPsbt /> },
       { path: "inscribeTransfer", element: <InscribeTransfer /> },
       { path: "multiPsbtSign", element: <MultiPsbtSign /> },
+      { path: "switchNetwork", element: <SwitchNetwork /> },
     ],
   },
   { path: "*", element: <Navigate to={"/"} /> },

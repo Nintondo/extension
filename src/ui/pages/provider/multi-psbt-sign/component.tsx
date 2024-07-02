@@ -8,6 +8,7 @@ import { useDecodePsbtInputs as useGetPsbtFields } from "@/ui/hooks/provider";
 import { t } from "i18next";
 import Modal from "@/ui/components/modal";
 import SignPsbtFileds from "@/ui/components/sign-psbt-fileds";
+import { useControllersState } from "@/ui/states/controllerState";
 
 const MultiPsbtSign = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -16,16 +17,23 @@ const MultiPsbtSign = () => {
   const [modalInputIndex, setModalInputIndex] = useState<number | undefined>(
     undefined
   );
+
+  const { notificationController } = useControllersState((v) => ({
+    notificationController: v.notificationController,
+  }));
   const getPsbtFields = useGetPsbtFields();
 
   const updateFields = useCallback(async () => {
     if (fields.length <= 0) setLoading(true);
     const resultFields = await getPsbtFields();
-    if (resultFields === undefined) return;
+    if (resultFields === undefined) {
+      await notificationController.rejectApproval("Invalid psbt(s)");
+      return;
+    }
     setFields(resultFields.fields);
     setFee(resultFields.fee + " BEL");
     setLoading(false);
-  }, [getPsbtFields, fields]);
+  }, [getPsbtFields, fields, notificationController]);
 
   useEffect(() => {
     if (fields.length) return;

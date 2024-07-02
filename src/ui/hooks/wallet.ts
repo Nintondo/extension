@@ -334,7 +334,7 @@ export const useSwitchNetwork = () => {
           updatedWallets[selectedWallet].accounts
         );
       await updateWalletState({ wallets: updatedWallets });
-      await notificationController.changedAccount();
+      await notificationController.switchedNetwork(network);
       navigate("/");
     },
     [

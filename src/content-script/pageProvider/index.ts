@@ -10,6 +10,7 @@ import type {
   SendBEL,
   SignPsbtOptions,
 } from "@/background/services/keyring/types";
+import { Network } from "belcoinjs-lib";
 
 const script = document.currentScript;
 const channelName = script?.getAttribute("channel") || "NINTONDOWALLET";
@@ -256,6 +257,19 @@ export class NintondoProvider extends EventEmitter {
   getVersion = async () => {
     return this._request({
       method: "getVersion",
+    });
+  };
+
+  switchNetwork = async (data: { network: Network }) => {
+    return this._request({
+      method: "switchNetwork",
+      params: { data },
+    });
+  };
+
+  getNetwork = async () => {
+    return this._request({
+      method: "getNetwork",
     });
   };
 }

@@ -299,6 +299,10 @@
     "warning": "Warning",
     "anyone_can_pay_warning": "This input has SIGHASH_SINGLE | ANYONECANPAY flag",
     "multi_psbt_sign": "Sign transactions",
-    "fee": "Fee"
+    "fee": "Fee",
+    "switch": "Switch",
+    "switch_network": "Website wants you to switch your network to",
+    "switch_network_title": "Switch network",
+    "switch_network_request": "Switch network request"
   }
 }
