@@ -2,20 +2,33 @@ import { networks, Psbt } from "belcoinjs-lib";
 import { keyringService, sessionService, storageService } from "../../services";
 import "reflect-metadata/lite";
 import permission from "@/background/services/permission";
-import type { SendBEL } from "@/background/services/keyring/types";
-import { SignPsbtOptions } from "@/shared/interfaces/provider";
 import apiController from "../apiController";
 import { IAccount } from "@/shared/interfaces";
-import { NetworkType } from "nintondo-sdk";
+import { INintondoProvider, NetworkType } from "nintondo-sdk";
 import { isTestnet } from "@/ui/utils";
+import { ethErrors } from "eth-rpc-errors";
 
-class ProviderController {
+type IProviderController<
+  K extends keyof INintondoProvider = keyof Omit<INintondoProvider, "on">
+> = {
+  [P in K]: (p: Payload<P>) => ReturnType<INintondoProvider[P]>;
+};
+
+type Payload<P extends keyof INintondoProvider> = {
+  session: { origin: string };
+  data: {
+    params: Parameters<INintondoProvider[P]>;
+  };
+  approvalRes?: any;
+};
+
+class ProviderController implements IProviderController {
   connect = async () => {
     if (
       storageService.currentWallet === undefined ||
       !storageService.currentAccount
     )
-      return undefined;
+      return "";
     const account = storageService.currentAccount.address;
     return account ?? "";
   };
@@ -30,66 +43,50 @@ class ProviderController {
     return isTestnet(storageService.appState.network) ? "testnet" : "mainnet";
   };
 
-  @Reflect.metadata("SAFE", true)
-  getBalance = async ({
-    session: { origin },
-  }: {
-    session: { origin: string };
-  }) => {
-    if (!permission.siteIsConnected(origin)) return;
-    if (!storageService.currentAccount?.address) return;
-    if (storageService.currentAccount.balance !== undefined)
-      return storageService.currentAccount.balance;
-    return (
-      await apiController.getAccountStats(storageService.currentAccount.address)
-    )?.balance;
+  @Reflect.metadata("CONNECTED", true)
+  getBalance = async () => {
+    if (!storageService.currentAccount?.address)
+      throw ethErrors.provider.chainDisconnected("Account not found");
+    if (typeof storageService.currentAccount?.balance === "undefined")
+      throw ethErrors.provider.chainDisconnected("Balance is not initialized");
+
+    const stats = await apiController.getAccountStats(
+      storageService.currentAccount.address
+    );
+
+    if (typeof stats === "undefined")
+      throw ethErrors.provider.chainDisconnected();
+
+    return stats.balance;
+  };
+
+  @Reflect.metadata("CONNECTED", true)
+  getAccountName = async () => {
+    if (!storageService.currentAccount?.address)
+      throw ethErrors.provider.chainDisconnected("Account not found");
+
+    return storageService.currentAccount.name;
   };
 
   @Reflect.metadata("SAFE", true)
-  getAccountName = async ({
-    session: { origin },
-  }: {
-    session: { origin: string };
-  }) => {
-    if (!permission.siteIsConnected(origin)) return undefined;
-    const account = storageService.currentAccount;
-    if (!account) return null;
-    return account.name;
-  };
-
-  @Reflect.metadata("SAFE", true)
-  isConnected = async ({
-    session: { origin },
-  }: {
-    session: { origin: string };
-  }) => {
+  isConnected = async ({ session: { origin } }: Payload<"isConnected">) => {
     return permission.siteIsConnected(origin);
   };
 
-  @Reflect.metadata("SAFE", true)
-  getAccount = async ({
-    session: { origin },
-  }: {
-    session: { origin: string };
-  }) => {
-    if (!permission.siteIsConnected(origin)) return undefined;
-    if (storageService.currentAccount?.address === undefined) return undefined;
+  @Reflect.metadata("CONNECTED", true)
+  getAccount = async () => {
+    if (!storageService.currentAccount?.address)
+      throw ethErrors.provider.chainDisconnected("Account not found");
+
     return storageService.currentAccount.address;
   };
 
-  @Reflect.metadata("SAFE", true)
+  @Reflect.metadata("CONNECTED", true)
   calculateFee = async ({
-    session: { origin },
     data: {
-      params: { hex, feeRate },
+      params: [hex, feeRate],
     },
-  }: {
-    session: { origin: string };
-    data: {
-      params: { hex: string; feeRate: number };
-    };
-  }) => {
-    if (!permission.siteIsConnected(origin)) return undefined;
+  }: Payload<"calculateFee">) => {
     const psbt = Psbt.fromHex(hex);
     (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = true;
 
@@ -104,94 +101,74 @@ class ProviderController {
     return fee;
   };
 
-  @Reflect.metadata("SAFE", true)
-  getPublicKey = async ({
-    session: { origin },
-  }: {
-    session: { origin: string };
-  }) => {
-    if (!permission.siteIsConnected(origin)) return undefined;
-    const _account = storageService.currentAccount;
-    if (!_account || !_account.address) return undefined;
-    return keyringService.exportPublicKey(_account.address);
+  @Reflect.metadata("CONNECTED", true)
+  getPublicKey = async () => {
+    if (!storageService.currentAccount?.address)
+      throw ethErrors.provider.chainDisconnected("Account not found");
+
+    return keyringService.exportPublicKey(
+      storageService.currentAccount.address
+    );
   };
 
-  @Reflect.metadata("APPROVAL", [
-    "SignText",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (_req: any) => {},
-  ])
+  @Reflect.metadata("APPROVAL", ["SignText"])
   signMessage = async ({
     data: {
-      params: { text },
+      params: [text],
     },
-  }: {
-    data: {
-      params: { text: string };
-    };
-  }) => {
-    const account = storageService.currentAccount;
-    if (!account || !account.address) return;
+  }: Payload<"signMessage">) => {
+    if (!storageService.currentAccount?.address)
+      throw ethErrors.provider.chainDisconnected("Account not found");
+
     const message = keyringService.signMessage({
-      from: account.address,
+      from: storageService.currentAccount.address,
       data: text,
     });
     return message;
   };
 
-  @Reflect.metadata("APPROVAL", [
-    "CreateTx",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (_req: any) => {},
-  ])
-  createTx = async ({ data: { params } }: { data: { params: SendBEL } }) => {
-    const account = storageService.currentAccount;
-    if (!account) return;
-    const tx = await keyringService.sendBEL(params);
+  @Reflect.metadata("APPROVAL", ["CreateTx"])
+  createTx = async ({
+    data: {
+      params: [payload],
+    },
+  }: Payload<"createTx">) => {
+    if (!storageService.currentAccount?.address)
+      throw ethErrors.provider.chainDisconnected("Account not found");
+
+    const network = storageService.appState.network;
+    const tx = await keyringService.sendBEL({
+      ...payload,
+      network,
+    });
     const psbt = Psbt.fromHex(tx);
     return psbt.extractTransaction().toHex();
   };
 
-  @Reflect.metadata("APPROVAL", [
-    "signPsbt",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (_req: any) => {},
-  ])
-  signPsbt = async (data: {
+  @Reflect.metadata("APPROVAL", ["signPsbt"])
+  signPsbt = async ({
     data: {
-      params: {
-        psbtBase64: string;
-        options?: SignPsbtOptions;
-      };
-    };
-  }) => {
-    const psbt = Psbt.fromBase64(data.data.params.psbtBase64);
-    await keyringService.signPsbtWithoutFinalizing(
-      psbt,
-      data.data.params.options?.toSignInputs
-    );
+      params: [psbtBase64, options],
+    },
+  }: Payload<"signPsbt">) => {
+    const psbt = Psbt.fromBase64(psbtBase64);
+    await keyringService.signPsbtWithoutFinalizing(psbt, options?.toSignInputs);
     return psbt.toBase64();
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Reflect.metadata("APPROVAL", ["inscribeTransfer", (_req: any) => {}])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  inscribeTransfer = async (data: {
-    approvalRes: { mintedAmount: number };
-  }) => {
+  @Reflect.metadata("APPROVAL", ["inscribeTransfer"])
+  inscribeTransfer = async (data: Payload<"inscribeTransfer">) => {
     return { mintedAmount: data.approvalRes?.mintedAmount };
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Reflect.metadata("APPROVAL", ["multiPsbtSign", (_req: any) => {}])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  multiPsbtSign = async (data: {
+  @Reflect.metadata("APPROVAL", ["multiPsbtSign"])
+  multiPsbtSign = async ({
     data: {
-      params: { data: { psbtBase64: string; options?: SignPsbtOptions }[] };
-    };
-  }) => {
+      params: [items],
+    },
+  }: Payload<"multiPsbtSign">) => {
     return await Promise.all(
-      data.data.params.data.map(async (f) => {
+      items.map(async (f) => {
         const psbt = Psbt.fromBase64(f.psbtBase64);
         await keyringService.signPsbtWithoutFinalizing(
           psbt,
@@ -202,21 +179,17 @@ class ProviderController {
     );
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Reflect.metadata("APPROVAL", ["switchNetwork", (_req: any) => {}])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  switchNetwork = async (data: {
+  @Reflect.metadata("APPROVAL", ["switchNetwork"])
+  switchNetwork = async ({
     data: {
-      params: { data: NetworkType };
-    };
-  }) => {
+      params: [networkStr],
+    },
+  }: Payload<"switchNetwork">) => {
     if (!storageService.currentWallet || !storageService.currentAccount) {
-      return;
+      throw ethErrors.provider.chainDisconnected("Account not found");
     }
     const network =
-      data.data.params.data === "testnet"
-        ? networks.testnet
-        : networks.bellcoin;
+      networkStr === "testnet" ? networks.testnet : networks.bellcoin;
     keyringService.switchNetwork(network);
     await storageService.updateAppState({ network });
     const wallets = storageService.walletState.wallets;
@@ -238,7 +211,7 @@ class ProviderController {
       network,
       account: storageService.currentAccount,
     });
-    return network;
+    return networkStr;
   };
 }
 

@@ -97,6 +97,7 @@ export class NintondoProvider
 
     try {
       const { network, accounts, isUnlocked }: any = await this._request({
+        // @ts-expect-error method is hidden
         method: "getProviderState",
       });
       if (isUnlocked) {
@@ -146,7 +147,10 @@ export class NintondoProvider
     this.emit(event, data);
   };
 
-  _request = async (data: any) => {
+  async _request<
+    K extends keyof INintondoProvider = keyof INintondoProvider,
+    T extends INintondoProvider[K] = INintondoProvider[K]
+  >(data: { method: K; params?: Parameters<T> }) {
     if (!data) {
       throw ethErrors.rpc.invalidRequest();
     }
@@ -159,8 +163,8 @@ export class NintondoProvider
       } catch (e) {
         throw serializeError(e);
       }
-    });
-  };
+    }) as ReturnType<T>;
+  }
 
   // public methods
   connect = async () => {
@@ -202,58 +206,44 @@ export class NintondoProvider
   createTx = async (data: SendBEL) => {
     return this._request({
       method: "createTx",
-      params: {
-        ...data,
-      },
+      params: [data],
     });
   };
 
   signMessage = async (text: string) => {
     return this._request({
       method: "signMessage",
-      params: {
-        text,
-      },
+      params: [text],
     });
   };
 
   calculateFee = async (hex: string, feeRate: number) => {
     return this._request({
       method: "calculateFee",
-      params: {
-        hex,
-        feeRate,
-      },
+      params: [hex, feeRate],
     });
   };
 
   signPsbt = async (psbtBase64: string, options?: SignPsbtOptions) => {
     return this._request({
       method: "signPsbt",
-      params: {
-        psbtBase64,
-        options,
-      },
+      params: [psbtBase64, options],
     });
   };
 
   inscribeTransfer = async (tick: string) => {
     return this._request({
       method: "inscribeTransfer",
-      params: {
-        tick,
-      },
+      params: [tick],
     });
   };
 
   multiPsbtSign = async (
-    data: { psbtBase65: string; options: SignPsbtOptions }[]
+    data: { psbtBase64: string; options: SignPsbtOptions }[]
   ) => {
     return this._request({
       method: "multiPsbtSign",
-      params: {
-        data,
-      },
+      params: [data],
     });
   };
 
@@ -263,10 +253,10 @@ export class NintondoProvider
     });
   };
 
-  switchNetwork = async (data: { network: NetworkType }) => {
+  switchNetwork = async (network: NetworkType) => {
     return this._request({
       method: "switchNetwork",
-      params: { data },
+      params: [network],
     });
   };
 

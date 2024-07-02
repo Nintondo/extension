@@ -20,7 +20,7 @@ const SignMessage = () => {
         await notificationController.rejectApproval("Invalid params");
         return;
       }
-      setMessage(approval.params.data.text);
+      setMessage(approval.params.data[0]);
     })();
   }, [notificationController]);
 

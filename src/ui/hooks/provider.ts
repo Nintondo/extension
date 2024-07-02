@@ -89,10 +89,10 @@ export const useDecodePsbtInputs = () => {
     const psbtsToApprove: Psbt[] = [];
     const result: IField[][] = [];
     if (approval.approvalComponent !== "multiPsbtSign") {
-      psbtsToApprove.push(Psbt.fromBase64(approval.params.data.psbtBase64));
+      psbtsToApprove.push(Psbt.fromBase64(approval.params.data[0]));
     } else {
-      for (const psbtBase64 of approval.params.data.data) {
-        psbtsToApprove.push(Psbt.fromBase64(psbtBase64.psbtBase64));
+      for (const psbt of approval.params.data[0]) {
+        psbtsToApprove.push(Psbt.fromBase64(psbt[0]));
       }
     }
 
@@ -128,8 +128,8 @@ export const useDecodePsbtInputs = () => {
         const outpoint =
           txInput.hash.reverse().toString("hex") + ":" + txInput.index;
         const isImportant = (
-          approval.params.data as { options?: SignPsbtOptions }
-        ).options?.toSignInputs
+          approval.params.data[1] as SignPsbtOptions | undefined
+        )?.toSignInputs
           ?.map((f) => f.index)
           .includes(i);
 

@@ -37,10 +37,23 @@ const flowContext = flow
   })
   .use(async (ctx, next) => {
     const { mapMethod } = ctx;
-    if (!Reflect.getMetadata("SAFE", providerController, mapMethod)) {
+    if (
+      !Reflect.getMetadata("SAFE", providerController, mapMethod) &&
+      !Reflect.getMetadata("CONNECTED", providerController, mapMethod)
+    ) {
       if (!storageService.appState.isUnlocked) {
         ctx.request.requestedApproval = true;
         await notificationService.requestApproval({ lock: true });
+      }
+    }
+
+    return next();
+  })
+  .use(async (ctx, next) => {
+    const { mapMethod } = ctx;
+    if (Reflect.getMetadata("CONNECTED", providerController, mapMethod)) {
+      if (!permissionService.siteIsConnected(ctx.request.session.origin)) {
+        throw ethErrors.provider.disconnected();
       }
     }
 
@@ -54,7 +67,10 @@ const flowContext = flow
       },
       mapMethod,
     } = ctx;
-    if (!Reflect.getMetadata("SAFE", providerController, mapMethod)) {
+    if (
+      !Reflect.getMetadata("SAFE", providerController, mapMethod) &&
+      !Reflect.getMetadata("CONNECTED", providerController, mapMethod)
+    ) {
       if (!permissionService.siteIsConnected(origin)) {
         ctx.request.requestedApproval = true;
         await notificationService.requestApproval(
@@ -82,9 +98,7 @@ const flowContext = flow
       },
       mapMethod,
     } = ctx;
-    // ! Disabled eslint and typescript becouse idk what options is, but if u see it please think about this 'options = {}'
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [approvalType, condition, _ = {}] =
+    const [approvalType, condition = () => {}] =
       Reflect.getMetadata("APPROVAL", providerController, mapMethod) || [];
 
     if (approvalType && (!condition || !condition(ctx.request))) {
@@ -102,11 +116,6 @@ const flowContext = flow
         },
         { route: `/provider/${method}` }
       );
-      // if (isSignApproval(approvalType)) {
-      //   permissionService.updateConnectSite(origin, { isSigned: true }, true);
-      // } else {
-      //   permissionService.touchConnectedSite(origin);
-      // }
     }
     return next();
   })
