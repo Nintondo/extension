@@ -10,7 +10,7 @@ import type {
   SendBEL,
   SignPsbtOptions,
 } from "@/background/services/keyring/types";
-import { Network } from "belcoinjs-lib";
+import { INintondoProvider, NetworkType } from "nintondo-sdk";
 
 const script = document.currentScript;
 const channelName = script?.getAttribute("channel") || "NINTONDOWALLET";
@@ -33,7 +33,10 @@ interface NintondoProviderProps {
   onInit?: () => void;
 }
 
-export class NintondoProvider extends EventEmitter {
+export class NintondoProvider
+  extends EventEmitter
+  implements INintondoProvider
+{
   _selectedAddress: string | null = null;
   _network: string | null = null;
   _isConnected = false;
@@ -260,7 +263,7 @@ export class NintondoProvider extends EventEmitter {
     });
   };
 
-  switchNetwork = async (data: { network: Network }) => {
+  switchNetwork = async (data: { network: NetworkType }) => {
     return this._request({
       method: "switchNetwork",
       params: { data },
@@ -276,7 +279,7 @@ export class NintondoProvider extends EventEmitter {
 
 declare global {
   interface Window {
-    nintondo: NintondoProvider;
+    nintondo: INintondoProvider;
   }
 }
 
