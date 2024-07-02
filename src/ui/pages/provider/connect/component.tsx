@@ -1,8 +1,8 @@
 import { FingerPrintIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
 import { t } from "i18next";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { shortAddress } from "@/shared/utils/transactions";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const Connect = () => {
   const currentAccount = useGetCurrentAccount();

@@ -1,24 +1,21 @@
 import type { ConnectedSite } from "@/background/services/permission";
 import { useControllersState } from "@/ui/states/controllerState";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 const ConnectedSites = () => {
   const [connectedSites, setConnectedSites] = useState<ConnectedSite[]>([]);
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
-
-  const updateConnectedSites = useCallback(async () => {
-    setConnectedSites(await notificationController.getConnectedSites());
-  }, [notificationController, setConnectedSites]);
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    updateConnectedSites();
-  }, [updateConnectedSites]);
+    notificationController.getConnectedSites().then(setConnectedSites);
+  }, [notificationController]);
 
   const niceUrl = (url: string) => {
     if (url.includes("http://")) return url.replace("http://", "");

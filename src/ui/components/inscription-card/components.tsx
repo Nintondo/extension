@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { shortAddress } from "@/shared/utils/transactions";
 import { PREVIEW_URL, TESTNET_HTML_PREVIEW_URL } from "@/shared/constant";
 import { useAppState } from "@/ui/states/appState";
-import { isTestnet } from "@/ui/utils";
+import { isTestnet, ss } from "@/ui/utils";
 
 interface Props {
   inscription: Inscription;
@@ -20,7 +20,7 @@ const applyPixelation = (img?: HTMLImageElement) => {
 
 const InscriptionCard: FC<Props> = ({ inscription }) => {
   const navigate = useNavigate();
-  const { network } = useAppState((v) => ({ network: v.network }));
+  const { network } = useAppState(ss(["network"]));
 
   const imageRef = useRef<HTMLImageElement>(null);
 

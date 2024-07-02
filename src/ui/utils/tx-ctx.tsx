@@ -11,20 +11,18 @@ import React, {
   Dispatch,
   useRef,
 } from "react";
-import { useGetCurrentAccount } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
 import { useDebounceCall } from "../hooks/debounce";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
+import { useGetCurrentAccount } from "../states/walletState";
+import { ss } from ".";
 
 const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
-
   const [lastBlock, setLastBlock] = useState<number>(0);
-  const { apiController } = useControllersState((v) => ({
-    apiController: v.apiController,
-  }));
+  const { apiController } = useControllersState(ss(["apiController"]));
   const [feeRates, setFeeRates] = useState<{
     fast: number;
     slow: number;

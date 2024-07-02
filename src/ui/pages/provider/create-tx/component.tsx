@@ -5,13 +5,14 @@ import { KeyIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
 import type { CreateTxProps } from "@/shared/interfaces/notification";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 const CreateTx = () => {
   const [psbt, setPsbt] = useState<CreateTxProps>();
 
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

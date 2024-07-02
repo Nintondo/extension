@@ -3,11 +3,10 @@ import s from "./styles.module.scss";
 import cn from "classnames";
 import { useAppState } from "@/ui/states/appState";
 import { useSwitchNetwork } from "@/ui/hooks/wallet";
+import { ss } from "@/ui/utils";
 
 const NetworkSettings = () => {
-  const { network } = useAppState((v) => ({
-    network: v.network,
-  }));
+  const { network } = useAppState(ss(["network"]));
   const switchNetwork = useSwitchNetwork();
 
   return (

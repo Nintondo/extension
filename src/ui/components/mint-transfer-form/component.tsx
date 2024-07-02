@@ -54,59 +54,49 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
     }));
   };
 
-  const inscribe = useCallback(
-    async ({ amount, feeRate }: FormType) => {
-      try {
-        setLoading(true);
-        if (Number.isNaN(Number(amount))) {
-          return toast.error(t("inscriptions.amount_is_text_error"));
-        }
-        if (
-          selectedMintToken?.balance &&
-          Number(amount) > selectedMintToken?.balance
-        ) {
-          return toast.error(t("inscriptions.amount_exceeds_balance"));
-        }
-        if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
-          return toast.error(t("send.create_send.fee_is_text_error"));
-        }
-        if (Number(amount) < 1) {
-          return toast.error(t("inscriptions.minimum_amount_error"));
-        }
-        if (!selectedMintToken?.tick) {
-          return toast.error("inscriptions.tick_is_not_set");
-        }
-        await inscribeTransferToken(
-          {
-            p: "bel-20",
-            op: "transfer",
-            tick: selectedMintToken?.tick,
-            amt: amount,
-          },
-          formData.feeRate as number
-        );
-        setSelectedMintToken(undefined);
-        if (mintedHandler) mintedHandler(Number(amount));
-        setFormData({
-          amount: "",
-          feeRate: 10,
-        });
-      } catch (e) {
-        if (e instanceof Error) toast.error(e.message);
-        else throw e;
-      } finally {
-        setLoading(false);
+  const inscribe = async ({ amount, feeRate }: FormType) => {
+    try {
+      setLoading(true);
+      if (Number.isNaN(Number(amount))) {
+        return toast.error(t("inscriptions.amount_is_text_error"));
       }
-    },
-    [
-      setLoading,
-      formData,
-      inscribeTransferToken,
-      selectedMintToken,
-      setSelectedMintToken,
-      mintedHandler,
-    ]
-  );
+      if (
+        selectedMintToken?.balance &&
+        Number(amount) > selectedMintToken?.balance
+      ) {
+        return toast.error(t("inscriptions.amount_exceeds_balance"));
+      }
+      if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
+        return toast.error(t("send.create_send.fee_is_text_error"));
+      }
+      if (Number(amount) < 1) {
+        return toast.error(t("inscriptions.minimum_amount_error"));
+      }
+      if (!selectedMintToken?.tick) {
+        return toast.error("inscriptions.tick_is_not_set");
+      }
+      await inscribeTransferToken(
+        {
+          p: "bel-20",
+          op: "transfer",
+          tick: selectedMintToken?.tick,
+          amt: amount,
+        },
+        formData.feeRate as number
+      );
+      setSelectedMintToken(undefined);
+      if (mintedHandler) mintedHandler(Number(amount));
+      setFormData({
+        amount: "",
+        feeRate: 10,
+      });
+    } catch (e) {
+      if (e instanceof Error) toast.error(e.message);
+      else throw e;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -148,10 +138,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
           <span className="input-span">{t("send.create_send.fee_label")}</span>
           <FeeInput
             // eslint-disable-next-line react-hooks/rules-of-hooks
-            onChange={useCallback(
-              (v) => setFormData((prev) => ({ ...prev, feeRate: v })),
-              [setFormData]
-            )}
+            onChange={(v) => setFormData((prev) => ({ ...prev, feeRate: v }))}
             value={formData.feeRate}
           />
         </div>

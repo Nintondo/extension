@@ -6,26 +6,18 @@ import { FC } from "react";
 
 import s from "./styles.module.scss";
 import { t } from "i18next";
-
-// interface FormType {
-//   address: string;
-//   amount: string;
-//   feeAmount: number | string;
-//   includeFeeInAmount: boolean;
-// }
+import { ss } from "@/ui/utils";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  // setFormData: React.Dispatch<React.SetStateAction<FormType>>;
   setAddress: (address: string) => void;
 }
 
 const AddressBookModal: FC<Props> = ({ isOpen, onClose, setAddress }) => {
-  const { addressBook, updateAppState } = useAppState((v) => ({
-    addressBook: v.addressBook,
-    updateAppState: v.updateAppState,
-  }));
+  const { addressBook, updateAppState } = useAppState(
+    ss(["addressBook", "updateAppState"])
+  );
 
   const onRemove = async (address: string) => {
     await updateAppState({

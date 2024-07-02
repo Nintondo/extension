@@ -1,31 +1,31 @@
 import { TagIcon, KeyIcon } from "@heroicons/react/24/outline";
 import s from "./styles.module.scss";
 import { shortAddress } from "@/shared/utils/transactions";
-import {
-  useGetCurrentAccount,
-  useGetCurrentWallet,
-} from "@/ui/states/walletState";
 import cn from "classnames";
 import CopyBtn from "@/ui/components/copy-btn";
-import { useSwitchAccount, useUpdateCurrentWallet } from "@/ui/hooks/wallet";
+import { useSwitchAccount } from "@/ui/hooks/wallet";
 import { useNavigate } from "react-router-dom";
 import Card from "@/ui/components/card";
 import Rename from "@/ui/components/rename";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { t } from "i18next";
+import {
+  useGetCurrentAccount,
+  useGetCurrentWallet,
+  useWalletState,
+} from "@/ui/states/walletState";
+import { ss } from "@/ui/utils";
 
 const SwitchAccount = () => {
   const [renameId, setRenameId] = useState<number | undefined>(undefined);
 
-  const currentAccount = useGetCurrentAccount();
-  const currentWallet = useGetCurrentWallet();
-
   const switchAccount = useSwitchAccount();
   const navigate = useNavigate();
+  const { updateSelectedWallet } = useWalletState(ss(["updateSelectedWallet"]));
 
-  const updateCurrentWallet = useUpdateCurrentWallet();
-
+  const currentAccount = useGetCurrentAccount();
+  const currentWallet = useGetCurrentWallet();
   const onRename = async (name: string) => {
     if (!currentWallet) return;
     if (currentWallet.accounts.map((i) => i.name).includes(name.trim()))
@@ -33,7 +33,7 @@ const SwitchAccount = () => {
 
     setRenameId(undefined);
 
-    await updateCurrentWallet({
+    await updateSelectedWallet({
       accounts: currentWallet.accounts.map((i, idx) => {
         if (idx === renameId) {
           return {

@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { GlobeAltIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 const SwitchNetwork = () => {
   const [networkName, setNetworkName] = useState<string>();
 
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

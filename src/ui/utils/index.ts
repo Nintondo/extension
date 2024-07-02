@@ -50,3 +50,11 @@ export function isTestnet(network: Network) {
     network.scriptHash === networks.testnet.scriptHash
   );
 }
+
+export function ss<T extends Record<string, any>, K extends keyof T = keyof T>(
+  keys: K[]
+) {
+  return (state: T) => {
+    return Object.fromEntries(keys.map((i) => [i, state[i]])) as Pick<T, K>;
+  };
+}

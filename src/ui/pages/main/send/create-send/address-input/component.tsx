@@ -5,6 +5,7 @@ import s from "./styles.module.scss";
 import { FC, Fragment, useState } from "react";
 import { useAppState } from "@/ui/states/appState";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 interface Props {
   address: string;
@@ -15,9 +16,7 @@ interface Props {
 const AddressInput: FC<Props> = ({ address, onChange, onOpenModal }) => {
   const [filtered, setFiltered] = useState<string[]>([]);
 
-  const { addressBook } = useAppState((v) => ({
-    addressBook: v.addressBook,
-  }));
+  const { addressBook } = useAppState(ss(["addressBook"]));
 
   const getFiltered = (query: string) => {
     return addressBook.filter((i) => i.startsWith(query));

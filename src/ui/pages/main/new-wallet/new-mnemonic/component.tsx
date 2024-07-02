@@ -13,6 +13,7 @@ import SwitchAddressType from "@/ui/components/switch-address-type";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Switch from "@/ui/components/switch";
+import { ss } from "@/ui/utils";
 
 const NewMnemonic = () => {
   const location = useLocation();
@@ -20,17 +21,13 @@ const NewMnemonic = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [savedPhrase, setSavedPhrase] = useState(false);
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
-  const { updateAppState, network } = useAppState((v) => ({
-    updateAppState: v.updateAppState,
-    network: v.network,
-  }));
-  const { walletController, stateController } = useControllersState((v) => ({
-    walletController: v.walletController,
-    stateController: v.stateController,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const { updateAppState, network } = useAppState(
+    ss(["updateAppState", "network"])
+  );
+  const { walletController, stateController } = useControllersState(
+    ss(["walletController", "stateController"])
+  );
   const [mnemonicPhrase, setMnemonicPhrase] = useState<string | undefined>(
     undefined
   );

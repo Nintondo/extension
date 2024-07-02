@@ -3,7 +3,6 @@ import ReactLoading from "react-loading";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation } from "react-router-dom";
 import { ITransaction } from "@/shared/interfaces/api";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import { FC, useId, useMemo, useState } from "react";
 import Modal from "@/ui/components/modal";
@@ -12,10 +11,10 @@ import { shortAddress } from "@/shared/utils/transactions";
 import toast from "react-hot-toast";
 import { t } from "i18next";
 import { NINTONDO_URL } from "@/shared/constant";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const TransactionInfo = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-
   const currentAccount = useGetCurrentAccount();
 
   const {

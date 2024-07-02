@@ -3,6 +3,7 @@ import Select from "@/ui/components/select";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
 import { useAppState } from "@/ui/states/appState";
 import { useWalletState } from "@/ui/states/walletState";
+import { ss } from "@/ui/utils";
 import { t } from "i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -31,11 +32,9 @@ const RestorePrivKey = () => {
 
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
   const [loading, setLoading] = useState<boolean>(false);
-  const { network } = useAppState((v) => ({ network: v.network }));
+  const { network } = useAppState(ss(["network"]));
 
   const recoverWallet = async ({ privKey }: FormType) => {
     setLoading(true);

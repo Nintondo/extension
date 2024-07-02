@@ -2,9 +2,7 @@ import {
   useCreateBellsTxCallback,
   useCreateOrdTx,
 } from "@/ui/hooks/transactions";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import {
-  useCallback,
   useEffect,
   useState,
   ChangeEventHandler,
@@ -22,6 +20,7 @@ import AddressInput from "./address-input";
 import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 interface FormType {
   address: string;
@@ -212,10 +211,9 @@ const CreateSend = () => {
               {t("send.create_send.fee_label")}
             </span>
             <FeeInput
-              onChange={useCallback(
-                (v) => setFormData((prev) => ({ ...prev, feeAmount: v })),
-                [setFormData]
-              )}
+              onChange={(v) =>
+                setFormData((prev) => ({ ...prev, feeAmount: v }))
+              }
               value={formData.feeAmount}
             />
           </div>

@@ -1,12 +1,8 @@
 import s from "../styles.module.scss";
-import {
-  Cog6ToothIcon,
-  ChevronDownIcon,
-  // NewspaperIcon,
-} from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { useGetCurrentWallet } from "@/ui/states/walletState";
 import cn from "classnames";
+import { useGetCurrentWallet } from "@/ui/states/walletState";
 
 const WalletPanel = () => {
   const currentWallet = useGetCurrentWallet();

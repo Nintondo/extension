@@ -2,11 +2,10 @@ import i18n from "@/shared/locales/i18n";
 import { useAppState } from "@/ui/states/appState";
 import s from "./styles.module.scss";
 import cn from "classnames";
+import { ss } from "@/ui/utils";
 
 const Language = () => {
-  const { updateAppState } = useAppState((v) => ({
-    updateAppState: v.updateAppState,
-  }));
+  const { updateAppState } = useAppState(ss(["updateAppState"]));
 
   const changeLanguage = async (lng: string) => {
     await i18n.changeLanguage(lng);

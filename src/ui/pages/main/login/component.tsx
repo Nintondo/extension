@@ -6,7 +6,7 @@ import { useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { isNotification } from "@/ui/utils";
+import { isNotification, ss } from "@/ui/utils";
 import cn from "classnames";
 import PasswordInput from "@/ui/components/password-input";
 import { t } from "i18next";
@@ -21,20 +21,14 @@ const Login = () => {
       password: "",
     },
   });
-  const { updateAppState } = useAppState((v) => ({
-    updateAppState: v.updateAppState,
-  }));
+  const { updateAppState } = useAppState(ss(["updateAppState"]));
 
-  const { vaultIsEmpty, updateWalletState } = useWalletState((v) => ({
-    vaultIsEmpty: v.vaultIsEmpty,
-    updateWalletState: v.updateWalletState,
-  }));
+  const { vaultIsEmpty, updateWalletState } = useWalletState(
+    ss(["vaultIsEmpty", "updateWalletState"])
+  );
   const navigate = useNavigate();
   const { walletController, notificationController } = useControllersState(
-    (v) => ({
-      walletController: v.walletController,
-      notificationController: v.notificationController,
-    })
+    ss(["walletController", "notificationController"])
   );
 
   useEffect(() => {

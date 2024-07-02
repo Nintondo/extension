@@ -4,6 +4,7 @@ import { useControllersState } from "@/ui/states/controllerState";
 import { useForm } from "react-hook-form";
 import PasswordInput from "@/ui/components/password-input";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 interface FormType {
   oldPassword: string;
@@ -34,17 +35,12 @@ const ChangePassword = () => {
     },
   });
 
-  const { appPassword, logout } = useAppState((v) => ({
-    appPassword: v.password,
-    logout: v.logout,
-  }));
+  const { password: appPassword, logout } = useAppState(
+    ss(["password", "logout"])
+  );
 
-  const { updateAppState } = useAppState((v) => ({
-    updateAppState: v.updateAppState,
-  }));
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-  }));
+  const { updateAppState } = useAppState(ss(["updateAppState"]));
+  const { walletController } = useControllersState(ss(["walletController"]));
 
   const executeChangePassword = async ({
     confirmPassword,
@@ -56,7 +52,9 @@ const ChangePassword = () => {
       password === confirmPassword &&
       password !== appPassword
     ) {
-      await walletController.saveWallets(undefined, password);
+      await walletController.saveWallets({
+        newPassword: password,
+      });
       await updateAppState({ password });
       await logout();
     } else {

@@ -5,67 +5,49 @@ import {
   useGetCurrentWallet,
   useWalletState,
 } from "@/ui/states/walletState";
-import { useUpdateCurrentWallet } from "@/ui/hooks/wallet";
-import { useCallback } from "react";
 import { AddressType } from "bellhdw";
 import { useNavigate } from "react-router-dom";
+import { ss } from "@/ui/utils";
 
 const ChangeAddrType = () => {
   const { keyringController, notificationController, apiController } =
-    useControllersState((v) => ({
-      keyringController: v.keyringController,
-      walletController: v.walletController,
-      notificationController: v.notificationController,
-      apiController: v.apiController,
-    }));
-  const currentWallet = useGetCurrentWallet();
-  const { selectedWallet } = useWalletState((v) => ({
-    selectedWallet: v.selectedWallet,
-  }));
-  const updateCurrentWallet = useUpdateCurrentWallet();
+    useControllersState(
+      ss(["keyringController", "notificationController", "apiController"])
+    );
+  const { selectedWallet, updateSelectedWallet } = useWalletState(
+    ss(["selectedWallet", "updateSelectedWallet"])
+  );
   const currentAccount = useGetCurrentAccount();
+  const currentWallet = useGetCurrentWallet();
   const navigate = useNavigate();
 
-  const onSwitchAddress = useCallback(
-    async (type: AddressType) => {
-      if (
-        typeof selectedWallet === "undefined" ||
-        typeof currentAccount?.id === "undefined"
-      )
-        return;
-      const addresses = await keyringController.changeAddressType(
-        selectedWallet,
-        type
-      );
-      const newStats = await apiController.getAccountStats(
-        addresses[currentAccount.id]
-      );
-      await updateCurrentWallet({
-        ...currentWallet,
-        addressType: type,
-        accounts: currentWallet?.accounts.map((f, idx) => ({
-          ...f,
-          id: idx,
-          address: addresses[f.id],
-          balance: newStats?.balance ?? f.balance,
-          inscriptionBalance: newStats?.amount ?? f.inscriptionBalance,
-          inscriptionCounter: newStats?.count ?? f.inscriptionCounter,
-        })),
-      });
-      await notificationController.changedAccount();
-      navigate("/");
-    },
-    [
-      updateCurrentWallet,
-      keyringController,
-      notificationController,
-      currentWallet,
+  const onSwitchAddress = async (type: AddressType) => {
+    if (
+      typeof selectedWallet === "undefined" ||
+      typeof currentAccount?.id === "undefined"
+    )
+      return;
+    const addresses = await keyringController.changeAddressType(
       selectedWallet,
-      navigate,
-      apiController,
-      currentAccount?.id,
-    ]
-  );
+      type
+    );
+    const newStats = await apiController.getAccountStats(
+      addresses[currentAccount.id]
+    );
+    await updateSelectedWallet({
+      addressType: type,
+      accounts: currentWallet?.accounts.map((f, idx) => ({
+        ...f,
+        id: idx,
+        address: addresses[f.id],
+        balance: newStats?.balance ?? f.balance,
+        inscriptionBalance: newStats?.amount ?? f.inscriptionBalance,
+        inscriptionCounter: newStats?.count ?? f.inscriptionCounter,
+      })),
+    });
+    await notificationController.changedAccount();
+    navigate("/");
+  };
 
   return (
     <div className="px-6 h-full w-full">

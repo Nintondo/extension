@@ -17,7 +17,7 @@ import {
 import s from "./styles.module.scss";
 import Iframe from "@/ui/components/iframe";
 import { useAppState } from "@/ui/states/appState";
-import { isTestnet } from "@/ui/utils";
+import { isTestnet, ss } from "@/ui/utils";
 
 type PathOf<T> = T extends object
   ? {
@@ -82,7 +82,7 @@ const InscriptionDetails = () => {
   const [inscription, setInscription] = useState<
     CompletedInscription | undefined
   >(undefined);
-  const { network } = useAppState((v) => ({ network: v.network }));
+  const { network } = useAppState(ss(["network"]));
 
   const convertToCompletedInscription = useCallback(
     (inscription: Inscription): CompletedInscription => {

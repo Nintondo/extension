@@ -1,6 +1,7 @@
 import type { AddressType } from "bellhdw/src/hd/types";
 import type { IAccount } from "./accounts";
 import { Network } from "belcoinjs-lib";
+import { DecryptedSecrets } from "@/background/services/storage/types";
 
 export interface IWallet {
   id: number;
@@ -23,13 +24,6 @@ export interface IWalletStateBase {
   selectedAccount?: number;
 }
 
-export interface IWalletState extends IWalletStateBase {
-  updateWalletState: (
-    state: Partial<IWalletState>,
-    updateBack?: boolean
-  ) => Promise<void>;
-}
-
 export interface INewWalletProps {
   payload: string;
   walletType: "simple" | "root";
@@ -46,4 +40,10 @@ export interface DeleteWalletResult {
   wallets: IWallet[];
   selectedWallet?: number;
   selectedAccount: number;
+}
+
+export interface SaveWalletsPayload {
+  phrases?: DecryptedSecrets;
+  newPassword?: string;
+  wallets?: IWallet[];
 }

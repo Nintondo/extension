@@ -1,6 +1,7 @@
 import { useDebounce } from "@/ui/hooks/debounce";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
+import { ss } from "@/ui/utils";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { t } from "i18next";
@@ -8,11 +9,8 @@ import { useCallback, useState } from "react";
 import { useLocation } from "react-router";
 
 const SearchInscriptions = () => {
-  const { apiController } = useControllersState((v) => ({
-    apiController: v.apiController,
-  }));
+  const { apiController } = useControllersState(ss(["apiController"]));
   const currentAccount = useGetCurrentAccount();
-
   const currentRoute = useLocation();
 
   const { setCurrentPage, tokens, setSearchInscriptions, setSearchTokens } =

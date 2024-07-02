@@ -6,44 +6,50 @@ import { useState } from "react";
 import { useControllersState } from "@/ui/states/controllerState";
 import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
+import { ss } from "@/ui/utils";
 
 const Advanced = () => {
+  const { walletController } = useControllersState(ss(["walletController"]));
+  const { updateWalletState, wallets } = useWalletState(
+    ss(["updateWalletState", "wallets"])
+  );
   const currentWallet = useGetCurrentWallet();
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-  }));
-  const { updateWalletState, wallets } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-    wallets: v.wallets,
-  }));
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const toogleRootAccount = async () => {
+  const toggleRootAccount = async () => {
     try {
       setLoading(true);
-      await walletController.toogleRootAccount();
+      await walletController.toggleRootAccount();
       const accounts = await walletController.getAccounts();
+      const newWallets = wallets.map((i) => {
+        if (i.id !== currentWallet?.id) return i;
+        return {
+          ...i,
+          hideRoot: !i.hideRoot,
+          accounts: accounts.map((a, idx) => {
+            const prevAcc = i.accounts.find((i) => i.address === a);
+            return {
+              id: idx,
+              address: a,
+              balance: prevAcc?.balance ?? 0,
+              name: prevAcc?.name ?? `Account ${idx + 1}`,
+            };
+          }),
+        };
+      });
+      await walletController.saveWallets({
+        wallets: newWallets,
+      });
       await updateWalletState({
-        wallets: wallets.map((i) => {
-          if (i.id !== currentWallet?.id) return i;
-          return {
-            ...i,
-            hideRoot: !i.hideRoot,
-            accounts: accounts.map((a, idx) => {
-              const prevAcc = i.accounts.find((i) => i.address === a);
-              return {
-                id: idx,
-                address: a,
-                balance: prevAcc?.balance ?? 0,
-                name: prevAcc?.name ?? `Account ${idx + 1}`,
-              };
-            }),
-          };
-        }),
         selectedAccount: 0,
       });
-      await walletController.saveWallets();
+      await updateWalletState(
+        {
+          wallets: newWallets,
+        },
+        false
+      );
       navigate("/");
     } catch (e) {
       console.error(e);
@@ -60,10 +66,7 @@ const Advanced = () => {
         <Switch
           label={t("advanced.root_acc_warning")}
           value={!currentWallet?.hideRoot}
-          onChange={() => {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            toogleRootAccount();
-          }}
+          onChange={toggleRootAccount}
           locked={false}
         />
       ) : (

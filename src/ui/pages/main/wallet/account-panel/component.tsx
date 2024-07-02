@@ -1,10 +1,6 @@
 import s from "../styles.module.scss";
 import { ListBulletIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import {
-  useGetCurrentAccount,
-  useGetCurrentWallet,
-} from "@/ui/states/walletState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { shortAddress } from "@/shared/utils/transactions";
 import CopyBtn from "@/ui/components/copy-btn";
@@ -13,12 +9,15 @@ import cn from "classnames";
 import { Popover, Transition, useClose } from "@headlessui/react";
 import { Fragment, useRef } from "react";
 import { calcBalanceLength } from "@/ui/utils";
+import {
+  useGetCurrentAccount,
+  useGetCurrentWallet,
+} from "@/ui/states/walletState";
 
 const AccountPanel = () => {
-  const currentWallet = useGetCurrentWallet();
-  const currentAccount = useGetCurrentAccount();
-
   const { currentPrice } = useTransactionManagerContext();
+  const currentAccount = useGetCurrentAccount();
+  const currentWallet = useGetCurrentWallet();
 
   const close = useClose();
   const leaveTimeOutRef = useRef<NodeJS.Timeout | null>(null);

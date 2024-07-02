@@ -1,5 +1,6 @@
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentWallet } from "@/ui/states/walletState";
+import { ss } from "@/ui/utils";
 import { useEffect } from "react";
 import Loading from "react-loading";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -8,9 +9,7 @@ const Home = () => {
   const currentWallet = useGetCurrentWallet();
   const navigate = useNavigate();
 
-  const { stateController } = useControllersState((v) => ({
-    stateController: v.stateController,
-  }));
+  const { stateController } = useControllersState(ss(["stateController"]));
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -1,18 +1,19 @@
-import type { IAppStateBase, IWalletState } from "@/shared/interfaces";
+import type { IAppStateBase } from "@/shared/interfaces";
 import type { IStateController } from "@/shared/interfaces/stateController";
 import { storageService } from "../services";
+import type { IWalletState } from "@/ui/states/walletState";
 
 class StateController implements IStateController {
   async init() {
     return await storageService.init();
   }
 
-  async updateAppState(state: Partial<IAppStateBase>) {
-    await storageService.updateAppState(state);
+  async updateAppState(state: Partial<IAppStateBase>, updateFront = true) {
+    await storageService.updateAppState(state, updateFront);
   }
 
-  async updateWalletState(state: Partial<IWalletState>) {
-    await storageService.updateWalletState(state);
+  async updateWalletState(state: Partial<IWalletState>, updateFront = true) {
+    await storageService.updateWalletState(state, updateFront);
   }
 
   async clearPendingWallet() {
@@ -20,7 +21,7 @@ class StateController implements IStateController {
   }
 
   async getPendingWallet() {
-    return await storageService.getPengingWallet();
+    return await storageService.getPendingWallet();
   }
 
   async getWalletPhrase(index: number, password: string) {

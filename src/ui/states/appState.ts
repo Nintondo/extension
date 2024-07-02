@@ -14,7 +14,7 @@ export const useAppState = create<IAppState>()((set) => ({
   network: networks.bellcoin,
   updateAppState: async (app: Partial<IAppState>, updateBack = true) => {
     if (updateBack) {
-      await proxy.updateAppState(app);
+      await proxy.updateAppState(app, false);
     }
     set(app);
   },

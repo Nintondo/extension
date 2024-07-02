@@ -17,22 +17,17 @@ import { useControllersState } from "./states/controllerState";
 import { excludeKeysFromObj } from "@/shared/utils";
 import i18n from "../shared/locales/i18n";
 import PortMessage from "@/shared/utils/message/portMessage";
+import { ss } from "./utils";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
-  const { isReady, isUnlocked, updateAppState } = useAppState((v) => ({
-    isReady: v.isReady,
-    isUnlocked: v.isUnlocked,
-    updateAppState: v.updateAppState,
-  }));
+  const { isReady, isUnlocked, updateAppState } = useAppState(
+    ss(["isReady", "isUnlocked", "updateAppState"])
+  );
 
-  const { updateControllers } = useControllersState((v) => ({
-    updateControllers: v.updateControllers,
-  }));
+  const { updateControllers } = useControllersState(ss(["updateControllers"]));
 
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
 
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
@@ -71,51 +66,30 @@ export default function App() {
     }
   }, [updateWalletState, updateAppState, updateControllers]);
 
-  const updateFromStore = useCallback(
-    async (type: "app" | "wallet", params: any[]) => {
-      if (isReady && isUnlocked) {
-        if (type === "wallet") {
-          await updateWalletState(params[0], false);
-        } else {
-          await updateAppState(params[0], false);
-        }
-      }
-    },
-    [isReady, isUnlocked, updateAppState, updateWalletState]
-  );
-
   useEffect(() => {
     const pm = new PortMessage().connect("popup");
     //eslint-disable-next-line @typescript-eslint/no-floating-promises
     pm.listen(async (data: { method: string; params: any[]; type: string }) => {
-      if (data.type !== "broadcast") {
+      if (data.type !== "broadcast" || !isReady || !isUnlocked) {
         return;
       }
       if (data.method === "updateFromAppState") {
-        await updateFromStore("app", data.params);
+        await updateAppState(data.params[0], false);
       } else if (data.method === "updateFromWalletState") {
-        await updateFromStore("wallet", data.params);
+        await updateWalletState(data.params[0], false);
       }
     });
     return () => {
       pm.dispose();
     };
-  }, [updateFromStore]);
+  }, [isReady, isUnlocked, updateAppState, updateWalletState]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (!isReady) setupApp();
     else if (isReady && isUnlocked) setRouter(authenticatedRouter);
     else setRouter(guestRouter);
-  }, [
-    isReady,
-    isUnlocked,
-    updateWalletState,
-    updateAppState,
-    router,
-    setRouter,
-    setupApp,
-  ]);
+  }, [isReady, isUnlocked, router, setRouter, setupApp]);
 
   return (
     <div>

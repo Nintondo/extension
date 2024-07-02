@@ -13,14 +13,13 @@ import { TileProps } from "@/ui/components/tile/component";
 
 import { t } from "i18next";
 import SettingsLayout from "@/ui/components/settings-layout";
+import { ss } from "@/ui/utils";
 
 const ICON_SIZE = 8;
 const ICON_CN = `w-${ICON_SIZE} h-${ICON_SIZE}`;
 
 const Settings = () => {
-  const { logout } = useAppState((v) => ({
-    logout: v.logout,
-  }));
+  const { logout } = useAppState(ss(["logout"]));
 
   const items: TileProps[] = [
     {

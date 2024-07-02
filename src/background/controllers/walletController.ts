@@ -5,10 +5,10 @@ import type {
   INewWalletProps,
   IWallet,
   IWalletController,
+  SaveWalletsPayload,
 } from "@/shared/interfaces";
 import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
-import type { DecryptedSecrets } from "../services/storage/types";
 import * as bip39 from "bip39";
 import { AddressType, HDPrivateKey } from "bellhdw";
 import { Network } from "belcoinjs-lib";
@@ -42,14 +42,14 @@ class WalletController implements IWalletController {
     };
   }
 
-  async saveWallets(data?: DecryptedSecrets, newPassword?: string) {
+  async saveWallets(payload?: SaveWalletsPayload) {
     if (storageService.appState.password === undefined)
       throw new Error("Internal error: Missing password");
     await storageService.saveWallets({
       password: storageService.appState.password,
-      wallets: storageService.walletState.wallets,
-      payload: data,
-      newPassword,
+      wallets: payload?.wallets ?? storageService.walletState.wallets,
+      payload: payload?.phrases,
+      newPassword: payload?.newPassword,
     });
   }
 
@@ -116,8 +116,8 @@ class WalletController implements IWalletController {
     return keyringService.deleteWallet(id);
   }
 
-  async toogleRootAccount(): Promise<void> {
-    return await keyringService.toogleRootAcc();
+  async toggleRootAccount(): Promise<void> {
+    return await keyringService.toggleRootAcc();
   }
 
   async getAccounts(): Promise<string[]> {

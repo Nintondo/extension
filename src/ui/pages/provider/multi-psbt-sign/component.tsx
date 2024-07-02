@@ -9,6 +9,7 @@ import { t } from "i18next";
 import Modal from "@/ui/components/modal";
 import SignPsbtFileds from "@/ui/components/sign-psbt-fileds";
 import { useControllersState } from "@/ui/states/controllerState";
+import { ss } from "@/ui/utils";
 
 const MultiPsbtSign = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,9 +19,9 @@ const MultiPsbtSign = () => {
     undefined
   );
 
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
   const getPsbtFields = useGetPsbtFields();
 
   const updateFields = useCallback(async () => {

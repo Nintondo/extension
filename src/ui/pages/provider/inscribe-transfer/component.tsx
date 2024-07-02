@@ -2,16 +2,14 @@ import { IToken } from "@/shared/interfaces/token";
 import MintTransferForm from "@/ui/components/mint-transfer-form";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
+import { ss } from "@/ui/utils";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import Loading from "react-loading";
 
 const InscribeTransfer = () => {
   const { notificationController, apiController } = useControllersState(
-    (v) => ({
-      notificationController: v.notificationController,
-      apiController: v.apiController,
-    })
+    ss(["notificationController", "apiController"])
   );
   const currentAccount = useGetCurrentAccount();
 

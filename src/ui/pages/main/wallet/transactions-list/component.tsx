@@ -9,11 +9,11 @@ import { Circle } from "rc-progress";
 import { Link } from "react-router-dom";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import cn from "classnames";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import ReactLoading from "react-loading";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const TransactionList = () => {
   const { lastBlock, transactions, loadMoreTransactions } =

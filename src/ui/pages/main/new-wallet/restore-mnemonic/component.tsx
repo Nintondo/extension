@@ -12,12 +12,11 @@ import { AddressType } from "bellhdw";
 import Loading from "react-loading";
 import Switch from "@/ui/components/switch";
 import { useAppState } from "@/ui/states/appState";
+import { ss } from "@/ui/utils";
 
 const RestoreMnemonic = () => {
   const [step, setStep] = useState(1);
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
   const [addressType, setAddressType] = useState(AddressType.P2PKH);
   const [mnemonicPhrase, setMnemonicPhrase] = useState<(string | undefined)[]>(
     new Array(12).fill("")
@@ -26,7 +25,7 @@ const RestoreMnemonic = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [showRootAcc, setShowRootAcc] = useState<boolean>(false);
-  const { network } = useAppState((v) => ({ network: v.network }));
+  const { network } = useAppState(ss(["network"]));
 
   const setMnemonic = (v: string, index: number) => {
     if (!v) {

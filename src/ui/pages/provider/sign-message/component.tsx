@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { KeyIcon } from "@heroicons/react/24/solid";
 import Layout from "../layout";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 const SignMessage = () => {
   const [message, setMessage] = useState<string>();
 
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

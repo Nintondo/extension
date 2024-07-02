@@ -14,6 +14,7 @@ import { Menu } from "@headlessui/react";
 import SearchInscriptions from "../search-inscriptions";
 import { useCreateNewAccount } from "@/ui/hooks/wallet";
 import toast from "react-hot-toast";
+import { ss } from "@/ui/utils";
 
 interface IRouteTitle {
   route: string | RegExp;
@@ -31,15 +32,13 @@ interface IRouteTitle {
 }
 
 export default function PagesLayout() {
-  const { stateController } = useControllersState((v) => ({
-    stateController: v.stateController,
-  }));
+  const { stateController } = useControllersState(ss(["stateController"]));
 
   const currentRoute = useLocation();
-  const currentAccount = useGetCurrentAccount();
   const navigate = useNavigate();
-  const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
+  const { wallets } = useWalletState(ss(["wallets"]));
   const createNewAccount = useCreateNewAccount();
+  const currentAccount = useGetCurrentAccount();
 
   const defaultTitles: IRouteTitle[] = useMemo(
     () => [

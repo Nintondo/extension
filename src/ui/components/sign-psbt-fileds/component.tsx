@@ -6,7 +6,7 @@ import { t } from "i18next";
 import cn from "classnames";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useAppState } from "@/ui/states/appState";
-import { isTestnet } from "@/ui/utils";
+import { isTestnet, ss } from "@/ui/utils";
 
 interface SignPsbtFiledsProps {
   fields: IField[];
@@ -17,7 +17,7 @@ const SignPsbtFileds: FC<SignPsbtFiledsProps> = ({
   fields,
   setModalInputIndexHandler,
 }) => {
-  const { network } = useAppState((v) => ({ network: v.network }));
+  const { network } = useAppState(ss(["network"]));
 
   return (
     <div className="flex flex-col gap-4 w-full">

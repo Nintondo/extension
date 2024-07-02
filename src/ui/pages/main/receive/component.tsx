@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import QRCode from "qr-code-styling";
 import s from "./styles.module.scss";
 import CopyBtn from "@/ui/components/copy-btn";
 import toast from "react-hot-toast";
 import { t } from "i18next";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const qrCode = new QRCode({
   width: 250,
@@ -14,20 +14,6 @@ const qrCode = new QRCode({
   image: "/icon.ico",
   dotsOptions: {
     type: "extra-rounded",
-    // gradient: {
-    //   type: "linear",
-    //   rotation: 45,
-    //   colorStops: [
-    //     {
-    //       color: "#f4a261",
-    //       offset: 0,
-    //     },
-    //     {
-    //       color: "#8d99ae",
-    //       offset: 5,
-    //     },
-    //   ],
-    // },
     color: "#d8a48f",
   },
   qrOptions: {

@@ -3,6 +3,7 @@ import s from "./styles.module.scss";
 import { FC, useEffect, useState } from "react";
 import ReactLoading from "react-loading";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 interface Props {
   documentTitle: string;
@@ -20,9 +21,9 @@ const Layout: FC<Props> = ({
   const [origin, setOrigin] = useState<string>("");
   const [iconUrl, setIconUrl] = useState<string>("");
 
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
 
   useEffect(() => {
     document.title = documentTitle;

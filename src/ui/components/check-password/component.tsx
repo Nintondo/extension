@@ -4,6 +4,7 @@ import { useAppState } from "@/ui/states/appState";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 interface Props {
   handler: (password?: string) => void;
@@ -14,7 +15,7 @@ interface FormType {
 }
 
 const CheckPassword: FC<Props> = ({ handler }) => {
-  const { appPassword } = useAppState((v) => ({ appPassword: v.password }));
+  const { password: appPassword } = useAppState(ss(["password"]));
 
   const pwdId = useId();
 

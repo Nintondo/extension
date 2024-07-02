@@ -1,12 +1,12 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import s from "./styles.module.scss";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import Loading from "react-loading";
 import InscriptionCard from "@/ui/components/inscription-card";
 import Pagination from "@/ui/components/pagination";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { t } from "i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const Inscriptions = () => {
   const {
@@ -21,29 +21,20 @@ const Inscriptions = () => {
     useState<boolean>(false);
   const currentAccount = useGetCurrentAccount();
 
-  const changePage = useCallback(
-    async (page: number) => {
-      if (!inscriptions) return;
-      if (!loadingMoreInscriptions) {
-        if (
-          inscriptions.length <= page * 6 &&
-          page * 6 < (currentAccount?.inscriptionCounter ?? 0)
-        ) {
-          setLoadingMoreInscriptions(true);
-          await loadMoreInscriptions();
-          setLoadingMoreInscriptions(false);
-        }
-        setCurrentPage(page);
+  const changePage = async (page: number) => {
+    if (!inscriptions) return;
+    if (!loadingMoreInscriptions) {
+      if (
+        inscriptions.length <= page * 6 &&
+        page * 6 < (currentAccount?.inscriptionCounter ?? 0)
+      ) {
+        setLoadingMoreInscriptions(true);
+        await loadMoreInscriptions();
+        setLoadingMoreInscriptions(false);
       }
-    },
-    [
-      currentAccount?.inscriptionCounter,
-      loadMoreInscriptions,
-      loadingMoreInscriptions,
-      setCurrentPage,
-      inscriptions,
-    ]
-  );
+      setCurrentPage(page);
+    }
+  };
 
   if (
     (currentAccount?.inscriptionCounter === undefined && managerLoading) ||

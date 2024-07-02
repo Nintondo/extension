@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useControllersState } from "../states/controllerState";
 import { useCallback, useEffect } from "react";
-import { isNotification } from "../utils";
+import { isNotification, ss } from "../utils";
 import {
   IField,
   IFieldValue,
@@ -9,14 +9,14 @@ import {
   SignPsbtOptions,
 } from "@/shared/interfaces/provider";
 import { Psbt } from "belcoinjs-lib";
-import { useGetCurrentAccount } from "../states/walletState";
 import { toFixed } from "@/shared/utils/transactions";
+import { useGetCurrentAccount } from "../states/walletState";
 
 export const useApproval = () => {
   const navigate = useNavigate();
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
 
   const resolveApproval = async (
     data?: any,
@@ -67,17 +67,12 @@ export const useApproval = () => {
 };
 
 export const useDecodePsbtInputs = () => {
-  const currentAccount = useGetCurrentAccount();
   const { apiController, notificationController } = useControllersState(
-    (v) => ({
-      apiController: v.apiController,
-      notificationController: v.notificationController,
-    })
+    ss(["apiController", "notificationController"])
   );
+  const currentAccount = useGetCurrentAccount();
 
-  return useCallback(async (): Promise<
-    { fields: IField[][]; fee: string } | undefined
-  > => {
+  return async (): Promise<{ fields: IField[][]; fee: string } | undefined> => {
     if (!currentAccount?.address)
       await notificationController.rejectApproval("This will never happen");
     const approval = await notificationController.getApproval();
@@ -185,5 +180,5 @@ export const useDecodePsbtInputs = () => {
       fields: await Promise.all(result),
       fee: fee < 0 ? "0" : toFixed(fee),
     };
-  }, [notificationController, apiController, currentAccount]);
+  };
 };

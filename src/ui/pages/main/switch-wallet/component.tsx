@@ -10,14 +10,14 @@ import Modal from "@/ui/components/modal";
 import Card from "@/ui/components/card";
 import Rename from "@/ui/components/rename";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 const SwitchWallet = () => {
   const [renameId, setRenameId] = useState<number | undefined>(undefined);
+  const { updateWallet, wallets } = useWalletState(
+    ss(["wallets", "updateWallet"])
+  );
   const currentWallet = useGetCurrentWallet();
-  const { wallets, updateWalletState } = useWalletState((v) => ({
-    wallets: v.wallets,
-    updateWalletState: v.updateWalletState,
-  }));
   const switchWallet = useSwitchWallet();
   const navigate = useNavigate();
   const deleteWallet = useDeleteWallet();
@@ -26,8 +26,8 @@ const SwitchWallet = () => {
 
   const onDelete = async () => {
     if (deleteWalletId === undefined) return;
-    setDeleteWalletId(undefined);
     await deleteWallet(deleteWalletId);
+    setDeleteWalletId(undefined);
   };
 
   const onRename = async (name: string) => {
@@ -35,13 +35,8 @@ const SwitchWallet = () => {
     if (wallets.map((i) => i.name).includes(name))
       return toast.error(t("switch_account.name_already_taken_error"));
 
-    wallets[renameId] = {
-      ...wallets[renameId],
+    await updateWallet(renameId, {
       name,
-    };
-
-    await updateWalletState({
-      wallets,
     });
     setRenameId(undefined);
   };

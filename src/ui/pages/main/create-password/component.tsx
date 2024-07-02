@@ -3,6 +3,7 @@ import PasswordInput from "@/ui/components/password-input";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 interface FormType {
   password: string;
@@ -27,9 +28,7 @@ const CreatePassword = () => {
       password: "",
     },
   });
-  const { updateAppState } = useAppState((v) => ({
-    updateAppState: v.updateAppState,
-  }));
+  const { updateAppState } = useAppState(ss(["updateAppState"]));
 
   const createPassword = async ({ confirmPassword, password }: FormType) => {
     if (password === confirmPassword) {

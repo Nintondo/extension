@@ -5,6 +5,7 @@ import { t } from "i18next";
 import { useAppState } from "@/ui/states/appState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { DEFAULT_FEES } from "@/shared/constant";
+import { ss } from "@/ui/utils";
 
 interface Props {
   onChange: (value: number | string) => void;
@@ -80,9 +81,7 @@ const FeeCard: FC<FeeCardProps> = ({
   title,
   description,
 }) => {
-  const { language } = useAppState((v) => ({
-    language: v.language,
-  }));
+  const { language } = useAppState(ss(["language"]));
 
   return (
     <div
