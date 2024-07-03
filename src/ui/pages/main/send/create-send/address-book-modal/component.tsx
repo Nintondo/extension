@@ -20,9 +20,12 @@ const AddressBookModal: FC<Props> = ({ isOpen, onClose, setAddress }) => {
   );
 
   const onRemove = async (address: string) => {
-    await updateAppState({
-      addressBook: addressBook.filter((i) => i !== address),
-    });
+    await updateAppState(
+      {
+        addressBook: addressBook.filter((i) => i !== address),
+      },
+      true
+    );
   };
 
   const onSelect = (address: string) => {

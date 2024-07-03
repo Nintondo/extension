@@ -55,7 +55,7 @@ const ChangePassword = () => {
       await walletController.saveWallets({
         newPassword: password,
       });
-      await updateAppState({ password });
+      await updateAppState({ password }, true);
       await logout();
     } else {
       reset();

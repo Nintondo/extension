@@ -31,16 +31,22 @@ export const useCreateNewWallet = () => {
       phrases: [{ id: wallet.id, phrase: props.payload, data: keyring }],
       wallets: newWallets,
     });
-    await updateWalletState({
-      selectedAccount: 0,
-      selectedWallet: wallet.id,
-    });
+
     await updateWalletState(
       {
         wallets: newWallets,
       },
       false
     );
+
+    await updateWalletState(
+      {
+        selectedAccount: 0,
+        selectedWallet: wallet.id,
+      },
+      true
+    );
+
     await notificationController.changedAccount();
     navigate("/");
   };
@@ -72,19 +78,26 @@ export const useCreateNewAccount = () => {
     const newWallets = wallets.map((f) =>
       f.id === currentWallet.id ? updatedWallet : f
     );
+
     await walletController.saveWallets({
       wallets: newWallets,
     });
-    await updateWalletState({
-      selectedAccount:
-        updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
-    });
+
     await updateWalletState(
       {
         wallets: newWallets,
       },
       false
     );
+
+    await updateWalletState(
+      {
+        selectedAccount:
+          updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
+      },
+      true
+    );
+
     await notificationController.changedAccount();
     navigate("/");
   };
@@ -108,11 +121,14 @@ export const useSwitchWallet = () => {
         wallet.accounts
       );
     }
-    await updateWalletState({
-      selectedWallet: wallet.id,
-      wallets,
-      selectedAccount: accKey ?? 0,
-    });
+    await updateWalletState({ wallets }, false);
+    await updateWalletState(
+      {
+        selectedWallet: wallet.id,
+        selectedAccount: accKey ?? 0,
+      },
+      true
+    );
     await notificationController.changedAccount();
     navigate("/");
   };
@@ -127,9 +143,12 @@ export const useSwitchAccount = () => {
   const { setCurrentPage } = useTransactionManagerContext();
 
   return async (id: number) => {
-    await updateWalletState({
-      selectedAccount: id,
-    });
+    await updateWalletState(
+      {
+        selectedAccount: id,
+      },
+      true
+    );
 
     await notificationController.changedAccount();
     navigate("/");
@@ -151,11 +170,14 @@ export const useUpdateCurrentAccountBalance = () => {
     const { count, amount, balance } = (await apiController.getAccountStats(
       currentAccount!.address!
     )) ?? { amount: 0, count: 0, balance: 0 };
-    await updateSelectedAccount({
-      balance: balance,
-      inscriptionCounter: count,
-      inscriptionBalance: amount / 10 ** 8,
-    });
+    await updateSelectedAccount(
+      {
+        balance: balance,
+        inscriptionCounter: count,
+        inscriptionBalance: amount / 10 ** 8,
+      },
+      true
+    );
   };
 };
 
@@ -220,7 +242,7 @@ export const useSwitchNetwork = () => {
     if (selectedWallet === undefined) return;
     const updatedWallets = wallets;
     await Promise.all([
-      updateAppState({ network }),
+      updateAppState({ network }, true),
       walletController.switchNetwork(network),
     ]);
     updatedWallets[selectedWallet].accounts =
@@ -228,7 +250,7 @@ export const useSwitchNetwork = () => {
         selectedWallet,
         updatedWallets[selectedWallet].accounts
       );
-    await updateWalletState({ wallets: updatedWallets });
+    await updateWalletState({ wallets: updatedWallets }, true);
     await notificationController.switchedNetwork(network);
     navigate("/");
   };

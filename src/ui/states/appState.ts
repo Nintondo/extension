@@ -1,9 +1,17 @@
 import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
-import type { IAppState } from "@/shared/interfaces";
+import type { IAppStateBase } from "@/shared/interfaces";
 import { networks } from "belcoinjs-lib";
 
 const proxy = setupStateProxy();
+
+export interface IAppState extends IAppStateBase {
+  updateAppState: (
+    app: Partial<IAppState>,
+    updateBack: boolean
+  ) => Promise<void>;
+  logout: () => Promise<void>;
+}
 
 export const useAppState = create<IAppState>()((set) => ({
   isReady: false,
@@ -12,7 +20,7 @@ export const useAppState = create<IAppState>()((set) => ({
   language: "en",
   activeTabs: [],
   network: networks.bellcoin,
-  updateAppState: async (app: Partial<IAppState>, updateBack = true) => {
+  updateAppState: async (app: Partial<IAppState>, updateBack) => {
     if (updateBack) {
       await proxy.updateAppState(app, false);
     }

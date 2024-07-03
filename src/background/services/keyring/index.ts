@@ -359,6 +359,7 @@ class KeyringService {
       throw new Error("Error when trying to get the current wallet");
     const currentWallet = storageService.currentWallet.id;
     (this.keyrings[currentWallet] as HDPrivateKey).toggleHideRoot();
+    return this.keyrings[currentWallet].getAccounts();
   }
 
   async signPsbtWithoutFinalizing(psbt: Psbt, inputs?: UserToSignInput[]) {

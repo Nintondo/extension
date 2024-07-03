@@ -22,29 +22,17 @@ const SwitchAccount = () => {
 
   const switchAccount = useSwitchAccount();
   const navigate = useNavigate();
-  const { updateSelectedWallet } = useWalletState(ss(["updateSelectedWallet"]));
+  const { updateAccount } = useWalletState(ss(["updateAccount"]));
 
   const currentAccount = useGetCurrentAccount();
   const currentWallet = useGetCurrentWallet();
   const onRename = async (name: string) => {
-    if (!currentWallet) return;
+    if (!currentWallet || typeof renameId === "undefined") return;
     if (currentWallet.accounts.map((i) => i.name).includes(name.trim()))
       return toast.error(t("switch_account.name_already_taken_error"));
 
+    await updateAccount(currentWallet.id, renameId, { name }, true);
     setRenameId(undefined);
-
-    await updateSelectedWallet({
-      accounts: currentWallet.accounts.map((i, idx) => {
-        if (idx === renameId) {
-          return {
-            ...i,
-            name,
-          };
-        } else {
-          return i;
-        }
-      }),
-    });
   };
 
   useEffect(() => {

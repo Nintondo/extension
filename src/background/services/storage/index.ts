@@ -216,6 +216,11 @@ class StorageService {
         : this._walletState.selectedWallet;
     const selectedAccount = 0;
 
+    this._walletState.selectedWallet = selectedWallet;
+    this._walletState.selectedAccount = selectedAccount;
+    this._walletState.wallets = wallets;
+    if (newPassword) this._appState.password = newPassword;
+
     const data: StorageInterface = {
       enc: JSON.parse(encrypted),
       cache: {

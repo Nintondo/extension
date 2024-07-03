@@ -46,10 +46,13 @@ const Login = () => {
         false
       );
 
-      await updateAppState({
-        isUnlocked: true,
-        password: password,
-      });
+      await updateAppState(
+        {
+          isUnlocked: true,
+          password: password,
+        },
+        true
+      );
 
       if (!isNotification()) navigate("/");
       else await notificationController.resolveApproval();

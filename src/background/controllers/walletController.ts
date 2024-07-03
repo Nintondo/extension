@@ -116,16 +116,8 @@ class WalletController implements IWalletController {
     return keyringService.deleteWallet(id);
   }
 
-  async toggleRootAccount(): Promise<void> {
+  async toggleRootAccount(): Promise<string[]> {
     return await keyringService.toggleRootAcc();
-  }
-
-  async getAccounts(): Promise<string[]> {
-    if (storageService.currentWallet?.id === undefined) return [];
-    const keyring = keyringService.getKeyringByIndex(
-      storageService.currentWallet.id
-    );
-    return keyring.getAccounts();
   }
 
   async switchNetwork(network: Network) {

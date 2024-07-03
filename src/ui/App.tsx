@@ -14,7 +14,6 @@ import { useAppState } from "./states/appState";
 import { useWalletState } from "./states/walletState";
 import { guestRouter, authenticatedRouter } from "@/ui/pages/router";
 import { useControllersState } from "./states/controllerState";
-import { excludeKeysFromObj } from "@/shared/utils";
 import i18n from "../shared/locales/i18n";
 import PortMessage from "@/shared/utils/message/portMessage";
 import { ss } from "./utils";
@@ -47,23 +46,26 @@ export default function App() {
     const [appState, walletState] = await stateController.init();
     await i18n.changeLanguage(appState.language ?? "en");
 
-    if (
-      appState.isReady &&
-      appState.isUnlocked &&
-      walletState.selectedWallet !== undefined
-    ) {
-      await updateWalletState(walletState, false);
-      await updateAppState(appState, false);
-    } else {
-      await updateWalletState({
-        vaultIsEmpty: await walletController.isVaultEmpty(),
-        ...excludeKeysFromObj(walletState, ["vaultIsEmpty", "wallets"]),
-      });
-      await updateAppState({
-        isReady: true,
-        ...excludeKeysFromObj(appState, ["isReady", "isUnlocked", "password"]),
-      });
+    if (!appState.isReady) {
+      walletState.vaultIsEmpty = await walletController.isVaultEmpty();
+      appState.isReady = true;
+
+      await updateAppState(
+        {
+          isReady: true,
+        },
+        true
+      );
+      await updateWalletState(
+        {
+          vaultIsEmpty: walletState.vaultIsEmpty,
+        },
+        true
+      );
     }
+
+    await updateWalletState(walletState, false);
+    await updateAppState(appState, false);
   }, [updateWalletState, updateAppState, updateControllers]);
 
   useEffect(() => {

@@ -1,50 +1,56 @@
 import SwitchAddressType from "@/ui/components/switch-address-type";
 import { useControllersState } from "@/ui/states/controllerState";
-import {
-  useGetCurrentAccount,
-  useGetCurrentWallet,
-  useWalletState,
-} from "@/ui/states/walletState";
+import { useGetCurrentWallet, useWalletState } from "@/ui/states/walletState";
 import { AddressType } from "bellhdw";
 import { useNavigate } from "react-router-dom";
 import { ss } from "@/ui/utils";
+import toast from "react-hot-toast";
 
 const ChangeAddrType = () => {
   const { keyringController, notificationController, apiController } =
     useControllersState(
       ss(["keyringController", "notificationController", "apiController"])
     );
-  const { selectedWallet, updateSelectedWallet } = useWalletState(
-    ss(["selectedWallet", "updateSelectedWallet"])
-  );
-  const currentAccount = useGetCurrentAccount();
+  const { selectedWallet, updateSelectedWallet, selectedAccount } =
+    useWalletState(
+      ss(["selectedWallet", "updateSelectedWallet", "selectedAccount"])
+    );
   const currentWallet = useGetCurrentWallet();
   const navigate = useNavigate();
 
   const onSwitchAddress = async (type: AddressType) => {
     if (
       typeof selectedWallet === "undefined" ||
-      typeof currentAccount?.id === "undefined"
+      typeof selectedAccount === "undefined" ||
+      typeof currentWallet === "undefined"
     )
-      return;
+      return toast.error("Internal error: Selected wallet not found.");
     const addresses = await keyringController.changeAddressType(
       selectedWallet,
       type
     );
     const newStats = await apiController.getAccountStats(
-      addresses[currentAccount.id]
+      addresses[selectedAccount]
     );
-    await updateSelectedWallet({
-      addressType: type,
-      accounts: currentWallet?.accounts.map((f, idx) => ({
-        ...f,
-        id: idx,
-        address: addresses[f.id],
-        balance: newStats?.balance ?? f.balance,
-        inscriptionBalance: newStats?.amount ?? f.inscriptionBalance,
-        inscriptionCounter: newStats?.count ?? f.inscriptionCounter,
-      })),
-    });
+    await updateSelectedWallet(
+      {
+        addressType: type,
+        accounts: currentWallet.accounts.map((f, idx) => {
+          if (f.id !== selectedWallet) {
+            return { ...f, address: addresses[idx], id: idx };
+          }
+          return {
+            ...f,
+            id: idx,
+            address: addresses[f.id],
+            balance: newStats?.balance ?? f.balance,
+            inscriptionBalance: newStats?.amount ?? f.inscriptionBalance,
+            inscriptionCounter: newStats?.count ?? f.inscriptionCounter,
+          };
+        }),
+      },
+      true
+    );
     await notificationController.changedAccount();
     navigate("/");
   };

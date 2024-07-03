@@ -43,16 +43,14 @@ const NewMnemonic = () => {
     }
 
     const phrase = await walletController.generateMnemonicPhrase();
-    await updateAppState({
-      pendingWallet: phrase,
-    });
+    await updateAppState(
+      {
+        pendingWallet: phrase,
+      },
+      true
+    );
     setMnemonicPhrase(phrase);
-  }, [
-    setMnemonicPhrase,
-    updateAppState,
-    walletController,
-    location.state?.pending,
-  ]);
+  }, [updateAppState, walletController, location.state?.pending]);
 
   useEffect(() => {
     if (mnemonicPhrase) return;
@@ -69,6 +67,7 @@ const NewMnemonic = () => {
     }
     setLoading(true);
     try {
+      await stateController.clearPendingWallet();
       await createNewWallet({
         payload: mnemonicPhrase,
         walletType: "root",
@@ -76,8 +75,7 @@ const NewMnemonic = () => {
         hideRoot: true,
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
-      await stateController.clearPendingWallet();
+      await updateWalletState({ vaultIsEmpty: false }, true);
     } catch (e) {
       console.error(e);
       if (e instanceof Error) toast.error(e.message);

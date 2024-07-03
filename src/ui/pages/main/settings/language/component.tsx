@@ -9,7 +9,7 @@ const Language = () => {
 
   const changeLanguage = async (lng: string) => {
     await i18n.changeLanguage(lng);
-    await updateAppState({ language: lng });
+    await updateAppState({ language: lng }, true);
     window.location.reload();
   };
 

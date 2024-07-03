@@ -11,6 +11,6 @@ export const useUpdateAddressBook = () => {
     if (addressBook.length >= 6) addressBook.splice(5, 1);
     if (addressBook.includes(address.trim())) return;
     addressBook.unshift(address.trim() ?? "");
-    await updateAppState({ addressBook: addressBook });
+    await updateAppState({ addressBook: addressBook }, true);
   };
 };

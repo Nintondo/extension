@@ -17,7 +17,6 @@ export interface IWalletController {
   createNewAccount(name?: string): Promise<IAccount | undefined>;
   generateMnemonicPhrase(): Promise<string>;
   deleteWallet(id: number): Promise<DeleteWalletResult>;
-  toggleRootAccount(): Promise<void>;
-  getAccounts(): Promise<string[]>;
+  toggleRootAccount(): Promise<string[]>;
   switchNetwork(network: Network): Promise<void>;
 }

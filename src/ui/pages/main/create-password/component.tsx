@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { t } from "i18next";
 import { ss } from "@/ui/utils";
+import { useWalletState } from "@/ui/states/walletState";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface FormType {
   password: string;
@@ -11,6 +14,7 @@ interface FormType {
 }
 
 const CreatePassword = () => {
+  const navigate = useNavigate();
   const formFields: { name: keyof FormType; label: string }[] = [
     {
       label: t("create_password.password"),
@@ -29,10 +33,15 @@ const CreatePassword = () => {
     },
   });
   const { updateAppState } = useAppState(ss(["updateAppState"]));
+  const { vaultIsEmpty } = useWalletState(ss(["vaultIsEmpty"]));
+
+  useEffect(() => {
+    if (!vaultIsEmpty) navigate("/account/login");
+  }, [vaultIsEmpty, navigate]);
 
   const createPassword = async ({ confirmPassword, password }: FormType) => {
     if (password === confirmPassword) {
-      await updateAppState({ password, isUnlocked: true });
+      await updateAppState({ password, isUnlocked: true }, true);
     } else {
       toast.error("Passwords dismatches");
     }

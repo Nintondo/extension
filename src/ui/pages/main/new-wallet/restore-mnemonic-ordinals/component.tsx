@@ -56,7 +56,7 @@ const RestoreMnemonicOrdinals = () => {
         passphrase: "",
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
+      await updateWalletState({ vaultIsEmpty: false }, true);
       navigate("/");
     } catch (e) {
       toast.error(t("new_wallet.restore_mnemonic.invalid_words_error"));

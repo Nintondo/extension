@@ -7,6 +7,7 @@ import { useControllersState } from "@/ui/states/controllerState";
 import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
 import { ss } from "@/ui/utils";
+import toast from "react-hot-toast";
 
 const Advanced = () => {
   const { walletController } = useControllersState(ss(["walletController"]));
@@ -20,8 +21,7 @@ const Advanced = () => {
   const toggleRootAccount = async () => {
     try {
       setLoading(true);
-      await walletController.toggleRootAccount();
-      const accounts = await walletController.getAccounts();
+      const accounts = await walletController.toggleRootAccount();
       const newWallets = wallets.map((i) => {
         if (i.id !== currentWallet?.id) return i;
         return {
@@ -41,9 +41,12 @@ const Advanced = () => {
       await walletController.saveWallets({
         wallets: newWallets,
       });
-      await updateWalletState({
-        selectedAccount: 0,
-      });
+      await updateWalletState(
+        {
+          selectedAccount: 0,
+        },
+        true
+      );
       await updateWalletState(
         {
           wallets: newWallets,
@@ -52,7 +55,10 @@ const Advanced = () => {
       );
       navigate("/");
     } catch (e) {
-      console.error(e);
+      if (e instanceof Error) {
+        toast.error(e.message);
+        console.error(e);
+      }
     } finally {
       setLoading(false);
     }
