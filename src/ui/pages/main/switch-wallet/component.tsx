@@ -25,9 +25,12 @@ const SwitchWallet = () => {
   const [deleteWalletId, setDeleteWalletId] = useState<number>();
 
   const onDelete = async () => {
-    if (deleteWalletId === undefined) return;
-    await deleteWallet(deleteWalletId);
-    setDeleteWalletId(undefined);
+    setDeleteWalletId((prev) => {
+      if (prev === undefined) return undefined;
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      deleteWallet(prev);
+      return undefined;
+    });
   };
 
   const onRename = async (name: string) => {
@@ -115,7 +118,10 @@ const SwitchWallet = () => {
         <div className="text-base text-text py-5 px-4 flex flex-col items-center">
           <div className="text-sm">{t("switch_wallet.are_you_sure")}</div>
           <span className="text-teal-200 block mt-5">
-            {deleteWalletId !== undefined ? wallets[deleteWalletId].name : ""}
+            {deleteWalletId !== undefined &&
+            wallets[deleteWalletId] !== undefined
+              ? wallets[deleteWalletId].name
+              : ""}
           </span>
         </div>
         <div className="flex justify-center gap-4">
