@@ -309,6 +309,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
         inscriptionIntervalUpdate(),
         updateFeeRates(),
         updateTokens(),
+        updateAccountBalance(),
       ]);
     }, 10000);
     return () => {
@@ -320,6 +321,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     inscriptionIntervalUpdate,
     updateFeeRates,
     updateTokens,
+    updateAccountBalance,
     currentAccount?.address,
   ]);
 

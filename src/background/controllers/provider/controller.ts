@@ -47,8 +47,6 @@ class ProviderController implements IProviderController {
   getBalance = async () => {
     if (!storageService.currentAccount?.address)
       throw ethErrors.provider.chainDisconnected("Account not found");
-    if (typeof storageService.currentAccount?.balance === "undefined")
-      throw ethErrors.provider.chainDisconnected("Balance is not initialized");
 
     const stats = await apiController.getAccountStats(
       storageService.currentAccount.address

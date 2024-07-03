@@ -1,7 +1,7 @@
 import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
 import { Message } from "@/shared/utils/message";
-import { sessionService, storageService } from "@/background/services";
+import { sessionService } from "@/background/services";
 import {
   browserRuntimeOnConnect,
   browserRuntimeOnInstalled,
@@ -147,25 +147,4 @@ setInterval(async () => {
       //
     }
   }
-
-  if (
-    storageService.currentAccount !== undefined &&
-    storageService.currentAccount.address !== undefined
-  ) {
-    storageService.currentAccount.balance = (
-      await apiController.getAccountStats(storageService.currentAccount.address)
-    )?.balance;
-  }
 }, 5000);
-
-// setInterval(async () => {
-//   const unpushedHexes = JSON.parse(localStorage.getItem("topush")) as string[];
-//   const failedToPush: string[] = [];
-//   for (const hex of unpushedHexes) {
-//     const txid = (await apiController.pushTx(hex)).txid ?? "";
-//     if (txid.length !== 64 || txid.includes("RPC error"))
-//       failedToPush.push(hex);
-//   }
-//   if (failedToPush.length)
-//     localStorage.setItem("topush", JSON.stringify(failedToPush));
-// }, 1000);

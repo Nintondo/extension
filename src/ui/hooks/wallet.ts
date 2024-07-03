@@ -164,8 +164,8 @@ export const useUpdateCurrentAccountBalance = () => {
     ss(["updateSelectedAccount"])
   );
 
-  return async (address?: string) => {
-    if (address === undefined && currentAccount?.address === undefined) return;
+  return async () => {
+    if (currentAccount?.address === undefined) return;
 
     const { count, amount, balance } = (await apiController.getAccountStats(
       currentAccount!.address!

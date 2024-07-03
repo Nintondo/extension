@@ -5,18 +5,19 @@ import { AddressType } from "bellhdw";
 import { useNavigate } from "react-router-dom";
 import { ss } from "@/ui/utils";
 import toast from "react-hot-toast";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 
 const ChangeAddrType = () => {
-  const { keyringController, notificationController, apiController } =
-    useControllersState(
-      ss(["keyringController", "notificationController", "apiController"])
-    );
+  const { keyringController, notificationController } = useControllersState(
+    ss(["keyringController", "notificationController"])
+  );
   const { selectedWallet, updateSelectedWallet, selectedAccount } =
     useWalletState(
       ss(["selectedWallet", "updateSelectedWallet", "selectedAccount"])
     );
   const currentWallet = useGetCurrentWallet();
   const navigate = useNavigate();
+  const { trottledUpdate } = useTransactionManagerContext();
 
   const onSwitchAddress = async (type: AddressType) => {
     if (
@@ -29,28 +30,18 @@ const ChangeAddrType = () => {
       selectedWallet,
       type
     );
-    const newStats = await apiController.getAccountStats(
-      addresses[selectedAccount]
-    );
     await updateSelectedWallet(
       {
         addressType: type,
-        accounts: currentWallet.accounts.map((f, idx) => {
-          if (f.id !== selectedWallet) {
-            return { ...f, address: addresses[idx], id: idx };
-          }
-          return {
-            ...f,
-            id: idx,
-            address: addresses[f.id],
-            balance: newStats?.balance ?? f.balance,
-            inscriptionBalance: newStats?.amount ?? f.inscriptionBalance,
-            inscriptionCounter: newStats?.count ?? f.inscriptionCounter,
-          };
-        }),
+        accounts: currentWallet.accounts.map((f, idx) => ({
+          ...f,
+          address: addresses[idx],
+          id: idx,
+        })),
       },
       true
     );
+    trottledUpdate(true);
     await notificationController.changedAccount();
     navigate("/");
   };
