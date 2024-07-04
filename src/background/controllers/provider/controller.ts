@@ -40,6 +40,9 @@ class ProviderController implements IProviderController {
 
   @Reflect.metadata("SAFE", true)
   getNetwork = async (): Promise<NetworkType> => {
+    if (!storageService.appState.isReady) {
+      await storageService.init();
+    }
     return isTestnet(storageService.appState.network) ? "testnet" : "mainnet";
   };
 
