@@ -104,8 +104,12 @@ const CreateSend = () => {
         },
       });
     } catch (e) {
-      console.error(e);
-      toast.error(t("send.create_send.default_error"));
+      if ((e as Error).message) {
+        toast.error((e as Error).message);
+      } else {
+        toast.error(t("send.create_send.default_error"));
+        console.error(e);
+      }
     } finally {
       setLoading(false);
     }
