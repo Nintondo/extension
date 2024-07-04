@@ -72,7 +72,9 @@ export const useDecodePsbtInputs = () => {
   );
   const currentAccount = useGetCurrentAccount();
 
-  return async (): Promise<{ fields: IField[][]; fee: string } | undefined> => {
+  return useCallback(async (): Promise<
+    { fields: IField[][]; fee: string } | undefined
+  > => {
     if (!currentAccount?.address)
       await notificationController.rejectApproval("This will never happen");
     const approval = await notificationController.getApproval();
@@ -180,5 +182,5 @@ export const useDecodePsbtInputs = () => {
       fields: await Promise.all(result),
       fee: fee < 0 ? "0" : toFixed(fee),
     };
-  };
+  }, [apiController, currentAccount, notificationController]);
 };

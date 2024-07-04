@@ -58,3 +58,7 @@ export function ss<T extends Record<string, any>, K extends keyof T = keyof T>(
     return Object.fromEntries(keys.map((i) => [i, state[i]])) as Pick<T, K>;
   };
 }
+
+export function arrayDifference<T>(arr1: T[], arr2: T[]): T[] {
+  return arr1.filter((item) => !arr2.includes(item));
+}

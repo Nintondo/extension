@@ -17,7 +17,7 @@ import { useDebounceCall } from "../hooks/debounce";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
 import { useGetCurrentAccount } from "../states/walletState";
-import { ss } from ".";
+import { arrayDifference, ss } from ".";
 
 const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
@@ -63,22 +63,24 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       async (force = false) => {
         if (!currentAccount?.address) return;
         const receivedItems = await retrieveFn(currentAccount.address);
-        if (receivedItems !== undefined) {
-          if (
-            !force &&
-            currentValue &&
-            currentValue.length > 0 &&
-            currentValue[0][compareKey] !== receivedItems[0][compareKey]
-          ) {
-            const oldIndex = receivedItems.findIndex(
-              (f) => f[compareKey] === (currentValue ?? [])[0][compareKey]
-            );
-            onUpdate([
-              ...receivedItems.slice(0, oldIndex),
-              ...(currentValue ?? []),
-            ]);
-          } else if ((currentValue ?? []).length < 50 || force)
-            onUpdate(receivedItems ?? []);
+        if (receivedItems === undefined) return;
+
+        const currentItemsKeys = currentValue?.map((f) => f[compareKey]);
+        const receivedItemsKeys = receivedItems?.map((f) => f[compareKey]);
+        const difference = arrayDifference(
+          receivedItemsKeys,
+          currentItemsKeys ?? []
+        );
+
+        if (!force && (currentValue ?? []).length > 0 && difference.length) {
+          onUpdate([
+            ...difference.map(
+              (f) => receivedItems.find((item) => item[compareKey] === f)!
+            ),
+            ...(currentValue ?? []),
+          ]);
+        } else if ((currentValue ?? []).length < 50 || force) {
+          onUpdate(receivedItems ?? []);
         }
       },
       [onUpdate, retrieveFn, compareKey, currentValue]
