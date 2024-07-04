@@ -9,7 +9,7 @@ import type {
 } from "@/shared/interfaces";
 import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
-import * as bip39 from "bip39";
+import * as bip39 from "nintondo-bip39";
 import { AddressType, HDPrivateKey } from "bellhdw";
 import { Network } from "belcoinjs-lib";
 

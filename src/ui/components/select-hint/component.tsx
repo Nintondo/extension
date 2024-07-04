@@ -1,6 +1,6 @@
 import { Combobox, Transition } from "@headlessui/react";
 import { FC, Fragment, useEffect, useState } from "react";
-import englishWords from "bip39/src/wordlists/english.json";
+import englishWords from "nintondo-bip39/src/wordlists/english.json";
 import cn from "classnames";
 
 import s from "./styles.module.scss";
