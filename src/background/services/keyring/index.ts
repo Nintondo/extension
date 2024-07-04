@@ -346,7 +346,8 @@ class KeyringService {
     this.keyrings.splice(id, 1);
     const payload = await storageService.saveWallets({
       password: storageService.appState.password,
-      wallets: storageService.walletState.wallets,
+      wallets: newWallets,
+      seedToDelete: id,
     });
     return {
       wallets: newWallets,

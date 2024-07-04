@@ -57,7 +57,7 @@ const Login = () => {
       if (!isNotification()) navigate("/");
       else await notificationController.resolveApproval();
     } catch (e) {
-      if (e instanceof Error) toast.error(e.message);
+      if ((e as Error).message) toast.error((e as Error).message);
       else throw e;
     }
   };

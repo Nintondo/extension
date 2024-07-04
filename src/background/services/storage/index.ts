@@ -18,6 +18,7 @@ interface SaveWallets {
   wallets: IWallet[];
   payload?: DecryptedSecrets;
   newPassword?: string;
+  seedToDelete?: number;
 }
 
 class StorageService {
@@ -173,7 +174,13 @@ class StorageService {
     return localState.cache.pendingWallet;
   }
 
-  async saveWallets({ password, wallets, newPassword, payload }: SaveWallets) {
+  async saveWallets({
+    password,
+    wallets,
+    newPassword,
+    payload,
+    seedToDelete,
+  }: SaveWallets) {
     if (!password) throw new Error("Password is required");
     if (typeof storageService._walletState.selectedWallet === "undefined")
       throw new Error("No selected wallet");
@@ -185,6 +192,12 @@ class StorageService {
       payload = [...(current ?? []), ...payload];
     } else {
       payload = current;
+    }
+
+    if (seedToDelete !== undefined) {
+      const payloadToDelete = payload?.findIndex((f) => f.id === seedToDelete);
+      if (payloadToDelete !== undefined) payload?.splice(payloadToDelete, 1);
+      payload = payload?.map((f, i) => ({ ...f, id: i }));
     }
 
     const walletsToSave = wallets.map((wallet) => {
