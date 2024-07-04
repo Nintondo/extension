@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import s from "./styles.module.scss";
 import { t } from "i18next";
 import { useAppState } from "@/ui/states/appState";
@@ -8,8 +8,8 @@ import { DEFAULT_FEES } from "@/shared/constant";
 import { ss } from "@/ui/utils";
 
 interface Props {
-  onChange: (value: number | string) => void;
-  value: number | string;
+  onChange: (value?: number) => void;
+  value?: number;
 }
 
 const FeeInput: FC<Props> = ({ onChange, value }) => {
@@ -18,11 +18,12 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
     feeRates?.slow ?? DEFAULT_FEES.slow
   );
 
-  useEffect(() => {
-    if (selected !== 3) {
-      onChange(selected);
+  const onSelect = (value: number) => {
+    setSelected(value);
+    if (value !== 3) {
+      onChange(value);
     }
-  }, [selected, onChange]);
+  };
 
   const cards = [
     {
@@ -50,7 +51,7 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
             key={i}
             description={f.description}
             title={f.title}
-            onSelect={() => setSelected(f.value as typeof selected)}
+            onSelect={() => onSelect(f.value)}
             selected={f.value === selected}
           />
         ))}
@@ -61,7 +62,7 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
         placeholder="sat/Vb"
         value={value}
         onChange={(e) => {
-          onChange(e.target.value === "" ? "" : Number(e.target.value));
+          onChange(e.target.value === "" ? undefined : Number(e.target.value));
         }}
       />
     </div>
@@ -88,7 +89,7 @@ const FeeCard: FC<FeeCardProps> = ({
       className={cn(s.card, { [s.cardSelected]: selected })}
       onClick={onSelect}
     >
-      <div className={cn(s.title, language !== "en" && s.russian)}>{title}</div>
+      <div className={cn(s.title, language === "ru" && s.russian)}>{title}</div>
       {description ? <div className={s.description}>{description}</div> : ""}
     </div>
   );

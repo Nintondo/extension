@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { IToken, ITransfer } from "@/shared/interfaces/token";
 import Modal from "@/ui/components/modal";
 import { t } from "i18next";
-import { FC, useCallback, useId, useState } from "react";
+import { FC, useId, useState } from "react";
 import s from "./styles.module.scss";
 import FeeInput from "../../send/create-send/fee-input";
 import Loading from "react-loading";
@@ -20,7 +19,7 @@ interface Props {
 interface FormType {
   address: string;
   txIds: ITransfer[];
-  feeRate: number | string;
+  feeRate: number;
 }
 
 function formatAmount(amount: number) {
@@ -46,29 +45,26 @@ const SendTransferModal: FC<Props> = ({
 
   const sendTransferTokens = useSendTransferTokens();
 
-  const send = useCallback(
-    async ({ address, txIds, feeRate }: FormType) => {
-      try {
-        setLoading(true);
-        if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
-          return toast.error(t("send.create_send.fee_is_text_error"));
-        }
-        if (address.trim().length <= 0) {
-          return toast.error(t("send.create_send.address_error"));
-        }
-        if (txIds.length <= 0) {
-          return toast.error(t("inscriptions.0_selected_inscriptions_error"));
-        }
-        await sendTransferTokens(address, txIds, feeRate);
-        setSelectedSendToken(undefined);
-      } catch (e) {
-        toast.error((e as Error).message);
-      } finally {
-        setLoading(false);
+  const send = async ({ address, txIds, feeRate }: FormType) => {
+    try {
+      setLoading(true);
+      if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
+        return toast.error(t("send.create_send.fee_is_text_error"));
       }
-    },
-    [setSelectedSendToken, sendTransferTokens]
-  );
+      if (address.trim().length <= 0) {
+        return toast.error(t("send.create_send.address_error"));
+      }
+      if (txIds.length <= 0) {
+        return toast.error(t("inscriptions.0_selected_inscriptions_error"));
+      }
+      await sendTransferTokens(address, txIds, feeRate);
+      setSelectedSendToken(undefined);
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const selectedTransfer = (tx: ITransfer) => {
     if (formData.txIds.includes(tx)) {
@@ -98,7 +94,7 @@ const SendTransferModal: FC<Props> = ({
         className={"w-full flex flex-col gap-6 px-1 py-6 items-start h-full"}
         onSubmit={async (e) => {
           e.preventDefault();
-          send(formData);
+          await send(formData);
         }}
       >
         <div className="form-field">
@@ -140,11 +136,9 @@ const SendTransferModal: FC<Props> = ({
         <div className="form-field">
           <span className="input-span">{t("send.create_send.fee_label")}</span>
           <FeeInput
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            onChange={useCallback(
-              (v) => setFormData((prev) => ({ ...prev, feeRate: v })),
-              [setFormData]
-            )}
+            onChange={(v) =>
+              setFormData((prev) => ({ ...prev, feeRate: v ?? 0 }))
+            }
             value={formData.feeRate}
           />
         </div>

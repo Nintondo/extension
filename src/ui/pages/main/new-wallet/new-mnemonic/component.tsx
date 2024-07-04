@@ -54,8 +54,9 @@ const NewMnemonic = () => {
 
   useEffect(() => {
     if (mnemonicPhrase) return;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    init();
+    init().catch((e) => {
+      if ((e as Error).message) toast.error((e as Error).message);
+    });
   }, [mnemonicPhrase, init]);
 
   const navigate = useNavigate();

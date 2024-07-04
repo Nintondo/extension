@@ -25,7 +25,7 @@ import { useGetCurrentAccount } from "@/ui/states/walletState";
 interface FormType {
   address: string;
   amount: string;
-  feeAmount: number | string;
+  feeAmount: number;
   includeFeeInAmount: boolean;
 }
 
@@ -212,7 +212,7 @@ const CreateSend = () => {
             </span>
             <FeeInput
               onChange={(v) =>
-                setFormData((prev) => ({ ...prev, feeAmount: v }))
+                setFormData((prev) => ({ ...prev, feeAmount: v ?? 0 }))
               }
               value={formData.feeAmount}
             />

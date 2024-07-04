@@ -9,6 +9,7 @@ import { t } from "i18next";
 import Modal from "@/ui/components/modal";
 import SignPsbtFileds from "@/ui/components/sign-psbt-fileds";
 import notificationController from "@/background/controllers/notificationController";
+import toast from "react-hot-toast";
 
 const SignPsbt = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,8 +34,11 @@ const SignPsbt = () => {
 
   useEffect(() => {
     if (fields.length) return;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    updateFields();
+    updateFields().catch((e) => {
+      if ((e as Error).message) {
+        toast.error(e.message);
+      }
+    });
   }, [updateFields, fields]);
 
   if (loading) return <Loading type="balls" />;

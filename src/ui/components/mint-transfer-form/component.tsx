@@ -16,7 +16,7 @@ import s from "./styles.module.scss";
 
 interface FormType {
   amount: string;
-  feeRate: number | string;
+  feeRate: number;
 }
 
 interface MintTransferModalProps {
@@ -136,8 +136,9 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         <div className="form-field">
           <span className="input-span">{t("send.create_send.fee_label")}</span>
           <FeeInput
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            onChange={(v) => setFormData((prev) => ({ ...prev, feeRate: v }))}
+            onChange={(v) =>
+              setFormData((prev) => ({ ...prev, feeRate: v ?? 0 }))
+            }
             value={formData.feeRate}
           />
         </div>
