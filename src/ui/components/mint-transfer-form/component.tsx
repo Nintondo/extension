@@ -68,7 +68,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
       if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
         return toast.error(t("send.create_send.fee_is_text_error"));
       }
-      if (Number(amount) < 1) {
+      if (Number(amount) <= 0) {
         return toast.error(t("inscriptions.minimum_amount_error"));
       }
       if (!selectedMintToken?.tick) {
