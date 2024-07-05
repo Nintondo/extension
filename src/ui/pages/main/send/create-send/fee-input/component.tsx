@@ -6,6 +6,7 @@ import { useAppState } from "@/ui/states/appState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { DEFAULT_FEES } from "@/shared/constant";
 import { ss } from "@/ui/utils";
+import InputNumber from "@/ui/components/input-number";
 
 interface Props {
   onChange: (value?: number) => void;
@@ -56,7 +57,16 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
           />
         ))}
       </div>
-      <input
+      {selected === 3 && (
+        <InputNumber
+          value={value}
+          onChange={(value) => {
+            onChange(value);
+          }}
+          onlyInt
+        />
+      )}
+      {/* <input
         type="number"
         className={cn("input", { hidden: selected !== 3 })}
         placeholder="sat/Vb"
@@ -64,7 +74,7 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
         onChange={(e) => {
           onChange(e.target.value === "" ? undefined : Number(e.target.value));
         }}
-      />
+      /> */}
     </div>
   );
 };
