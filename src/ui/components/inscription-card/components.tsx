@@ -2,7 +2,7 @@ import { Inscription } from "@/shared/interfaces/inscriptions";
 import { FC, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { shortAddress } from "@/shared/utils/transactions";
-import { PREVIEW_URL, TESTNET_HTML_PREVIEW_URL } from "@/shared/constant";
+import { PREVIEW_URL, TESTNET_PREVIEW_URL } from "@/shared/constant";
 import { useAppState } from "@/ui/states/appState";
 import { isTestnet, ss } from "@/ui/utils";
 
@@ -47,9 +47,9 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
         <div className="rounded-xl w-full bg-slate-950 bg-opacity-50">
           <img
             ref={imageRef}
-            src={`${
-              isTestnet(network) ? TESTNET_HTML_PREVIEW_URL : PREVIEW_URL
-            }/${inscription.inscription_id}`}
+            src={`${isTestnet(network) ? TESTNET_PREVIEW_URL : PREVIEW_URL}/${
+              inscription.inscription_id
+            }`}
             alt="content"
             className="object-cover rounded-xl h-38 w-38"
             style={{
