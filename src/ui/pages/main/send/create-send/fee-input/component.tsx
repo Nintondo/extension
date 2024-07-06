@@ -66,15 +66,6 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
           onlyInt
         />
       )}
-      {/* <input
-        type="number"
-        className={cn("input", { hidden: selected !== 3 })}
-        placeholder="sat/Vb"
-        value={value}
-        onChange={(e) => {
-          onChange(e.target.value === "" ? undefined : Number(e.target.value));
-        }}
-      /> */}
     </div>
   );
 };
