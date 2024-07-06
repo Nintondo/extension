@@ -85,13 +85,13 @@ export const TESTNET_NINTONDO_API_URL =
 
 export const TESTNET_PREVIEW_URL =
   process.env.TESTNET_PREVIEW_URL ??
-  "https://testnet.nintondo.io/content/pub/preview";
+  "https://testnet.nintondo.io/api/pub/preview";
 export const TESTNET_HTML_PREVIEW_URL =
   process.env.TESTNET_PREVIEW_URL ??
-  "https://testnet.nintondo.io/content/pub/html";
+  "https://testnet.nintondo.io/api/pub/html";
 export const TESTNET_CONTENT_URL =
   process.env.TESTNET_CONTENT_URL ??
-  "https://testnet.nintondo.io/content/pub/content/";
+  "https://testnet.nintondo.io/api/pub/content/";
 
 export const DEFAULT_FEES = {
   fast: 5000,
