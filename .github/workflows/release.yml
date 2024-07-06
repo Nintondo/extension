@@ -10,15 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: montudor/action-zip@v1
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Zip project
-        uses: montudor/action-zip@v1
-        with:
-          files: |
-            **
-          output: project.zip
+        run: |
+          zip -qq -r project.zip ./*
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -32,27 +31,25 @@ jobs:
         run: bun chrome
 
       - name: Zip chrome extension
-        uses: montudor/action-zip@v1
-        with:
-          files: |
-            dist/chrome/*
-          output: chrome.zip
+        run: |
+          cd dist/chrome
+          zip -qq -r ../../chrome.zip ./*
+          cd ../..
 
       - name: Build firefox version
         run: bun firefox
 
       - name: Zip firefox extension
-        uses: montudor/action-zip@v1
-        with:
-          files: |
-            dist/firefox/*
-          output: firefox.zip
+        run: |
+          cd dist/firefox
+          zip -qq -r ../../firefox.zip ./*
+          cd ../..
 
       - name: Upload to Chrome Web Store
-        uses: wdzeng/chrome-extension@v1
+        uses: mnao305/chrome-extension-upload@v5.0.0
         with:
           extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip-path: chrome.zip
+          file-path: chrome.zip
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
