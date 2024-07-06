@@ -231,8 +231,8 @@ export const useDeleteWallet = () => {
 export const useSwitchNetwork = () => {
   const navigate = useNavigate();
   const { updateAppState } = useAppState(ss(["updateAppState"]));
-  const { updateWalletState, selectedWallet, wallets } = useWalletState(
-    ss(["updateWalletState", "selectedWallet", "wallets"])
+  const { selectedWallet, } = useWalletState(
+    ss(["selectedWallet"])
   );
   const { walletController, notificationController } = useControllersState(
     ss(["walletController", "notificationController"])
@@ -240,17 +240,10 @@ export const useSwitchNetwork = () => {
 
   return async (network: Network) => {
     if (selectedWallet === undefined) return;
-    const updatedWallets = wallets;
     await Promise.all([
       updateAppState({ network }, true),
       walletController.switchNetwork(network),
     ]);
-    updatedWallets[selectedWallet].accounts =
-      await walletController.loadAccountsData(
-        selectedWallet,
-        updatedWallets[selectedWallet].accounts
-      );
-    await updateWalletState({ wallets: updatedWallets }, true);
     await notificationController.switchedNetwork(network);
     navigate("/");
   };
