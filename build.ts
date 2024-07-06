@@ -24,6 +24,7 @@ const extraManifest = await readJsonFile(
   chrome ? chromeManifestPath : firefoxManifestPath
 );
 
+const version = process.env.npm_package_version ?? "0.0.1";
 const isDev = Bun.argv.includes("--watch") || Bun.argv.includes("-w");
 
 function mergeManifests(): Plugin {
@@ -33,7 +34,7 @@ function mergeManifests(): Plugin {
       const content = {
         ...baseManifest,
         ...extraManifest,
-        version: process.env.npm_package_version ?? "0.0.1",
+        version,
       };
       if (Bun.argv.includes("--watch") && !Bun.argv.includes("--firefox")) {
         content.chrome_url_overrides = {
@@ -50,31 +51,34 @@ function mergeManifests(): Plugin {
   };
 }
 
+console.log(
+  `\n🔨 Building extension... \n` +
+    `💻 Browser: ${chrome ? "Chrome" : "Firefox"}\n` +
+    `💡 Version: ${process.env.npm_package_version}\n` +
+    `♻️  Environment: ${isDev ? "Development" : "Production"}`
+);
+
 function dotenvPlugin(): Plugin {
   return {
     name: "dotenv",
-    setup(build) {
-      const fs = require("fs");
-      const path = require("path");
-      const dotenvPath = path.resolve("./.env");
-      const env: Record<string, string> = {};
+    async setup(build) {
+      let envFile = Bun.file("./.env");
+      const isExists = await envFile.exists();
 
-      try {
-        if (fs.existsSync(dotenvPath)) {
-          const dotenv = fs.readFileSync(dotenvPath, "utf8");
-          dotenv.split("\n").forEach((line: string) => {
-            const [key, value] = line.split("=");
-            if (key && value) {
-              env[`process.env.${key}`] = JSON.stringify(value.trim().replace(/^["']|["']$/g, ''));
-            }
-          });
-        } else {
-          env["process.env.PREVIEW_URL"] = JSON.stringify("");
-          env["process.env.CONTENT_URL"] = JSON.stringify("");
-          env["process.env.API_URL"] = JSON.stringify("");
-        }
-      } catch (error) {
-        console.error("Failed to load .env file", error);
+      let env: Record<string, string> = {};
+      env["process.env.VERSION"] = JSON.stringify(version);
+
+      if (isExists) {
+        let content = await envFile.text();
+
+        content.split("\n").forEach((line: string) => {
+          const [key, value] = line.split("=");
+          if (key && value) {
+            env[`process.env.${key}`] = JSON.stringify(
+              value.trim().replace(/^["']|["']$/g, "")
+            );
+          }
+        });
       }
 
       build.initialOptions.define = {
@@ -84,13 +88,6 @@ function dotenvPlugin(): Plugin {
     },
   };
 }
-
-console.log(
-  `\n🔨 Building extension... \n` +
-    `💻 Browser: ${chrome ? "Chrome" : "Firefox"}\n` +
-    `💡 Version: ${process.env.npm_package_version}\n` +
-    `♻️  Environment: ${isDev ? "Development" : "Production"}`
-);
 
 const buildOptions: BuildOptions = {
   entryPoints: {
@@ -103,6 +100,7 @@ const buildOptions: BuildOptions = {
   minify: !isDev,
   bundle: true,
   logLevel: "info",
+  external: ["fonts/*"],
   define: {
     "import.meta.url": '""',
     "process.browser": "false",
@@ -111,6 +109,7 @@ const buildOptions: BuildOptions = {
   platform: "browser",
   sourcemap: Bun.argv.includes("--sourcemap") || Bun.argv.includes("-s"),
   plugins: [
+    dotenvPlugin(),
     svgPlugin({
       typescript: true,
       svgo: true,
@@ -138,13 +137,14 @@ const buildOptions: BuildOptions = {
     nodeModulesPolyfillPlugin({
       globals: {
         Buffer: true,
+        process: true,
       },
       modules: {
         buffer: true,
+        process: true,
       },
     }),
     mergeManifests(),
-    dotenvPlugin(),
   ],
 };
 

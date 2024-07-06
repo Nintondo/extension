@@ -3,28 +3,29 @@ import Modal from "@/ui/components/modal";
 import { useAppState } from "@/ui/states/appState";
 import { MinusCircleIcon } from "@heroicons/react/24/outline";
 import { FC } from "react";
-import { FormType } from "../component";
 
 import s from "./styles.module.scss";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  // setFormData: React.Dispatch<React.SetStateAction<FormType>>;
   setAddress: (address: string) => void;
 }
 
 const AddressBookModal: FC<Props> = ({ isOpen, onClose, setAddress }) => {
-  const { addressBook, updateAppState } = useAppState((v) => ({
-    addressBook: v.addressBook,
-    updateAppState: v.updateAppState,
-  }));
+  const { addressBook, updateAppState } = useAppState(
+    ss(["addressBook", "updateAppState"])
+  );
 
   const onRemove = async (address: string) => {
-    await updateAppState({
-      addressBook: addressBook.filter((i) => i !== address),
-    });
+    await updateAppState(
+      {
+        addressBook: addressBook.filter((i) => i !== address),
+      },
+      true
+    );
   };
 
   const onSelect = (address: string) => {

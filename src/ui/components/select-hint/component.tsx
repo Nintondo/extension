@@ -1,6 +1,6 @@
 import { Combobox, Transition } from "@headlessui/react";
-import { FC, Fragment, useCallback, useEffect, useState } from "react";
-import englishWords from "bip39/src/wordlists/english.json";
+import { FC, Fragment, useEffect, useState } from "react";
+import englishWords from "nintondo-bip39/src/wordlists/english.json";
 import cn from "classnames";
 
 import s from "./styles.module.scss";
@@ -11,13 +11,13 @@ export interface Props {
 }
 
 const SelectWithHint: FC<Props> = ({ selected, setSelected }) => {
-  const [query, setQuery] = useState("");
-  const [filtered, setFiltered] = useState([]);
+  const [query, setQuery] = useState<string>("");
+  const [filtered, setFiltered] = useState<string[]>([]);
   const [unblured, setUnblured] = useState(false);
 
-  const getFiltered = useCallback((word: string) => {
+  const getFiltered = (word: string) => {
     return englishWords.filter((w) => w.startsWith(word.trim())).slice(0, 4);
-  }, []);
+  };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const phrase = (event.target.value as string).trim();

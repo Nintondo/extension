@@ -1,7 +1,4 @@
-import type {
-  ApprovalData,
-  INotificationController,
-} from "@/shared/interfaces/notification";
+import type { INotificationController } from "@/shared/interfaces/notification";
 import {
   notificationService,
   permissionService,
@@ -9,9 +6,10 @@ import {
   storageService,
 } from "../services";
 import type { ConnectedSite } from "../services/permission";
+import { Network } from "belcoinjs-lib";
 
 class NotificationController implements INotificationController {
-  async getApproval(): Promise<ApprovalData> {
+  async getApproval() {
     return notificationService.getApproval();
   }
 
@@ -24,24 +22,29 @@ class NotificationController implements INotificationController {
   }
 
   async resolveApproval(data?: any, forceReject = false): Promise<void> {
-    const password = storageService.appState.password;
-    if (
-      (await notificationService.resolveApproval(data, forceReject)) &&
-      password
-    ) {
-      await storageService.saveWallets({
-        wallets: storageService.walletState.wallets,
-        password,
-      });
-    }
+    await notificationService.resolveApproval(data, forceReject);
+    // ! Probably it will break the code
+    // const password = storageService.appState.password;
+    // if (
+    //   (await notificationService.resolveApproval(data, forceReject)) &&
+    //   password
+    // ) {
+    //   await storageService.saveWallets({
+    //     wallets: storageService.walletState.wallets,
+    //     password,
+    //   });
+    // }
   }
 
   async changedAccount(): Promise<void> {
     permissionService.disconnectSites();
-    sessionService.broadcastEvent(
-      "accountsChanged",
-      storageService.currentAccount
-    );
+    sessionService.broadcastEvent("accountsChanged");
+  }
+
+  async switchedNetwork(network: Network): Promise<void> {
+    sessionService.broadcastEvent("networkChanged", {
+      network,
+    });
   }
 
   async getConnectedSites(): Promise<ConnectedSite[]> {
@@ -52,10 +55,11 @@ class NotificationController implements INotificationController {
     const password = storageService.appState.password;
     if (password) {
       permissionService.removeSite(origin);
-      await storageService.saveWallets({
-        wallets: storageService.walletState.wallets,
-        password,
-      });
+      // ! This shit i don't understand too
+      // await storageService.saveWallets({
+      //   wallets: storageService.walletState.wallets,
+      //   password,
+      // });
     }
     return permissionService.allSites;
   }

@@ -3,7 +3,7 @@ import { CheckIcon } from "@heroicons/react/24/solid";
 
 import s from "./styles.module.scss";
 import { t } from "i18next";
-import { BELLS_API_URL } from "@/shared/constant";
+import { NINTONDO_URL } from "@/shared/constant";
 import { Link, useParams } from "react-router-dom";
 
 const FinalleSend = () => {
@@ -12,7 +12,7 @@ const FinalleSend = () => {
   const onClick = async () => {
     await browserTabsCreate({
       active: true,
-      url: `${BELLS_API_URL}/tx/${txId}`,
+      url: `${NINTONDO_URL}/explorer/tx/${txId}`,
     });
   };
 
@@ -26,10 +26,10 @@ const FinalleSend = () => {
       </div>
 
       <div className={s.btnContainer}>
-        <Link to={"/home"} className="btn primary flex-3">
+        <Link to={"/"} className={s.btn}>
           {t("send.finalle_send.back")}
         </Link>
-        <button className="btn primary flex-3" onClick={onClick}>
+        <button className={s.btn} onClick={onClick}>
           {t("send.finalle_send.explorer")}
         </button>
       </div>

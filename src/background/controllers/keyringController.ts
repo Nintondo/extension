@@ -1,16 +1,17 @@
-import { Psbt } from "belcoinjs-lib";
+import { Network, Psbt } from "belcoinjs-lib";
 import { keyringService } from "../services";
 import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
 import type { IPrivateWallet } from "@/shared/interfaces";
 import type { AddressType } from "bellhdw";
 import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
-import { ApiUTXO } from "bells-inscriber/lib/types";
+import { ApiUTXO } from "@/shared/interfaces/api";
 
 export interface IKeyringController {
   init(password: string): Promise<IPrivateWallet[]>;
   newKeyring(
     type: "simple" | "root",
     payload: string,
+    network: Network,
     hdPath?: string
   ): Promise<string | undefined>;
   exportAccount(address: Hex): Promise<string>;
@@ -35,7 +36,8 @@ export interface IKeyringController {
     toAddress: string,
     feeRate: number,
     ordUtxos: ApiOrdUTXO[],
-    utxos: ApiUTXO[]
+    utxos: ApiUTXO[],
+    network: Network
   ): Promise<string>;
 }
 
@@ -58,9 +60,10 @@ class KeyringController implements IKeyringController {
   async newKeyring(
     walletType: "simple" | "root",
     payload: string,
+    network: Network,
     hdPath?: string
   ): Promise<string | undefined> {
-    return keyringService.newKeyring({ walletType, payload, hdPath });
+    return keyringService.newKeyring({ walletType, payload, hdPath, network });
   }
 
   /**
@@ -131,9 +134,16 @@ class KeyringController implements IKeyringController {
     toAddress: string,
     feeRate: number,
     ordUtxos: ApiOrdUTXO[],
-    utxos: ApiUTXO[]
+    utxos: ApiUTXO[],
+    network: Network
   ): Promise<string> {
-    return keyringService.sendMultiOrd(toAddress, feeRate, ordUtxos, utxos);
+    return keyringService.sendMultiOrd(
+      toAddress,
+      feeRate,
+      ordUtxos,
+      utxos,
+      network
+    );
   }
 }
 

@@ -1,3 +1,5 @@
+import { Network, networks } from "belcoinjs-lib";
+
 export const isNotification = (): boolean => {
   return window.location.pathname.includes("notification.html");
 };
@@ -11,3 +13,52 @@ export const normalizeAmount = (value: string) => {
   }
   return value;
 };
+
+export function gptFeeCalculate(
+  inputCount: number,
+  outputCount: number,
+  feeRate: number
+) {
+  // Constants defining the weight of each component of a transaction
+  const BASE_TX_WEIGHT = 10 * 4; // 10 vbytes * 4 weight units per vbyte
+  const INPUT_WEIGHT = 148 * 4; // 148 vbytes * 4 weight units per vbyte for each input
+  const OUTPUT_WEIGHT = 34 * 4; // 34 vbytes * 4 weight units per vbyte for each output
+
+  // Calculate the weight of the transaction
+  const transactionWeight =
+    BASE_TX_WEIGHT + inputCount * INPUT_WEIGHT + outputCount * OUTPUT_WEIGHT;
+
+  // Calculate the fee by multiplying transaction weight by fee rate (satoshis per weight unit)
+  const fee = Math.ceil((transactionWeight / 4) * feeRate);
+
+  return fee;
+}
+
+export function calcBalanceLength(balance: number) {
+  return balance.toFixed(
+    balance.toFixed(0).toString().length >= 4
+      ? 8 - balance.toFixed(0)?.toString().length < 0
+        ? 0
+        : 8 - balance.toFixed(0)?.toString().length
+      : 8
+  );
+}
+
+export function isTestnet(network: Network) {
+  return (
+    network.pubKeyHash === networks.testnet.pubKeyHash &&
+    network.scriptHash === networks.testnet.scriptHash
+  );
+}
+
+export function ss<T extends Record<string, any>, K extends keyof T = keyof T>(
+  keys: K[]
+) {
+  return (state: T) => {
+    return Object.fromEntries(keys.map((i) => [i, state[i]])) as Pick<T, K>;
+  };
+}
+
+export function arrayDifference<T>(arr1: T[], arr2: T[]): T[] {
+  return arr1.filter((item) => !arr2.includes(item));
+}

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
-export function useDebounceCall(
-  value: (...args: any[]) => Promise<void>,
+export function useDebounceCall<T>(
+  value: (...args: T[]) => Promise<void>,
   delay?: number
-): (...args: any[]) => void {
-  const [triggered, setTriggered] = useState<any[]>(undefined);
+): (...args: T[]) => void {
+  const [triggered, setTriggered] = useState<T[] | undefined>(undefined);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
@@ -27,11 +27,13 @@ export function useDebounceCall(
   );
 }
 
-export function useDebounce<T extends (...args: any) => void>(
+export function useDebounce<D, T extends (...args: D[]) => void>(
   value: T,
   delay?: number
 ): T {
-  const [debouncedValue, setDebouncedValue] = useState(undefined);
+  const [debouncedValue, setDebouncedValue] = useState<D[] | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (debouncedValue) {
@@ -43,7 +45,7 @@ export function useDebounce<T extends (...args: any) => void>(
     }
   }, [debouncedValue, delay, value]);
 
-  return useCallback((...v: any[]) => {
+  return useCallback((...v: D[]) => {
     setDebouncedValue(v);
   }, []) as T;
 }

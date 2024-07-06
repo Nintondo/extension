@@ -1,6 +1,6 @@
 {
   "name": "nintondo-extension",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "private": true,
   "scripts": {
     "dev": "bun build.ts --watch",
@@ -30,19 +30,21 @@
     ]
   },
   "dependencies": {
-    "@headlessui/react": "1.7.18",
+    "@headlessui/react": "2.0.4",
     "@heroicons/react": "2.1.1",
     "@noble/hashes": "1.3.3",
-    "bel-ord-utils": "0.2.0",
-    "bellhdw": "0.5.23",
-    "bells-inscriber": "0.0.4",
+    "bel-ord-utils": "0.2.3",
+    "belcoinjs-lib": "0.0.6",
+    "bellhdw": "0.5.33",
+    "bells-inscriber": "0.1.6",
     "big.js": "6.2.1",
-    "bip39": "3.1.0",
+    "nintondo-bip39": "1.0.0",
     "classnames": "2.5.1",
     "eth-rpc-errors": "4.0.3",
     "i18next": "23.7.16",
     "koa-compose": "4.1.0",
     "nintondo-browser-passworder": "0.0.1",
+    "nintondo-sdk": "0.1.10",
     "qr-code-styling": "1.6.0-rc.1",
     "rc-progress": "3.5.1",
     "react": "18.2.0",
@@ -56,6 +58,7 @@
     "zustand": "4.4.7"
   },
   "devDependencies": {
+    "@dotenv-run/esbuild": "1.3.4",
     "@types/big.js": "6.2.2",
     "@types/chrome": "0.0.263",
     "@types/koa-compose": "3.2.8",

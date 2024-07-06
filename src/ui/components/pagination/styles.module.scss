@@ -1,23 +1,11 @@
 .btn {
-  cursor: pointer;
-  background: rgba(0, 0, 0, 0.1);
-  border: none;
-  outline: none;
-  border-radius: 40%;
-  padding: 0.5rem 0.8rem;
-}
-
-.active {
-  background-color: rgba(100, 100, 190, 0.9);
-  color: white;
+  @apply cursor-pointer border-none outline-none rounded-xl px-3 py-1;
 }
 
 .arrow {
-  border: none;
-  @apply bg-input-bg px-3 rounded-xl;
+  @apply px-3 rounded-xl border-none;
 }
 
 .pagination {
-  display: flex;
-  gap: 0.4rem;
+  @apply flex gap-2;
 }

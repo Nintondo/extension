@@ -2,9 +2,7 @@ import {
   useCreateBellsTxCallback,
   useCreateOrdTx,
 } from "@/ui/hooks/transactions";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import {
-  useCallback,
   useEffect,
   useState,
   ChangeEventHandler,
@@ -22,9 +20,9 @@ import AddressInput from "./address-input";
 import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
-import Loading from "react-loading";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
-export interface FormType {
+interface FormType {
   address: string;
   amount: string;
   feeAmount: number;
@@ -58,60 +56,68 @@ const CreateSend = () => {
   const send = async ({
     address,
     amount,
-    feeAmount,
+    feeAmount: feeRate,
     includeFeeInAmount,
   }: FormType) => {
     try {
       setLoading(true);
-      if (Number(amount) < 0.01 && !inscriptionTransaction) {
+      if (Number(amount) < 0.00001 && !inscriptionTransaction) {
         return toast.error(t("send.create_send.minimum_amount_error"));
       }
       if (address.trim().length <= 0) {
         return toast.error(t("send.create_send.address_error"));
       }
-      if (Number(amount) > (currentAccount?.balance ?? 0)) {
+      if (Number(amount) > (currentAccount?.balance ?? 0) / 10 ** 8) {
         return toast.error(t("send.create_send.not_enough_money_error"));
       }
-      if (feeAmount < 1) {
+      if (typeof feeRate !== "number" || !feeRate || feeRate < 1) {
         return toast.error(t("send.create_send.not_enough_fee_error"));
       }
-      if (feeAmount % 1 !== 0) {
+      if (feeRate % 1 !== 0) {
         return toast.error(t("send.create_send.fee_is_text_error"));
       }
 
-      const { fee, rawtx } = !inscriptionTransaction
+      const data = !inscriptionTransaction
         ? await createTx(
             address,
-            Number(amount) * 10 ** 8,
-            feeAmount,
+            Number((Number(amount) * 10 ** 8).toFixed(0)),
+            feeRate,
             includeFeeInAmount
           )
-        : await createOrdTx(address, feeAmount, inscription);
+        : await createOrdTx(address, feeRate, inscription!);
+      if (!data) return;
+      const { fee, rawtx } = data;
 
       navigate("/pages/confirm-send", {
         state: {
           toAddress: address,
           amount: !inscriptionTransaction
             ? Number(amount)
-            : inscription.inscription_id,
+            : inscription!.inscription_id,
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",
           feeAmount: fee,
-          inputedFee: feeAmount,
+          inputedFee: feeRate,
           hex: rawtx,
           save: isSaveAddress,
           inscriptionTransaction,
         },
       });
     } catch (e) {
-      console.error(e);
-      toast.error(t("send.create_send.default_error"));
+      if ((e as Error).message) {
+        toast.error((e as Error).message);
+      } else {
+        toast.error(t("send.create_send.default_error"));
+        console.error(e);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    if (!currentAccount || !currentAccount.address || !currentAccount.balance)
+      return;
     if (location.state && location.state.toAddress) {
       setFormData({
         address: location.state.toAddress,
@@ -122,21 +128,23 @@ const CreateSend = () => {
       if (location.state.save) {
         setIsSaveAddress(true);
       }
-      if (currentAccount?.balance <= location.state.amount)
+      if (currentAccount?.balance / 10 ** 8 <= location.state.amount)
         setIncludeFeeLocked(true);
     }
     if (location.state && location.state.inscription_id) {
       setInscription(location.state);
       setInscriptionTransaction(true);
     }
-  }, [location.state, setFormData, currentAccount?.balance]);
+  }, [location.state, setFormData, currentAccount]);
 
   const onAmountChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!currentAccount || !currentAccount.address || !currentAccount.balance)
+      return;
     setFormData((prev) => ({
       ...prev,
       amount: normalizeAmount(e.target.value),
     }));
-    if (currentAccount?.balance > Number(e.target.value)) {
+    if (currentAccount.balance / 10 ** 8 > Number(e.target.value)) {
       setIncludeFeeLocked(false);
     } else {
       setIncludeFeeLocked(true);
@@ -149,16 +157,18 @@ const CreateSend = () => {
 
   const onMaxClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    setFormData((prev) => ({
-      ...prev,
-      amount: currentAccount?.balance.toString(),
-      includeFeeInAmount: true,
-    }));
-    setIncludeFeeLocked(true);
+    if (currentAccount?.balance) {
+      setFormData((prev) => ({
+        ...prev,
+        amount: (currentAccount.balance! / 10 ** 8).toString(),
+        includeFeeInAmount: true,
+      }));
+      setIncludeFeeLocked(true);
+    }
   };
 
   return (
-    <div className="flex flex-col h-full justify-between w-full">
+    <div className="flex flex-col justify-between w-full h-full">
       <form
         id={formId}
         className={cn("form", s.send)}
@@ -186,29 +196,13 @@ const CreateSend = () => {
                   <input
                     type="number"
                     placeholder={t("send.create_send.amount_to_send")}
-                    className="input w-full"
+                    className="w-full input"
                     value={formData.amount}
                     onChange={onAmountChange}
                   />
                   <button className={s.maxAmount} onClick={onMaxClick}>
                     {t("send.create_send.max_amount")}
                   </button>
-                </div>
-              </div>
-              <div className="p-2 mt-2 bg-input-light rounded-xl text-center">
-                <div className="p-0.5 flex justify-between">
-                  <div>{`${t("wallet_page.amount_in_transactions")}: `}</div>
-                  <span className="font-medium text-sm">
-                    {`${currentAccount.balance?.toFixed(8) ?? "-"} BEL`}
-                  </span>
-                </div>
-                <div className="p-0.5 flex justify-between">
-                  <div>{`${t("wallet_page.amount_in_inscriptions")}: `}</div>
-                  <span className="font-medium text-sm">
-                    {`${
-                      currentAccount.inscriptionBalance?.toFixed(8) ?? "-"
-                    } BEL`}
-                  </span>
                 </div>
               </div>
             </div>
@@ -221,10 +215,9 @@ const CreateSend = () => {
               {t("send.create_send.fee_label")}
             </span>
             <FeeInput
-              onChange={useCallback(
-                (v) => setFormData((prev) => ({ ...prev, feeAmount: v })),
-                [setFormData]
-              )}
+              onChange={(v) =>
+                setFormData((prev) => ({ ...prev, feeAmount: v ?? 0 }))
+              }
               value={formData.feeAmount}
             />
           </div>
@@ -251,19 +244,28 @@ const CreateSend = () => {
         </div>
       </form>
 
-      {loading ? (
-        <div className="w-full flex justify-center">
-          <Loading />
-        </div>
-      ) : (
+      <div>
+        {!inscriptionTransaction && (
+          <div className="flex justify-between py-2 px-4">
+            <div className="text-xs uppercase text-gray-400">{`${t(
+              "wallet_page.amount_in_transactions"
+            )}`}</div>
+            <span className="text-sm font-medium">
+              {`${((currentAccount?.balance ?? 0) / 10 ** 8).toFixed(8)} BEL`}
+            </span>
+          </div>
+        )}
         <button
+          disabled={loading}
           type="submit"
-          className={"btn primary mx-4 mb-4 standard:m-6 standard:mb-3"}
+          className={
+            "border-t border-neutral-700 py-3 text-sm font-medium standard:m-6 standard:mb-3 w-full disabled:cursor-wait"
+          }
           form={formId}
         >
           {t("send.create_send.continue")}
         </button>
-      )}
+      </div>
 
       <AddressBookModal
         isOpen={isOpenModal}

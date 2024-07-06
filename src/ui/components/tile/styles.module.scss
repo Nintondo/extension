@@ -1,7 +1,21 @@
 .card {
-  @apply cursor-pointer bg-input-bg h-28 rounded-xl hover:bg-text hover:text-bg transition-colors flex items-center justify-center flex-col gap-4 px-3;
+  @apply cursor-pointer h-28 flex items-center justify-center flex-col gap-4 px-3 odd:border-r border-b even:border-l last:border-b-0 border-neutral-800;
 
-  >div {
+  &:nth-last-child(2) {
+    @apply border-b-0;
+  }
+
+  &:hover {
+    > * {
+      @apply scale-110;
+    }
+  }
+
+  > div {
     @apply text-xs text-center font-medium;
+  }
+
+  > * {
+    @apply transition-transform;
   }
 }

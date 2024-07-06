@@ -1,41 +1,50 @@
 import s from "../styles.module.scss";
 import { ListBulletIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import {
-  useGetCurrentAccount,
-  useGetCurrentWallet,
-} from "@/ui/states/walletState";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
-import Loading from "react-loading";
 import { shortAddress } from "@/shared/utils/transactions";
 import CopyBtn from "@/ui/components/copy-btn";
 import { t } from "i18next";
 import cn from "classnames";
-import { Popover, Transition } from "@headlessui/react";
+import { Popover, Transition, useClose } from "@headlessui/react";
 import { Fragment, useRef } from "react";
+import { calcBalanceLength } from "@/ui/utils";
+import {
+  useGetCurrentAccount,
+  useGetCurrentWallet,
+} from "@/ui/states/walletState";
 
 const AccountPanel = () => {
-  const currentWallet = useGetCurrentWallet();
-  const currentAccount = useGetCurrentAccount();
-
   const { currentPrice } = useTransactionManagerContext();
+  const currentAccount = useGetCurrentAccount();
+  const currentWallet = useGetCurrentWallet();
 
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const close = useClose();
   const leaveTimeOutRef = useRef<NodeJS.Timeout | null>(null);
   const enterTimeOutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleEnter = (isOpen: boolean) => {
+    if (
+      !currentAccount ||
+      currentAccount.address ||
+      leaveTimeOutRef.current === null
+    )
+      return;
     if (currentAccount.balance === undefined) return;
-    clearTimeout(leaveTimeOutRef.current);
+    if (leaveTimeOutRef.current !== null) {
+      clearTimeout(leaveTimeOutRef.current);
+    }
     enterTimeOutRef.current = setTimeout(() => {
-      !isOpen && triggerRef.current?.click();
+      !isOpen && close();
     }, 240);
   };
 
   const handleLeave = (isOpen: boolean) => {
-    clearTimeout(enterTimeOutRef.current);
+    if (enterTimeOutRef.current !== null) {
+      clearTimeout(enterTimeOutRef.current);
+    }
     leaveTimeOutRef.current = setTimeout(() => {
-      isOpen && triggerRef.current?.click();
+      isOpen && close();
     }, 240);
   };
 
@@ -49,28 +58,13 @@ const AccountPanel = () => {
               onMouseEnter={() => handleEnter(open)}
               onMouseLeave={() => handleLeave(open)}
             >
-              <Popover.Button ref={triggerRef}></Popover.Button>
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center gap-2">
                 {currentAccount?.balance === undefined ? (
-                  <Loading
-                    type="spin"
-                    color="#ffbc42"
-                    width={"2.5rem"}
-                    height={"2rem"}
-                    className="react-loading pr-2"
-                  />
+                  <div className="pb-1">
+                    <div className="animate-pulse w-40 h-8 rounded-md bg-gray-600 bg-opacity-70" />
+                  </div>
                 ) : (
-                  (currentAccount?.balance ?? 0).toFixed(
-                    currentAccount.balance?.toFixed(0).toString().length > 4
-                      ? 8 -
-                          currentAccount.balance?.toFixed(0)?.toString()
-                            .length <
-                        0
-                        ? 0
-                        : 8 -
-                          currentAccount.balance?.toFixed(0)?.toString().length
-                      : 8
-                  )
+                  calcBalanceLength((currentAccount?.balance ?? 0) / 10 ** 8)
                 )}
                 <span className="text-xl pb-0.5 text-slate-300">BEL</span>
               </div>
@@ -78,7 +72,11 @@ const AccountPanel = () => {
             {currentAccount?.balance !== undefined ? (
               currentPrice !== undefined ? (
                 <div className="text-gray-500 text-sm">
-                  ~{(currentAccount.balance * currentPrice)?.toFixed(3)}$
+                  ~
+                  {((currentAccount.balance / 10 ** 8) * currentPrice)?.toFixed(
+                    3
+                  )}
+                  $
                 </div>
               ) : undefined
             ) : undefined}
@@ -98,11 +96,11 @@ const AccountPanel = () => {
               >
                 <p>
                   {`${t("wallet_page.amount_in_transactions")}: `}
-                  {`${currentAccount.balance?.toFixed(8)} BEL`}
+                  {`${currentAccount?.balance?.toFixed(8)} BEL`}
                 </p>
                 <p>
                   {`${t("wallet_page.amount_in_inscriptions")}: `}
-                  {`${currentAccount.inscriptionBalance?.toFixed(8)} BEL`}
+                  {`${currentAccount?.inscriptionBalance?.toFixed(8)} BEL`}
                 </p>
               </Popover.Panel>
             </Transition>
@@ -120,11 +118,11 @@ const AccountPanel = () => {
         ) : undefined}
         <div>
           <p>
-            {currentAccount.id === 0 &&
-            !currentWallet.hideRoot &&
-            currentWallet.type === "root"
+            {currentAccount?.id === 0 &&
+            !currentWallet?.hideRoot &&
+            currentWallet?.type === "root"
               ? "Root account"
-              : currentAccount.name}
+              : currentAccount?.name}
           </p>
           <CopyBtn
             title={currentAccount?.address}
@@ -136,10 +134,16 @@ const AccountPanel = () => {
       </div>
 
       <div className={cn(s.receiveSendBtns)}>
-        <Link to={"/pages/receive"} className={s.btn}>
+        <Link
+          to={"/pages/receive"}
+          className={cn(s.btn, "w-full px-3 bg-text text-bg")}
+        >
           {t("wallet_page.receive")}
         </Link>
-        <Link to={"/pages/create-send"} className={s.btn}>
+        <Link
+          to={"/pages/create-send"}
+          className={cn(s.btn, "w-full px-3 hover:bg-text hover:text-bg")}
+        >
           {t("wallet_page.send")}
         </Link>
       </div>

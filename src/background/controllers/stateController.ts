@@ -1,41 +1,38 @@
-import type {
-  IAppStateBase,
-  IWalletState,
-  IWalletStateBase,
-} from "@/shared/interfaces";
+import type { IAppStateBase } from "@/shared/interfaces";
 import type { IStateController } from "@/shared/interfaces/stateController";
 import { storageService } from "../services";
+import type { IWalletState } from "@/ui/states/walletState";
 
 class StateController implements IStateController {
-  async init(): Promise<void> {
-    await storageService.init();
+  async init() {
+    return await storageService.init();
   }
 
-  async updateAppState(state: Partial<IAppStateBase>): Promise<void> {
-    await storageService.updateAppState(state);
+  async updateAppState(state: Partial<IAppStateBase>, updateFront = true) {
+    await storageService.updateAppState(state, updateFront);
   }
 
-  async updateWalletState(state: Partial<IWalletState>): Promise<void> {
-    await storageService.updateWalletState(state);
+  async updateWalletState(state: Partial<IWalletState>, updateFront = true) {
+    await storageService.updateWalletState(state, updateFront);
   }
 
-  async clearPendingWallet(): Promise<void> {
+  async clearPendingWallet() {
     await storageService.clearPendingWallet();
   }
 
-  async getPendingWallet(): Promise<string | undefined> {
-    return await storageService.getPengingWallet();
+  async getPendingWallet() {
+    return await storageService.getPendingWallet();
   }
 
-  async getWalletPhrase(index: number, password: string): Promise<string> {
+  async getWalletPhrase(index: number, password: string) {
     return await storageService.getWalletPhrase(index, password);
   }
 
-  async getAppState(): Promise<IAppStateBase> {
+  async getAppState() {
     return storageService.appState;
   }
 
-  async getWalletState(): Promise<IWalletStateBase> {
+  async getWalletState() {
     return storageService.walletState;
   }
 }

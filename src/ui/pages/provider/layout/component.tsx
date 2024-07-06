@@ -2,6 +2,8 @@ import { useControllersState } from "@/ui/states/controllerState";
 import s from "./styles.module.scss";
 import { FC, useEffect, useState } from "react";
 import ReactLoading from "react-loading";
+import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 interface Props {
   documentTitle: string;
@@ -19,15 +21,19 @@ const Layout: FC<Props> = ({
   const [origin, setOrigin] = useState<string>("");
   const [iconUrl, setIconUrl] = useState<string>("");
 
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
 
   useEffect(() => {
     document.title = documentTitle;
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       const approval = await notificationController.getApproval();
+      if (!approval || !approval.params) {
+        await notificationController.rejectApproval("Invalid params");
+        return;
+      }
       setOrigin(approval.params.session.origin);
       setIconUrl(approval.params.session.icon);
     })();
@@ -58,10 +64,10 @@ const Layout: FC<Props> = ({
       <div className={s.content}>{children}</div>
       <div className={s.btnContainer}>
         <button className={resolveBtnClassName} onClick={onResolve}>
-          {resolveBtnText ?? "Resolve"}
+          {resolveBtnText ?? t("provider.resolve")}
         </button>
         <button className={s.reject} onClick={onReject}>
-          Reject
+          {t("provider.reject")}
         </button>
       </div>
     </div>

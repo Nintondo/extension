@@ -33,19 +33,37 @@ browserRuntimeOnConnect((port: any) => {
             eventBus.emit(data.method, data.params);
             break;
           case "openapi":
-            return apiController[data.method].apply(null, data.params);
+            return (
+              apiController[data.method as keyof typeof apiController] as any
+            )(...data.params);
           case "keyring":
-            return keyringController[data.method].apply(null, data.params);
+            return (
+              keyringController[
+                data.method as keyof typeof keyringController
+              ] as any
+            )(...data.params);
           case "state":
-            return stateController[data.method].apply(null, data.params);
+            return (
+              stateController[
+                data.method as keyof typeof stateController
+              ] as any
+            )(...data.params);
           case "notification":
-            return notificationController[data.method].apply(null, data.params);
+            return (
+              notificationController[
+                data.method as keyof typeof notificationController
+              ] as any
+            )(...data.params);
           default:
-            if (!walletController[data.method])
+            if (!walletController[data.method as keyof typeof walletController])
               throw new Error(
                 `Method ${data.method} is not founded in the walletController`
               );
-            return walletController[data.method].apply(null, data.params);
+            return (
+              walletController[
+                data.method as keyof typeof walletController
+              ] as any
+            )(...data.params);
         }
       }
     });
@@ -68,9 +86,14 @@ browserRuntimeOnConnect((port: any) => {
 
   const pm = new PortMessage(port);
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  pm.listen(async (data) => {
+  pm.listen(async (data: { method: string; params: any }) => {
     const sessionId = port.sender?.tab?.id;
-    const session = sessionService.getOrCreateSession(sessionId);
+    if (data.method === "tabCheckin") {
+      sessionService.createSession(sessionId, data.params);
+      return;
+    }
+    const session = sessionService.getSession(sessionId);
+    if (!session) throw new Error("Session was not initialized");
 
     const req = { data, session };
     // for background push to respective page
@@ -91,7 +114,7 @@ const addAppInstalledEvent = () => {
   return;
 };
 
-browserRuntimeOnInstalled((details) => {
+browserRuntimeOnInstalled((details: { reason: string }) => {
   if (details.reason === "install") {
     addAppInstalledEvent();
   }
@@ -100,7 +123,7 @@ browserRuntimeOnInstalled((details) => {
 const INTERNAL_STAYALIVE_PORT = "CT_Internal_port_alive";
 let alivePort: any = null;
 
-setInterval(() => {
+setInterval(async () => {
   if (alivePort == null) {
     alivePort = chrome.runtime.connect({ name: INTERNAL_STAYALIVE_PORT });
 

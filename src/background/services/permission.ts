@@ -1,3 +1,5 @@
+import { NINTONDO_URL } from "@/shared/constant";
+
 export interface ConnectedSite {
   origin: string;
   icon: string;
@@ -23,6 +25,7 @@ class PermissionService {
   }
 
   siteIsConnected(origin: string): boolean {
+    if (origin === NINTONDO_URL) return true;
     const site = this._sites.find((f) => f.origin === origin);
     return site ? site.isConnected : false;
   }
@@ -36,7 +39,8 @@ class PermissionService {
         icon,
         isConnected: true,
       });
-    else this._sites[this._sites.indexOf(alreadyConnectedSite)].isConnected = true;
+    else
+      this._sites[this._sites.indexOf(alreadyConnectedSite)].isConnected = true;
   }
 
   disconnectSites() {
@@ -49,7 +53,7 @@ class PermissionService {
     if (!sites) {
       this._sites = [];
     } else {
-      this._sites = sites.map((f) => ({ ...f, isConnected: false }));
+      this._sites = sites.map((f) => ({ ...f, isConnected: true }));
     }
   }
 

@@ -1,3 +1,4 @@
+import { Network, networks } from "belcoinjs-lib";
 import { AddressType } from "bellhdw/src/hd/types";
 
 export const KEYRING_TYPE = {
@@ -11,6 +12,11 @@ export const IS_CHROME = /Chrome\//i.test(navigator.userAgent);
 export const IS_LINUX = /linux/i.test(navigator.userAgent);
 
 export const IS_WINDOWS = /windows/i.test(navigator.userAgent);
+
+export const NETOWRKS: { name: string; network: Network }[] = [
+  { name: "MAINNET", network: networks.bellcoin },
+  { name: "TESTNET", network: networks.testnet },
+];
 
 export const ADDRESS_TYPES: {
   value: AddressType;
@@ -36,6 +42,12 @@ export const ADDRESS_TYPES: {
     name: "Legacy (P2PKH)",
     hdPath: "m/44'/0'/0'/0",
   },
+  {
+    value: AddressType.P2WPKH,
+    label: "P2WPKH",
+    name: "Native Segwit (P2WPKH)",
+    hdPath: "m/84'/0'/0'/0",
+  },
 ];
 
 export const EVENTS = {
@@ -57,16 +69,32 @@ export const SATS_DOMAIN = ".sats";
 export const CHANNEL = "chrome";
 
 export const NINTONDO_API_URL =
-  process.env.API_URL === ""
-    ? "https://api.nintondo.io/api"
-    : process.env.API_URL;
-export const BELLS_API_URL = "https://bells.quark.blue";
+  process.env.API_URL ?? "https://electrs.nintondo.io/api";
 
 export const PREVIEW_URL =
-  process.env.PREVIEW_URL === ""
-    ? "https://static.nintondo.io/pub/preview"
-    : process.env.PREVIEW_URL;
+  process.env.PREVIEW_URL ?? "https://content.nintondo.io/api/pub/preview";
+export const HTML_PREVIEW_URL =
+  process.env.PREVIEW_URL ?? "https://content.nintondo.io/api/pub/html";
 export const CONTENT_URL =
-  process.env.CONTENT_URL === ""
-    ? "https://static.nintondo.io/pub/content"
-    : process.env.CONTENT_URL;
+  process.env.CONTENT_URL ?? "https://content.nintondo.io/api/pub/content/";
+
+export const NINTONDO_URL = process.env.NINTONDO_URL ?? "https://nintondo.io";
+
+export const TESTNET_NINTONDO_API_URL =
+  process.env.TESTNET_API_URL ?? "https://testnet.nintondo.io/electrs";
+
+export const TESTNET_PREVIEW_URL =
+  process.env.TESTNET_PREVIEW_URL ??
+  "https://testnet.nintondo.io/api/pub/preview";
+export const TESTNET_HTML_PREVIEW_URL =
+  process.env.TESTNET_HTML_URL ?? "https://testnet.nintondo.io/api/pub/html";
+export const TESTNET_CONTENT_URL =
+  process.env.TESTNET_CONTENT_URL ??
+  "https://testnet.nintondo.io/api/pub/content/";
+
+export const DEFAULT_FEES = {
+  fast: 5000,
+  slow: 2000,
+};
+
+export const DEFAULT_SERVICE_FEE = 1_000_000;

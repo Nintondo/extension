@@ -1,8 +1,9 @@
 import type { ConnectedSite } from "@/background/services/permission";
+import { Network } from "belcoinjs-lib";
 import type { EthereumProviderError } from "eth-rpc-errors";
 
 export interface INotificationController {
-  getApproval(): Promise<ApprovalData>;
+  getApproval(): Promise<ApprovalData | undefined>;
   rejectApproval(
     err?: string,
     stay?: boolean,
@@ -10,6 +11,7 @@ export interface INotificationController {
   ): Promise<void>;
   resolveApproval(data?: any, forceReject?: boolean): Promise<void>;
   changedAccount(): Promise<void>;
+  switchedNetwork(network: Network): Promise<void>;
   getConnectedSites(): Promise<ConnectedSite[]>;
   removeSite(origin: string): Promise<ConnectedSite[]>;
 }

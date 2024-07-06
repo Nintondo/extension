@@ -3,6 +3,7 @@ module.exports = {
     {
       env: {
         node: true,
+        browser: true
       },
       files: [".eslintrc.{js,cjs}"],
       parserOptions: {
@@ -11,6 +12,7 @@ module.exports = {
     },
     {
       env: {
+        node: true,
         browser: true,
       },
       extends: [
@@ -40,6 +42,7 @@ module.exports = {
     },
     {
       env: {
+        node: true,
         browser: true
       },
       files: ["./build.ts"],

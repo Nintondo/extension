@@ -3,6 +3,6 @@ export interface IAccount {
   balance?: number;
   inscriptionCounter?: number;
   inscriptionBalance?: number;
-  name?: string;
+  name: string;
   address?: string;
 }

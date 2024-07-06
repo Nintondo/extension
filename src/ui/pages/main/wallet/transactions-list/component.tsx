@@ -9,10 +9,11 @@ import { Circle } from "rc-progress";
 import { Link } from "react-router-dom";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import cn from "classnames";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import ReactLoading from "react-loading";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const TransactionList = () => {
   const { lastBlock, transactions, loadMoreTransactions } =
@@ -24,6 +25,13 @@ const TransactionList = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (inView) loadMoreTransactions();
   }, [inView, loadMoreTransactions]);
+
+  if (!transactions || !lastBlock || !currentAccount || !currentAccount.address)
+    return (
+      <div className="min-h-[50vh] w-full flex justify-center items-center">
+        <ReactLoading type="spinningBubbles" color="white" />
+      </div>
+    );
 
   if (!transactions.length)
     return (
@@ -69,12 +77,12 @@ const TransactionList = () => {
           </div>
           <div
             className={cn(s.value, {
-              "text-green-500": isIncomeTx(t, currentAccount.address),
-              "text-red-500": !isIncomeTx(t, currentAccount.address),
+              "text-green-500": isIncomeTx(t, currentAccount.address ?? ""),
+              "text-red-500": !isIncomeTx(t, currentAccount.address ?? ""),
             })}
           >
-            {isIncomeTx(t, currentAccount.address) ? "+ " : "- "}
-            {getTransactionValue(t, currentAccount.address)} BEL
+            {isIncomeTx(t, currentAccount.address ?? "") ? "+ " : "- "}
+            {getTransactionValue(t, currentAccount.address ?? "")} BEL
           </div>
         </Link>
       ))}

@@ -3,8 +3,6 @@ import ReactLoading from "react-loading";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation } from "react-router-dom";
 import { ITransaction } from "@/shared/interfaces/api";
-import { getTransactionValue } from "@/shared/utils/transactions";
-import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import { FC, useId, useMemo, useState } from "react";
 import Modal from "@/ui/components/modal";
@@ -12,11 +10,11 @@ import cn from "classnames";
 import { shortAddress } from "@/shared/utils/transactions";
 import toast from "react-hot-toast";
 import { t } from "i18next";
-import { BELLS_API_URL } from "@/shared/constant";
+import { NINTONDO_URL } from "@/shared/constant";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const TransactionInfo = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-
   const currentAccount = useGetCurrentAccount();
 
   const {
@@ -26,7 +24,7 @@ const TransactionInfo = () => {
 
   const onOpenExplorer = async () => {
     await browserTabsCreate({
-      url: `${BELLS_API_URL}/tx/${transaction.txid}`,
+      url: `${NINTONDO_URL}/explorer/tx/${transaction.txid}`,
       active: true,
     });
   };
@@ -35,10 +33,13 @@ const TransactionInfo = () => {
     const txValues: Record<string, number> = {};
 
     tx.vin.forEach((i) => {
-      if (txValues[i.prevout?.scriptpubkey_address]) {
-        txValues[i.prevout?.scriptpubkey_address] += i.prevout?.value;
-      } else {
-        txValues[i.prevout?.scriptpubkey_address] = i.prevout?.value;
+      const address = i.prevout?.scriptpubkey_address;
+      if (address) {
+        if (txValues[address]) {
+          txValues[address] += i.prevout?.value || 0;
+        } else {
+          txValues[address] = i.prevout?.value || 0;
+        }
       }
     });
 
@@ -77,7 +78,7 @@ const TransactionInfo = () => {
                 {t("transaction_info.value_label")}
               </p>
               <span>
-                {getTransactionValue(tx, currentAccount?.address, false)} BEL
+                {tx.vout.reduce((acc, cur) => cur.value + acc, 0) / 10 ** 8} BEL
               </span>
             </div>
 
@@ -93,12 +94,12 @@ const TransactionInfo = () => {
               <div className={s.tableContainer}>
                 <TableItem
                   label={t("transaction_info.inputs")}
-                  currentAddress={currentAccount.address}
+                  currentAddress={currentAccount?.address}
                   items={filteredInput}
                 />
                 <TableItem
                   label={t("transaction_info.outputs")}
-                  currentAddress={currentAccount.address}
+                  currentAddress={currentAccount?.address}
                   items={tx.vout}
                 />
               </div>

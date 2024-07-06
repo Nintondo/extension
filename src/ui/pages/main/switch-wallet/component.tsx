@@ -1,5 +1,5 @@
 import { useGetCurrentWallet, useWalletState } from "@/ui/states/walletState";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { TagIcon, KeyIcon, TrashIcon } from "@heroicons/react/24/outline";
 
@@ -10,14 +10,14 @@ import Modal from "@/ui/components/modal";
 import Card from "@/ui/components/card";
 import Rename from "@/ui/components/rename";
 import { t } from "i18next";
+import { ss } from "@/ui/utils";
 
 const SwitchWallet = () => {
   const [renameId, setRenameId] = useState<number | undefined>(undefined);
+  const { updateWallet, wallets } = useWalletState(
+    ss(["wallets", "updateWallet"])
+  );
   const currentWallet = useGetCurrentWallet();
-  const { wallets, updateWalletState } = useWalletState((v) => ({
-    wallets: v.wallets,
-    updateWalletState: v.updateWalletState,
-  }));
   const switchWallet = useSwitchWallet();
   const navigate = useNavigate();
   const deleteWallet = useDeleteWallet();
@@ -25,27 +25,45 @@ const SwitchWallet = () => {
   const [deleteWalletId, setDeleteWalletId] = useState<number>();
 
   const onDelete = async () => {
-    setDeleteWalletId(undefined);
-
-    await deleteWallet(wallets[deleteWalletId].id);
+    setDeleteWalletId((prev) => {
+      if (prev === undefined) return undefined;
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      deleteWallet(prev);
+      return undefined;
+    });
   };
 
   const onRename = async (name: string) => {
+    if (renameId === undefined) return;
     if (wallets.map((i) => i.name).includes(name))
       return toast.error(t("switch_account.name_already_taken_error"));
 
-    await updateWalletState({
-      wallets: wallets.with(renameId, { ...wallets[renameId], name }),
-    });
+    await updateWallet(
+      renameId,
+      {
+        name,
+      },
+      true
+    );
     setRenameId(undefined);
   };
+
+  useEffect(() => {
+    if (!currentWallet || currentWallet.id === undefined) return;
+    if (wallets.findIndex((f) => f.id === currentWallet.id) > 5) {
+      const element = document.getElementById(String(currentWallet.id));
+      if (element) {
+        element.scrollIntoView();
+      }
+    }
+  }, [currentWallet, wallets]);
 
   return (
     <div className={s.switchWalletDiv}>
       <div className={s.wallets}>
-        {wallets.map((wallet, i) => (
+        {wallets.map((wallet) => (
           <Card
-            key={`wallet-${i}`}
+            key={`wallet-${wallet.id}`}
             id={wallet.id}
             menuItems={[
               {
@@ -61,7 +79,7 @@ const SwitchWallet = () => {
               },
               {
                 action: () => {
-                  navigate(`/pages/show-mnemonic/${i}`);
+                  navigate(`/pages/show-mnemonic/${wallet.id}`);
                 },
                 icon: (
                   <KeyIcon
@@ -74,7 +92,7 @@ const SwitchWallet = () => {
                 action: () => {
                   if (wallets.length <= 1)
                     toast.error(t("switch_wallet.last_wallet_error"));
-                  else setDeleteWalletId(i);
+                  else setDeleteWalletId(wallet.id);
                 },
                 icon: (
                   <TrashIcon
@@ -86,10 +104,9 @@ const SwitchWallet = () => {
             ]}
             name={wallet.name}
             onClick={async () => {
-              await switchWallet(i);
-              navigate("/home");
+              await switchWallet(wallet.id);
             }}
-            selected={wallet.id === currentWallet.id}
+            selected={wallet.id === currentWallet?.id}
           />
         ))}
       </div>
@@ -101,7 +118,10 @@ const SwitchWallet = () => {
         <div className="text-base text-text py-5 px-4 flex flex-col items-center">
           <div className="text-sm">{t("switch_wallet.are_you_sure")}</div>
           <span className="text-teal-200 block mt-5">
-            {deleteWalletId !== undefined ? wallets[deleteWalletId].name : ""}
+            {deleteWalletId !== undefined &&
+            wallets[deleteWalletId] !== undefined
+              ? wallets[deleteWalletId].name
+              : ""}
           </span>
         </div>
         <div className="flex justify-center gap-4">

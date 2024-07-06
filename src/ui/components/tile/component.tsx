@@ -22,7 +22,7 @@ const Tile: FC<TileProps> = ({ label, className, link, onClick, icon }) => {
   }
 
   return (
-    <Link className={cn(s.card, className)} to={link}>
+    <Link className={cn(s.card, className)} to={link ?? "#"}>
       {icon}
       <div>{label}</div>
     </Link>

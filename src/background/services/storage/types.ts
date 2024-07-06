@@ -1,3 +1,4 @@
+import { Network } from "belcoinjs-lib";
 import type { ConnectedSite } from "../permission";
 import type { IWallet } from "@/shared/interfaces";
 
@@ -13,7 +14,7 @@ interface StorageWalletItem extends Omit<IWallet, "accounts" | "id"> {
 export type DecryptedSecrets = { id: number; data: any; phrase?: string }[];
 
 export interface StorageInterface {
-  enc: Record<"data" | "iv" | "salt", string>;
+  enc?: Record<"data" | "iv" | "salt", string>;
   cache: {
     wallets: StorageWalletItem[];
     addressBook: string[];
@@ -22,5 +23,7 @@ export interface StorageInterface {
     pendingWallet?: string;
     connectedSites: ConnectedSite[];
     language?: string;
+    unpushedHexes?: string[];
+    network?: Network;
   };
 }

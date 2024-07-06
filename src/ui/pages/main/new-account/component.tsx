@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useCreateNewAccount } from "@/ui/hooks/wallet";
-import { useGetCurrentWallet } from "@/ui/states/walletState";
 import { useForm } from "react-hook-form";
 import { t } from "i18next";
 import { useState } from "react";
 import Loading from "react-loading";
+import { useGetCurrentWallet } from "@/ui/states/walletState";
 
 interface FormType {
   name: string;
@@ -37,7 +37,7 @@ const NewAccount = () => {
     setLoading(true);
     await createNewAccount(name);
     toast.success(t("new_account.account_created_message"));
-    navigate("/home");
+    navigate("/");
   };
 
   if (loading) {

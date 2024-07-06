@@ -1,277 +1,257 @@
-import type { IAccount, INewWalletProps, IWallet } from "@/shared/interfaces";
+import type { INewWalletProps, IWallet } from "@/shared/interfaces";
 import { useControllersState } from "../states/controllerState";
 import {
   useGetCurrentAccount,
   useGetCurrentWallet,
   useWalletState,
 } from "../states/walletState";
-import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
 import { useTransactionManagerContext } from "../utils/tx-ctx";
+import { Network } from "belcoinjs-lib";
+import { useAppState } from "../states/appState";
+import { ss } from "../utils";
 
 export const useCreateNewWallet = () => {
-  const { wallets, updateWalletState } = useWalletState((v) => ({
-    wallets: v.wallets,
-    updateWalletState: v.updateWalletState,
-  }));
-  const { walletController, keyringController } = useControllersState((v) => ({
-    walletController: v.walletController,
-    keyringController: v.keyringController,
-  }));
-  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
+  const { wallets, updateWalletState } = useWalletState(
+    ss(["wallets", "updateWalletState"])
+  );
+  const { walletController, keyringController, notificationController } =
+    useControllersState(
+      ss(["walletController", "keyringController", "notificationController"])
+    );
+  const navigate = useNavigate();
 
-  return useCallback(
-    async (props: INewWalletProps) => {
-      const wallet = await walletController.createNewWallet(props);
-      await updateWalletState({
+  return async (props: INewWalletProps) => {
+    const wallet = await walletController.createNewWallet(props);
+    const keyring = await keyringController.serializeKeyringById(wallet.id);
+    const newWallets = [...wallets, wallet];
+    await walletController.saveWallets({
+      phrases: [{ id: wallet.id, phrase: props.payload, data: keyring }],
+      wallets: newWallets,
+    });
+
+    await updateWalletState(
+      {
+        wallets: newWallets,
+      },
+      false
+    );
+
+    await updateWalletState(
+      {
         selectedAccount: 0,
         selectedWallet: wallet.id,
-        wallets: [...wallets, wallet],
-      });
-      const keyring = await keyringController.serializeKeyringById(wallet.id);
-      await walletController.saveWallets([
-        { id: wallet.id, phrase: props.payload, data: keyring },
-      ]);
-      trottledUpdate(true);
-      resetTransactions();
-    },
-    [
-      wallets,
-      updateWalletState,
-      walletController,
-      keyringController,
-      trottledUpdate,
-      resetTransactions,
-    ]
-  );
-};
+      },
+      true
+    );
 
-export const useUpdateCurrentWallet = () => {
-  const { updateWalletState, selectedWallet, wallets } = useWalletState(
-    (v) => ({
-      updateWalletState: v.updateWalletState,
-      selectedWallet: v.selectedWallet,
-      wallets: v.wallets,
-    })
-  );
-
-  return useCallback(
-    async (wallet: Partial<IWallet>) => {
-      wallets[selectedWallet] = { ...wallets[selectedWallet], ...wallet };
-      await updateWalletState({
-        wallets: [...wallets],
-      });
-    },
-    [updateWalletState, selectedWallet, wallets]
-  );
+    await notificationController.changedAccount();
+    navigate("/");
+  };
 };
 
 export const useCreateNewAccount = () => {
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
-  const updateCurrentWallet = useUpdateCurrentWallet();
+  const { updateWalletState, wallets } = useWalletState(
+    ss(["updateWalletState", "wallets"])
+  );
   const currentWallet = useGetCurrentWallet();
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-  }));
-  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
+  const { walletController, notificationController } = useControllersState(
+    ss(["walletController", "notificationController"])
+  );
+  const navigate = useNavigate();
 
-  return useCallback(
-    async (name?: string) => {
-      if (!currentWallet) return;
-      const createdAccount = await walletController.createNewAccount(name);
-      const updatedWallet: IWallet = {
-        ...currentWallet,
-        accounts: [...currentWallet.accounts, createdAccount].map((f, i) => ({
-          ...f,
-          id: i,
-        })),
-      };
+  return async (name?: string) => {
+    if (!currentWallet) return;
+    const createdAccount = await walletController.createNewAccount(name);
+    if (!createdAccount)
+      throw new Error("Internal error: failed to create new account");
+    const updatedWallet: IWallet = {
+      ...currentWallet,
+      accounts: [...currentWallet.accounts, createdAccount].map((f, i) => ({
+        ...f,
+        id: i,
+      })),
+    };
 
-      await updateCurrentWallet(updatedWallet);
-      await walletController.saveWallets();
-      await updateWalletState({
+    const newWallets = wallets.map((f) =>
+      f.id === currentWallet.id ? updatedWallet : f
+    );
+
+    await walletController.saveWallets({
+      wallets: newWallets,
+    });
+
+    await updateWalletState(
+      {
+        wallets: newWallets,
+      },
+      false
+    );
+
+    await updateWalletState(
+      {
         selectedAccount:
           updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
-      });
-      trottledUpdate(true);
-      resetTransactions();
-    },
-    [
-      currentWallet,
-      updateCurrentWallet,
-      walletController,
-      updateWalletState,
-      trottledUpdate,
-      resetTransactions,
-    ]
-  );
+      },
+      true
+    );
+
+    await notificationController.changedAccount();
+    navigate("/");
+  };
 };
 
 export const useSwitchWallet = () => {
-  const { wallets, updateWalletState } = useWalletState((v) => ({
-    wallets: v.wallets,
-    updateWalletState: v.updateWalletState,
-  }));
+  const { wallets, updateWalletState } = useWalletState(
+    ss(["wallets", "updateWalletState"])
+  );
+  const { walletController, notificationController } = useControllersState(
+    ss(["walletController", "notificationController"])
+  );
+  const navigate = useNavigate();
+
+  return async (key: number, accKey?: number) => {
+    const wallet = wallets.find((f) => f.id === key);
+    if (!wallet) return;
+    if (wallets[key].accounts.filter((i) => !!i.address).length === 0) {
+      wallets[key].accounts = await walletController.loadAccountsData(
+        wallet.id,
+        wallet.accounts
+      );
+    }
+    await updateWalletState({ wallets }, false);
+    await updateWalletState(
+      {
+        selectedWallet: wallet.id,
+        selectedAccount: accKey ?? 0,
+      },
+      true
+    );
+    await notificationController.changedAccount();
+    navigate("/");
+  };
+};
+
+export const useSwitchAccount = () => {
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const navigate = useNavigate();
+  const { notificationController } = useControllersState(
+    ss(["notificationController"])
+  );
+  const { setCurrentPage } = useTransactionManagerContext();
+
+  return async (id: number) => {
+    await updateWalletState(
+      {
+        selectedAccount: id,
+      },
+      true
+    );
+
+    await notificationController.changedAccount();
+    navigate("/");
+    setCurrentPage(1);
+  };
+};
+
+export const useUpdateCurrentAccountBalance = () => {
+  const { apiController } = useControllersState(ss(["apiController"]));
+  const currentAccount = useGetCurrentAccount();
+
+  const { updateSelectedAccount } = useWalletState(
+    ss(["updateSelectedAccount"])
+  );
+
+  return async () => {
+    if (currentAccount?.address === undefined) return;
+
+    const { count, amount, balance } = (await apiController.getAccountStats(
+      currentAccount!.address!
+    )) ?? { amount: 0, count: 0, balance: 0 };
+    await updateSelectedAccount(
+      {
+        balance: balance,
+        inscriptionCounter: count,
+        inscriptionBalance: amount / 10 ** 8,
+      },
+      true
+    );
+  };
+};
+
+export const useDeleteWallet = () => {
   const { walletController, notificationController } = useControllersState(
     (v) => ({
       walletController: v.walletController,
       notificationController: v.notificationController,
     })
   );
-  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const { wallets } = useWalletState(ss(["wallets"]));
 
-  return useCallback(
-    async (key: number, accKey?: number) => {
-      const wallet = wallets.find((f) => f.id === key);
-      if (!wallet) return;
-      if (!wallet.accounts[0].address) {
-        wallet.accounts = await walletController.loadAccountsData(
-          wallet.id,
-          wallet.accounts
+  return async (id: number) => {
+    if (wallets.length === 1) {
+      toast.error(t("hooks.wallet.last_wallet_error"));
+      return;
+    }
+
+    const {
+      wallets: newWallets,
+      selectedAccount,
+      selectedWallet,
+    } = await walletController.deleteWallet(id);
+
+    if (typeof selectedWallet === "undefined")
+      throw Error("Internal Error: Selected wallet is not defined");
+
+    if (
+      newWallets[selectedWallet].accounts.filter((i) => !!i.address).length ===
+      0
+    ) {
+      newWallets[selectedWallet].accounts =
+        await walletController.loadAccountsData(
+          selectedWallet,
+          newWallets[selectedWallet].accounts
         );
-      }
-      await updateWalletState({
-        selectedWallet: wallet.id,
-        wallets: wallets.with(key, wallet),
-        selectedAccount: accKey ?? 0,
-      });
-      await notificationController.changedAccount();
-      resetTransactions();
-      trottledUpdate(true);
-    },
-    [
-      wallets,
-      updateWalletState,
-      walletController,
-      notificationController,
-      trottledUpdate,
-      resetTransactions,
-    ]
-  );
+    }
+    await updateWalletState(
+      {
+        wallets: newWallets,
+        selectedAccount,
+        selectedWallet,
+      },
+      false
+    );
+    await notificationController.changedAccount();
+  };
 };
 
-export const useSwitchAccount = () => {
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+export const useSwitchNetwork = () => {
   const navigate = useNavigate();
-  const { notificationController } = useControllersState((v) => ({
-    notificationController: v.notificationController,
-  }));
-  const { trottledUpdate, resetTransactions } = useTransactionManagerContext();
-  const { setCurrentPage } = useTransactionManagerContext();
-
-  return useCallback(
-    async (id: number) => {
-      await updateWalletState({
-        selectedAccount: id,
-      });
-
-      navigate("/home");
-      await notificationController.changedAccount();
-      trottledUpdate(true);
-      resetTransactions();
-      setCurrentPage(1);
-    },
-    [
-      updateWalletState,
-      navigate,
-      notificationController,
-      trottledUpdate,
-      resetTransactions,
-      setCurrentPage,
-    ]
+  const { updateAppState } = useAppState(ss(["updateAppState"]));
+  const { updateWalletState, selectedWallet, wallets } = useWalletState(
+    ss(["updateWalletState", "selectedWallet", "wallets"])
   );
-};
-
-export const useUpdateCurrentAccountBalance = () => {
-  const { apiController } = useControllersState((v) => ({
-    apiController: v.apiController,
-  }));
-  const currentAccount = useGetCurrentAccount();
-
-  const { updateWalletState, wallets, selectedAccount, selectedWallet } =
-    useWalletState((v) => ({
-      updateWalletState: v.updateWalletState,
-      wallets: v.wallets,
-      selectedAccount: v.selectedAccount,
-      selectedWallet: v.selectedWallet,
-    }));
-
-  const updateCurrentAccount = useCallback(
-    async (account: Partial<IAccount>) => {
-      if (!wallets[selectedWallet]) return;
-      wallets[selectedWallet].accounts[selectedAccount] = {
-        ...wallets[selectedWallet].accounts[selectedAccount],
-        ...account,
-      };
-
-      await updateWalletState({
-        wallets: [...wallets],
-      });
-    },
-    [updateWalletState, selectedAccount, selectedWallet, wallets]
+  const { walletController, notificationController } = useControllersState(
+    ss(["walletController", "notificationController"])
   );
 
-  return useCallback(
-    async (address?: string) => {
-      const balance = await apiController.getAccountBalance(
-        address ? address : currentAccount?.address ?? ""
+  return async (network: Network) => {
+    if (selectedWallet === undefined) return;
+    const updatedWallets = wallets;
+    await Promise.all([
+      updateAppState({ network }, true),
+      walletController.switchNetwork(network),
+    ]);
+    updatedWallets[selectedWallet].accounts =
+      await walletController.loadAccountsData(
+        selectedWallet,
+        updatedWallets[selectedWallet].accounts
       );
-      const { count, amount } = await apiController.getInscriptionCounter(
-        currentAccount?.address
-      );
-      if (balance === undefined || !currentAccount) return;
-      await updateCurrentAccount({
-        balance: balance / 10 ** 8,
-        inscriptionCounter: count,
-        inscriptionBalance: amount / 10 ** 8,
-      });
-    },
-    [updateCurrentAccount, currentAccount, apiController]
-  );
-};
-
-export const useDeleteWallet = () => {
-  const { walletController } = useControllersState((v) => ({
-    walletController: v.walletController,
-  }));
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
-  const currentWallet = useGetCurrentWallet();
-  const currentAccount = useGetCurrentAccount();
-  const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
-  const switchWallet = useSwitchWallet();
-
-  return useCallback(
-    async (id: number) => {
-      if (wallets.length === 1) {
-        toast.error(t("hooks.wallet.last_wallet_error"));
-        return;
-      }
-      if (currentWallet?.id === undefined) throw new Error("Unreachable");
-      const newWalletId =
-        currentWallet.id > id ? currentWallet.id - 1 : currentWallet.id;
-      await switchWallet(
-        id === currentWallet.id ? 0 : newWalletId,
-        id === currentWallet.id ? 0 : currentAccount?.id ?? 0
-      );
-      await updateWalletState({
-        wallets: await walletController.deleteWallet(id),
-      });
-    },
-    [
-      currentWallet,
-      walletController,
-      updateWalletState,
-      wallets.length,
-      switchWallet,
-      currentAccount.id,
-    ]
-  );
+    await updateWalletState({ wallets: updatedWallets }, true);
+    await notificationController.switchedNetwork(network);
+    navigate("/");
+  };
 };

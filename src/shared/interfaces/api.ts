@@ -3,7 +3,7 @@ export interface ApiUTXO {
   vout: number;
   status: Status;
   value: number;
-  rawHex?: string;
+  hex?: string;
 }
 
 export interface Status {
@@ -109,4 +109,10 @@ export interface ISend {
   feeAmount: number;
   includeFeeInAmount: boolean;
   hex: string;
+}
+
+export interface IAccountStats {
+  balance: number;
+  amount: number;
+  count: number;
 }

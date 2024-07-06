@@ -6,14 +6,16 @@ module.exports = {
       width: {
         33: "8.6rem",
         20.5: "6.01rem",
+        38: "9.5rem",
         38.1: "9.6875rem",
       },
       height: {
         33: "8.6rem",
+        38: "9.5rem",
         38.1: "9.6875rem",
       },
       colors: {
-        bg: "#1A1A1A",
+        bg: "#0d0c0c",
         "input-bg": "#3d3d3d95",
         "input-light": "#3d3d3d35",
         "toast-bg": "#3d3d3d",
@@ -23,6 +25,7 @@ module.exports = {
         panel: "#669bbc",
         hovered: "#a8d0db",
         "hovered-btn": "#fd9343",
+        "light-orange": "#ff863a"
       },
       screens: {
         "standard": "355px",

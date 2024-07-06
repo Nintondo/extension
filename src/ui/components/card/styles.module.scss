@@ -1,13 +1,13 @@
 .card {
-  @apply border border-text rounded-xl relative overflow-hidden cursor-pointer;
+  @apply relative overflow-hidden cursor-pointer border-b last:border-b-0 border-neutral-800;
 }
 
 .wrapper {
-  @apply flex items-center justify-between p-2 pl-4;
+  @apply flex items-center justify-between py-2 px-4;
 }
 
 .action {
-  @apply border-none p-2 bg-transparent;
+  @apply border-none p-2 pr-0 bg-transparent;
 }
 
 .name {
@@ -15,7 +15,7 @@
 }
 
 .selected {
-  @apply border-orange-300;
+  @apply bg-neutral-800;
 }
 
 .aggressive {
@@ -23,7 +23,7 @@
 }
 
 .address {
-  @apply text-xs text-gray-400;
+  @apply text-xs text-gray-400 font-mono;
 }
 
 .right {

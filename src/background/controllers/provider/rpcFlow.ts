@@ -9,15 +9,15 @@ import { permissionService } from "@/background/services";
 const isSignApproval = (type: string) => {
   const SIGN_APPROVALS = [
     "SignText",
-    "SignPsbt",
-    "SignTx",
-    "SignSpecificInputs",
+    "signPsbt",
     "SignAllPsbtInputs",
+    "InscribeTransfer",
+    "multiPsbtSign",
+    "switchNetwork",
   ];
   return SIGN_APPROVALS.includes(type);
 };
 
-const windowHeight = 600;
 const flow = new PromiseFlow();
 const flowContext = flow
   .use(async (ctx, next) => {
@@ -26,7 +26,7 @@ const flowContext = flow
     } = ctx.request;
     ctx.mapMethod = underline2Camelcase(method);
 
-    if (!providerController[ctx.mapMethod]) {
+    if (!providerController[ctx.mapMethod as keyof typeof providerController]) {
       throw ethErrors.rpc.methodNotFound({
         message: `method [${method}] doesn't has corresponding handler`,
         data: ctx.request.data,
@@ -37,10 +37,23 @@ const flowContext = flow
   })
   .use(async (ctx, next) => {
     const { mapMethod } = ctx;
-    if (!Reflect.getMetadata("SAFE", providerController, mapMethod)) {
+    if (
+      !Reflect.getMetadata("SAFE", providerController, mapMethod) &&
+      !Reflect.getMetadata("CONNECTED", providerController, mapMethod)
+    ) {
       if (!storageService.appState.isUnlocked) {
         ctx.request.requestedApproval = true;
         await notificationService.requestApproval({ lock: true });
+      }
+    }
+
+    return next();
+  })
+  .use(async (ctx, next) => {
+    const { mapMethod } = ctx;
+    if (Reflect.getMetadata("CONNECTED", providerController, mapMethod)) {
+      if (!permissionService.siteIsConnected(ctx.request.session.origin)) {
+        throw ethErrors.provider.disconnected();
       }
     }
 
@@ -54,7 +67,10 @@ const flowContext = flow
       },
       mapMethod,
     } = ctx;
-    if (!Reflect.getMetadata("SAFE", providerController, mapMethod)) {
+    if (
+      !Reflect.getMetadata("SAFE", providerController, mapMethod) &&
+      !Reflect.getMetadata("CONNECTED", providerController, mapMethod)
+    ) {
       if (!permissionService.siteIsConnected(origin)) {
         ctx.request.requestedApproval = true;
         await notificationService.requestApproval(
@@ -65,7 +81,7 @@ const flowContext = flow
               session: { origin, name, icon },
             },
           },
-          { height: windowHeight, route: "/provider/connect" }
+          { route: "/provider/connect" }
         );
         permissionService.addConnectedSite(origin, name, icon);
       }
@@ -82,9 +98,7 @@ const flowContext = flow
       },
       mapMethod,
     } = ctx;
-    // ! Disabled eslint and typescript becouse idk what options is, but if u see it please think about this 'options = {}'
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [approvalType, condition, options = {}] =
+    const [approvalType, condition = () => {}] =
       Reflect.getMetadata("APPROVAL", providerController, mapMethod) || [];
 
     if (approvalType && (!condition || !condition(ctx.request))) {
@@ -100,13 +114,8 @@ const flowContext = flow
           },
           origin,
         },
-        { height: windowHeight, route: `/provider/${method}` }
+        { route: `/provider/${method}` }
       );
-      // if (isSignApproval(approvalType)) {
-      //   permissionService.updateConnectSite(origin, { isSigned: true }, true);
-      // } else {
-      //   permissionService.touchConnectedSite(origin);
-      // }
     }
     return next();
   })
@@ -121,7 +130,7 @@ const flowContext = flow
       session: { origin },
     } = request;
     const requestDefer = Promise.resolve(
-      providerController[mapMethod]({
+      providerController[mapMethod as keyof typeof providerController]({
         ...request,
         approvalRes,
       })
@@ -151,7 +160,7 @@ const flowContext = flow
           });
         }
       });
-    async function requestApprovalLoop({ uiRequestComponent, ...rest }) {
+    async function requestApprovalLoop({ uiRequestComponent, ...rest }: any) {
       ctx.request.requestedApproval = true;
       const res = await notificationService.requestApproval({
         approvalComponent: uiRequestComponent,
@@ -174,12 +183,11 @@ const flowContext = flow
   })
   .callback();
 
-export default (request) => {
+export default (request: any) => {
   const ctx: any = { request: { ...request, requestedApproval: false } };
   return flowContext(ctx).finally(() => {
     if (ctx.request.requestedApproval) {
       flow.requestedApproval = false;
-      // only unlock notification if current flow is an approval flow
       notificationService.unLock();
     }
   });

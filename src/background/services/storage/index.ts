@@ -11,12 +11,14 @@ import { keyringService, permissionService, storageService } from "..";
 import { excludeKeysFromObj, pickKeysFromObj } from "@/shared/utils";
 import eventBus from "@/shared/eventBus";
 import { EVENTS } from "@/shared/constant";
+import { Network, networks } from "belcoinjs-lib";
 
 interface SaveWallets {
   password: string;
   wallets: IWallet[];
   payload?: DecryptedSecrets;
   newPassword?: string;
+  seedToDelete?: number;
 }
 
 class StorageService {
@@ -44,6 +46,7 @@ class StorageService {
 
   get currentAccount(): IAccount | undefined {
     if (
+      !this._walletState.wallets.length ||
       this._walletState.selectedWallet === undefined ||
       this._walletState.selectedAccount === undefined
     )
@@ -53,27 +56,31 @@ class StorageService {
     ];
   }
 
-  async init() {
+  async init(): Promise<[IAppStateBase, IWalletStateBase]> {
     const data = await this.getLocalValues();
 
     this._walletState = {
       ...this._walletState,
       ...pickKeysFromObj(data.cache, ["selectedAccount", "selectedWallet"]),
     };
+
     this._appState = {
       ...this._appState,
-      ...pickKeysFromObj(data.cache, ["addressBook", "pendingWallet"]),
+      ...pickKeysFromObj(data.cache, [
+        "addressBook",
+        "pendingWallet",
+        "network",
+        "language",
+      ]),
     };
 
-    if (data?.cache?.language) {
-      this._appState = {
-        ...this._appState,
-        language: data.cache.language,
-      };
-    }
+    return [this._appState, this._walletState];
   }
 
-  async updateWalletState(state: Partial<IWalletStateBase>) {
+  async updateWalletState(
+    state: Partial<IWalletStateBase>,
+    updateFront = true
+  ) {
     this._walletState = { ...this._walletState, ...state };
 
     if (
@@ -106,17 +113,24 @@ class StorageService {
         enc: localState.enc,
       };
 
-      eventBus.emit(EVENTS.broadcastToUI, { method: "updateFromStore" });
+      if (updateFront)
+        eventBus.emit(EVENTS.broadcastToUI, {
+          method: "updateFromWalletState",
+          params: [state],
+        });
+
       await browserStorageLocalSet(payload);
     }
   }
 
-  async updateAppState(state: Partial<IAppStateBase>) {
+  async updateAppState(state: Partial<IAppStateBase>, updateFront = true) {
     this._appState = { ...this._appState, ...state };
+
     if (
       state.addressBook !== undefined ||
       state.pendingWallet !== undefined ||
-      state.language !== undefined
+      state.language !== undefined ||
+      state.network !== undefined
     ) {
       const localState = await this.getLocalValues();
       const cache: StorageInterface["cache"] = {
@@ -128,13 +142,19 @@ class StorageService {
       if (state.pendingWallet !== undefined)
         cache.pendingWallet = state.pendingWallet;
       if (state.language !== undefined) cache.language = state.language;
+      if (state.network !== undefined) cache.network = state.network;
 
       const payload: StorageInterface = {
         cache: cache,
         enc: localState.enc,
       };
 
-      eventBus.emit(EVENTS.broadcastToUI, { method: "updateFromStore" });
+      if (updateFront)
+        eventBus.emit(EVENTS.broadcastToUI, {
+          method: "updateFromAppState",
+          params: [state],
+        });
+
       await browserStorageLocalSet(payload);
     }
   }
@@ -149,13 +169,22 @@ class StorageService {
     await browserStorageLocalSet(newCache);
   }
 
-  async getPengingWallet() {
+  async getPendingWallet() {
     const localState = await this.getLocalValues();
     return localState.cache.pendingWallet;
   }
 
-  async saveWallets({ password, wallets, newPassword, payload }: SaveWallets) {
+  async saveWallets({
+    password,
+    wallets,
+    newPassword,
+    payload,
+    seedToDelete,
+  }: SaveWallets) {
     if (!password) throw new Error("Password is required");
+    if (typeof storageService._walletState.selectedWallet === "undefined")
+      throw new Error("No selected wallet");
+
     const local = await this.getLocalValues();
     const current = await this.getSecrets(local, password);
 
@@ -163,6 +192,12 @@ class StorageService {
       payload = [...(current ?? []), ...payload];
     } else {
       payload = current;
+    }
+
+    if (seedToDelete !== undefined) {
+      const payloadToDelete = payload?.findIndex((f) => f.id === seedToDelete);
+      if (payloadToDelete !== undefined) payload?.splice(payloadToDelete, 1);
+      payload = payload?.map((f, i) => ({ ...f, id: i }));
     }
 
     const walletsToSave = wallets.map((wallet) => {
@@ -180,7 +215,7 @@ class StorageService {
 
     const keyringsToSave = wallets.map((i, idx) => ({
       id: idx,
-      data: keyringService.serializeById(i.id),
+      data: keyringService.serializeById(idx),
       phrase: payload?.find((d) => d.id === i.id)?.phrase,
     }));
     const encrypted = await encryptorUtils.encrypt(
@@ -188,11 +223,24 @@ class StorageService {
       JSON.stringify(keyringsToSave)
     );
 
+    const selectedWallet =
+      this._walletState.selectedWallet! > wallets.length - 1
+        ? this._walletState.selectedWallet! - 1
+        : this._walletState.selectedWallet;
+    const selectedAccount = 0;
+
+    this._walletState.selectedWallet = selectedWallet;
+    this._walletState.selectedAccount = selectedAccount;
+    this._walletState.wallets = wallets;
+    if (newPassword) this._appState.password = newPassword;
+
     const data: StorageInterface = {
       enc: JSON.parse(encrypted),
       cache: {
         ...local.cache,
         wallets: walletsToSave,
+        selectedWallet,
+        selectedAccount,
         addressBook: this.appState.addressBook,
         connectedSites: permissionService.allSites,
         language: storageService.appState.language ?? "en",
@@ -200,6 +248,11 @@ class StorageService {
     };
 
     await browserStorageLocalSet(data);
+
+    return {
+      selectedAccount,
+      selectedWallet,
+    };
   }
 
   private async getSecrets(encrypted: StorageInterface, password: string) {
@@ -208,7 +261,8 @@ class StorageService {
       password,
       JSON.stringify(encrypted.enc)
     )) as string | undefined;
-    return JSON.parse(loaded) as DecryptedSecrets | undefined;
+    if (!loaded) return undefined;
+    return JSON.parse(loaded) as DecryptedSecrets;
   }
 
   async getWalletPhrase(index: number, password: string) {
@@ -220,7 +274,7 @@ class StorageService {
     return current[index].phrase;
   }
 
-  async getLocalValues() {
+  async getLocalValues(): Promise<StorageInterface> {
     const data = await browserStorageLocalGet<StorageInterface>(undefined);
     if (data.cache === undefined) {
       return {
@@ -230,6 +284,8 @@ class StorageService {
           selectedAccount: 0,
           wallets: [],
           connectedSites: [],
+          unpushedHexes: [],
+          network: networks.bellcoin,
         },
         enc: undefined,
       };
@@ -237,9 +293,11 @@ class StorageService {
     return data;
   }
 
-  async importWallets(password: string): Promise<IPrivateWallet[]> {
+  async importWallets(
+    password: string
+  ): Promise<{ network?: Network; wallets: IPrivateWallet[] }> {
     const encrypted = await this.getLocalValues();
-    if (!encrypted) return [];
+    if (!encrypted) return { wallets: [] };
 
     this._appState = {
       ...this._appState,
@@ -256,15 +314,18 @@ class StorageService {
 
     const secrets = await this.getSecrets(encrypted, password);
 
-    return encrypted.cache.wallets.map((i, index: number) => {
-      const current = secrets?.find((i) => i.id === index);
-      return {
-        ...i,
-        id: index,
-        phrase: current?.phrase,
-        data: current?.data,
-      };
-    });
+    return {
+      wallets: encrypted.cache.wallets.map((i, index: number) => {
+        const current = secrets?.find((i) => i.id === index);
+        return {
+          ...i,
+          id: index,
+          phrase: current?.phrase,
+          data: current?.data,
+        };
+      }),
+      network: encrypted.cache.network,
+    };
   }
 
   getUniqueName(kind: "Wallet" | "Account"): string {

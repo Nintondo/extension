@@ -1,4 +1,4 @@
-interface ISession {
+export interface ISession {
   origin: string;
   icon: string;
   name: string;
@@ -7,16 +7,14 @@ interface ISession {
 }
 
 class Session implements ISession {
-  origin = "";
-  icon = "";
-  name = "";
+  origin: string;
+  icon: string;
+  name: string;
 
-  constructor(data?: ISession) {
-    if (data) {
-      this.origin = data.origin;
-      this.icon = data.icon;
-      this.name = data.name;
-    }
+  constructor(data: ISession) {
+    this.origin = data.origin;
+    this.icon = data.icon;
+    this.name = data.name;
   }
 }
 
@@ -27,18 +25,11 @@ class SessionMap {
     this.sessionMap = new Map();
   }
 
-  getSession(id: number) {
+  getSession(id: number): ISession | undefined {
     return this.sessionMap.get(id);
   }
 
-  getOrCreateSession(id: number) {
-    if (this.sessionMap.has(id)) {
-      return this.sessionMap.get(id);
-    }
-    this.createSession(id);
-  }
-
-  createSession(id: number, data?: ISession) {
+  createSession(id: number, data: ISession) {
     const session = new Session(data);
     this.sessionMap.set(id, session);
     return session;
@@ -64,8 +55,11 @@ class SessionMap {
 
     sessions.forEach((session) => {
       try {
-        session.pushMessage(ev, data);
+        if (session.pushMessage) {
+          session.pushMessage(ev, data);
+        }
       } catch (e) {
+        console.error(e);
         if (this.sessionMap.has(session.key)) {
           this.deleteSession(session.key);
         }

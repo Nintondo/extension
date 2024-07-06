@@ -1,15 +1,17 @@
 import { storageService } from "@/background/services";
 import type {
+  DeleteWalletResult,
   IAccount,
   INewWalletProps,
   IWallet,
   IWalletController,
+  SaveWalletsPayload,
 } from "@/shared/interfaces";
 import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
-import type { DecryptedSecrets } from "../services/storage/types";
-import * as bip39 from "bip39";
-import { AddressType } from "bellhdw";
+import * as bip39 from "nintondo-bip39";
+import { AddressType, HDPrivateKey } from "bellhdw";
+import { Network } from "belcoinjs-lib";
 
 class WalletController implements IWalletController {
   async isVaultEmpty() {
@@ -34,27 +36,43 @@ class WalletController implements IWalletController {
       name: !props.name ? storageService.getUniqueName("Wallet") : props.name,
       id: walletId,
       type: props.walletType,
-      addressType:
-        typeof props.addressType === "number"
-          ? props.addressType
-          : AddressType.P2PKH,
+      addressType: props.addressType ?? AddressType.P2PKH,
       accounts: [account],
       hideRoot: props.hideRoot,
     };
   }
 
-  async saveWallets(data?: DecryptedSecrets, newPassword?: string) {
+  async saveWallets(payload?: SaveWalletsPayload) {
+    if (storageService.appState.password === undefined)
+      throw new Error("Internal error: Missing password");
     await storageService.saveWallets({
       password: storageService.appState.password,
-      wallets: storageService.walletState.wallets,
-      payload: data,
-      newPassword,
+      wallets: payload?.wallets ?? storageService.walletState.wallets,
+      payload: payload?.phrases,
+      newPassword: payload?.newPassword,
     });
   }
 
   async importWallets(password: string) {
     const wallets = await keyringService.init(password);
-    return wallets.map((i) => excludeKeysFromObj(i, ["data"]));
+    const importedWallets = wallets.map((i) => excludeKeysFromObj(i, ["data"]));
+    const selected = storageService.walletState.selectedWallet;
+
+    if (typeof selected === "undefined")
+      throw new Error("Importing wallets: No selected wallet");
+
+    const wallet = keyringService.getKeyringByIndex(selected);
+    const addresses = wallet.getAccounts();
+    importedWallets[selected!].accounts = importedWallets[
+      selected!
+    ].accounts.map((i, idx) => ({
+      ...i,
+      address: addresses[idx],
+    }));
+
+    storageService.walletState.wallets = importedWallets;
+
+    return importedWallets;
   }
 
   async loadAccountsData(
@@ -62,27 +80,16 @@ class WalletController implements IWalletController {
     accounts: IAccount[]
   ): Promise<IAccount[]> {
     const wallet = keyringService.getKeyringByIndex(walletId);
-
     const addresses = wallet.getAccounts();
-    const prevAccs: string[] = [];
 
-    return accounts
-      .map((i, idx) => ({
-        ...i,
-        id: idx,
-        address: addresses[i.id],
-      }))
-      .filter((i) => {
-        if (prevAccs.includes(i.address)) {
-          return false;
-        } else {
-          prevAccs.push(i.address);
-        }
-        return i.address !== undefined;
-      });
+    return addresses.map((i, idx) => ({
+      id: idx,
+      address: i,
+      name: accounts[idx] ? accounts[idx].name : `Account ${idx + 1}`,
+    }));
   }
 
-  async createNewAccount(name?: string): Promise<IAccount> {
+  async createNewAccount(name?: string) {
     const wallet = storageService.currentWallet;
     if (!wallet) {
       throw new Error("No one selected wallet");
@@ -90,9 +97,9 @@ class WalletController implements IWalletController {
     const accName = !name?.length
       ? storageService.getUniqueName("Account")
       : name;
-    const addresses = keyringService
-      .getKeyringByIndex(wallet.id)
-      .addAccounts(1);
+    const addresses = (
+      keyringService.getKeyringByIndex(wallet.id) as HDPrivateKey
+    ).addAccounts(1);
 
     return {
       id: wallet.accounts[wallet.accounts.length - 1].id + 1,
@@ -105,19 +112,16 @@ class WalletController implements IWalletController {
     return bip39.generateMnemonic(128);
   }
 
-  async deleteWallet(id: number): Promise<IWallet[]> {
+  async deleteWallet(id: number): Promise<DeleteWalletResult> {
     return keyringService.deleteWallet(id);
   }
 
-  async toogleRootAccount(): Promise<void> {
-    return await keyringService.toogleRootAcc();
+  async toggleRootAccount(): Promise<string[]> {
+    return await keyringService.toggleRootAcc();
   }
 
-  async getAccounts(): Promise<string[]> {
-    const keyring = keyringService.getKeyringByIndex(
-      storageService.currentWallet.id
-    );
-    return keyring.getAccounts();
+  async switchNetwork(network: Network) {
+    keyringService.switchNetwork(network);
   }
 }
 

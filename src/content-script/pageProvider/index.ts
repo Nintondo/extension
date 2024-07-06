@@ -6,7 +6,11 @@ import BroadcastChannelMessage from "@/shared/utils/message/broadcastChannelMess
 import PushEventHandlers from "./pushEventHandlers";
 import ReadyPromise from "./readyPromise";
 import { $, domReadyCall } from "./utils";
-import type { SendBEL } from "@/background/services/keyring/types";
+import type {
+  SendBEL,
+  SignPsbtOptions,
+} from "@/background/services/keyring/types";
+import { INintondoProvider, NetworkType } from "nintondo-sdk";
 
 const script = document.currentScript;
 const channelName = script?.getAttribute("channel") || "NINTONDOWALLET";
@@ -24,7 +28,15 @@ interface StateProvider {
   isPermanentlyDisconnected: boolean;
 }
 
-export class NintondoProvider extends EventEmitter {
+interface NintondoProviderProps {
+  maxListeners?: number;
+  onInit?: () => void;
+}
+
+export class NintondoProvider
+  extends EventEmitter
+  implements INintondoProvider
+{
   _selectedAddress: string | null = null;
   _network: string | null = null;
   _isConnected = false;
@@ -44,15 +56,15 @@ export class NintondoProvider extends EventEmitter {
 
   private _bcm = new BroadcastChannelMessage(channelName);
 
-  constructor({ maxListeners = 100 } = {}) {
+  constructor({ maxListeners = 100, onInit }: NintondoProviderProps) {
     super();
     this.setMaxListeners(maxListeners);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.initialize();
+    this.initialize(onInit);
     this._pushEventHandlers = new PushEventHandlers(this);
   }
 
-  initialize = async () => {
+  initialize = async (onInit?: () => void) => {
     document.addEventListener(
       "visibilitychange",
       this._requestPromiseCheckVisibility
@@ -75,6 +87,9 @@ export class NintondoProvider extends EventEmitter {
           method: "tabCheckin",
           params: { icon, name, origin },
         });
+        if (onInit) {
+          onInit();
+        }
       } catch {
         //
       }
@@ -82,6 +97,7 @@ export class NintondoProvider extends EventEmitter {
 
     try {
       const { network, accounts, isUnlocked }: any = await this._request({
+        // @ts-expect-error method is hidden
         method: "getProviderState",
       });
       if (isUnlocked) {
@@ -111,32 +127,44 @@ export class NintondoProvider extends EventEmitter {
     }
   };
 
-  private _handleBackgroundMessage = ({ event, data }) => {
-    if (this._pushEventHandlers[event]) {
-      return this._pushEventHandlers[event](data);
+  private _handleBackgroundMessage = ({
+    event,
+    data,
+  }: {
+    event: string;
+    data: any;
+  }) => {
+    if (
+      this._pushEventHandlers[event as keyof typeof this._pushEventHandlers]
+    ) {
+      return (
+        this._pushEventHandlers[
+          event as keyof typeof this._pushEventHandlers
+        ] as any
+      )(data);
     }
 
     this.emit(event, data);
   };
 
-  _request = async (data) => {
+  async _request<
+    K extends keyof INintondoProvider = keyof INintondoProvider,
+    T extends INintondoProvider[K] = INintondoProvider[K]
+  >(data: { method: K; params?: Parameters<T> }) {
     if (!data) {
       throw ethErrors.rpc.invalidRequest();
     }
 
     this._requestPromiseCheckVisibility();
 
-    return this._requestPromise.call(() => {
-      return this._bcm
-        .request(data)
-        .then((res) => {
-          return res;
-        })
-        .catch((err) => {
-          throw serializeError(err);
-        });
-    });
-  };
+    return this._requestPromise.call(async () => {
+      try {
+        return await this._bcm.request(data);
+      } catch (e) {
+        throw serializeError(e);
+      }
+    }) as ReturnType<T>;
+  }
 
   // public methods
   connect = async () => {
@@ -178,60 +206,81 @@ export class NintondoProvider extends EventEmitter {
   createTx = async (data: SendBEL) => {
     return this._request({
       method: "createTx",
-      params: {
-        ...data,
-      },
+      params: [data],
     });
   };
 
   signMessage = async (text: string) => {
     return this._request({
       method: "signMessage",
-      params: {
-        text,
-      },
+      params: [text],
     });
   };
 
   calculateFee = async (hex: string, feeRate: number) => {
     return this._request({
       method: "calculateFee",
-      params: {
-        hex,
-        feeRate,
-      },
+      params: [hex, feeRate],
     });
   };
 
-  signTx = async (
-    psbtBase64: string,
-    inputsToSign: number[],
-    sigHashTypes: number[][]
+  signPsbt = async (psbtBase64: string, options?: SignPsbtOptions) => {
+    return this._request({
+      method: "signPsbt",
+      params: [psbtBase64, options],
+    });
+  };
+
+  inscribeTransfer = async (tick: string) => {
+    return this._request({
+      method: "inscribeTransfer",
+      params: [tick],
+    });
+  };
+
+  multiPsbtSign = async (
+    data: { psbtBase64: string; options: SignPsbtOptions }[]
   ) => {
     return this._request({
-      method: "signTx",
-      params: {
-        psbtBase64,
-        inputsToSign,
-        sigHashTypes,
-      },
+      method: "multiPsbtSign",
+      params: [data],
+    });
+  };
+
+  getVersion = async () => {
+    return this._request({
+      method: "getVersion",
+    });
+  };
+
+  switchNetwork = async (network: NetworkType) => {
+    return this._request({
+      method: "switchNetwork",
+      params: [network],
+    });
+  };
+
+  getNetwork = async () => {
+    return this._request({
+      method: "getNetwork",
     });
   };
 }
 
 declare global {
   interface Window {
-    nintondo: NintondoProvider;
+    nintondo: INintondoProvider;
   }
 }
 
-const provider = new NintondoProvider();
-
-Object.defineProperty(window, "nintondo", {
-  value: new Proxy(provider, {
-    deleteProperty: () => true,
-  }),
-  writable: false,
+const provider = new NintondoProvider({
+  onInit: () => {
+    Object.defineProperty(window, "nintondo", {
+      value: new Proxy(provider, {
+        deleteProperty: () => true,
+      }),
+      writable: false,
+    });
+    window.dispatchEvent(new Event("nintondo#initialized"));
+  },
 });
-
-window.dispatchEvent(new Event("nintondo#initialized"));

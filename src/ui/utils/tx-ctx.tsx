@@ -11,66 +11,83 @@ import React, {
   Dispatch,
   useRef,
 } from "react";
-import { useGetCurrentAccount } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
 import { useDebounceCall } from "../hooks/debounce";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
+import { useGetCurrentAccount } from "../states/walletState";
+import { arrayDifference, ss } from ".";
 
 const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
-
   const [lastBlock, setLastBlock] = useState<number>(0);
-  const { apiController } = useControllersState((v) => ({
-    apiController: v.apiController,
-  }));
+  const { apiController } = useControllersState(ss(["apiController"]));
   const [feeRates, setFeeRates] = useState<{
     fast: number;
     slow: number;
   }>();
 
-  const [transactions, setTransactions] = useState<ITransaction[]>([]);
-  const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
+  const [transactions, setTransactions] = useState<ITransaction[] | undefined>(
+    undefined
+  );
+  const [inscriptions, setInscriptions] = useState<Inscription[] | undefined>(
+    undefined
+  );
   const [tokens, setTokens] = useState<IToken[]>([]);
-  const [active, setActive] = useState<"ORDs" | "bel-20">("ORDs");
+
+  const [searchInscriptions, setSearchInscriptions] = useState<
+    Inscription[] | undefined
+  >(undefined);
+  const [searchTokens, setSearchTokens] = useState<IToken[] | undefined>(
+    undefined
+  );
+
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
   const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
-  const [inscriptionTxIds, setInscriptionTxIds] = useState<string[]>([]);
+  const [inscriptionLocations, setInscriptionLocations] = useState<string[]>(
+    []
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const updateFn = <T,>(
-    onUpdate: Dispatch<SetStateAction<T[]>>,
-    retrieveFn: (address: string) => Promise<T[]>,
-    currentValue: T[],
+    onUpdate: Dispatch<SetStateAction<T[] | undefined>>,
+    retrieveFn: (address: string) => Promise<T[] | undefined>,
+    currentValue: T[] | undefined,
     compareKey: keyof T
   ) => {
     return useCallback(
-      async (force?: boolean) => {
-        const receivedItems = await retrieveFn(currentAccount?.address ?? "");
-        if (receivedItems !== undefined) {
-          if (
-            currentValue.length > 0 &&
-            currentValue[0][compareKey] !== receivedItems[0][compareKey] &&
-            !force
-          ) {
-            const oldIndex = receivedItems.findIndex(
-              (f) => f[compareKey] === currentValue[0][compareKey]
-            );
-            onUpdate([...receivedItems.slice(0, oldIndex), ...currentValue]);
-          } else if (currentValue.length < 50 || force)
-            onUpdate(receivedItems ?? []);
+      async (force = false) => {
+        if (!currentAccount?.address) return;
+        const receivedItems = await retrieveFn(currentAccount.address);
+        if (receivedItems === undefined) return;
+
+        const currentItemsKeys = currentValue?.map((f) => f[compareKey]);
+        const receivedItemsKeys = receivedItems?.map((f) => f[compareKey]);
+        const difference = arrayDifference(
+          receivedItemsKeys,
+          currentItemsKeys ?? []
+        );
+
+        if (!force && (currentValue ?? []).length > 0 && difference.length) {
+          onUpdate([
+            ...difference.map(
+              (f) => receivedItems.find((item) => item[compareKey] === f)!
+            ),
+            ...(currentValue ?? []),
+          ]);
+        } else if ((currentValue ?? []).length < 50 || force) {
+          onUpdate(receivedItems ?? []);
         }
       },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [onUpdate, retrieveFn, currentValue, currentAccount?.address]
+      [onUpdate, retrieveFn, compareKey, currentValue]
     );
   };
 
-  const udpateTransactions = updateFn(
+  const updateTransactions = updateFn(
     setTransactions,
     apiController.getTransactions,
     transactions,
@@ -87,11 +104,12 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const forceUpdateInscriptions = useCallback(async () => {
     await updateInscriptions(true);
     setCurrentPage(1);
-    setInscriptionTxIds([]);
+    setInscriptionLocations([]);
   }, [updateInscriptions]);
 
   const updateLastBlock = useCallback(async () => {
-    setLastBlock(await apiController.getLastBlockBEL());
+    const data = await apiController.getLastBlockBEL();
+    if (data) setLastBlock(data);
   }, [apiController]);
 
   const updateFeeRates = useCallback(async () => {
@@ -101,15 +119,21 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const updateTokens = useCallback(async () => {
     if (!currentAccount?.address) return;
     const tokens = await apiController.getTokens(currentAccount.address);
-    setTokens(tokens);
+    setTokens(tokens ?? []);
   }, [apiController, currentAccount?.address]);
 
   const updateAll = useCallback(
     async (force = false) => {
       setLoading(true);
+      if (force) {
+        setTransactions(undefined);
+        setInscriptions(undefined);
+        setTransactionTxIds([]);
+        setInscriptionLocations([]);
+      }
       await Promise.all([
         updateAccountBalance(),
-        udpateTransactions(force),
+        updateTransactions(force),
         updateInscriptions(force),
         updateFeeRates(),
         updateTokens(),
@@ -118,7 +142,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     },
     [
       updateAccountBalance,
-      udpateTransactions,
+      updateTransactions,
       updateInscriptions,
       updateFeeRates,
       updateTokens,
@@ -128,13 +152,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const trottledUpdate = useDebounceCall(updateAll, 300);
 
   const loadMoreTransactions = useCallback(async () => {
+    if (!currentAccount || !currentAccount.address || !transactions) return;
     if (
       transactions.length < 50 ||
       transactionTxIds.includes(transactions[transactions.length - 1]?.txid)
     )
       return;
     const additionalTransactions = await apiController.getPaginatedTransactions(
-      currentAccount?.address,
+      currentAccount.address,
       transactions[transactions.length - 1]?.txid
     );
     setTransactionTxIds([
@@ -143,30 +168,35 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     ]);
     if (!additionalTransactions) return;
     if (additionalTransactions.length > 0) {
-      setTransactions((prev) => [...prev, ...additionalTransactions]);
+      setTransactions((prev) => [...(prev ?? []), ...additionalTransactions]);
     }
-  }, [transactions, apiController, currentAccount?.address, transactionTxIds]);
+  }, [transactions, apiController, transactionTxIds, currentAccount]);
 
   const loadMoreInscriptions = useCallback(async () => {
+    if (!currentAccount || !currentAccount.address || !inscriptions) return;
+    const inc = inscriptions[inscriptions.length - 1];
+
     if (
-      inscriptions.length < 60 ||
-      inscriptionTxIds.includes(inscriptions[inscriptions.length - 1].txid)
+      (inscriptions.length < 60 && inscriptionLocations.length) ||
+      inscriptionLocations.includes(
+        `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`
+      )
     )
       return;
 
     const additionalInscriptions = await apiController.getPaginatedInscriptions(
       currentAccount?.address,
-      inscriptions[inscriptions.length - 1]?.txid
+      `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`
     );
-    setInscriptionTxIds([
-      ...inscriptionTxIds,
-      inscriptions[inscriptions.length - 1]?.txid,
+    setInscriptionLocations([
+      ...inscriptionLocations,
+      `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`,
     ]);
     if (!additionalInscriptions) return;
     if (additionalInscriptions.length > 0) {
-      setInscriptions((prev) => [...prev, ...additionalInscriptions]);
+      setInscriptions((prev) => [...(prev ?? []), ...additionalInscriptions]);
     }
-  }, [apiController, currentAccount, inscriptions, inscriptionTxIds]);
+  }, [apiController, currentAccount, inscriptions, inscriptionLocations]);
 
   const inscriptionIntervalUpdate = useCallback(async () => {
     if (!currentAccount?.address) return;
@@ -175,7 +205,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       receivedInscriptions: Inscription[],
       index: number
     ) => {
-      const updatedInscriptions = [...inscriptions];
+      const updatedInscriptions = [...(inscriptions ?? [])];
       updatedInscriptions.splice(
         index,
         receivedInscriptions.length,
@@ -184,41 +214,47 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setInscriptions(updatedInscriptions);
     };
 
-    const fetchAndUpdateInscriptions = async (txId: string, index: number) => {
+    const fetchAndUpdateInscriptions = async (
+      location: string,
+      index: number
+    ) => {
+      if (!currentAccount || !currentAccount.address) return;
       const receivedInscriptions = await apiController.getPaginatedInscriptions(
         currentAccount.address,
-        txId
+        location
       );
-      if (receivedInscriptions.length) {
+      if (receivedInscriptions?.length) {
         updateInscriptions(receivedInscriptions, index);
         return true;
       }
       return false;
     };
 
-    if (currentPage > 10) {
+    if (currentPage > 10 && inscriptions && inscriptions.length) {
       const chainIndex = Math.floor(currentPage / 10) - 1;
       let isUpdated = await fetchAndUpdateInscriptions(
-        inscriptionTxIds[chainIndex],
+        inscriptionLocations[chainIndex],
         chainIndex * 10
       );
       if (!isUpdated) {
         const txIdIndex = inscriptions.findIndex(
-          (f) => f.txid === inscriptionTxIds[chainIndex]
+          (f) => f.txid === inscriptionLocations[chainIndex]
         );
         for (let i = 1; i <= 3; i++) {
+          const inc = inscriptions[txIdIndex - i];
+
           isUpdated = await fetchAndUpdateInscriptions(
-            inscriptions[txIdIndex - i].txid,
+            `${inc.txid}:${inc.vout}:${inc.offset}`,
             txIdIndex - i
           );
           if (isUpdated) {
-            const updatedInscriptionTxIds = [...inscriptionTxIds];
+            const updatedInscriptionTxIds = [...inscriptionLocations];
             updatedInscriptionTxIds.splice(
               chainIndex,
               updatedInscriptionTxIds.length - 1
             );
             updatedInscriptionTxIds.push(inscriptions[txIdIndex - i].txid);
-            setInscriptionTxIds(updatedInscriptionTxIds);
+            setInscriptionLocations(updatedInscriptionTxIds);
             return;
           }
         }
@@ -228,25 +264,26 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       const receivedInscriptions = await apiController.getInscriptions(
         currentAccount.address
       );
-      if (!inscriptionTxIds.length) {
+      if (!receivedInscriptions) return;
+      if (!inscriptionLocations.length) {
         setInscriptions(receivedInscriptions);
       } else {
         setInscriptions([
           ...receivedInscriptions,
-          ...inscriptions.slice(
-            receivedInscriptions.length,
-            inscriptions.length
+          ...(inscriptions ?? []).slice(
+            receivedInscriptions?.length,
+            (inscriptions ?? []).length
           ),
         ]);
       }
     }
   }, [
-    inscriptionTxIds,
+    inscriptionLocations,
     inscriptions,
     currentPage,
-    currentAccount?.address,
     apiController,
     forceUpdateInscriptions,
+    currentAccount,
   ]);
 
   useEffect(() => {
@@ -255,42 +292,38 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
-      const data = await apiController.getBELPrice();
-      if (data.bellscoin) {
+      const [data] = await Promise.all([
+        apiController.getBELPrice(),
+        updateLastBlock(),
+      ]);
+      if (data?.bellscoin) {
         setCurrentPrice(data.bellscoin.usd);
       }
-      await updateLastBlock();
     })();
   }, [updateLastBlock, apiController, currentAccount?.address, currentPrice]);
 
   useEffect(() => {
     if (!currentAccount?.address) return;
     const interval = setInterval(async () => {
-      await Promise.all([updateFeeRates(), updateTokens()]);
-    }, 5000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [updateFeeRates, updateTokens, currentAccount?.address]);
-
-  useEffect(() => {
-    if (!currentAccount?.address) return;
-    const interval = setInterval(async () => {
       await Promise.all([
-        updateAccountBalance(),
-        udpateTransactions(),
+        updateTransactions(),
         updateLastBlock(),
         inscriptionIntervalUpdate(),
+        updateFeeRates(),
+        updateTokens(),
+        updateAccountBalance(),
       ]);
     }, 10000);
     return () => {
       clearInterval(interval);
     };
   }, [
-    updateAccountBalance,
-    udpateTransactions,
+    updateTransactions,
     updateLastBlock,
     inscriptionIntervalUpdate,
+    updateFeeRates,
+    updateTokens,
+    updateAccountBalance,
     currentAccount?.address,
   ]);
 
@@ -314,23 +347,21 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     trottledUpdate,
     feeRates,
     loading,
-    resetTransactions: () => {
-      setTransactions([]);
-      setInscriptions([]);
-    },
     setCurrentPage,
     currentPage,
     tokens,
-    active,
-    setActive,
     forceUpdateInscriptions,
+    setSearchInscriptions,
+    setSearchTokens,
+    searchInscriptions,
+    searchTokens,
   };
 };
 
 interface TransactionManagerContextType {
   lastBlock: number;
-  transactions: ITransaction[];
-  inscriptions: Inscription[];
+  transactions: ITransaction[] | undefined;
+  inscriptions: Inscription[] | undefined;
   currentPrice: number | undefined;
   loadMoreTransactions: () => Promise<void>;
   loadMoreInscriptions: () => Promise<void>;
@@ -340,13 +371,14 @@ interface TransactionManagerContextType {
     fast: number;
     slow: number;
   };
-  resetTransactions: () => void;
   setCurrentPage: (page: number) => void;
   currentPage: number;
   tokens: IToken[];
-  active: string;
-  setActive: (active: "ORDs" | "bel-20") => void;
   forceUpdateInscriptions: () => Promise<void>;
+  setSearchInscriptions: (v: Inscription[] | undefined) => void;
+  setSearchTokens: (v: IToken[] | undefined) => void;
+  searchInscriptions: Inscription[] | undefined;
+  searchTokens: IToken[] | undefined;
 }
 
 const TransactionManagerContext = createContext<
@@ -370,8 +402,8 @@ export const useTransactionManagerContext = () => {
   if (!context) {
     return {
       lastBlock: undefined,
-      transactions: [],
-      inscriptions: [],
+      transactions: undefined,
+      inscriptions: undefined,
       currentPrice: undefined,
       loadMoreTransactions: () => {},
       loadMoreInscriptions: () => {},
@@ -385,9 +417,11 @@ export const useTransactionManagerContext = () => {
       setCurrentPage: () => {},
       currentPage: 1,
       tokens: [],
-      active: "ORDs",
-      setActive: () => {},
       forceUpdateInscriptions: () => {},
+      setSearchInscriptions: () => {},
+      setSearchTokens: () => {},
+      searchInscriptions: undefined,
+      searchTokens: undefined,
     };
   }
   return context;

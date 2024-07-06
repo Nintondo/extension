@@ -1,7 +1,7 @@
 import s from "./styles.module.scss";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
 import { useWalletState } from "@/ui/states/walletState";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import cn from "classnames";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -11,12 +11,12 @@ import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Loading from "react-loading";
 import Switch from "@/ui/components/switch";
+import { useAppState } from "@/ui/states/appState";
+import { ss } from "@/ui/utils";
 
 const RestoreMnemonic = () => {
   const [step, setStep] = useState(1);
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
   const [addressType, setAddressType] = useState(AddressType.P2PKH);
   const [mnemonicPhrase, setMnemonicPhrase] = useState<(string | undefined)[]>(
     new Array(12).fill("")
@@ -25,18 +25,21 @@ const RestoreMnemonic = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [showRootAcc, setShowRootAcc] = useState<boolean>(false);
+  const { network } = useAppState(ss(["network"]));
 
-  const setMnemonic = useCallback(
-    (v: string, index: number) => {
-      if (!v) {
-        return;
-      }
-      const phrase = v.split(" ");
-      if (phrase.length === 12) setMnemonicPhrase(phrase);
-      else setMnemonicPhrase(mnemonicPhrase.with(index, v));
-    },
-    [mnemonicPhrase]
-  );
+  const setMnemonic = (v: string, index: number) => {
+    if (!v) {
+      return;
+    }
+    const phrase = v.split(" ");
+    if (phrase.length === 12) setMnemonicPhrase(phrase);
+    else {
+      setMnemonicPhrase((prev) => {
+        prev[index] = v;
+        return prev;
+      });
+    }
+  };
 
   const onNextStep = () => {
     if (mnemonicPhrase.findIndex((f) => f === undefined) !== -1)
@@ -52,10 +55,12 @@ const RestoreMnemonic = () => {
         walletType: "root",
         addressType,
         hideRoot: !showRootAcc,
+        network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
+      await updateWalletState({ vaultIsEmpty: false }, true);
       navigate("/home");
     } catch (e) {
+      console.error(e);
       toast.error(t("new_wallet.restore_mnemonic.invalid_words_error"));
       setStep(1);
     } finally {

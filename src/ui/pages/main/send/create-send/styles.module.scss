@@ -1,5 +1,5 @@
 .send {
-  @apply items-start w-full h-full p-4;
+  @apply items-start w-full h-full p-4 gap-3;
 }
 
 .sendBtn {
@@ -7,7 +7,7 @@
 }
 
 .inputs {
-  @apply w-full flex flex-col justify-center items-center gap-5;
+  @apply w-full flex flex-col justify-center items-center gap-2;
 }
 
 .feeDiv {

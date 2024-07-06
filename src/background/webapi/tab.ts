@@ -1,20 +1,24 @@
-import { browserTabsOnUpdated, browserTabsOnRemoved, browserTabsCreate } from "@/shared/utils/browser";
+import {
+  browserTabsOnUpdated,
+  browserTabsOnRemoved,
+  browserTabsCreate,
+} from "@/shared/utils/browser";
 import { EventEmitter } from "events";
 
 export const tabEvent = new EventEmitter();
 
-browserTabsOnUpdated((tabId, changeInfo) => {
+browserTabsOnUpdated((tabId: number, changeInfo: { url?: string }) => {
   if (changeInfo.url) {
     tabEvent.emit("tabUrlChanged", tabId, changeInfo.url);
   }
 });
 
 // window close will trigger this event also
-browserTabsOnRemoved((tabId) => {
+browserTabsOnRemoved((tabId: number) => {
   tabEvent.emit("tabRemove", tabId);
 });
 
-export const createTab = async (url): Promise<number | undefined> => {
+export const createTab = async (url: string): Promise<number | undefined> => {
   const tab = await browserTabsCreate({
     active: true,
     url,
@@ -35,7 +39,9 @@ export const queryCurrentActiveTab = async function () {
       if (!tabs) return resolve({});
       const [activeTab] = tabs;
       const { id, title, url } = activeTab;
-      const { origin, protocol } = url ? new URL(url) : { origin: null, protocol: null };
+      const { origin, protocol } = url
+        ? new URL(url)
+        : { origin: null, protocol: null };
 
       if (!origin || origin === "null") {
         resolve({});

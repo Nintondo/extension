@@ -13,6 +13,7 @@ import SwitchAddressType from "@/ui/components/switch-address-type";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Switch from "@/ui/components/switch";
+import { ss } from "@/ui/utils";
 
 const NewMnemonic = () => {
   const location = useLocation();
@@ -20,16 +21,13 @@ const NewMnemonic = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [savedPhrase, setSavedPhrase] = useState(false);
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
-  const { updateAppState } = useAppState((v) => ({
-    updateAppState: v.updateAppState,
-  }));
-  const { walletController, stateController } = useControllersState((v) => ({
-    walletController: v.walletController,
-    stateController: v.stateController,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const { updateAppState, network } = useAppState(
+    ss(["updateAppState", "network"])
+  );
+  const { walletController, stateController } = useControllersState(
+    ss(["walletController", "stateController"])
+  );
   const [mnemonicPhrase, setMnemonicPhrase] = useState<string | undefined>(
     undefined
   );
@@ -45,21 +43,20 @@ const NewMnemonic = () => {
     }
 
     const phrase = await walletController.generateMnemonicPhrase();
-    await updateAppState({
-      pendingWallet: phrase,
-    });
+    await updateAppState(
+      {
+        pendingWallet: phrase,
+      },
+      true
+    );
     setMnemonicPhrase(phrase);
-  }, [
-    setMnemonicPhrase,
-    updateAppState,
-    walletController,
-    location.state?.pending,
-  ]);
+  }, [updateAppState, walletController, location.state?.pending]);
 
   useEffect(() => {
     if (mnemonicPhrase) return;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    init();
+    init().catch((e) => {
+      if ((e as Error).message) toast.error((e as Error).message);
+    });
   }, [mnemonicPhrase, init]);
 
   const navigate = useNavigate();
@@ -70,16 +67,22 @@ const NewMnemonic = () => {
       return;
     }
     setLoading(true);
-    await createNewWallet({
-      payload: mnemonicPhrase,
-      walletType: "root",
-      addressType,
-      hideRoot: true,
-    });
-    await updateWalletState({ vaultIsEmpty: false });
-    await stateController.clearPendingWallet();
+    try {
+      await stateController.clearPendingWallet();
+      await createNewWallet({
+        payload: mnemonicPhrase,
+        walletType: "root",
+        addressType,
+        hideRoot: true,
+        network,
+      });
+      await updateWalletState({ vaultIsEmpty: false }, true);
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Error) toast.error(e.message);
+    }
     setLoading(false);
-    navigate("/home");
+    navigate("/");
   };
 
   const onSwitch = () => {
@@ -102,7 +105,7 @@ const NewMnemonic = () => {
       </div>
       {step === 1 ? (
         <div className={cn(s.step, "justify-between")}>
-          <div>
+          <div className="px-4">
             <p className={s.warning}>{t("new_wallet.new_mnemonic.warning")}</p>
             <div className={s.phrase}>
               {mnemonicPhrase.split(" ").map((word, index) => (
@@ -124,27 +127,28 @@ const NewMnemonic = () => {
             value={savedPhrase}
             className={s.savePhrase}
           />
-          <div className={s.continueWrapper}>
-            <button
-              className="btn primary w-full"
-              onClick={() => setStep(2)}
-              disabled={!savedPhrase}
-            >
-              {t("new_wallet.continue")}
-            </button>
-          </div>
+          <button
+            className="w-full border-t border-neutral-700 py-3 text-center disabled:cursor-not-allowed"
+            onClick={() => setStep(2)}
+            disabled={!savedPhrase}
+          >
+            {t("new_wallet.continue")}
+          </button>
         </div>
       ) : (
         <div className={s.step}>
-          <SwitchAddressType
-            handler={setAddressType}
-            selectedType={addressType}
-          />
-          <div className={s.continueWrapper}>
-            <button onClick={onCreate} className="btn primary w-full">
-              {t("new_wallet.continue")}
-            </button>
+          <div className="px-4">
+            <SwitchAddressType
+              handler={setAddressType}
+              selectedType={addressType}
+            />
           </div>
+          <button
+            onClick={onCreate}
+            className="w-full border-t border-neutral-700 py-3 text-center"
+          >
+            {t("new_wallet.continue")}
+          </button>
         </div>
       )}
     </div>

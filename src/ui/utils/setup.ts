@@ -4,26 +4,17 @@ import { Message } from "@/shared/utils/message";
 import type { IWalletController } from "@/shared/interfaces";
 import type { IStateController } from "@/shared/interfaces/stateController";
 import { useControllersState } from "../states/controllerState";
-import { useCallback } from "react";
 import { useAppState } from "../states/appState";
 import { useWalletState } from "../states/walletState";
 import type { INotificationController } from "@/shared/interfaces/notification";
 import type { IApiController } from "@/background/controllers/apiController";
 import type { IKeyringController } from "@/background/controllers/keyringController";
+import { ss } from ".";
 
 export function setupPm() {
   const { PortMessage } = Message;
   const portMessageChannel = new PortMessage();
   portMessageChannel.connect("popup");
-
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  // portMessageChannel.listen(
-  //   (data: { method: string; params: any[]; type: string }) => {
-  //     if (data.type === "broadcast") {
-  //       eventBus.emit(data.method, data.params);
-  //     }
-  //   }
-  // );
 
   eventBus.addEventListener(
     EVENTS.broadcastToBackground,
@@ -87,17 +78,11 @@ export function setupNotificationProxy() {
 }
 
 export function useSyncStorages() {
-  const { stateController } = useControllersState((v) => ({
-    stateController: v.stateController,
-  }));
-  const { updateAppState } = useAppState((v) => ({
-    updateAppState: v.updateAppState,
-  }));
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+  const { stateController } = useControllersState(ss(["stateController"]));
+  const { updateAppState } = useAppState(ss(["updateAppState"]));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
 
-  return useCallback(async () => {
+  return async () => {
     const appState = await stateController.getAppState();
     const walletState = await stateController.getWalletState();
 
@@ -108,5 +93,5 @@ export function useSyncStorages() {
       appState,
       walletState,
     };
-  }, [stateController, updateAppState, updateWalletState]);
+  };
 }

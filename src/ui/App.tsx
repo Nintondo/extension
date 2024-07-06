@@ -7,7 +7,6 @@ import {
   setupKeyringProxy,
   setupNotificationProxy,
   setupOpenAPIProxy,
-  setupPm,
   setupStateProxy,
   setupWalletProxy,
 } from "@/ui/utils/setup";
@@ -15,28 +14,20 @@ import { useAppState } from "./states/appState";
 import { useWalletState } from "./states/walletState";
 import { guestRouter, authenticatedRouter } from "@/ui/pages/router";
 import { useControllersState } from "./states/controllerState";
-import { excludeKeysFromObj } from "@/shared/utils";
 import i18n from "../shared/locales/i18n";
+import PortMessage from "@/shared/utils/message/portMessage";
+import { ss } from "./utils";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
-  const { isReady, isUnlocked, updateAppState } = useAppState((v) => ({
-    isReady: v.isReady,
-    isUnlocked: v.isUnlocked,
-    updateAppState: v.updateAppState,
-  }));
+  const { isReady, isUnlocked, updateAppState } = useAppState(
+    ss(["isReady", "isUnlocked", "updateAppState"])
+  );
 
-  const { updateControllers } = useControllersState((v) => ({
-    updateControllers: v.updateControllers,
-  }));
+  const { updateControllers } = useControllersState(ss(["updateControllers"]));
 
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
 
-  const { stateController } = useControllersState((v) => ({
-    stateController: v.stateController,
-  }));
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
     const apiController = setupOpenAPIProxy();
@@ -52,77 +43,60 @@ export default function App() {
       notificationController,
     });
 
-    await stateController.init();
-    const appState = await stateController.getAppState();
-    const walletState = await stateController.getWalletState();
+    const [appState, walletState] = await stateController.init();
     await i18n.changeLanguage(appState.language ?? "en");
-    if (
-      appState.isReady &&
-      appState.isUnlocked &&
-      walletState.selectedWallet !== undefined
-    ) {
-      await updateWalletState(walletState, false);
-      await updateAppState(appState, false);
-    } else {
-      await updateWalletState({
-        vaultIsEmpty: await walletController.isVaultEmpty(),
-        ...excludeKeysFromObj(walletState, ["vaultIsEmpty", "wallets"]),
-      });
-      await updateAppState({
-        isReady: true,
-        ...excludeKeysFromObj(appState, [
-          "isReady",
-          "isUnlocked",
-          "password",
-          "vault",
-        ]),
-      });
+
+    if (!appState.isReady) {
+      walletState.vaultIsEmpty = await walletController.isVaultEmpty();
+      appState.isReady = true;
+
+      await updateAppState(
+        {
+          isReady: true,
+        },
+        true
+      );
+      await updateWalletState(
+        {
+          vaultIsEmpty: walletState.vaultIsEmpty,
+        },
+        true
+      );
     }
+
+    await updateWalletState(walletState, false);
+    await updateAppState(appState, false);
   }, [updateWalletState, updateAppState, updateControllers]);
 
-  const updateFromStore = useCallback(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (isReady && isUnlocked) {
-      const appState = await stateController.getAppState();
-      const walletState = await stateController.getWalletState();
-      await updateWalletState(walletState, false);
-      await updateAppState(appState, false);
-    }
-  }, [isReady, isUnlocked, stateController, updateAppState, updateWalletState]);
-
   useEffect(() => {
-    const pm = setupPm();
+    const pm = new PortMessage().connect("popup");
     //eslint-disable-next-line @typescript-eslint/no-floating-promises
-    pm.listen((data: { method: string; params: any[]; type: string }) => {
-      if (data.type === "broadcast") {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        if (data.method === "updateFromStore") updateFromStore();
+    pm.listen(async (data: { method: string; params: any[]; type: string }) => {
+      if (data.type !== "broadcast" || !isReady || !isUnlocked) {
+        return;
+      }
+      if (data.method === "updateFromAppState") {
+        await updateAppState(data.params[0], false);
+      } else if (data.method === "updateFromWalletState") {
+        await updateWalletState(data.params[0], false);
       }
     });
     return () => {
-      pm.removeAllListeners();
+      pm.dispose();
     };
-  }, [updateFromStore]);
+  }, [isReady, isUnlocked, updateAppState, updateWalletState]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (!isReady) setupApp();
     else if (isReady && isUnlocked) setRouter(authenticatedRouter);
     else setRouter(guestRouter);
-  }, [
-    isReady,
-    isUnlocked,
-    updateWalletState,
-    updateAppState,
-    router,
-    setRouter,
-    setupApp,
-  ]);
+  }, [isReady, isUnlocked, router, setRouter, setupApp]);
 
   return (
     <div>
       <div className="uppercase text-center hidden standard:block font-medium text-xl mb-6 select-none">
-        Bells
+        nintondo
       </div>
       <div className="app">
         {isReady ? (

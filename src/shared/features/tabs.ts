@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import browser, {
   browserTabsCreate,
   browserTabsGetCurrent,
@@ -25,21 +25,20 @@ export const focusExtensionTab = async () => {
 export const useExtensionIsInTab = () => {
   const [isInTab, setIsInTab] = useState(false);
   useEffect(() => {
-    const init = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    (async () => {
       const inTab = await extensionIsInTab();
       setIsInTab(inTab);
-    };
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    init();
+    })();
   }, []);
   return isInTab;
 };
 
 export const useOpenExtensionInTab = () => {
-  return useCallback(async () => {
+  return async () => {
     await openExtensionInTab();
     window.close();
-  }, []);
+  };
 };
 
 export const getCurrentTab = async () => {

@@ -7,7 +7,7 @@ export async function browserWindowsGetCurrent(params?: any) {
 export async function browserWindowsCreate(
   params?: chrome.windows.CreateData
 ): Promise<chrome.windows.Window> {
-  return await browser.windows.create(params);
+  return browser.windows.create(params as any) as any;
 }
 
 export async function browserWindowsUpdate(

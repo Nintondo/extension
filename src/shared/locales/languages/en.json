@@ -5,9 +5,8 @@
     "no_inscriptions": "No inscriptions",
     "receive": "Receive",
     "send": "Send",
-    "inscriptions": "Inscriptions",
-    "amount_in_transactions": "Cardinal balance",
-    "amount_in_inscriptions": "Ordinal balance"
+    "nft": "NFT",
+    "amount_in_transactions": "Balance"
   },
   "settings": {
     "language": "Language",
@@ -27,6 +26,7 @@
       "change_address_type": "Change Address Type",
       "create_new_account": "Create New Account",
       "change_password": "Change Password",
+      "network_settings": "Network Settings",
       "receive_bel": "Receive BEL",
       "switch_wallet": "Switch Wallet",
       "transaction_info": "Transaction Info",
@@ -38,7 +38,8 @@
       "security": "Security",
       "advanced": "Advanced",
       "discover": "Discover",
-      "inscriptions": "Inscriptions"
+      "inscriptions": "Inscriptions",
+      "wallet_settings": "Wallet Settings"
     },
     "check_password": {
       "incorrect_password_error": "Incorrect password",
@@ -81,7 +82,8 @@
       "transferable_balance": "Transferable balance",
       "balance": "Balance",
       "create_transfer": "Mint transfer",
-      "send": "Send"
+      "send": "Send",
+      "no_transfers": "No transfers"
     }
   },
   "change_password": {
@@ -152,7 +154,7 @@
       "inscription_id": "Inscription Id"
     },
     "create_send": {
-      "minimum_amount_error": "Minimum amount is 0.01 BEL",
+      "minimum_amount_error": "Minimum amount is 0.0001 BEL",
       "address_error": "Insert receiver's address",
       "not_enough_money_error": "There's not enough money in your account",
       "not_enough_fee_error": "Increase the fee",
@@ -162,7 +164,7 @@
       "amount": "Amount",
       "amount_to_send": "Amount to send",
       "max_amount": "MAX",
-      "fee_label": "Fee:",
+      "fee_label": "Fee",
       "include_fee_in_the_amount_label": "Include fee in the amount",
       "save_address_for_the_next_payments_label": "Save address for the next payments",
       "continue": "Continue",
@@ -210,7 +212,7 @@
   "transaction_info": {
     "txid": "TxId",
     "confirmations_label": "Confirmations:",
-    "fee_label": "Fee:",
+    "fee_label": "Fee",
     "value_label": "Value:",
     "open_in_explorer": "Open in explorer",
     "copied": "Copied",
@@ -256,21 +258,51 @@
     "mint_token_modal_title": "Mint transfer token",
     "send_token_modal_title": "Send token",
     "amount_to_mint": "Amount to mint",
+    "transfers_count": "Amount of transfer",
     "amount_is_text_error": "Amount should be integer",
+    "transfer_count_is_text_error": "Transfer count should be integer",
     "amount_cannot_be_fractional": "Amount cannot be fractional",
+    "transfer_countcannot_be_fractional": "Transfer count cannot be fractional",
     "amount_exceeds_balance": "Amount exceeds balance",
     "transfer_inscribed": "Transfer inscribed successfully",
-    "failed_inscribe_transfer": "Failed to inscribe transfer",
+    "failed_inscribe_transfer": "Failed to create transfer",
+    "failed_inscribe_transfer2": "These transactions will be pushed later",
     "choose_transfer": "Choose transfers to send",
     "total_amount": "Total amount",
     "0_selected_inscriptions_error": "0 selected inscriptions",
     "success_send_transfer": "Successfully sended transfer(s)",
-    "failed_send_transfer": "Failed to send transfer(s)"
+    "failed_send_transfer": "Failed to send transfer(s)",
+    "inscribe": "Inscribe",
+    "transfer": "transfer",
+    "not_enough_balance": "Not enough balance",
+    "not_enough_token_balance": "Token balance is not enough",
+    "minimum_transfer_count": "Minimum transfer amount is 1",
+    "minimum_amount_error": "Minimum token amount is 1",
+    "input_amount_first": "Input amount first",
+    "tick_is_not_set": "Tick is not defined"
   },
   "provider": {
-    "you_will_receive": "You will receive",
-    "signSpecificInputs": {
-      "inscriptions_you_send": "These are inscriptions, which you will send"
-    }
+    "sign_tx": "Sign transaction",
+    "sign_message": "Sign message",
+    "you_are_signing": "You are signing",
+    "resolve": "Resolve",
+    "reject": "Reject",
+    "sign_request": "Sign request",
+    "send_bells": "Send bells",
+    "sign": "Sign",
+    "create_transaction": "Create transaction",
+    "connecting": "Connecting",
+    "connect": "Connect",
+    "access_required": "Access required",
+    "to_address": "To address",
+    "connecting_account": "Connecting account",
+    "warning": "Warning",
+    "anyone_can_pay_warning": "This input has SIGHASH_SINGLE | ANYONECANPAY flag",
+    "multi_psbt_sign": "Sign transactions",
+    "fee": "Fee",
+    "switch": "Switch",
+    "switch_network": "Website wants you to switch your network to",
+    "switch_network_title": "Switch network",
+    "switch_network_request": "Switch network request"
   }
 }

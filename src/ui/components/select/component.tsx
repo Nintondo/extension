@@ -1,9 +1,9 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronUpDownIcon, CheckIcon } from "@heroicons/react/24/outline";
-import { FC, Fragment } from "react";
+import { Fragment } from "react";
 
-interface Props {
-  setSelected: ({ name }) => void;
+interface Props<T extends string> {
+  setSelected: (data: { name: T }) => void;
   values: { name: string }[];
   selected: any;
   label?: string;
@@ -11,14 +11,14 @@ interface Props {
   className?: string;
 }
 
-const Select: FC<Props> = ({
+const Select = <T extends string>({
   selected,
   setSelected,
   values,
   label,
   displayCheckIcon = true,
   className,
-}) => {
+}: Props<T>) => {
   return (
     <div className={className ?? ""}>
       {label !== undefined ? (

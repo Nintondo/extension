@@ -11,7 +11,7 @@ import type {
 // something need user approval in window
 // should only open one window, unfocus will close the current notification
 class NotificationService extends Events {
-  approval: Approval | null = null;
+  approval?: Approval;
   notifiWindowId = 0;
   isLocked = false;
 
@@ -27,8 +27,8 @@ class NotificationService extends Events {
     });
   }
 
-  getApproval = (): ApprovalData => {
-    return { ...this.approval.data };
+  getApproval = (): ApprovalData | undefined => {
+    return this.approval?.data;
   };
 
   resolveApproval = async (data?: any, forceReject = false) => {
@@ -58,12 +58,11 @@ class NotificationService extends Events {
   };
 
   // currently it only support one approval at the same time
-  requestApproval = (
+  requestApproval = async (
     data?: any,
     winProps?: OpenNotificationProps
   ): Promise<any> => {
     // if (this.approval) {
-    //   // this.approval = null;
     //   throw ethErrors.provider.userRejectedRequest(
     //     "please request after user close current popup"
     //   );
@@ -77,14 +76,13 @@ class NotificationService extends Events {
         reject,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.openNotification(winProps);
     });
   };
 
   clear = async (stay = false) => {
     this.unLock();
-    this.approval = null;
+    this.approval = undefined;
     if (this.notifiWindowId && !stay) {
       await remove(this.notifiWindowId);
       this.notifiWindowId = 0;
@@ -99,9 +97,9 @@ class NotificationService extends Events {
     this.isLocked = true;
   };
 
-  openNotification = (winProps: OpenNotificationProps) => {
-    // if (this.isLocked) return;
-    // this.lock();
+  openNotification = (winProps?: OpenNotificationProps) => {
+    if (this.isLocked) return;
+    this.lock();
     if (this.notifiWindowId) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       remove(this.notifiWindowId);
@@ -109,9 +107,11 @@ class NotificationService extends Events {
     }
     openNotification(winProps)
       .then((winId) => {
-        this.notifiWindowId = winId;
+        if (winId !== undefined) {
+          this.notifiWindowId = winId;
+        }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
   };
 }
 

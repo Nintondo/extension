@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 
-import { IS_WINDOWS } from "@/shared/constant";
 import {
   browserWindowsOnRemoved,
   browserWindowsGetCurrent,
@@ -12,6 +11,7 @@ import {
   CreateNotificationProps,
   OpenNotificationProps,
 } from "@/shared/interfaces/notification";
+import { IS_WINDOWS } from "@/shared/constant";
 
 export const event = new EventEmitter();
 
@@ -21,8 +21,8 @@ browserWindowsOnRemoved((winId: number) => {
 
 const BROWSER_HEADER = 80;
 const WINDOW_SIZE = {
-  width: 350 + (IS_WINDOWS ? 14 : 0),
-  height: 600,
+  width: 354 + (IS_WINDOWS ? 16 : 0),
+  height: 600 + (IS_WINDOWS ? 40 : 0),
 };
 
 const create = async ({
@@ -51,7 +51,7 @@ const create = async ({
   });
 
   // shim firefox
-  if (win.left !== left) {
+  if (win.left !== left && win.id !== undefined) {
     await browserWindowsUpdate(win.id, { left, top });
   }
   return win.id;

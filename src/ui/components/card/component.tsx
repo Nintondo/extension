@@ -46,19 +46,20 @@ const Card: FC<Props> = ({
         <div className={s.right}>
           {address ? <div className={s.address}>{address}</div> : undefined}
           <button className={s.action} onClick={onMenuClick}>
-            <Bars3Icon
-              className={cn("w-8 h-8", {
-                "text-orange-300": selected,
-                "text-text": !selected,
-              })}
-            />
+            <Bars3Icon className={cn("w-8 h-8")} />
           </button>
         </div>
       </div>
       <Menu
         active={active}
         items={[
-          ...menuItems,
+          ...menuItems.map((i) => ({
+            ...i,
+            action: () => {
+              if (i.action) i.action();
+              setActive(false);
+            },
+          })),
           {
             action: () => {
               setActive(false);

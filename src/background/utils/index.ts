@@ -1,7 +1,7 @@
 import compose from "koa-compose";
 
 export const underline2Camelcase = (str: string) => {
-  return str.replace(/_(.)/g, (m, p1) => p1.toUpperCase());
+  return str.replace(/_(.)/g, (_, p1) => p1.toUpperCase());
 };
 
 export const wait = (fn: () => void, ms = 1000) => {

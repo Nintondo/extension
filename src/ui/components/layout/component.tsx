@@ -1,16 +1,23 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import s from "./styles.module.scss";
 import cn from "classnames";
-import { ChevronLeftIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
 import { useMemo } from "react";
-import { useWalletState } from "@/ui/states/walletState";
+import { useGetCurrentAccount, useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
-import Select from "../select";
+import { Menu } from "@headlessui/react";
+import SearchInscriptions from "../search-inscriptions";
+import { useCreateNewAccount } from "@/ui/hooks/wallet";
+import toast from "react-hot-toast";
+import { ss } from "@/ui/utils";
 
 interface IRouteTitle {
-  route: string;
+  route: string | RegExp;
   title: string;
   action?: {
     icon: React.ReactNode;
@@ -18,28 +25,23 @@ interface IRouteTitle {
   };
   backAction?: () => void;
   disableBack?: boolean;
+  dropdown?: {
+    name: string;
+    link: string;
+  }[];
 }
 
 export default function PagesLayout() {
-  const { stateController } = useControllersState((v) => ({
-    stateController: v.stateController,
-  }));
+  const { stateController } = useControllersState(ss(["stateController"]));
 
   const currentRoute = useLocation();
   const navigate = useNavigate();
-  const { wallets } = useWalletState((v) => ({ wallets: v.wallets }));
-  const { active, setActive } = useTransactionManagerContext();
+  const { wallets } = useWalletState(ss(["wallets"]));
+  const createNewAccount = useCreateNewAccount();
+  const currentAccount = useGetCurrentAccount();
 
   const defaultTitles: IRouteTitle[] = useMemo(
     () => [
-      {
-        route: "/pages/switch-account",
-        title: t("components.layout.switch_account"),
-        action: {
-          icon: <PlusCircleIcon className="w-8 h-8" />,
-          link: "/pages/create-new-account",
-        },
-      },
       {
         route: "/pages/change-addr-type",
         title: t("components.layout.change_address_type"),
@@ -53,12 +55,19 @@ export default function PagesLayout() {
         title: t("components.layout.change_password"),
       },
       {
+        backAction: () => {
+          navigate("/home");
+        },
+        route: "/pages/finalle-send/@",
+        title: t("components.layout.send"),
+      },
+      {
         route: "/pages/security",
         title: t("components.layout.security"),
       },
       {
         route: "/pages/receive",
-        title: t("components.layout.receive_bel"),
+        title: currentAccount?.name ?? "Account",
       },
       {
         route: "/pages/switch-wallet",
@@ -113,22 +122,42 @@ export default function PagesLayout() {
         title: t("components.layout.change_language"),
       },
       {
-        route: "/pages/inscriptions",
+        route: "/pages/wallet-settings",
+        title: t("components.layout.wallet_settings"),
+      },
+      {
+        route: "/pages/network-settings",
+        title: t("components.layout.network_settings"),
+      },
+      {
+        route: "/pages/create-send",
+        title: t("components.layout.send"),
+        backAction: () => {
+          navigate("/home");
+        },
+      },
+      {
+        route: /\/pages\/(inscriptions|bel-20)/,
         title: t("components.layout.inscriptions"),
+        dropdown: [
+          {
+            name: "Inscriptions",
+            link: "/pages/inscriptions",
+          },
+          {
+            name: "BEL-20",
+            link: "/pages/bel-20",
+          },
+        ],
         action: {
-          icon: (
-            <Select
-              values={[{ name: "ORDs" }, { name: "bel-20" }]}
-              selected={{ name: active }}
-              setSelected={(v) => setActive(v.name)}
-              displayCheckIcon={false}
-              className="w-20.5"
-            />
-          ),
+          icon: <SearchInscriptions />,
+        },
+        backAction: () => {
+          navigate("/home");
         },
       },
     ],
-    [active, setActive]
+    [currentAccount?.name, navigate]
   );
 
   const routeTitles = useMemo(
@@ -152,13 +181,6 @@ export default function PagesLayout() {
         },
         {
           backAction: () => {
-            navigate("/home");
-          },
-          route: "/pages/finalle-send/@",
-          title: t("components.layout.send"),
-        },
-        {
-          backAction: () => {
             navigate("/pages/create-send", {
               state: currentRoute.state,
             });
@@ -169,28 +191,49 @@ export default function PagesLayout() {
         {
           route: "/pages/inscription-details",
           title:
-            t("inscription_details.title") + ` #${currentRoute.state?.inscription_number}`,
+            t("inscription_details.title") +
+            ` #${currentRoute.state?.inscription_number}`,
         },
         {
-          route: "/pages/create-send",
-          title: t("components.layout.send"),
-          backAction: () => {
-            navigate("/home");
+          route: "/pages/switch-account",
+          title: t("components.layout.switch_account"),
+          action: {
+            icon: (
+              <PlusCircleIcon
+                className="w-8 h-8 cursor-pointer"
+                onClick={async () => {
+                  navigate("/");
+                  await createNewAccount();
+                  toast.success(t("new_account.account_created_message"));
+                }}
+              />
+            ),
           },
         },
       ] as IRouteTitle[],
-    [navigate, stateController, currentRoute, wallets.length, defaultTitles]
+    [
+      navigate,
+      stateController,
+      currentRoute,
+      wallets.length,
+      defaultTitles,
+      createNewAccount,
+    ]
   );
 
   const currentRouteTitle = useMemo(
     () =>
       routeTitles.find((i) => {
-        if (i.route.includes("@")) {
-          return currentRoute.pathname.includes(
-            i.route.slice(0, i.route.length - 1)
-          );
+        if (typeof i.route === "string") {
+          if (i.route.includes("@")) {
+            return currentRoute.pathname.includes(
+              i.route.slice(0, i.route.length - 1)
+            );
+          }
+          return currentRoute.pathname === i.route;
+        } else {
+          return i.route.test(currentRoute.pathname);
         }
-        return currentRoute.pathname === i.route;
       }),
     [currentRoute, routeTitles]
   );
@@ -212,9 +255,33 @@ export default function PagesLayout() {
             </div>
           ) : undefined}
 
-          <div className={cn(s.controlElem, s.title)}>
-            {currentRouteTitle?.title}
-          </div>
+          {currentRouteTitle?.dropdown ? (
+            <Menu as="div" className={cn(s.controlElem, s.title, "relative")}>
+              <Menu.Button className={"flex justify-center items-center gap-1"}>
+                {
+                  currentRouteTitle.dropdown.find(
+                    (i) => i.link === currentRoute.pathname
+                  )?.name
+                }
+                <ChevronDownIcon className="w-5 h-5" />
+              </Menu.Button>
+              <Menu.Items
+                className={
+                  "absolute top-0 left-1/2 -translate-x-1/2 bg-bg flex flex-col gap-3 w-max p-5 rounded-xl"
+                }
+              >
+                {currentRouteTitle.dropdown.map((i) => (
+                  <Menu.Item key={i.link}>
+                    <Link to={i.link}>{i.name}</Link>
+                  </Menu.Item>
+                ))}
+              </Menu.Items>
+            </Menu>
+          ) : (
+            <div className={cn(s.controlElem, s.title)}>
+              <span>{currentRouteTitle?.title}</span>
+            </div>
+          )}
 
           {currentRouteTitle?.action ? (
             currentRouteTitle?.action.link ? (

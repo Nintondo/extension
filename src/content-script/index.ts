@@ -14,8 +14,8 @@ function injectScript() {
 
     const pm = new PortMessage().connect();
 
-    const bcm = new BroadcastChannelMessage("NINTONDOWALLET").listen((data) =>
-      pm.request(data)
+    const bcm = new BroadcastChannelMessage("NINTONDOWALLET").listen(
+      <T>(data: T) => pm.request(data)
     );
 
     // background notification
@@ -123,6 +123,6 @@ if (shouldInjectProvider()) {
   try {
     injectScript();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }

@@ -1,7 +1,9 @@
 import PasswordInput from "@/ui/components/password-input";
 import Select from "@/ui/components/select";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
+import { useAppState } from "@/ui/states/appState";
 import { useWalletState } from "@/ui/states/walletState";
+import { ss } from "@/ui/utils";
 import { t } from "i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,10 +32,9 @@ const RestorePrivKey = () => {
 
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
-  const { updateWalletState } = useWalletState((v) => ({
-    updateWalletState: v.updateWalletState,
-  }));
+  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
   const [loading, setLoading] = useState<boolean>(false);
+  const { network } = useAppState(ss(["network"]));
 
   const recoverWallet = async ({ privKey }: FormType) => {
     setLoading(true);
@@ -42,9 +43,10 @@ const RestorePrivKey = () => {
         payload: privKey,
         walletType: "simple",
         restoreFrom: selectedWayToRestore.name,
+        network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
-      navigate("/home");
+      await updateWalletState({ vaultIsEmpty: false }, true);
+      navigate("/");
     } catch (e) {
       console.error(e);
       toast.error(t("new_wallet.restore_private.invalid_private_key_error"));
@@ -63,7 +65,7 @@ const RestorePrivKey = () => {
           register={register}
           name="privKey"
         />
-        <Select
+        <Select<"wif" | "hex">
           label={t("new_wallet.restore_from_label")}
           values={waysToRestore}
           selected={selectedWayToRestore}
