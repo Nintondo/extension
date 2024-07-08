@@ -232,14 +232,13 @@ export const useSwitchNetwork = () => {
   const { selectedWallet, } = useWalletState(
     ss(["selectedWallet"])
   );
-  const { walletController, notificationController } = useControllersState(
-    ss(["walletController", "notificationController"])
+  const { walletController } = useControllersState(
+    ss(["walletController"])
   );
 
   return async (network: Network) => {
     if (selectedWallet === undefined) return;
     await walletController.switchNetwork(network);
-    await notificationController.switchedNetwork(network);
     navigate("/");
   };
 };

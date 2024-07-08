@@ -1,12 +1,12 @@
 import { networks, Psbt } from "belcoinjs-lib";
-import { keyringService, sessionService, storageService } from "../../services";
+import { keyringService, storageService } from "../../services";
 import "reflect-metadata/lite";
 import permission from "@/background/services/permission";
 import apiController from "../apiController";
-import { IWallet } from "@/shared/interfaces";
 import { INintondoProvider, NetworkType } from "nintondo-sdk";
 import { isTestnet } from "@/ui/utils";
 import { ethErrors } from "eth-rpc-errors";
+import walletController from "../walletController";
 
 type IProviderController<
   K extends keyof INintondoProvider = keyof Omit<INintondoProvider, "on">
@@ -191,17 +191,7 @@ class ProviderController implements IProviderController {
     }
     const network =
       networkStr === "testnet" ? networks.testnet : networks.bellcoin;
-    keyringService.switchNetwork(network);
-    sessionService.broadcastEvent("networkChanged", {
-      network,
-    });
-    const updatedWallets: IWallet[] = [];
-    for (const wallet of storageService.walletState.wallets) {
-      const keyring = keyringService.getKeyringByIndex(wallet.id);
-      updatedWallets.push({ ...wallet, accounts: keyring.getAccounts().map((f, i) => ({ ...wallet.accounts[i], address: f })) })
-    }
-    await storageService.updateAppState({ network });
-    await storageService.updateWalletState({ wallets: updatedWallets })
+    await walletController.switchNetwork(network);
     return networkStr;
   };
 }
