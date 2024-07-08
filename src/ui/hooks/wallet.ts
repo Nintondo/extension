@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
 import { useTransactionManagerContext } from "../utils/tx-ctx";
 import { Network } from "belcoinjs-lib";
-import { useAppState } from "../states/appState";
 import { ss } from "../utils";
 
 export const useCreateNewWallet = () => {
@@ -230,7 +229,6 @@ export const useDeleteWallet = () => {
 
 export const useSwitchNetwork = () => {
   const navigate = useNavigate();
-  const { updateAppState } = useAppState(ss(["updateAppState"]));
   const { selectedWallet, } = useWalletState(
     ss(["selectedWallet"])
   );
@@ -240,10 +238,7 @@ export const useSwitchNetwork = () => {
 
   return async (network: Network) => {
     if (selectedWallet === undefined) return;
-    await Promise.all([
-      updateAppState({ network }, true),
-      walletController.switchNetwork(network),
-    ]);
+    await walletController.switchNetwork(network);
     await notificationController.switchedNetwork(network);
     navigate("/");
   };

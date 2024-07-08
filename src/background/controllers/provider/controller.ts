@@ -3,7 +3,7 @@ import { keyringService, sessionService, storageService } from "../../services";
 import "reflect-metadata/lite";
 import permission from "@/background/services/permission";
 import apiController from "../apiController";
-import { IAccount } from "@/shared/interfaces";
+import { IWallet } from "@/shared/interfaces";
 import { INintondoProvider, NetworkType } from "nintondo-sdk";
 import { isTestnet } from "@/ui/utils";
 import { ethErrors } from "eth-rpc-errors";
@@ -11,8 +11,8 @@ import { ethErrors } from "eth-rpc-errors";
 type IProviderController<
   K extends keyof INintondoProvider = keyof Omit<INintondoProvider, "on">
 > = {
-  [P in K]: (p: Payload<P>) => ReturnType<INintondoProvider[P]>;
-};
+    [P in K]: (p: Payload<P>) => ReturnType<INintondoProvider[P]>;
+  };
 
 type Payload<P extends keyof INintondoProvider> = {
   session: { origin: string };
@@ -192,26 +192,16 @@ class ProviderController implements IProviderController {
     const network =
       networkStr === "testnet" ? networks.testnet : networks.bellcoin;
     keyringService.switchNetwork(network);
-    await storageService.updateAppState({ network });
-    const wallets = storageService.walletState.wallets;
-    const wallet = keyringService.getKeyringByIndex(
-      storageService.currentWallet.id
-    );
-    const addresses = wallet.getAccounts();
-    const accounts = storageService.currentWallet.accounts;
-    const switchedAccounts = addresses.map(
-      (i, idx): IAccount => ({
-        id: idx,
-        address: i,
-        name: accounts[idx] ? accounts[idx].name : `Account ${idx + 1}`,
-      })
-    );
-    wallets[storageService.currentWallet.id].accounts = switchedAccounts;
-    await storageService.updateWalletState({ wallets });
     sessionService.broadcastEvent("networkChanged", {
       network,
-      account: storageService.currentAccount,
     });
+    const updatedWallets: IWallet[] = [];
+    for (const wallet of storageService.walletState.wallets) {
+      const keyring = keyringService.getKeyringByIndex(wallet.id);
+      updatedWallets.push({ ...wallet, accounts: keyring.getAccounts().map((f, i) => ({ ...wallet.accounts[i], address: f })) })
+    }
+    await storageService.updateAppState({ network });
+    await storageService.updateWalletState({ wallets: updatedWallets })
     return networkStr;
   };
 }

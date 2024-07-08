@@ -1,4 +1,4 @@
-import { storageService } from "@/background/services";
+import { sessionService, storageService } from "@/background/services";
 import type {
   DeleteWalletResult,
   IAccount,
@@ -122,12 +122,16 @@ class WalletController implements IWalletController {
 
   async switchNetwork(network: Network) {
     keyringService.switchNetwork(network);
+    sessionService.broadcastEvent("networkChanged", {
+      network,
+    });
     const updatedWallets: IWallet[] = [];
     for (const wallet of storageService.walletState.wallets) {
       const keyring = keyringService.getKeyringByIndex(wallet.id);
-      updatedWallets.push({ ...wallet, accounts: keyring.getAccounts().map((f, i) => ({ ...wallet.accounts[i], address: f })) })
+      updatedWallets.push({ ...wallet, accounts: keyring.getAccounts().map((f, i) => ({ ...wallet.accounts[i], address: f })) });
     }
-    await storageService.updateWalletState({ wallets: updatedWallets })
+    await storageService.updateAppState({ network });
+    await storageService.updateWalletState({ wallets: updatedWallets });
   }
 }
 
