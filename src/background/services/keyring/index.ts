@@ -42,7 +42,14 @@ class KeyringService {
           network,
         });
       } else {
-        wallet = HDSimpleKey.deserialize({ ...i.data, network }) as any as HDSimpleKey;
+        wallet = HDSimpleKey.deserialize({
+          ...i.data,
+          addressType:
+            i.data.addressType === undefined
+              ? i.data.addressType
+              : i.addressType,
+          network,
+        }) as any as HDSimpleKey;
       }
       this.keyrings[i.id] = wallet;
     }
@@ -255,11 +262,11 @@ class KeyringService {
           address: account.address!,
           ords: (v as ApiOrdUTXO & { isOrd: boolean }).isOrd
             ? [
-              {
-                id: `${(v as ApiOrdUTXO).inscription_id}`,
-                offset: (v as ApiOrdUTXO).offset,
-              },
-            ]
+                {
+                  id: `${(v as ApiOrdUTXO).inscription_id}`,
+                  offset: (v as ApiOrdUTXO).offset,
+                },
+              ]
             : [],
         };
       }),
