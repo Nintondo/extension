@@ -3,6 +3,7 @@ import MintTransferForm from "@/ui/components/mint-transfer-form";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { ss } from "@/ui/utils";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import Loading from "react-loading";
@@ -12,6 +13,7 @@ const InscribeTransfer = () => {
     ss(["notificationController", "apiController"])
   );
   const currentAccount = useGetCurrentAccount();
+  const { trottledUpdate } = useTransactionManagerContext();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<IToken>({
@@ -25,17 +27,18 @@ const InscribeTransfer = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       setLoading(true);
+      trottledUpdate();
       if (!currentAccount?.address) return;
       const approval = await notificationController.getApproval();
       if (!approval) {
         await notificationController.rejectApproval("Invalid params");
         return;
       }
-      const tick = approval.params?.data.tick as string;
+      const tick = approval.params?.data[0] as string;
       const userTokens = await apiController.getTokens(currentAccount.address);
       if (userTokens !== undefined && userTokens.length) {
         const token = userTokens.find(
-          (f) => f.tick === tick.toLocaleLowerCase().trim()
+          (f) => f.tick === tick.toLowerCase().trim()
         );
         if (token && token.balance > 0) {
           setToken(token);
@@ -43,7 +46,12 @@ const InscribeTransfer = () => {
       } else await notificationController.rejectApproval();
       setLoading(false);
     })();
-  }, [notificationController, apiController, currentAccount?.address]);
+  }, [
+    notificationController,
+    apiController,
+    currentAccount?.address,
+    trottledUpdate,
+  ]);
 
   if (loading)
     return (
@@ -53,7 +61,7 @@ const InscribeTransfer = () => {
     );
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <p className="w-full text-lg font-normal text-center pt-6">
         {t("inscriptions.inscribe") +
           " " +
