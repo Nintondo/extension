@@ -30,26 +30,24 @@ class KeyringService {
   async init(password: string) {
     const { wallets, network } = await storageService.importWallets(password);
     for (const i of wallets) {
+      const params = {
+        addressType:
+          i.data.addressType === undefined ? i.data.addressType : i.addressType,
+        network,
+      };
+
       let wallet: HDPrivateKey | SimpleKey;
       if (i.data.seed) {
         wallet = HDPrivateKey.deserialize({
           ...i.data,
           hideRoot: i.hideRoot,
-          addressType:
-            i.data.addressType === undefined
-              ? i.data.addressType
-              : i.addressType,
-          network,
+          ...params,
         });
       } else {
         wallet = HDSimpleKey.deserialize({
           ...i.data,
-          addressType:
-            i.data.addressType === undefined
-              ? i.data.addressType
-              : i.addressType,
-          network,
-        }) as any as HDSimpleKey;
+          ...params,
+        }) as unknown as HDSimpleKey;
       }
       this.keyrings[i.id] = wallet;
     }
