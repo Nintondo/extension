@@ -90,8 +90,12 @@ export const getScriptForAddress = (
       return payments.p2sh({
         redeem: payments.p2wpkh({ pubkey: Buffer.from(publicKey) }),
       }).output;
-    case AddressType.P2PKH as any:
+    case AddressType.P2PKH:
       return payments.p2pkh({ pubkey: Buffer.from(publicKey) }).output;
+    case AddressType.P2TR:
+      return payments.p2tr({
+        internalPubkey: toXOnly(Buffer.from(publicKey)),
+      }).output;
     default:
       throw new Error("Invalid AddressType");
   }
@@ -140,3 +144,6 @@ export function toFixed(x: number): string {
   }
   return x.toString();
 }
+
+export const toXOnly = (pubKey: Buffer) =>
+  pubKey.length === 32 ? pubKey : pubKey.slice(1, 33);
