@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@headlessui/react": "2.0.4",
-    "@heroicons/react": "2.1.1",
+    "@heroicons/react": "2.1.5",
     "@noble/hashes": "1.3.3",
     "bel-ord-utils": "0.2.3",
     "belcoinjs-lib": "0.0.6",
