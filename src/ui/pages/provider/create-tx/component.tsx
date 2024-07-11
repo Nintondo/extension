@@ -22,7 +22,7 @@ const CreateTx = () => {
         await notificationController.rejectApproval("Invalid params");
         return;
       }
-      setPsbt(approval.params?.data);
+      setPsbt(approval.params?.data[0]);
     })();
   }, [notificationController]);
 

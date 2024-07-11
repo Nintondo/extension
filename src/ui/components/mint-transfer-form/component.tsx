@@ -104,8 +104,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         className={"w-full flex flex-col gap-6 px-1 py-6 items-start h-full"}
         onSubmit={async (e) => {
           e.preventDefault();
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          inscribe(formData);
+          await inscribe(formData);
         }}
       >
         <div className="form-field">
@@ -126,8 +125,12 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
             <div className="p-2 mt-2 text-center rounded-xl bg-input-light standard:bg-bg">
               <div className="flex justify-between p-0.5 items-center">
                 <div>{`${t("components.token_card.balance")}: `}</div>
-                <span className="text-sm font-medium">
-                  {`${selectedMintToken?.balance ?? "-"}`}
+                <span className="flex items-center gap-1">
+                  <span className="text-sm font-medium">
+                    {`${selectedMintToken?.balance ?? "-"}`}
+                  </span>
+
+                  <span className="text-xs">{selectedMintToken?.tick}</span>
                 </span>
               </div>
             </div>
@@ -144,7 +147,9 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         </div>
       </form>
 
-      <div className="w-full flex justify-center items-center">
+      <div className="min-h-12" />
+
+      <div className="w-full flex justify-center items-center absolute bottom-0 left-0 right-0">
         {loading ? (
           <div className="w-full flex justify-center items-center">
             <Loading />
@@ -152,7 +157,9 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         ) : (
           <button
             type="submit"
-            className={"btn primary mx-4 standard:m-6"}
+            className={
+              "text-center text-base py-3 border-t border-neutral-700 w-full"
+            }
             form={formId}
           >
             {t("inscriptions.inscribe")}
