@@ -1,8 +1,8 @@
 import { KeyringServiceError } from "./consts";
 import type { Hex, Json, SendBEL, SendOrd, UserToSignInput } from "./types";
 import { storageService } from "@/background/services";
-import { Network, Psbt } from "belcoinjs-lib";
-import { getScriptForAddress } from "@/shared/utils/transactions";
+import { Network, payments, Psbt } from "belcoinjs-lib";
+import { getScriptForAddress, toXOnly } from "@/shared/utils/transactions";
 import {
   createMultisendOrd,
   createSendBEL,
@@ -131,6 +131,31 @@ class KeyringService {
     const publicKey = this.exportPublicKey(
       storageService.currentAccount.address
     );
+
+    psbt.data.inputs.forEach((v) => {
+      const isNotSigned = !(v.finalScriptSig || v.finalScriptWitness);
+      const isP2TR =
+        keyring.addressType === AddressType.P2TR ||
+        keyring.addressType === AddressType.M44_P2TR;
+      const lostInternalPubkey = !v.tapInternalKey;
+      // Special measures taken for compatibility with certain applications.
+      if (isNotSigned && isP2TR && lostInternalPubkey) {
+        const tapInternalKey = toXOnly(
+          Buffer.from(
+            this.exportPublicKey(storageService.currentAccount!.address!),
+            "hex"
+          )
+        );
+        const { output } = payments.p2tr({
+          internalPubkey: tapInternalKey,
+          network: storageService.appState.network,
+        });
+        if (v.witnessUtxo?.script.toString("hex") == output?.toString("hex")) {
+          v.tapInternalKey = tapInternalKey;
+        }
+      }
+    });
+
     keyring.signPsbt(
       psbt,
       psbt.data.inputs.map((v, index) => ({
