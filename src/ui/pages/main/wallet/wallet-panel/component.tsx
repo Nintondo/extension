@@ -13,7 +13,7 @@ const WalletPanel = () => {
         className="flex gap-3 items-center select-none cursor-pointer"
         to={"/pages/switch-wallet"}
       >
-        <div className="bg-gradient-to-r from-amber-500 to-orange-950 rounded-full w-6 h-6 flex items-center justify-center">
+        <div className="bg-gradient-to-br from-orange-400 to-bg rounded-full w-6 h-6 flex items-center justify-center">
           {currentWallet?.name
             ? currentWallet?.name.split(/.*?/u)[0].toUpperCase()
             : "W"}

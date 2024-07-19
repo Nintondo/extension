@@ -79,11 +79,11 @@ const CreateSend = () => {
 
       const data = !inscriptionTransaction
         ? await createTx(
-            address,
-            Number((Number(amount) * 10 ** 8).toFixed(0)),
-            feeRate,
-            includeFeeInAmount
-          )
+          address,
+          Number((Number(amount) * 10 ** 8).toFixed(0)),
+          feeRate,
+          includeFeeInAmount
+        )
         : await createOrdTx(address, feeRate, inscription!);
       if (!data) return;
       const { fee, rawtx } = data;
@@ -116,8 +116,9 @@ const CreateSend = () => {
   };
 
   useEffect(() => {
-    if (!currentAccount || !currentAccount.address || !currentAccount.balance)
+    if (!currentAccount || !currentAccount.address || typeof currentAccount.balance === "undefined")
       return;
+
     if (location.state && location.state.toAddress) {
       setFormData({
         address: location.state.toAddress,
@@ -246,7 +247,7 @@ const CreateSend = () => {
 
       <div>
         {!inscriptionTransaction && (
-          <div className="flex justify-between py-2 px-4">
+          <div className="flex justify-between py-2 px-4 mb-11">
             <div className="text-xs uppercase text-gray-400">{`${t(
               "wallet_page.amount_in_transactions"
             )}`}</div>
@@ -258,9 +259,7 @@ const CreateSend = () => {
         <button
           disabled={loading}
           type="submit"
-          className={
-            "border-t border-neutral-700 py-3 text-sm font-medium standard:m-6 standard:mb-3 w-full disabled:cursor-wait"
-          }
+          className={"bottom-btn"}
           form={formId}
         >
           {t("send.create_send.continue")}

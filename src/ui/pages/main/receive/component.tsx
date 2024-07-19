@@ -5,16 +5,30 @@ import CopyBtn from "@/ui/components/copy-btn";
 import toast from "react-hot-toast";
 import { t } from "i18next";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
+import cn from 'classnames';
 
 const qrCode = new QRCode({
   width: 250,
   height: 250,
   type: "svg",
   margin: 3,
-  image: "/icon.ico",
+  image: "/logo-48.png",
   dotsOptions: {
     type: "extra-rounded",
-    color: "#d8a48f",
+    color: "#ced4da",
+    gradient: {
+      colorStops: [
+        {
+          color: "#ced4da",
+          offset: 0
+        },
+        {
+          color: "#e9ecef",
+          offset: 50
+        }
+      ],
+      type: "linear",
+    }
   },
   qrOptions: {
     errorCorrectionLevel: "H",
@@ -75,7 +89,7 @@ const Receive = () => {
 
       <CopyBtn
         value={currentAccount?.address}
-        className={s.copyButton}
+        className={cn(s.copyButton, "bottom-btn")}
         label={t("receive.copy_address")}
       />
     </div>

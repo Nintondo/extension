@@ -87,8 +87,8 @@ const RestoreMnemonicOrdinals = () => {
               </div>
             ))}
           </div>
-          <div className={s.continueWrapper}>
-            <button className="btn primary" onClick={onNextStep}>
+          <div>
+            <button className="bottom-btn" onClick={onNextStep}>
               {t("new_wallet.continue")}
             </button>
           </div>
@@ -99,9 +99,11 @@ const RestoreMnemonicOrdinals = () => {
             handler={setAddressType}
             selectedType={addressType}
           />
-          <button onClick={onRestore} className="btn primary">
-            {t("new_wallet.continue")}
-          </button>
+          <div>
+            <button onClick={onRestore} className="bottom-btn">
+              {t("new_wallet.continue")}
+            </button>
+          </div>
         </div>
       )}
     </div>

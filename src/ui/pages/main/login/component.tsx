@@ -10,6 +10,7 @@ import { isNotification, ss } from "@/ui/utils";
 import cn from "classnames";
 import PasswordInput from "@/ui/components/password-input";
 import { t } from "i18next";
+import LogoIcon from "@/ui/icons/Logo";
 
 interface FormType {
   password: string;
@@ -68,8 +69,8 @@ const Login = () => {
       onSubmit={handleSubmit(login)}
     >
       <div className="flex flex-col gap-7 items-center w-full">
-        <div className="flex justify-center p-2 rounded-xl bg-input-bg">
-          <img alt="Nintondo" src="icon.ico" className="w-10 h-10" />
+        <div className="flex justify-center p-2 rounded-xl">
+          <LogoIcon className={"text-white w-14 h-14 hover:scale-110 duration-100 transition-transform"} />
         </div>
         <div className="text-lg text-center font-[Roboto] uppercase tracking-widest">
           {t("login.welcome_back")}

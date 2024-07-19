@@ -2,15 +2,14 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import s from "./styles.module.scss";
 import cn from "classnames";
 import {
-  ChevronDownIcon,
   ChevronLeftIcon,
   PlusCircleIcon,
+  ArrowsUpDownIcon
 } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 import { useGetCurrentAccount, useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
 import { t } from "i18next";
-import { Menu } from "@headlessui/react";
 import SearchInscriptions from "../search-inscriptions";
 import { useCreateNewAccount } from "@/ui/hooks/wallet";
 import toast from "react-hot-toast";
@@ -18,17 +17,13 @@ import { ss } from "@/ui/utils";
 
 interface IRouteTitle {
   route: string | RegExp;
-  title: string;
+  title: string | React.ReactNode;
   action?: {
     icon: React.ReactNode;
     link?: string;
   };
   backAction?: () => void;
   disableBack?: boolean;
-  dropdown?: {
-    name: string;
-    link: string;
-  }[];
 }
 
 export default function PagesLayout() {
@@ -40,7 +35,7 @@ export default function PagesLayout() {
   const createNewAccount = useCreateNewAccount();
   const currentAccount = useGetCurrentAccount();
 
-  const defaultTitles: IRouteTitle[] = useMemo(
+  const defaultTitles = useMemo(
     () => [
       {
         route: "/pages/change-addr-type",
@@ -79,6 +74,10 @@ export default function PagesLayout() {
       },
       {
         route: "/pages/restore-mnemonic",
+        title: t("components.layout.restore_from_mnemonic"),
+      },
+      {
+        route: "/pages/restore-ordinals",
         title: t("components.layout.restore_from_mnemonic"),
       },
       {
@@ -136,27 +135,7 @@ export default function PagesLayout() {
           navigate("/home");
         },
       },
-      {
-        route: /\/pages\/(inscriptions|bel-20)/,
-        title: t("components.layout.inscriptions"),
-        dropdown: [
-          {
-            name: "Inscriptions",
-            link: "/pages/inscriptions",
-          },
-          {
-            name: "BEL-20",
-            link: "/pages/bel-20",
-          },
-        ],
-        action: {
-          icon: <SearchInscriptions />,
-        },
-        backAction: () => {
-          navigate("/home");
-        },
-      },
-    ],
+    ] as IRouteTitle[],
     [currentAccount?.name, navigate]
   );
 
@@ -210,6 +189,25 @@ export default function PagesLayout() {
             ),
           },
         },
+        {
+          route: /\/pages\/(inscriptions|bel-20)/,
+          title: <div className="flex items-center gap-2 cursor-pointer" onClick={() => {
+            if (currentRoute.pathname === "/pages/inscriptions") {
+              navigate("/pages/bel-20");
+            } else {
+              navigate("/pages/inscriptions");
+            }
+          }}>
+            <span>{currentRoute.pathname === "/pages/inscriptions" ? "Inscriptions" : "BEL-20"}</span>
+            <ArrowsUpDownIcon className="w-4 h-4" />
+          </div>,
+          action: {
+            icon: <SearchInscriptions />,
+          },
+          backAction: () => {
+            navigate("/home");
+          },
+        },
       ] as IRouteTitle[],
     [
       navigate,
@@ -255,33 +253,9 @@ export default function PagesLayout() {
             </div>
           ) : undefined}
 
-          {currentRouteTitle?.dropdown ? (
-            <Menu as="div" className={cn(s.controlElem, s.title, "relative")}>
-              <Menu.Button className={"flex justify-center items-center gap-1"}>
-                {
-                  currentRouteTitle.dropdown.find(
-                    (i) => i.link === currentRoute.pathname
-                  )?.name
-                }
-                <ChevronDownIcon className="w-5 h-5" />
-              </Menu.Button>
-              <Menu.Items
-                className={
-                  "absolute top-0 left-1/2 -translate-x-1/2 bg-bg flex flex-col gap-3 w-max p-5 rounded-xl"
-                }
-              >
-                {currentRouteTitle.dropdown.map((i) => (
-                  <Menu.Item key={i.link}>
-                    <Link to={i.link}>{i.name}</Link>
-                  </Menu.Item>
-                ))}
-              </Menu.Items>
-            </Menu>
-          ) : (
-            <div className={cn(s.controlElem, s.title)}>
-              <span>{currentRouteTitle?.title}</span>
-            </div>
-          )}
+          <div className={cn(s.controlElem, s.title)}>
+            <span>{currentRouteTitle?.title}</span>
+          </div>
 
           {currentRouteTitle?.action ? (
             currentRouteTitle?.action.link ? (

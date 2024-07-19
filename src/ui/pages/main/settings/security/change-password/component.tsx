@@ -69,7 +69,7 @@ const ChangePassword = () => {
         <PasswordInput key={i.name} register={register} {...i} />
       ))}
 
-      <button className="btn primary" type="submit">
+      <button className="bottom-btn" type="submit">
         {t("change_password.change_password")}
       </button>
     </form>

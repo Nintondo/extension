@@ -49,8 +49,7 @@ const ConfirmSend = () => {
     },
     {
       label: t(
-        `send.confirm_send.${
-          location.state.inscriptionTransaction ? "inscription_id" : "amount"
+        `send.confirm_send.${location.state.inscriptionTransaction ? "inscription_id" : "amount"
         }`
       ),
       value:
@@ -59,11 +58,10 @@ const ConfirmSend = () => {
     },
     {
       label: t("send.confirm_send.fee"),
-      value: `${location.state.feeAmount / 10 ** 8} BEL (${
-        location.state.includeFeeInAmount
-          ? t("send.confirm_send.included")
-          : t("send.confirm_send.not_included")
-      })`,
+      value: `${location.state.feeAmount / 10 ** 8} BEL (${location.state.includeFeeInAmount
+        ? t("send.confirm_send.included")
+        : t("send.confirm_send.not_included")
+        })`,
     },
   ];
 
@@ -80,9 +78,7 @@ const ConfirmSend = () => {
         </div>
         <button
           disabled={loading}
-          className={
-            "border-t border-neutral-700 py-3 text-sm font-medium standard:m-6 standard:mb-3 w-full fixed bottom-0 left-0 right-0 disabled:cursor-wait"
-          }
+          className={"bottom-btn"}
           onClick={confirmSend}
         >
           {t("send.confirm_send.confirm")}

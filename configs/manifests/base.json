@@ -4,15 +4,15 @@
   "manifest_version": 3,
   "name": "Nintondo Wallet",
   "icons": {
-    "48": "/icon-48.png",
-    "128": "/icon.png"
+    "48": "/logo-48.png",
+    "128": "/logo-128.png"
   },
   "action": {
     "default_popup": "index.html",
     "default_title": "Open the popup",
     "default_icon": {
-      "48": "/icon-48.png",
-      "128": "/icon.png"
+      "48": "/logo-48.png",
+      "128": "/logo-128.png"
     }
   },
   "content_scripts": [

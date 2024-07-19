@@ -121,12 +121,12 @@ const SendTransferModal: FC<Props> = ({
                 }}
                 key={i}
                 className={cn(
-                  "flex flex-col items-center justify-center bg-input-bg rounded-xl w-24 h-24 cursor-pointer border-2",
+                  "flex flex-col items-center justify-center bg-input-bg rounded-xl w-24 transition-colors py-2 cursor-pointer border-2",
                   { [s.selectedTransfer]: formData.txIds.includes(tx) },
                   { [s.transfer]: !formData.txIds.includes(tx) }
                 )}
               >
-                <span>${selectedSendToken.tick.toUpperCase()}</span>
+                <span className="text-xs text-gray-100">${selectedSendToken.tick.toUpperCase()}</span>
                 <span>{formatAmount(tx.amount)}</span>
               </div>
             ))}

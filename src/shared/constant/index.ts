@@ -36,12 +36,12 @@ export const ADDRESS_TYPES: {
     name: "Native Segwit (P2WPKH)",
     hdPath: "m/84'/0'/0'/0",
   },
-  // {
-  //   value: AddressType.P2TR,
-  //   label: "P2TR",
-  //   name: "Taproot (P2TR)",
-  //   hdPath: "m/86'/0'/0'/0",
-  // },
+  {
+    value: AddressType.P2TR,
+    label: "P2TR",
+    name: "Taproot (P2TR)",
+    hdPath: "m/86'/0'/0'/0",
+  },
 ];
 
 export const EVENTS = {
