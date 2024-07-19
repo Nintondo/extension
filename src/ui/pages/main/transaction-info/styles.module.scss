@@ -18,9 +18,6 @@
   }
 }
 
-.explorerBtn {
-  @apply pb-4 py-3 border-t border-t-neutral-700 font-medium text-sm max-standard:w-full fixed bottom-0 right-0 left-0 text-center;
-}
 
 .summary {
   @apply list-none cursor-pointer text-sm flex gap-2 mt-1;

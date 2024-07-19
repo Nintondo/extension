@@ -70,6 +70,10 @@ input[type="number"] {
   }
 }
 
+.bottom-btn {
+  @apply flex text-xs gap-2 items-center uppercase tracking-widest justify-center h-11 font-light text-gray-100 font-mono mx-auto py-3 border-t border-neutral-700 fixed standard:relative bottom-0 right-0 left-0 transition-colors w-full text-center disabled:cursor-wait;
+}
+
 .primary {
   @apply text-text border border-text transition-colors hover:bg-text hover:text-bg leading-tight;
 }
@@ -94,14 +98,14 @@ input[type="number"] {
   }
 
   .toast {
-    @apply bg-black text-text text-sm border border-green-600 rounded-2xl;
+    @apply bg-neutral-700 text-text text-sm rounded-2xl;
 
-    &.success {
-      @apply border-green-600;
-    }
-    &.error {
-      @apply border-red-600;
-    }
+    // &.success {
+    //   @apply border-green-600;
+    // }
+    // &.error {
+    //   @apply border-red-600;
+    // }
   }
 }
 

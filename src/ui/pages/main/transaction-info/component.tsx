@@ -105,7 +105,7 @@ const TransactionInfo = () => {
               </div>
             </Modal>
           </div>
-          <button className={s.explorerBtn} onClick={onOpenExplorer}>
+          <button className="bottom-btn" onClick={onOpenExplorer}>
             {t("transaction_info.open_in_explorer")}
           </button>
         </>

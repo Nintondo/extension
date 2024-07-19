@@ -101,8 +101,8 @@ const RestoreMnemonic = () => {
               className="flex gap-2 items-center"
             />
           </div>
-          <div className={s.continueWrapper}>
-            <button className="btn primary" onClick={onNextStep}>
+          <div>
+            <button className="bottom-btn" onClick={onNextStep}>
               {t("new_wallet.continue")}
             </button>
           </div>
@@ -113,8 +113,8 @@ const RestoreMnemonic = () => {
             handler={setAddressType}
             selectedType={addressType}
           />
-          <div className="flex flex-col w-full gap-3">
-            <button onClick={onRestore} className="btn primary">
+          <div>
+            <button onClick={onRestore} className="bottom-btn">
               {t("new_wallet.continue")}
             </button>
           </div>

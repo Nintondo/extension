@@ -127,13 +127,15 @@ const NewMnemonic = () => {
             value={savedPhrase}
             className={s.savePhrase}
           />
-          <button
-            className="w-full border-t border-neutral-700 py-3 text-center disabled:cursor-not-allowed"
-            onClick={() => setStep(2)}
-            disabled={!savedPhrase}
-          >
-            {t("new_wallet.continue")}
-          </button>
+          <div>
+            <button
+              className="bottom-btn disabled:cursor-not-allowed"
+              onClick={() => setStep(2)}
+              disabled={!savedPhrase}
+            >
+              {t("new_wallet.continue")}
+            </button>
+          </div>
         </div>
       ) : (
         <div className={s.step}>
@@ -143,12 +145,14 @@ const NewMnemonic = () => {
               selectedType={addressType}
             />
           </div>
-          <button
-            onClick={onCreate}
-            className="w-full border-t border-neutral-700 py-3 text-center"
-          >
-            {t("new_wallet.continue")}
-          </button>
+          <div>
+            <button
+              onClick={onCreate}
+              className="bottom-btn"
+            >
+              {t("new_wallet.continue")}
+            </button>
+          </div>
         </div>
       )}
     </div>

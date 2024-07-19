@@ -74,7 +74,7 @@ const RestorePrivKey = () => {
           }}
         />
       </div>
-      <button className="btn primary" type="submit">
+      <button className="bottom-btn" type="submit">
         {t("new_wallet.restore_private.recover")}
       </button>
     </form>
