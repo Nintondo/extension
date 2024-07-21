@@ -6,7 +6,7 @@
     "receive": "Receive",
     "send": "Send",
     "nft": "NFT",
-    "amount_in_transactions": "Balance"
+    "amount_in_transactions": "Available balance"
   },
   "settings": {
     "language": "Language",
