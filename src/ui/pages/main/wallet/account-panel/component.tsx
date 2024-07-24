@@ -19,7 +19,7 @@ const AccountPanel = () => {
 
   const cardinalBalance = currentAccount?.balance ?? 0;
   const ordinalBalance = currentAccount?.inscriptionBalance ?? 0;
-  const balance = (cardinalBalance + ordinalBalance) / 10 ** 8;
+  const balance = (cardinalBalance / 10 ** 8 + ordinalBalance);
 
 
   return (

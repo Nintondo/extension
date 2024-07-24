@@ -118,7 +118,7 @@ export const useDecodePsbtInputs = () => {
       );
 
       psbt.txOutputs.forEach((f, i) => {
-        totalOutputValue += f.value / 10 ** 8;
+        totalOutputValue += f.value;
         outputFields.push({
           important: currentAccount?.address === f.address,
           input: false,
@@ -139,7 +139,7 @@ export const useDecodePsbtInputs = () => {
 
         let value: IFieldValue;
         const inputValue = locationValue[outpoint] / 10 ** 8;
-        totalInputValue += inputValue;
+        totalInputValue += locationValue[outpoint];
 
         if (psbt.data.inputs[i].sighashType === 131) {
           const foundInscriptions = await apiController.getInscription({
@@ -177,10 +177,11 @@ export const useDecodePsbtInputs = () => {
       return inputFields.concat(outputFields);
     });
 
+    const fields = await Promise.all(result);
     const fee = totalInputValue - totalOutputValue;
     return {
-      fields: await Promise.all(result),
-      fee: fee < 0 ? "0" : toFixed(fee),
+      fields,
+      fee: fee < 0 ? "0" : toFixed(fee / 10 ** 8),
     };
   }, [apiController, currentAccount, notificationController]);
 };
