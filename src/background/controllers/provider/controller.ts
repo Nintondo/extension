@@ -143,7 +143,7 @@ class ProviderController implements IProviderController {
       network,
     });
     const psbt = Psbt.fromHex(tx);
-    return psbt.extractTransaction().toHex();
+    return psbt.extractTransaction(true).toHex();
   };
 
   @Reflect.metadata("APPROVAL", ["signPsbt"])
