@@ -11,6 +11,7 @@ import {
 import { Psbt } from "belcoinjs-lib";
 import { toFixed } from "@/shared/utils/transactions";
 import { useGetCurrentAccount } from "../states/walletState";
+import { useAppState } from "../states/appState";
 
 export const useApproval = () => {
   const navigate = useNavigate();
@@ -71,6 +72,7 @@ export const useDecodePsbtInputs = () => {
     ss(["apiController", "notificationController"])
   );
   const currentAccount = useGetCurrentAccount();
+  const { network } = useAppState((v) => ({ network: v.network }));
 
   return useCallback(async (): Promise<
     { fields: IField[][]; fee: string } | undefined
@@ -88,7 +90,7 @@ export const useDecodePsbtInputs = () => {
     const psbtsToApprove: [Psbt, SignPsbtOptions?][] = [];
     if (approval.approvalComponent !== "multiPsbtSign") {
       psbtsToApprove.push([
-        Psbt.fromBase64(approval.params.data[0]),
+        Psbt.fromBase64(approval.params.data[0], { network }),
         approval.params.data[1],
       ]);
     } else {
@@ -183,5 +185,5 @@ export const useDecodePsbtInputs = () => {
       fields,
       fee: fee < 0 ? "0" : toFixed(fee / 10 ** 8),
     };
-  }, [apiController, currentAccount, notificationController]);
+  }, [apiController, currentAccount, notificationController, network]);
 };

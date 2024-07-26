@@ -214,7 +214,7 @@ class KeyringService {
     const publicKey = this.exportPublicKey(account.address);
 
     const scriptPk = getScriptForAddress(
-      Buffer.from(publicKey, "hex"),
+      Buffer.from(publicKey, "hex") as unknown as Uint8Array,
       wallet.addressType
     );
     if (!scriptPk)
@@ -262,7 +262,7 @@ class KeyringService {
     const publicKey = this.exportPublicKey(account.address);
 
     const scriptPk = getScriptForAddress(
-      Buffer.from(publicKey, "hex"),
+      Buffer.from(publicKey, "hex") as unknown as Uint8Array,
       wallet.addressType
     );
     if (!scriptPk)

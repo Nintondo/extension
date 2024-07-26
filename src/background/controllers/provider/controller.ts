@@ -11,8 +11,8 @@ import walletController from "../walletController";
 type IProviderController<
   K extends keyof INintondoProvider = keyof Omit<INintondoProvider, "on">
 > = {
-    [P in K]: (p: Payload<P>) => ReturnType<INintondoProvider[P]>;
-  };
+  [P in K]: (p: Payload<P>) => ReturnType<INintondoProvider[P]>;
+};
 
 type Payload<P extends keyof INintondoProvider> = {
   session: { origin: string };
