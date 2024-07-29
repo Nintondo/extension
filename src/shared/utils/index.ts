@@ -31,7 +31,7 @@ export const fetchBELLMainnet = async <T>({
     : "";
   const res = await fetch(
     `${url.toString()}${Number(params.length) > 0 ? "?" : ""}${params ?? ""}`,
-    { ...props }
+    { ...props, cache: "no-store" }
   );
 
   if (!res.ok) return;
