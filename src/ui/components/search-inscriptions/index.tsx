@@ -37,12 +37,12 @@ const SearchInscriptions = () => {
           await apiController.searchContentInscriptionByInscriptionId(search);
         setSearchInscriptions(searchResult ? [searchResult] : []);
       } else {
-        setSearchInscriptions(
-          (await apiController.searchContentInscriptionByInscriptionNumber(
+        const searchResult =
+          await apiController.searchContentInscriptionByInscriptionNumber(
             currentAccount.address,
             inscriptionNumber
-          )) ?? []
-        );
+          );
+        setSearchInscriptions(searchResult ? searchResult.inscriptions : []);
       }
       setCurrentPage(1);
     },

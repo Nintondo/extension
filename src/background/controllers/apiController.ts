@@ -69,7 +69,7 @@ export interface IApiController {
   searchContentInscriptionByInscriptionNumber(
     address: string,
     number: number
-  ): Promise<ContentDetailedInscription[] | undefined>;
+  ): Promise<ContentInscriptionResopnse | undefined>;
   getLocationByInscriptionId(
     inscriptionId: string
   ): Promise<{ location: string; owner: string } | undefined>;
@@ -299,7 +299,7 @@ class ApiController implements IApiController {
     address: string,
     number: number
   ) {
-    return await this.fetchContent<ContentDetailedInscription[]>({
+    return await this.fetchContent<ContentInscriptionResopnse>({
       path: `/search?account=${address}&page_size=6&page=1&from=${number}&to=${number}`,
     });
   }

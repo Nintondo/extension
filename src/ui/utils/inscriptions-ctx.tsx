@@ -35,8 +35,10 @@ const useInscriptionManager = ():
 
   const updateTokens = useCallback(async () => {
     if (!currentAccount?.address) return;
+    setLoading(true);
     const tokens = await apiController.getTokens(currentAccount.address);
     setTokens(tokens ?? []);
+    setLoading(false);
   }, [apiController, currentAccount?.address]);
 
   const updateInscriptions = useCallback(
@@ -58,6 +60,13 @@ const useInscriptionManager = ():
     [apiController, currentAccount?.address]
   );
 
+  const resetProvider = () => {
+    setInscriptions(undefined);
+    setSearchInscriptions(undefined);
+    setSearchTokens(undefined);
+    setCurrentPage(1);
+  };
+
   if (!currentAccount) return undefined;
 
   return {
@@ -74,6 +83,7 @@ const useInscriptionManager = ():
     setLoading,
     setInscriptions,
     updateInscriptions,
+    resetProvider,
   };
 };
 
@@ -91,6 +101,7 @@ interface InscriptionsManagerContextType {
   setLoading: (value: boolean) => void;
   setInscriptions: (inscriptions?: ContentInscription[]) => void;
   updateInscriptions: (page: number) => Promise<void>;
+  resetProvider: () => void;
 }
 
 const InscriptionManagerContext = createContext<
@@ -123,6 +134,8 @@ export const useInscriptionManagerContext = () => {
       searchInscriptions: undefined,
       searchTokens: undefined,
       updateInscriptions: () => {},
+      resetProvider: () => {},
+      updateTokens: () => {},
     };
   }
   return context;

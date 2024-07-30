@@ -27,7 +27,7 @@ export default function App() {
 
   const { updateControllers } = useControllersState(ss(["updateControllers"]));
   const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
-  const { setCurrentPage } = useInscriptionManagerContext();
+  const { resetProvider } = useInscriptionManagerContext();
 
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
@@ -80,7 +80,7 @@ export default function App() {
         await updateAppState(data.params[0], false);
       } else if (data.method === "updateFromWalletState") {
         if (data.params[0].selectedAccount || data.params[0].selectedWallet) {
-          setCurrentPage(1);
+          resetProvider();
         }
         await updateWalletState(data.params[0], false);
       }
@@ -88,7 +88,7 @@ export default function App() {
     return () => {
       pm.dispose();
     };
-  }, [isReady, isUnlocked, updateAppState, updateWalletState, setCurrentPage]);
+  }, [isReady, isUnlocked, updateAppState, updateWalletState, resetProvider]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
