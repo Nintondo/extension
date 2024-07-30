@@ -1,4 +1,5 @@
 import { Network, networks } from "belcoinjs-lib";
+import { Dispatch, SetStateAction, useCallback } from "react";
 
 export const isNotification = (): boolean => {
   return window.location.pathname.includes("notification.html");
@@ -62,3 +63,36 @@ export function ss<T extends Record<string, any>, K extends keyof T = keyof T>(
 export function arrayDifference<T>(arr1: T[], arr2: T[]): T[] {
   return arr1.filter((item) => !arr2.includes(item));
 }
+
+export const useUpdateFunction = <T>(
+  onUpdate: Dispatch<SetStateAction<T[] | undefined>>,
+  retrieveFn: (address: string) => Promise<T[] | undefined>,
+  currentValue: T[] | undefined,
+  compareKey: keyof T
+) => {
+  return useCallback(
+    async (address: string, force = false) => {
+      const receivedItems = await retrieveFn(address);
+      if (receivedItems === undefined) return;
+
+      const currentItemsKeys = currentValue?.map((f) => f[compareKey]);
+      const receivedItemsKeys = receivedItems?.map((f) => f[compareKey]);
+      const difference = arrayDifference(
+        receivedItemsKeys,
+        currentItemsKeys ?? []
+      );
+
+      if (!force && (currentValue ?? []).length > 0 && difference.length) {
+        onUpdate([
+          ...difference.map(
+            (f) => receivedItems.find((item) => item[compareKey] === f)!
+          ),
+          ...(currentValue ?? []),
+        ]);
+      } else if ((currentValue ?? []).length < 50 || force) {
+        onUpdate(receivedItems ?? []);
+      }
+    },
+    [onUpdate, retrieveFn, compareKey, currentValue]
+  );
+};

@@ -3,9 +3,19 @@ import type {
   IAccountStats,
   ITransaction,
 } from "@/shared/interfaces/api";
-import { ApiOrdUTXO, Inscription } from "@/shared/interfaces/inscriptions";
+import {
+  ApiOrdUTXO,
+  ContentDetailedInscription,
+  ContentInscriptionResopnse,
+  Inscription,
+} from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
-import { fetchBELLMainnet, fetchProps } from "@/shared/utils";
+import {
+  fetchBELLContent,
+  fetchBELLElectrs,
+  fetchBELLHistory,
+  fetchProps,
+} from "@/shared/utils";
 import { storageService } from "../services";
 import { networks } from "belcoinjs-lib";
 import { DEFAULT_FEES } from "@/shared/constant";
@@ -49,6 +59,20 @@ export interface IApiController {
   getTokens(address: string): Promise<IToken[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
+  getContentPaginatedInscriptions(
+    address: string,
+    page: number
+  ): Promise<ContentInscriptionResopnse | undefined>;
+  searchContentInscriptionByInscriptionId(
+    inscriptionId: string
+  ): Promise<ContentDetailedInscription | undefined>;
+  searchContentInscriptionByInscriptionNumber(
+    address: string,
+    number: number
+  ): Promise<ContentDetailedInscription[] | undefined>;
+  getLocationByInscriptionId(
+    inscriptionId: string
+  ): Promise<{ location: string; owner: string } | undefined>;
 }
 
 type FetchType = <T>(
@@ -58,7 +82,37 @@ type FetchType = <T>(
 class ApiController implements IApiController {
   private fetch: FetchType = async (p: Omit<fetchProps, "testnet">) => {
     try {
-      return await fetchBELLMainnet({
+      return await fetchBELLElectrs({
+        ...p,
+        testnet:
+          storageService.appState.network.pubKeyHash ===
+            networks.testnet.pubKeyHash &&
+          storageService.appState.network.scriptHash ===
+            networks.testnet.scriptHash,
+      });
+    } catch {
+      return;
+    }
+  };
+
+  private fetchContent: FetchType = async (p: Omit<fetchProps, "testnet">) => {
+    try {
+      return await fetchBELLContent({
+        ...p,
+        testnet:
+          storageService.appState.network.pubKeyHash ===
+            networks.testnet.pubKeyHash &&
+          storageService.appState.network.scriptHash ===
+            networks.testnet.scriptHash,
+      });
+    } catch {
+      return;
+    }
+  };
+
+  private fetchHistory: FetchType = async (p: Omit<fetchProps, "testnet">) => {
+    try {
+      return await fetchBELLHistory({
         ...p,
         testnet:
           storageService.appState.network.pubKeyHash ===
@@ -227,6 +281,33 @@ class ApiController implements IApiController {
       method: "POST",
     });
     return result?.values;
+  }
+
+  async getContentPaginatedInscriptions(address: string, page: number) {
+    return await this.fetchContent<ContentInscriptionResopnse>({
+      path: `/search?account=${address}&page_size=6&page=${page}`,
+    });
+  }
+
+  async searchContentInscriptionByInscriptionId(inscriptionId: string) {
+    return await this.fetchContent<ContentDetailedInscription>({
+      path: `/${inscriptionId}/info`,
+    });
+  }
+
+  async searchContentInscriptionByInscriptionNumber(
+    address: string,
+    number: number
+  ) {
+    return await this.fetchContent<ContentDetailedInscription[]>({
+      path: `/search?account=${address}&page_size=6&page=1&from=${number}&to=${number}`,
+    });
+  }
+
+  async getLocationByInscriptionId(inscriptionId: string) {
+    return await this.fetchHistory<{ location: string; owner: string }>({
+      path: `/${inscriptionId}/owner`,
+    });
   }
 }
 

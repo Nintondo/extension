@@ -1,4 +1,3 @@
-import { Inscription } from "@/shared/interfaces/inscriptions";
 import { FC, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { shortAddress } from "@/shared/utils/transactions";
@@ -7,7 +6,7 @@ import { useAppState } from "@/ui/states/appState";
 import { isTestnet, ss } from "@/ui/utils";
 
 interface Props {
-  inscription: Inscription;
+  inscriptionId: string;
 }
 
 const applyPixelation = (img?: HTMLImageElement) => {
@@ -18,7 +17,7 @@ const applyPixelation = (img?: HTMLImageElement) => {
   }
 };
 
-const InscriptionCard: FC<Props> = ({ inscription }) => {
+const InscriptionCard: FC<Props> = ({ inscriptionId }) => {
   const navigate = useNavigate();
   const { network } = useAppState(ss(["network"]));
 
@@ -41,15 +40,15 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
       <div
         className="cursor-pointer flex flex-col justify-center align-center relative"
         onClick={() => {
-          navigate("/pages/inscription-details", { state: inscription });
+          navigate("/pages/inscription-details", { state: inscriptionId });
         }}
       >
         <div className="rounded-xl w-full bg-slate-950 bg-opacity-50">
           <img
             ref={imageRef}
-            src={`${isTestnet(network) ? TESTNET_PREVIEW_URL : PREVIEW_URL}/${
-              inscription.inscription_id
-            }`}
+            src={`${
+              isTestnet(network) ? TESTNET_PREVIEW_URL : PREVIEW_URL
+            }/${inscriptionId}`}
             alt="content"
             className="object-cover rounded-xl h-38 w-38"
             style={{
@@ -58,7 +57,7 @@ const InscriptionCard: FC<Props> = ({ inscription }) => {
           />
         </div>
         <div className="absolute bottom-0 px-1 bg-black/50 backdrop-blur-sm left-0 text-xs text-white">
-          {shortAddress(inscription.inscription_id, 6)}
+          {shortAddress(inscriptionId, 6)}
         </div>
       </div>
     </div>

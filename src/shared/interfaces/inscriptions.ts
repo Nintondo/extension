@@ -13,10 +13,34 @@ export interface ApiOrdUTXO extends ApiUTXO {
 export interface Inscription extends ApiOrdUTXO {
   preview: string;
   content: string;
-  offset: 0;
+  offset: number;
 }
 
 export interface CompletedInscription extends Inscription {
   genesis: string;
   outpoint: string;
+}
+
+export interface ContentInscriptionResopnse {
+  pages: number;
+  count: number;
+  inscriptions: ContentInscription[];
+}
+
+export interface ContentInscription {
+  number: number;
+  id: string;
+  file_type: string;
+  created: number;
+}
+
+export interface ContentDetailedInscription {
+  number: number;
+  id: string;
+  file_type: string;
+  mime: string;
+  file_size: number;
+  created: number;
+  creation_block: number;
+  invalid_token_reason: any;
 }

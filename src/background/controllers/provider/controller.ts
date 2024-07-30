@@ -140,6 +140,7 @@ class ProviderController implements IProviderController {
     const network = storageService.appState.network;
     const tx = await keyringService.sendBEL({
       ...payload,
+      utxos: payload.utxos as unknown as any[],
       network,
     });
     const psbt = Psbt.fromHex(tx);

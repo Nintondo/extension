@@ -17,6 +17,7 @@ import { useControllersState } from "./states/controllerState";
 import i18n from "../shared/locales/i18n";
 import PortMessage from "@/shared/utils/message/portMessage";
 import { ss } from "./utils";
+import { useInscriptionManagerContext } from "./utils/inscriptions-ctx";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
@@ -25,8 +26,8 @@ export default function App() {
   );
 
   const { updateControllers } = useControllersState(ss(["updateControllers"]));
-
   const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const { setCurrentPage } = useInscriptionManagerContext();
 
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
@@ -78,13 +79,16 @@ export default function App() {
       if (data.method === "updateFromAppState") {
         await updateAppState(data.params[0], false);
       } else if (data.method === "updateFromWalletState") {
+        if (data.params[0].selectedAccount || data.params[0].selectedWallet) {
+          setCurrentPage(1);
+        }
         await updateWalletState(data.params[0], false);
       }
     });
     return () => {
       pm.dispose();
     };
-  }, [isReady, isUnlocked, updateAppState, updateWalletState]);
+  }, [isReady, isUnlocked, updateAppState, updateWalletState, setCurrentPage]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

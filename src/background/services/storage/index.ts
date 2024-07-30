@@ -113,11 +113,12 @@ class StorageService {
         enc: localState.enc,
       };
 
-      if (updateFront)
+      if (updateFront) {
         eventBus.emit(EVENTS.broadcastToUI, {
           method: "updateFromWalletState",
           params: [state],
         });
+      }
 
       await browserStorageLocalSet(payload);
     }

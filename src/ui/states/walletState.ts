@@ -42,7 +42,7 @@ export const useWalletState = create<IWalletState>()((set, get) => ({
 
   async updateWalletState(state: Partial<IWalletState>, updateBack) {
     if (updateBack) {
-      await proxy.updateWalletState(state, false);
+      await proxy.updateWalletState(state, true);
     }
     set(state);
   },

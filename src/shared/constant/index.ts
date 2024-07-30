@@ -70,7 +70,9 @@ export const PREVIEW_URL =
 export const HTML_PREVIEW_URL =
   process.env.PREVIEW_URL ?? "https://content.nintondo.io/api/pub/html";
 export const CONTENT_URL =
-  process.env.CONTENT_URL ?? "https://content.nintondo.io/api/pub/content/";
+  process.env.CONTENT_URL ?? "https://content.nintondo.io/api/pub";
+export const HISTORY_URL =
+  process.env.HISTORY_URL ?? "https://history.nintondo.io/api/pub";
 
 export const NINTONDO_URL = process.env.NINTONDO_URL ?? "https://nintondo.io";
 
@@ -83,8 +85,9 @@ export const TESTNET_PREVIEW_URL =
 export const TESTNET_HTML_PREVIEW_URL =
   process.env.TESTNET_HTML_URL ?? "https://testnet.nintondo.io/api/pub/html";
 export const TESTNET_CONTENT_URL =
-  process.env.TESTNET_CONTENT_URL ??
-  "https://testnet.nintondo.io/api/pub/content/";
+  process.env.TESTNET_CONTENT_URL ?? "https://testnet.nintondo.io/api/pub";
+export const TESTNET_HISTORY_URL =
+  process.env.TESTNET_HISTORY_URL ?? "https://testnet.nintondo.io/history/pub";
 
 export const DEFAULT_FEES = {
   fast: 5000,

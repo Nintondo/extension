@@ -1,14 +1,14 @@
 import s from "../inscriptions/styles.module.scss";
 import { useState } from "react";
 import type { IToken } from "@/shared/interfaces/token";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import TokenCard from "@/ui/components/token-card";
 import { t } from "i18next";
 import MintTransferModal from "./mint-transfer-modal";
 import SendTransferModal from "./send-transfer-modal";
+import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
 
 const TokensComponent = () => {
-  const { tokens, searchTokens } = useTransactionManagerContext();
+  const { tokens, searchTokens } = useInscriptionManagerContext();
 
   const [selectedMintToken, setSelectedMintToken] = useState<
     IToken | undefined

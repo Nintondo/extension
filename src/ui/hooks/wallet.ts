@@ -8,7 +8,6 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
-import { useTransactionManagerContext } from "../utils/tx-ctx";
 import { Network } from "belcoinjs-lib";
 import { ss } from "../utils";
 
@@ -139,7 +138,6 @@ export const useSwitchAccount = () => {
   const { notificationController } = useControllersState(
     ss(["notificationController"])
   );
-  const { setCurrentPage } = useTransactionManagerContext();
 
   return async (id: number) => {
     await updateWalletState(
@@ -151,7 +149,6 @@ export const useSwitchAccount = () => {
 
     await notificationController.changedAccount();
     navigate("/");
-    setCurrentPage(1);
   };
 };
 
@@ -229,12 +226,8 @@ export const useDeleteWallet = () => {
 
 export const useSwitchNetwork = () => {
   const navigate = useNavigate();
-  const { selectedWallet, } = useWalletState(
-    ss(["selectedWallet"])
-  );
-  const { walletController } = useControllersState(
-    ss(["walletController"])
-  );
+  const { selectedWallet } = useWalletState(ss(["selectedWallet"]));
+  const { walletController } = useControllersState(ss(["walletController"]));
 
   return async (network: Network) => {
     if (selectedWallet === undefined) return;

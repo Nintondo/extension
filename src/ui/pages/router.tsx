@@ -26,7 +26,7 @@ import SignMessage from "./provider/sign-message";
 import CreateTx from "./provider/create-tx/component";
 import ConnectedSites from "./main/settings/connected-sites";
 import Language from "./main/settings/language";
-import InscriptionDetails from "./main/inscription-details";
+import InscriptionDetails from "./main/inscriptions/inscription-details";
 import Inscriptions from "./main/inscriptions";
 import SignPsbt from "./provider/sign-psbt";
 import RestoreMnemonicOrdinals from "./main/new-wallet/restore-mnemonic-ordinals";
