@@ -55,16 +55,12 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setLoading(true);
       if (force) {
         setTransactions(undefined);
-        // setInscriptions(undefined);
         setTransactionTxIds([]);
-        // setInscriptionLocations([]);
       }
       await Promise.all([
         updateAccountBalance(),
         updateTransactions(currentAccount.address, force),
-        // updateInscriptions(force),
         updateFeeRates(),
-        // updateTokens(),
       ]);
       setLoading(false);
     },
@@ -117,24 +113,22 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   useEffect(() => {
     if (!currentAccount?.address) return;
-    const interval = setInterval(async () => {
+    const interval1 = setInterval(async () => {
+      await updateAccountBalance();
+    }, 2000);
+    const interval2 = setInterval(async () => {
       await Promise.all([
         updateTransactions(currentAccount.address!),
         updateLastBlock(),
         updateFeeRates(),
-        updateAccountBalance(),
       ]);
     }, 10000);
     return () => {
-      clearInterval(interval);
+      clearInterval(interval1);
+      clearInterval(interval2);
     };
-  }, [
-    updateTransactions,
-    updateLastBlock,
-    updateFeeRates,
-    updateAccountBalance,
-    currentAccount?.address,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAccount?.address]);
 
   if (!currentAccount) return undefined;
 

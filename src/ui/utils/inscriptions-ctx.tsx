@@ -60,12 +60,12 @@ const useInscriptionManager = ():
     [apiController, currentAccount?.address]
   );
 
-  const resetProvider = () => {
+  const resetProvider = useCallback(() => {
     setInscriptions(undefined);
     setSearchInscriptions(undefined);
     setSearchTokens(undefined);
     setCurrentPage(1);
-  };
+  }, []);
 
   if (!currentAccount) return undefined;
 

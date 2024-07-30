@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
 import { Network } from "belcoinjs-lib";
 import { ss } from "../utils";
+import { useCallback } from "react";
 
 export const useCreateNewWallet = () => {
   const { wallets, updateWalletState } = useWalletState(
@@ -160,21 +161,26 @@ export const useUpdateCurrentAccountBalance = () => {
     ss(["updateSelectedAccount"])
   );
 
-  return async () => {
+  return useCallback(async () => {
     if (currentAccount?.address === undefined) return;
 
     const { count, amount, balance } = (await apiController.getAccountStats(
       currentAccount!.address!
     )) ?? { amount: 0, count: 0, balance: 0 };
-    await updateSelectedAccount(
-      {
-        balance: balance,
-        inscriptionCounter: count,
-        inscriptionBalance: amount / 10 ** 8,
-      },
-      true
-    );
-  };
+    if (
+      currentAccount.balance !== balance ||
+      currentAccount.inscriptionBalance !== amount / 10 ** 8
+    ) {
+      await updateSelectedAccount(
+        {
+          balance: balance,
+          inscriptionCounter: count,
+          inscriptionBalance: amount / 10 ** 8,
+        },
+        true
+      );
+    }
+  }, [apiController, currentAccount, updateSelectedAccount]);
 };
 
 export const useDeleteWallet = () => {
