@@ -51,18 +51,12 @@ export default function App() {
       walletState.vaultIsEmpty = await walletController.isVaultEmpty();
       appState.isReady = true;
 
-      await updateAppState(
-        {
-          isReady: true,
-        },
-        true
-      );
-      await updateWalletState(
-        {
-          vaultIsEmpty: walletState.vaultIsEmpty,
-        },
-        true
-      );
+      await updateAppState({
+        isReady: true,
+      });
+      await updateWalletState({
+        vaultIsEmpty: walletState.vaultIsEmpty,
+      });
     }
 
     await updateWalletState(walletState, false);
@@ -73,7 +67,8 @@ export default function App() {
     const pm = new PortMessage().connect("popup");
     //eslint-disable-next-line @typescript-eslint/no-floating-promises
     pm.listen(async (data: { method: string; params: any[]; type: string }) => {
-      if (data.type !== "broadcast" || !isReady || !isUnlocked) {
+      console.log(data.params[0]);
+      if (data.type !== "broadcast") {
         return;
       }
       if (data.method === "updateFromAppState") {

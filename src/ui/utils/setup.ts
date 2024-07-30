@@ -76,22 +76,3 @@ export function setupKeyringProxy() {
 export function setupNotificationProxy() {
   return setupProxy<INotificationController>("notification");
 }
-
-export function useSyncStorages() {
-  const { stateController } = useControllersState(ss(["stateController"]));
-  const { updateAppState } = useAppState(ss(["updateAppState"]));
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
-
-  return async () => {
-    const appState = await stateController.getAppState();
-    const walletState = await stateController.getWalletState();
-
-    await updateAppState(appState, false);
-    await updateWalletState(walletState, false);
-
-    return {
-      appState,
-      walletState,
-    };
-  };
-}

@@ -30,17 +30,14 @@ const ChangeAddrType = () => {
       selectedWallet,
       type
     );
-    await updateSelectedWallet(
-      {
-        addressType: type,
-        accounts: currentWallet.accounts.map((f, idx) => ({
-          ...f,
-          address: addresses[idx],
-          id: idx,
-        })),
-      },
-      true
-    );
+    await updateSelectedWallet({
+      addressType: type,
+      accounts: currentWallet.accounts.map((f, idx) => ({
+        ...f,
+        address: addresses[idx],
+        id: idx,
+      })),
+    });
     trottledUpdate(true);
     await notificationController.changedAccount();
     navigate("/");

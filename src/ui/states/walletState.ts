@@ -7,30 +7,30 @@ const proxy = setupStateProxy();
 export interface IWalletState extends IWalletStateBase {
   updateWalletState: (
     state: Partial<IWalletState>,
-    updateBack: boolean
+    updateBack?: boolean
   ) => Promise<void>;
 
   updateWallet: (
     walletId: number,
     payload: Partial<IWalletStateBase["wallets"][0]>,
-    updateBack: boolean
+    updateBack?: boolean
   ) => Promise<void>;
 
   updateSelectedWallet: (
     payload: Partial<IWalletStateBase["wallets"][0]>,
-    updateBack: boolean
+    updateBack?: boolean
   ) => Promise<void>;
 
   updateAccount: (
     walletId: number,
     accountId: number,
     payload: Partial<IWalletStateBase["wallets"][0]["accounts"][0]>,
-    updateBack: boolean
+    updateBack?: boolean
   ) => Promise<void>;
 
   updateSelectedAccount: (
     payload: Partial<IWalletStateBase["wallets"][0]["accounts"][0]>,
-    updateBack: boolean
+    updateBack?: boolean
   ) => Promise<void>;
 }
 
@@ -40,14 +40,15 @@ export const useWalletState = create<IWalletState>()((set, get) => ({
   selectedAccount: undefined,
   selectedWallet: undefined,
 
-  async updateWalletState(state: Partial<IWalletState>, updateBack) {
+  async updateWalletState(state: Partial<IWalletState>, updateBack = true) {
     if (updateBack) {
-      await proxy.updateWalletState(state, true);
+      await proxy.updateWalletState(state);
+    } else {
+      set(state);
     }
-    set(state);
   },
 
-  async updateWallet(walletId, payload, updateBack) {
+  async updateWallet(walletId, payload, updateBack = true) {
     const { wallets } = get();
     const newWallets = wallets.map((w) => {
       if (w.id === walletId) {
@@ -59,25 +60,23 @@ export const useWalletState = create<IWalletState>()((set, get) => ({
       return w;
     });
     if (updateBack) {
-      await proxy.updateWalletState(
-        {
-          wallets,
-        },
-        false
-      );
+      await proxy.updateWalletState({
+        wallets,
+      });
+    } else {
+      set({
+        wallets: newWallets,
+      });
     }
-    set({
-      wallets: newWallets,
-    });
   },
 
-  async updateSelectedWallet(payload, updateBack) {
+  async updateSelectedWallet(payload, updateBack = true) {
     const { selectedWallet, updateWallet } = get();
     if (selectedWallet === undefined) return;
     await updateWallet(selectedWallet, payload, updateBack);
   },
 
-  async updateAccount(walletId, accountId, payload, updateBack) {
+  async updateAccount(walletId, accountId, payload, updateBack = true) {
     const { wallets, updateWallet } = get();
 
     const accounts = wallets[walletId]?.accounts;
@@ -92,7 +91,7 @@ export const useWalletState = create<IWalletState>()((set, get) => ({
     await updateWallet(walletId, { accounts }, updateBack);
   },
 
-  async updateSelectedAccount(payload, updateBack) {
+  async updateSelectedAccount(payload, updateBack = true) {
     const { selectedWallet, selectedAccount, updateAccount } = get();
     if (selectedWallet === undefined || selectedAccount === undefined) return;
     await updateAccount(selectedWallet, selectedAccount, payload, updateBack);

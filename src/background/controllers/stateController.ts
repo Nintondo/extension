@@ -8,12 +8,12 @@ class StateController implements IStateController {
     return await storageService.init();
   }
 
-  async updateAppState(state: Partial<IAppStateBase>, updateFront = true) {
-    await storageService.updateAppState(state, updateFront);
+  async updateAppState(state: Partial<IAppStateBase>) {
+    await storageService.updateAppState(state);
   }
 
-  async updateWalletState(state: Partial<IWalletState>, updateFront = true) {
-    await storageService.updateWalletState(state, updateFront);
+  async updateWalletState(state: Partial<IWalletState>) {
+    await storageService.updateWalletState(state);
   }
 
   async clearPendingWallet() {

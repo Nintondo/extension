@@ -40,23 +40,16 @@ const Login = () => {
     try {
       const exportedWallets = await walletController.importWallets(password);
 
-      await updateWalletState(
-        {
-          wallets: exportedWallets,
-        },
-        false
-      );
+      await updateWalletState({
+        wallets: exportedWallets,
+      });
 
-      await updateAppState(
-        {
-          isUnlocked: true,
-          password: password,
-        },
-        true
-      );
+      await updateAppState({
+        isUnlocked: true,
+        password: password,
+      });
 
-      if (!isNotification()) navigate("/");
-      else await notificationController.resolveApproval();
+      if (isNotification()) await notificationController.resolveApproval();
     } catch (e) {
       if ((e as Error).message) toast.error((e as Error).message);
       else throw e;
@@ -70,7 +63,11 @@ const Login = () => {
     >
       <div className="flex flex-col gap-7 items-center w-full">
         <div className="flex justify-center p-2 rounded-xl">
-          <LogoIcon className={"text-white w-14 h-14 hover:scale-110 duration-100 transition-transform"} />
+          <LogoIcon
+            className={
+              "text-white w-14 h-14 hover:scale-110 duration-100 transition-transform"
+            }
+          />
         </div>
         <div className="text-lg text-center font-[Roboto] uppercase tracking-widest">
           {t("login.welcome_back")}

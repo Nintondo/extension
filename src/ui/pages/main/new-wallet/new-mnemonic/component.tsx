@@ -43,12 +43,9 @@ const NewMnemonic = () => {
     }
 
     const phrase = await walletController.generateMnemonicPhrase();
-    await updateAppState(
-      {
-        pendingWallet: phrase,
-      },
-      true
-    );
+    await updateAppState({
+      pendingWallet: phrase,
+    });
     setMnemonicPhrase(phrase);
   }, [updateAppState, walletController, location.state?.pending]);
 
@@ -76,7 +73,7 @@ const NewMnemonic = () => {
         hideRoot: true,
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false }, true);
+      await updateWalletState({ vaultIsEmpty: false });
     } catch (e) {
       console.error(e);
       if (e instanceof Error) toast.error(e.message);
@@ -146,10 +143,7 @@ const NewMnemonic = () => {
             />
           </div>
           <div>
-            <button
-              onClick={onCreate}
-              className="bottom-btn"
-            >
+            <button onClick={onCreate} className="bottom-btn">
               {t("new_wallet.continue")}
             </button>
           </div>

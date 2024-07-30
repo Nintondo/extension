@@ -41,7 +41,7 @@ const CreatePassword = () => {
 
   const createPassword = async ({ confirmPassword, password }: FormType) => {
     if (password === confirmPassword) {
-      await updateAppState({ password, isUnlocked: true }, true);
+      await updateAppState({ password, isUnlocked: true });
     } else {
       toast.error("Passwords dismatches");
     }
