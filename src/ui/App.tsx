@@ -26,7 +26,9 @@ export default function App() {
   );
 
   const { updateControllers } = useControllersState(ss(["updateControllers"]));
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const { updateWalletState, selectedAccount, selectedWallet } = useWalletState(
+    ss(["updateWalletState", "selectedWallet", "selectedAccount"])
+  );
   const { resetProvider } = useInscriptionManagerContext();
 
   const setupApp = useCallback(async () => {
@@ -79,12 +81,6 @@ export default function App() {
       if (data.method === "updateFromAppState") {
         await updateAppState(data.params[0], false);
       } else if (data.method === "updateFromWalletState") {
-        if (
-          data.params[0].selectedAccount !== undefined ||
-          data.params[0].selectedWallet !== undefined
-        ) {
-          resetProvider();
-        }
         await updateWalletState(data.params[0], false);
       }
     });
@@ -100,6 +96,10 @@ export default function App() {
     else if (isReady && isUnlocked) setRouter(authenticatedRouter);
     else setRouter(guestRouter);
   }, [isReady, isUnlocked, router, setRouter, setupApp]);
+
+  useEffect(() => {
+    resetProvider();
+  }, [selectedAccount, selectedWallet, resetProvider]);
 
   return (
     <div>
