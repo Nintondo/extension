@@ -214,7 +214,7 @@ class KeyringService {
     const publicKey = this.exportPublicKey(account.address);
 
     const scriptPk = getScriptForAddress(
-      Buffer.from(publicKey, "hex"),
+      Buffer.from(publicKey, "hex") as unknown as Uint8Array,
       wallet.addressType
     );
     if (!scriptPk)
@@ -262,7 +262,7 @@ class KeyringService {
     const publicKey = this.exportPublicKey(account.address);
 
     const scriptPk = getScriptForAddress(
-      Buffer.from(publicKey, "hex"),
+      Buffer.from(publicKey, "hex") as unknown as Uint8Array,
       wallet.addressType
     );
     if (!scriptPk)
@@ -366,12 +366,9 @@ class KeyringService {
       .filter((i) => i.id !== id)
       .map((i, idx) => ({ ...i, id: idx }));
 
-    await storageService.updateWalletState(
-      {
-        wallets: newWallets,
-      },
-      false
-    );
+    await storageService.updateWalletState({
+      wallets: newWallets,
+    });
 
     this.keyrings.splice(id, 1);
     const payload = await storageService.saveWallets({

@@ -1,14 +1,16 @@
 import s from "../inscriptions/styles.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { IToken } from "@/shared/interfaces/token";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import TokenCard from "@/ui/components/token-card";
 import { t } from "i18next";
 import MintTransferModal from "./mint-transfer-modal";
 import SendTransferModal from "./send-transfer-modal";
+import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
+import Loading from "react-loading";
 
 const TokensComponent = () => {
-  const { tokens, searchTokens } = useTransactionManagerContext();
+  const { tokens, searchTokens, updateTokens, loading } =
+    useInscriptionManagerContext();
 
   const [selectedMintToken, setSelectedMintToken] = useState<
     IToken | undefined
@@ -16,6 +18,23 @@ const TokensComponent = () => {
   const [selectedSendToken, setSelectedSendToken] = useState<
     IToken | undefined
   >(undefined);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    updateTokens();
+    const intervalId = setInterval(async () => {
+      await updateTokens();
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [updateTokens]);
+
+  if (loading && !tokens.length)
+    return (
+      <div>
+        <Loading type="balls" />
+      </div>
+    );
 
   return (
     <div className={s.inscriptionDiv}>

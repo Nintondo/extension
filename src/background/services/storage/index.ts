@@ -77,10 +77,7 @@ class StorageService {
     return [this._appState, this._walletState];
   }
 
-  async updateWalletState(
-    state: Partial<IWalletStateBase>,
-    updateFront = true
-  ) {
+  async updateWalletState(state: Partial<IWalletStateBase>) {
     this._walletState = { ...this._walletState, ...state };
 
     if (
@@ -113,17 +110,16 @@ class StorageService {
         enc: localState.enc,
       };
 
-      if (updateFront)
-        eventBus.emit(EVENTS.broadcastToUI, {
-          method: "updateFromWalletState",
-          params: [state],
-        });
-
       await browserStorageLocalSet(payload);
     }
+
+    eventBus.emit(EVENTS.broadcastToUI, {
+      method: "updateFromWalletState",
+      params: [state],
+    });
   }
 
-  async updateAppState(state: Partial<IAppStateBase>, updateFront = true) {
+  async updateAppState(state: Partial<IAppStateBase>) {
     this._appState = { ...this._appState, ...state };
 
     if (
@@ -149,14 +145,13 @@ class StorageService {
         enc: localState.enc,
       };
 
-      if (updateFront)
-        eventBus.emit(EVENTS.broadcastToUI, {
-          method: "updateFromAppState",
-          params: [state],
-        });
-
       await browserStorageLocalSet(payload);
     }
+
+    eventBus.emit(EVENTS.broadcastToUI, {
+      method: "updateFromAppState",
+      params: [state],
+    });
   }
 
   async clearPendingWallet() {

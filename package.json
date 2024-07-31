@@ -1,6 +1,6 @@
 {
   "name": "nintondo-extension",
-  "version": "0.2.5.3",
+  "version": "0.2.5.4",
   "private": true,
   "scripts": {
     "dev": "bun build.ts --watch",
@@ -38,11 +38,11 @@
     "bellhdw": "0.5.38",
     "bells-inscriber": "0.2.0",
     "big.js": "6.2.1",
-    "nintondo-bip39": "1.0.0",
     "classnames": "2.5.1",
     "eth-rpc-errors": "4.0.3",
     "i18next": "23.7.16",
     "koa-compose": "4.1.0",
+    "nintondo-bip39": "1.0.0",
     "nintondo-browser-passworder": "0.0.1",
     "nintondo-sdk": "0.1.11",
     "qr-code-styling": "1.6.0-rc.1",
@@ -55,7 +55,7 @@
     "react-loading": "2.0.3",
     "react-router-dom": "6.21.1",
     "reflect-metadata": "0.2.1",
-    "zustand": "4.4.7"
+    "zustand": "4.5.4"
   },
   "devDependencies": {
     "@types/big.js": "^6.2.2",

@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import {
-  CompletedInscription,
-  Inscription,
-} from "@/shared/interfaces/inscriptions";
+import { CompletedInscription } from "@/shared/interfaces/inscriptions";
 import { useCallback, useEffect, useState } from "react";
 import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";
@@ -18,6 +15,8 @@ import s from "./styles.module.scss";
 import Iframe from "@/ui/components/iframe";
 import { useAppState } from "@/ui/states/appState";
 import { isTestnet, ss } from "@/ui/utils";
+import { useControllersState } from "@/ui/states/controllerState";
+import { parseLocation } from "@/shared/utils";
 
 type PathOf<T> = T extends object
   ? {
@@ -83,21 +82,61 @@ const InscriptionDetails = () => {
     CompletedInscription | undefined
   >(undefined);
   const { network } = useAppState(ss(["network"]));
+  const { apiController } = useControllersState((v) => ({
+    apiController: v.apiController,
+  }));
 
   const convertToCompletedInscription = useCallback(
-    (inscription: Inscription): CompletedInscription => {
+    async (
+      inscriptionId: string
+    ): Promise<CompletedInscription | undefined> => {
+      const [data, location] = await Promise.all([
+        apiController.searchContentInscriptionByInscriptionId(inscriptionId),
+        apiController.getLocationByInscriptionId(inscriptionId),
+      ]);
+      if (!data || !location) return;
+      const parsedLocation = parseLocation(location.location);
+      const value = await apiController.getUtxoValues([
+        `${parsedLocation.txid}:${parsedLocation.vout}`,
+      ]);
       return {
-        ...inscription,
-        outpoint: `${inscription.txid}i${inscription.vout}`,
-        genesis: inscription.inscription_id,
+        content_length: data.file_size,
+        content_type: data.file_type,
+        inscription_id: inscriptionId,
+        inscription_number: data.number,
+        content: inscriptionId,
+        preview: inscriptionId,
+        value: value ? value[0] : 0,
+        owner: location.owner,
+        txid: parsedLocation.txid,
+        vout: parsedLocation.vout,
+        offset: parsedLocation.offset,
+        outpoint: `${parsedLocation.txid}i${parsedLocation.vout}`,
+        genesis: inscriptionId,
+        status: {
+          block_hash: "",
+          block_height: data.creation_block,
+          block_time: data.created,
+          confirmed: true,
+        },
       };
     },
-    []
+    [apiController]
   );
 
   useEffect(() => {
     if (!location.state) return navigate(-1);
-    setInscription(convertToCompletedInscription(location.state));
+    convertToCompletedInscription(location.state)
+      .then((completeInscription) => {
+        if (completeInscription) {
+          setInscription(completeInscription);
+        } else {
+          navigate(-1);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, [location, navigate, convertToCompletedInscription]);
 
   const openContent = async (link: string) => {
@@ -153,7 +192,7 @@ const InscriptionDetails = () => {
                         : isTestnet(network)
                         ? TESTNET_HTML_PREVIEW_URL
                         : PREVIEW_URL
-                    }/${inscription.inscription_id}`
+                    }/content/${inscription.inscription_id}`
                   );
                 }}
                 className="text-orange-400 cursor-pointer text-sm font-medium"

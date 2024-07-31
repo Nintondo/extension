@@ -41,18 +41,10 @@ const Advanced = () => {
       await walletController.saveWallets({
         wallets: newWallets,
       });
-      await updateWalletState(
-        {
-          selectedAccount: 0,
-        },
-        true
-      );
-      await updateWalletState(
-        {
-          wallets: newWallets,
-        },
-        false
-      );
+      await updateWalletState({
+        selectedAccount: 0,
+        wallets: newWallets,
+      });
       navigate("/");
     } catch (e) {
       if (e instanceof Error) {

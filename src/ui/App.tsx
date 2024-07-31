@@ -17,6 +17,7 @@ import { useControllersState } from "./states/controllerState";
 import i18n from "../shared/locales/i18n";
 import PortMessage from "@/shared/utils/message/portMessage";
 import { ss } from "./utils";
+import { useInscriptionManagerContext } from "./utils/inscriptions-ctx";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
@@ -25,8 +26,10 @@ export default function App() {
   );
 
   const { updateControllers } = useControllersState(ss(["updateControllers"]));
-
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const { updateWalletState, selectedAccount, selectedWallet } = useWalletState(
+    ss(["updateWalletState", "selectedWallet", "selectedAccount"])
+  );
+  const { resetProvider } = useInscriptionManagerContext();
 
   const setupApp = useCallback(async () => {
     const walletController = setupWalletProxy();
@@ -50,17 +53,17 @@ export default function App() {
       walletState.vaultIsEmpty = await walletController.isVaultEmpty();
       appState.isReady = true;
 
+      await updateAppState({
+        isReady: true,
+      });
+      await updateWalletState({
+        vaultIsEmpty: walletState.vaultIsEmpty,
+      });
       await updateAppState(
         {
           isReady: true,
         },
-        true
-      );
-      await updateWalletState(
-        {
-          vaultIsEmpty: walletState.vaultIsEmpty,
-        },
-        true
+        false
       );
     }
 
@@ -72,7 +75,7 @@ export default function App() {
     const pm = new PortMessage().connect("popup");
     //eslint-disable-next-line @typescript-eslint/no-floating-promises
     pm.listen(async (data: { method: string; params: any[]; type: string }) => {
-      if (data.type !== "broadcast" || !isReady || !isUnlocked) {
+      if (data.type !== "broadcast") {
         return;
       }
       if (data.method === "updateFromAppState") {
@@ -84,7 +87,8 @@ export default function App() {
     return () => {
       pm.dispose();
     };
-  }, [isReady, isUnlocked, updateAppState, updateWalletState]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -92,6 +96,10 @@ export default function App() {
     else if (isReady && isUnlocked) setRouter(authenticatedRouter);
     else setRouter(guestRouter);
   }, [isReady, isUnlocked, router, setRouter, setupApp]);
+
+  useEffect(() => {
+    resetProvider();
+  }, [selectedAccount, selectedWallet, resetProvider]);
 
   return (
     <div>

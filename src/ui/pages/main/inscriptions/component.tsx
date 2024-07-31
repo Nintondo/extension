@@ -1,40 +1,32 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import s from "./styles.module.scss";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import Loading from "react-loading";
 import InscriptionCard from "@/ui/components/inscription-card";
 import Pagination from "@/ui/components/pagination";
 import { t } from "i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
+import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
 
 const Inscriptions = () => {
   const {
-    loadMoreInscriptions,
     inscriptions,
     currentPage,
     setCurrentPage,
     loading: managerLoading,
     searchInscriptions,
-  } = useTransactionManagerContext();
-  const [loadingMoreInscriptions, setLoadingMoreInscriptions] =
-    useState<boolean>(false);
+    updateInscriptions,
+  } = useInscriptionManagerContext();
   const currentAccount = useGetCurrentAccount();
 
   const changePage = async (page: number) => {
-    if (!inscriptions) return;
-    if (!loadingMoreInscriptions) {
-      if (
-        inscriptions.length <= page * 6 &&
-        page * 6 < (currentAccount?.inscriptionCounter ?? 0)
-      ) {
-        setLoadingMoreInscriptions(true);
-        await loadMoreInscriptions();
-        setLoadingMoreInscriptions(false);
-      }
-      setCurrentPage(page);
-    }
+    if (!managerLoading) setCurrentPage(page);
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    updateInscriptions(currentPage);
+  }, [currentPage, updateInscriptions]);
 
   if (
     (currentAccount?.inscriptionCounter === undefined && managerLoading) ||
@@ -49,11 +41,9 @@ const Inscriptions = () => {
           {(typeof searchInscriptions === "undefined"
             ? inscriptions
             : searchInscriptions
-          )
-            .slice((currentPage - 1) * 6, (currentPage - 1) * 6 + 6)
-            .map((f, i) => (
-              <InscriptionCard key={i} inscription={f} />
-            ))}
+          ).map((f, i) => (
+            <InscriptionCard key={i} inscriptionId={f.id} />
+          ))}
         </div>
       </div>
 

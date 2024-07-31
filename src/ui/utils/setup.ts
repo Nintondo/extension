@@ -3,13 +3,9 @@ import eventBus from "@/shared/eventBus";
 import { Message } from "@/shared/utils/message";
 import type { IWalletController } from "@/shared/interfaces";
 import type { IStateController } from "@/shared/interfaces/stateController";
-import { useControllersState } from "../states/controllerState";
-import { useAppState } from "../states/appState";
-import { useWalletState } from "../states/walletState";
 import type { INotificationController } from "@/shared/interfaces/notification";
 import type { IApiController } from "@/background/controllers/apiController";
 import type { IKeyringController } from "@/background/controllers/keyringController";
-import { ss } from ".";
 
 export function setupPm() {
   const { PortMessage } = Message;
@@ -75,23 +71,4 @@ export function setupKeyringProxy() {
 
 export function setupNotificationProxy() {
   return setupProxy<INotificationController>("notification");
-}
-
-export function useSyncStorages() {
-  const { stateController } = useControllersState(ss(["stateController"]));
-  const { updateAppState } = useAppState(ss(["updateAppState"]));
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
-
-  return async () => {
-    const appState = await stateController.getAppState();
-    const walletState = await stateController.getWalletState();
-
-    await updateAppState(appState, false);
-    await updateWalletState(walletState, false);
-
-    return {
-      appState,
-      walletState,
-    };
-  };
 }

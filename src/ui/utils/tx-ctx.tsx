@@ -7,17 +7,12 @@ import React, {
   useContext,
   createContext,
   FC,
-  SetStateAction,
-  Dispatch,
-  useRef,
 } from "react";
 import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
 import { useDebounceCall } from "../hooks/debounce";
-import { Inscription } from "@/shared/interfaces/inscriptions";
-import { IToken } from "@/shared/interfaces/token";
 import { useGetCurrentAccount } from "../states/walletState";
-import { arrayDifference, ss } from ".";
+import { ss, useUpdateFunction } from ".";
 
 const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
@@ -31,81 +26,19 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [transactions, setTransactions] = useState<ITransaction[] | undefined>(
     undefined
   );
-  const [inscriptions, setInscriptions] = useState<Inscription[] | undefined>(
-    undefined
-  );
-  const [tokens, setTokens] = useState<IToken[]>([]);
-
-  const [searchInscriptions, setSearchInscriptions] = useState<
-    Inscription[] | undefined
-  >(undefined);
-  const [searchTokens, setSearchTokens] = useState<IToken[] | undefined>(
-    undefined
-  );
 
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
   const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
-  const [inscriptionLocations, setInscriptionLocations] = useState<string[]>(
-    []
-  );
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const updateFn = <T,>(
-    onUpdate: Dispatch<SetStateAction<T[] | undefined>>,
-    retrieveFn: (address: string) => Promise<T[] | undefined>,
-    currentValue: T[] | undefined,
-    compareKey: keyof T
-  ) => {
-    return useCallback(
-      async (force = false) => {
-        if (!currentAccount?.address) return;
-        const receivedItems = await retrieveFn(currentAccount.address);
-        if (receivedItems === undefined) return;
-
-        const currentItemsKeys = currentValue?.map((f) => f[compareKey]);
-        const receivedItemsKeys = receivedItems?.map((f) => f[compareKey]);
-        const difference = arrayDifference(
-          receivedItemsKeys,
-          currentItemsKeys ?? []
-        );
-
-        if (!force && (currentValue ?? []).length > 0 && difference.length) {
-          onUpdate([
-            ...difference.map(
-              (f) => receivedItems.find((item) => item[compareKey] === f)!
-            ),
-            ...(currentValue ?? []),
-          ]);
-        } else if ((currentValue ?? []).length < 50 || force) {
-          onUpdate(receivedItems ?? []);
-        }
-      },
-      [onUpdate, retrieveFn, compareKey, currentValue]
-    );
-  };
-
-  const updateTransactions = updateFn(
+  const updateTransactions = useUpdateFunction(
     setTransactions,
     apiController.getTransactions,
     transactions,
     "txid"
   );
-
-  const updateInscriptions = updateFn(
-    setInscriptions,
-    apiController.getInscriptions,
-    inscriptions,
-    "inscription_id"
-  );
-
-  const forceUpdateInscriptions = useCallback(async () => {
-    await updateInscriptions(true);
-    setCurrentPage(1);
-    setInscriptionLocations([]);
-  }, [updateInscriptions]);
 
   const updateLastBlock = useCallback(async () => {
     const data = await apiController.getLastBlockBEL();
@@ -116,36 +49,26 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     setFeeRates(await apiController.getFees());
   }, [apiController]);
 
-  const updateTokens = useCallback(async () => {
-    if (!currentAccount?.address) return;
-    const tokens = await apiController.getTokens(currentAccount.address);
-    setTokens(tokens ?? []);
-  }, [apiController, currentAccount?.address]);
-
   const updateAll = useCallback(
     async (force = false) => {
+      if (!currentAccount?.address) return;
       setLoading(true);
       if (force) {
         setTransactions(undefined);
-        setInscriptions(undefined);
         setTransactionTxIds([]);
-        setInscriptionLocations([]);
       }
       await Promise.all([
         updateAccountBalance(),
-        updateTransactions(force),
-        updateInscriptions(force),
+        updateTransactions(currentAccount.address, force),
         updateFeeRates(),
-        updateTokens(),
       ]);
       setLoading(false);
     },
     [
       updateAccountBalance,
       updateTransactions,
-      updateInscriptions,
       updateFeeRates,
-      updateTokens,
+      currentAccount?.address,
     ]
   );
 
@@ -172,120 +95,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     }
   }, [transactions, apiController, transactionTxIds, currentAccount]);
 
-  const loadMoreInscriptions = useCallback(async () => {
-    if (!currentAccount || !currentAccount.address || !inscriptions) return;
-    const inc = inscriptions[inscriptions.length - 1];
-
-    if (
-      (inscriptions.length < 60 && inscriptionLocations.length) ||
-      inscriptionLocations.includes(
-        `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`
-      )
-    )
-      return;
-
-    const additionalInscriptions = await apiController.getPaginatedInscriptions(
-      currentAccount?.address,
-      `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`
-    );
-    setInscriptionLocations([
-      ...inscriptionLocations,
-      `${inc.txid}:${inc.vout}:${inc.offset}:${inc.inscription_number}`,
-    ]);
-    if (!additionalInscriptions) return;
-    if (additionalInscriptions.length > 0) {
-      setInscriptions((prev) => [...(prev ?? []), ...additionalInscriptions]);
-    }
-  }, [apiController, currentAccount, inscriptions, inscriptionLocations]);
-
-  const inscriptionIntervalUpdate = useCallback(async () => {
-    if (!currentAccount?.address) return;
-
-    const updateInscriptions = (
-      receivedInscriptions: Inscription[],
-      index: number
-    ) => {
-      const updatedInscriptions = [...(inscriptions ?? [])];
-      updatedInscriptions.splice(
-        index,
-        receivedInscriptions.length,
-        ...receivedInscriptions
-      );
-      setInscriptions(updatedInscriptions);
-    };
-
-    const fetchAndUpdateInscriptions = async (
-      location: string,
-      index: number
-    ) => {
-      if (!currentAccount || !currentAccount.address) return;
-      const receivedInscriptions = await apiController.getPaginatedInscriptions(
-        currentAccount.address,
-        location
-      );
-      if (receivedInscriptions?.length) {
-        updateInscriptions(receivedInscriptions, index);
-        return true;
-      }
-      return false;
-    };
-
-    if (currentPage > 10 && inscriptions && inscriptions.length) {
-      const chainIndex = Math.floor(currentPage / 10) - 1;
-      let isUpdated = await fetchAndUpdateInscriptions(
-        inscriptionLocations[chainIndex],
-        chainIndex * 10
-      );
-      if (!isUpdated) {
-        const txIdIndex = inscriptions.findIndex(
-          (f) => f.txid === inscriptionLocations[chainIndex]
-        );
-        for (let i = 1; i <= 3; i++) {
-          const inc = inscriptions[txIdIndex - i];
-
-          isUpdated = await fetchAndUpdateInscriptions(
-            `${inc.txid}:${inc.vout}:${inc.offset}`,
-            txIdIndex - i
-          );
-          if (isUpdated) {
-            const updatedInscriptionTxIds = [...inscriptionLocations];
-            updatedInscriptionTxIds.splice(
-              chainIndex,
-              updatedInscriptionTxIds.length - 1
-            );
-            updatedInscriptionTxIds.push(inscriptions[txIdIndex - i].txid);
-            setInscriptionLocations(updatedInscriptionTxIds);
-            return;
-          }
-        }
-        await forceUpdateInscriptions();
-      }
-    } else {
-      const receivedInscriptions = await apiController.getInscriptions(
-        currentAccount.address
-      );
-      if (!receivedInscriptions) return;
-      if (!inscriptionLocations.length) {
-        setInscriptions(receivedInscriptions);
-      } else {
-        setInscriptions([
-          ...receivedInscriptions,
-          ...(inscriptions ?? []).slice(
-            receivedInscriptions?.length,
-            (inscriptions ?? []).length
-          ),
-        ]);
-      }
-    }
-  }, [
-    inscriptionLocations,
-    inscriptions,
-    currentPage,
-    apiController,
-    forceUpdateInscriptions,
-    currentAccount,
-  ]);
-
   useEffect(() => {
     if (!currentAccount?.address) return;
     if (currentPrice) return;
@@ -304,81 +113,47 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   useEffect(() => {
     if (!currentAccount?.address) return;
-    const interval = setInterval(async () => {
+    const interval1 = setInterval(async () => {
+      await updateAccountBalance();
+    }, 2000);
+    const interval2 = setInterval(async () => {
       await Promise.all([
-        updateTransactions(),
+        updateTransactions(currentAccount.address!),
         updateLastBlock(),
-        inscriptionIntervalUpdate(),
         updateFeeRates(),
-        updateTokens(),
-        updateAccountBalance(),
       ]);
     }, 10000);
     return () => {
-      clearInterval(interval);
+      clearInterval(interval1);
+      clearInterval(interval2);
     };
-  }, [
-    updateTransactions,
-    updateLastBlock,
-    inscriptionIntervalUpdate,
-    updateFeeRates,
-    updateTokens,
-    updateAccountBalance,
-    currentAccount?.address,
-  ]);
-
-  const inscriptionIntervalUpdateRef = useRef(inscriptionIntervalUpdate);
-  inscriptionIntervalUpdateRef.current = inscriptionIntervalUpdate;
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (!(currentPage % 10)) inscriptionIntervalUpdateRef.current();
-  }, [currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAccount?.address]);
 
   if (!currentAccount) return undefined;
 
   return {
     lastBlock,
     transactions,
-    inscriptions,
     currentPrice,
     loadMoreTransactions,
-    loadMoreInscriptions,
     trottledUpdate,
     feeRates,
     loading,
-    setCurrentPage,
-    currentPage,
-    tokens,
-    forceUpdateInscriptions,
-    setSearchInscriptions,
-    setSearchTokens,
-    searchInscriptions,
-    searchTokens,
   };
 };
 
 interface TransactionManagerContextType {
   lastBlock: number;
   transactions: ITransaction[] | undefined;
-  inscriptions: Inscription[] | undefined;
   currentPrice: number | undefined;
   loadMoreTransactions: () => Promise<void>;
-  loadMoreInscriptions: () => Promise<void>;
   trottledUpdate: (force?: boolean) => void;
   loading: boolean;
   feeRates?: {
     fast: number;
     slow: number;
   };
-  setCurrentPage: (page: number) => void;
-  currentPage: number;
-  tokens: IToken[];
-  forceUpdateInscriptions: () => Promise<void>;
-  setSearchInscriptions: (v: Inscription[] | undefined) => void;
-  setSearchTokens: (v: IToken[] | undefined) => void;
-  searchInscriptions: Inscription[] | undefined;
-  searchTokens: IToken[] | undefined;
 }
 
 const TransactionManagerContext = createContext<

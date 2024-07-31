@@ -2,7 +2,7 @@ import { useDebounce } from "@/ui/hooks/debounce";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { ss } from "@/ui/utils";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { t } from "i18next";
 import { useCallback, useState } from "react";
@@ -14,7 +14,7 @@ const SearchInscriptions = () => {
   const currentRoute = useLocation();
 
   const { setCurrentPage, tokens, setSearchInscriptions, setSearchTokens } =
-    useTransactionManagerContext();
+    useInscriptionManagerContext();
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -32,16 +32,18 @@ const SearchInscriptions = () => {
         return;
       }
       const inscriptionNumber = Number(search);
-      setSearchInscriptions(
-        await apiController.getInscription(
-          Number.isNaN(inscriptionNumber)
-            ? {
-                inscriptionId: search.trim(),
-                address: currentAccount.address,
-              }
-            : { inscriptionNumber, address: currentAccount.address }
-        )
-      );
+      if (Number.isNaN(inscriptionNumber)) {
+        const searchResult =
+          await apiController.searchContentInscriptionByInscriptionId(search);
+        setSearchInscriptions(searchResult ? [searchResult] : []);
+      } else {
+        const searchResult =
+          await apiController.searchContentInscriptionByInscriptionNumber(
+            currentAccount.address,
+            inscriptionNumber
+          );
+        setSearchInscriptions(searchResult ? searchResult.inscriptions : []);
+      }
       setCurrentPage(1);
     },
     [apiController, setCurrentPage, currentAccount, setSearchInscriptions]

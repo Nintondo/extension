@@ -31,7 +31,7 @@ const SwitchAccount = () => {
     if (currentWallet.accounts.map((i) => i.name).includes(name.trim()))
       return toast.error(t("switch_account.name_already_taken_error"));
 
-    await updateAccount(currentWallet.id, renameId, { name }, true);
+    await updateAccount(currentWallet.id, renameId, { name });
     setRenameId(undefined);
   };
 
