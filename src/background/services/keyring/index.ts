@@ -366,12 +366,9 @@ class KeyringService {
       .filter((i) => i.id !== id)
       .map((i, idx) => ({ ...i, id: idx }));
 
-    await storageService.updateWalletState(
-      {
-        wallets: newWallets,
-      },
-      false
-    );
+    await storageService.updateWalletState({
+      wallets: newWallets,
+    });
 
     this.keyrings.splice(id, 1);
     const payload = await storageService.saveWallets({

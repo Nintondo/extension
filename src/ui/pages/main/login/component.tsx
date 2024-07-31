@@ -43,12 +43,10 @@ const Login = () => {
       await updateWalletState({
         wallets: exportedWallets,
       });
-
       await updateAppState({
         isUnlocked: true,
         password: password,
       });
-
       if (isNotification()) await notificationController.resolveApproval();
     } catch (e) {
       if ((e as Error).message) toast.error((e as Error).message);

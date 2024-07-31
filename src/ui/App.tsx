@@ -57,6 +57,12 @@ export default function App() {
       await updateWalletState({
         vaultIsEmpty: walletState.vaultIsEmpty,
       });
+      await updateAppState(
+        {
+          isReady: true,
+        },
+        false
+      );
     }
 
     await updateWalletState(walletState, false);
@@ -67,7 +73,6 @@ export default function App() {
     const pm = new PortMessage().connect("popup");
     //eslint-disable-next-line @typescript-eslint/no-floating-promises
     pm.listen(async (data: { method: string; params: any[]; type: string }) => {
-      console.log(data.params[0]);
       if (data.type !== "broadcast") {
         return;
       }
@@ -86,7 +91,8 @@ export default function App() {
     return () => {
       pm.dispose();
     };
-  }, [isReady, isUnlocked, updateAppState, updateWalletState, resetProvider]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
