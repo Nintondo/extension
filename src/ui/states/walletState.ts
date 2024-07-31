@@ -52,16 +52,17 @@ export const useWalletState = create<IWalletState>()((set, get) => ({
     const { wallets } = get();
     const newWallets = wallets.map((w) => {
       if (w.id === walletId) {
-        return {
+        const updatedWallet = {
           ...w,
           ...payload,
         };
+        return updatedWallet;
       }
       return w;
     });
     if (updateBack) {
       await proxy.updateWalletState({
-        wallets,
+        wallets: newWallets,
       });
     } else {
       set({
