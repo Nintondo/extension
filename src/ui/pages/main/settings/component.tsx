@@ -7,7 +7,7 @@ import {
   LanguageIcon,
   ShieldCheckIcon,
   WalletIcon,
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/24/outline";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
 

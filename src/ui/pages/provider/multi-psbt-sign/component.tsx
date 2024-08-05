@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { KeyIcon } from "@heroicons/react/24/solid";
+import { KeyIcon } from "@heroicons/react/24/outline";
 import Layout from "../layout";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { IField } from "@/shared/interfaces/provider";
 import { useDecodePsbtInputs as useGetPsbtFields } from "@/ui/hooks/provider";
 import { t } from "i18next";
@@ -42,7 +42,7 @@ const MultiPsbtSign = () => {
     updateFields();
   }, [updateFields, fields]);
 
-  if (loading) return <Loading type="balls" />;
+  if (loading) return <TailSpin />;
 
   return (
     <Layout

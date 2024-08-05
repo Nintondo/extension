@@ -4,7 +4,7 @@ import { useCreateNewAccount } from "@/ui/hooks/wallet";
 import { useForm } from "react-hook-form";
 import { t } from "i18next";
 import { useState } from "react";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { useGetCurrentWallet } from "@/ui/states/walletState";
 
 interface FormType {
@@ -41,7 +41,7 @@ const NewAccount = () => {
   };
 
   if (loading) {
-    return <Loading />;
+    return <TailSpin />;
   }
 
   return (

@@ -1,6 +1,6 @@
 import s from "./styles.module.scss";
 import { useEffect } from "react";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import TransactionList from "./transactions-list";
 import WalletPanel from "./wallet-panel";
@@ -20,7 +20,7 @@ const Wallet = () => {
     }
   }, [trottledUpdate, location]);
 
-  if (!currentAccount) return <Loading />;
+  if (!currentAccount) return <TailSpin />;
 
   return (
     <div className={s.walletDiv}>

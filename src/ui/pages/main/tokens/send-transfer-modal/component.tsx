@@ -4,7 +4,7 @@ import { t } from "i18next";
 import { FC, useId, useState } from "react";
 import s from "./styles.module.scss";
 import FeeInput from "../../send/create-send/fee-input";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import AddressInput from "../../send/create-send/address-input";
 import AddressBookModal from "../../send/create-send/address-book-modal";
 import cn from "classnames";
@@ -126,7 +126,9 @@ const SendTransferModal: FC<Props> = ({
                   { [s.transfer]: !formData.txIds.includes(tx) }
                 )}
               >
-                <span className="text-xs text-gray-100">${selectedSendToken.tick.toUpperCase()}</span>
+                <span className="text-xs text-gray-100">
+                  ${selectedSendToken.tick.toUpperCase()}
+                </span>
                 <span>{formatAmount(tx.amount)}</span>
               </div>
             ))}
@@ -147,7 +149,7 @@ const SendTransferModal: FC<Props> = ({
       <div className="w-full flex justify-center items-center">
         {loading ? (
           <div className="w-full flex justify-center items-center">
-            <Loading />
+            <TailSpin />
           </div>
         ) : (
           <button

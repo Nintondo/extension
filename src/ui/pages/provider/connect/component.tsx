@@ -1,4 +1,4 @@
-import { FingerPrintIcon } from "@heroicons/react/24/solid";
+import { FingerPrintIcon } from "@heroicons/react/24/outline";
 import Layout from "../layout";
 import { t } from "i18next";
 import { shortAddress } from "@/shared/utils/transactions";

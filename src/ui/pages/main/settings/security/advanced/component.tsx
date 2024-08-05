@@ -4,10 +4,10 @@ import s from "./styles.module.scss";
 import { useGetCurrentWallet, useWalletState } from "@/ui/states/walletState";
 import { useState } from "react";
 import { useControllersState } from "@/ui/states/controllerState";
-import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
 import { ss } from "@/ui/utils";
 import toast from "react-hot-toast";
+import { TailSpin } from "react-loading-icons";
 
 const Advanced = () => {
   const { walletController } = useControllersState(ss(["walletController"]));
@@ -56,7 +56,7 @@ const Advanced = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <TailSpin />;
 
   return (
     <div className={s.wrapper}>

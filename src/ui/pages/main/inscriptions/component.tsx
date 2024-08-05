@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import s from "./styles.module.scss";
-import Loading from "react-loading";
 import InscriptionCard from "@/ui/components/inscription-card";
 import Pagination from "@/ui/components/pagination";
 import { t } from "i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
+import { TailSpin } from "react-loading-icons";
 
 const Inscriptions = () => {
   const {
@@ -32,7 +32,7 @@ const Inscriptions = () => {
     (currentAccount?.inscriptionCounter === undefined && managerLoading) ||
     !inscriptions
   )
-    return <Loading />;
+    return <TailSpin />;
 
   return (
     <div className={s.inscriptionDiv}>

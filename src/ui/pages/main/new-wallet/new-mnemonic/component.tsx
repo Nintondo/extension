@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import s from "./styles.module.scss";
 import { useWalletState } from "@/ui/states/walletState";
-import ReactLoading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
@@ -87,7 +87,7 @@ const NewMnemonic = () => {
   };
 
   if (!mnemonicPhrase || loading) {
-    return <ReactLoading type="spin" color="#ffbc42" />;
+    return <TailSpin />;
   }
 
   return (

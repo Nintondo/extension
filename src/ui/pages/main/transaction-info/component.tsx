@@ -1,5 +1,5 @@
 import s from "./styles.module.scss";
-import ReactLoading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation } from "react-router-dom";
 import { ITransaction } from "@/shared/interfaces/api";
@@ -110,7 +110,7 @@ const TransactionInfo = () => {
           </button>
         </>
       ) : (
-        <ReactLoading type="spin" color="#fff" />
+        <TailSpin />
       )}
     </div>
   );

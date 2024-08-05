@@ -2,7 +2,7 @@ import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentWallet } from "@/ui/states/walletState";
 import { ss } from "@/ui/utils";
 import { useEffect, useState } from "react";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -39,7 +39,7 @@ const Home = () => {
 
   if (!currentWallet) return <Navigate to={"/pages/create-new-wallet"} />;
 
-  return <Loading color="red" type="bubbles" />;
+  return <TailSpin />;
 };
 
 export default Home;

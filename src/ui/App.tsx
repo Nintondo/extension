@@ -1,4 +1,3 @@
-import ReactLoading from "react-loading";
 import { RouterProvider } from "react-router-dom";
 import { Router } from "@remix-run/router";
 import { useCallback, useEffect, useState } from "react";
@@ -18,6 +17,7 @@ import i18n from "../shared/locales/i18n";
 import PortMessage from "@/shared/utils/message/portMessage";
 import { ss } from "./utils";
 import { useInscriptionManagerContext } from "./utils/inscriptions-ctx";
+import { TailSpin } from "react-loading-icons";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
@@ -107,11 +107,7 @@ export default function App() {
         nintondo
       </div>
       <div className="app">
-        {isReady ? (
-          <RouterProvider router={router} />
-        ) : (
-          <ReactLoading type="spin" color="#ffbc42" />
-        )}
+        {isReady ? <RouterProvider router={router} /> : <TailSpin />}
         <Toaster
           position="top-center"
           toastOptions={{

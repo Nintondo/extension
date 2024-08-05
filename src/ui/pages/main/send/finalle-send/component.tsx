@@ -1,5 +1,5 @@
 import { browserTabsCreate } from "@/shared/utils/browser";
-import { CheckIcon } from "@heroicons/react/24/solid";
+import { CheckIcon } from "@heroicons/react/24/outline";
 
 import s from "./styles.module.scss";
 import { t } from "i18next";

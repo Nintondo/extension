@@ -1,7 +1,7 @@
 import { useControllersState } from "@/ui/states/controllerState";
 import s from "./styles.module.scss";
 import { FC, useEffect, useState } from "react";
-import ReactLoading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { t } from "i18next";
 import { ss } from "@/ui/utils";
 
@@ -42,7 +42,7 @@ const Layout: FC<Props> = ({
   if (!origin) {
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <ReactLoading type="cylon" color="#fff" />
+        <TailSpin />
       </div>
     );
   }

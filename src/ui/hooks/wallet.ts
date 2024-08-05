@@ -1,12 +1,42 @@
 import type { INewWalletProps, IWallet } from "@/shared/interfaces";
 import { useControllersState } from "../states/controllerState";
-import { useGetCurrentWallet, useWalletState } from "../states/walletState";
+import { useWalletState } from "../states/walletState";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
 import { Network } from "belcoinjs-lib";
 import { ss } from "../utils";
 import { useCallback } from "react";
+import { useTransactionManagerContext } from "../utils/tx-ctx";
+import { produce } from "immer";
+import { excludeKeysFromObj } from "@/shared/utils";
+
+const useClearSelectedAccountStats = () => {
+  const { wallets, updateWalletState } = useWalletState(
+    ss(["wallets", "updateWalletState", "selectedAccount", "selectedWallet"])
+  );
+
+  return async (curWallets?: IWallet[]) => {
+    if (!curWallets) curWallets = [...wallets];
+
+    const newWallets = curWallets.map((i) => ({
+      ...i,
+      accounts: i.accounts.map((i) =>
+        excludeKeysFromObj(i, [
+          "balance",
+          "inscriptionBalance",
+          "inscriptionCounter",
+        ])
+      ),
+    }));
+
+    if (curWallets !== undefined) {
+      return newWallets;
+    } else {
+      await updateWalletState({ wallets: newWallets });
+    }
+  };
+};
 
 export const useCreateNewWallet = () => {
   const { wallets, updateWalletState } = useWalletState(
@@ -16,12 +46,15 @@ export const useCreateNewWallet = () => {
     useControllersState(
       ss(["walletController", "keyringController", "notificationController"])
     );
+  const clearSelected = useClearSelectedAccountStats();
   const navigate = useNavigate();
 
   return async (props: INewWalletProps) => {
     const wallet = await walletController.createNewWallet(props);
     const keyring = await keyringController.serializeKeyringById(wallet.id);
-    const newWallets = [...wallets, wallet];
+    let newWallets = [...wallets, wallet];
+    newWallets = (await clearSelected(newWallets))!;
+
     await walletController.saveWallets({
       phrases: [{ id: wallet.id, phrase: props.payload, data: keyring }],
       wallets: newWallets,
@@ -30,7 +63,7 @@ export const useCreateNewWallet = () => {
     await updateWalletState({
       wallets: newWallets,
       selectedAccount: 0,
-      selectedWallet: wallet.id,
+      selectedWallet: newWallets.length - 1,
     });
 
     await notificationController.changedAccount();
@@ -39,31 +72,30 @@ export const useCreateNewWallet = () => {
 };
 
 export const useCreateNewAccount = () => {
-  const { updateWalletState, wallets } = useWalletState(
-    ss(["updateWalletState", "wallets"])
+  const { updateWalletState, wallets, selectedWallet } = useWalletState(
+    ss(["updateWalletState", "wallets", "selectedWallet"])
   );
-  const currentWallet = useGetCurrentWallet();
   const { walletController, notificationController } = useControllersState(
     ss(["walletController", "notificationController"])
   );
+  const clearSelected = useClearSelectedAccountStats();
   const navigate = useNavigate();
 
   return async (name?: string) => {
-    if (!currentWallet) return;
     const createdAccount = await walletController.createNewAccount(name);
     if (!createdAccount)
       throw new Error("Internal error: failed to create new account");
-    const updatedWallet: IWallet = {
-      ...currentWallet,
-      accounts: [...currentWallet.accounts, createdAccount].map((f, i) => ({
-        ...f,
-        id: i,
-      })),
-    };
 
-    const newWallets = wallets.map((f) =>
-      f.id === currentWallet.id ? updatedWallet : f
-    );
+    if (selectedWallet === undefined)
+      throw new Error("Internal error: failed to find selected account");
+
+    let newWallets = produce(wallets, (draft) => {
+      draft[selectedWallet].accounts.push(createdAccount);
+      draft[selectedWallet].accounts = draft[selectedWallet].accounts.map(
+        (i, idx) => ({ ...i, id: idx })
+      );
+    });
+    newWallets = (await clearSelected(newWallets))!;
 
     await walletController.saveWallets({
       wallets: newWallets,
@@ -71,8 +103,7 @@ export const useCreateNewAccount = () => {
 
     await updateWalletState({
       wallets: newWallets,
-      selectedAccount:
-        updatedWallet.accounts[updatedWallet.accounts.length - 1].id,
+      selectedAccount: newWallets[selectedWallet].accounts.length - 1,
     });
 
     await notificationController.changedAccount();
@@ -81,27 +112,39 @@ export const useCreateNewAccount = () => {
 };
 
 export const useSwitchWallet = () => {
-  const { wallets, updateWalletState } = useWalletState(
-    ss(["wallets", "updateWalletState"])
-  );
+  const { wallets, updateWalletState, selectedAccount, selectedWallet } =
+    useWalletState(
+      ss(["wallets", "updateWalletState", "selectedAccount", "selectedWallet"])
+    );
   const { walletController, notificationController } = useControllersState(
     ss(["walletController", "notificationController"])
   );
+  const { clearTransactions } = useTransactionManagerContext();
+  const clearSelected = useClearSelectedAccountStats();
   const navigate = useNavigate();
 
-  return async (key: number, accKey?: number) => {
+  return async (key: number) => {
+    let newWallets = [...wallets];
     const wallet = wallets.find((f) => f.id === key);
     if (!wallet) return;
     if (wallets[key].accounts.filter((i) => !!i.address).length === 0) {
-      wallets[key].accounts = await walletController.loadAccountsData(
+      const newAccounts = await walletController.loadAccountsData(
         wallet.id,
         wallet.accounts
       );
+      newWallets = produce(wallets, (draft) => {
+        draft[key].accounts = newAccounts;
+      });
+    }
+
+    if (selectedAccount !== undefined && selectedWallet !== undefined) {
+      clearTransactions();
+      newWallets = (await clearSelected(newWallets))!;
     }
     await updateWalletState({
       selectedWallet: wallet.id,
-      selectedAccount: accKey ?? 0,
-      wallets,
+      selectedAccount: 0,
+      wallets: newWallets,
     });
     await notificationController.changedAccount();
     navigate("/");
@@ -109,13 +152,21 @@ export const useSwitchWallet = () => {
 };
 
 export const useSwitchAccount = () => {
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
+  const { updateWalletState, selectedAccount } = useWalletState(
+    ss(["updateWalletState", "selectedAccount"])
+  );
+  const clearSelected = useClearSelectedAccountStats();
   const navigate = useNavigate();
   const { notificationController } = useControllersState(
     ss(["notificationController"])
   );
+  const { clearTransactions } = useTransactionManagerContext();
 
   return async (id: number) => {
+    if (selectedAccount !== id) {
+      clearTransactions();
+      await clearSelected();
+    }
     await updateWalletState({
       selectedAccount: id,
     });
