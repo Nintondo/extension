@@ -1,6 +1,6 @@
 import { t } from "i18next";
 import { FieldValues, Path, UseFormRegister } from "react-hook-form";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import s from "./styles.module.scss";
 

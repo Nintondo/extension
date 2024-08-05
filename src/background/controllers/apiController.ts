@@ -10,12 +10,7 @@ import {
   Inscription,
 } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
-import {
-  fetchBELLContent,
-  fetchBELLElectrs,
-  fetchBELLHistory,
-  fetchProps,
-} from "@/shared/utils";
+import { customFetch, fetchProps } from "@/shared/utils";
 import { storageService } from "../services";
 import { networks } from "belcoinjs-lib";
 import { DEFAULT_FEES } from "@/shared/constant";
@@ -45,7 +40,6 @@ export interface IApiController {
   getLastBlockBEL(): Promise<number | undefined>;
   getFees(): Promise<{ fast: number; slow: number } | undefined>;
   getInscriptions(address: string): Promise<Inscription[] | undefined>;
-  getDiscovery(): Promise<Inscription[] | undefined>;
   getAccountStats(address: string): Promise<IAccountStats | undefined>;
   getInscription({
     inscriptionNumber,
@@ -82,37 +76,7 @@ type FetchType = <T>(
 class ApiController implements IApiController {
   private fetch: FetchType = async (p: Omit<fetchProps, "testnet">) => {
     try {
-      return await fetchBELLElectrs({
-        ...p,
-        testnet:
-          storageService.appState.network.pubKeyHash ===
-            networks.testnet.pubKeyHash &&
-          storageService.appState.network.scriptHash ===
-            networks.testnet.scriptHash,
-      });
-    } catch {
-      return;
-    }
-  };
-
-  private fetchContent: FetchType = async (p: Omit<fetchProps, "testnet">) => {
-    try {
-      return await fetchBELLContent({
-        ...p,
-        testnet:
-          storageService.appState.network.pubKeyHash ===
-            networks.testnet.pubKeyHash &&
-          storageService.appState.network.scriptHash ===
-            networks.testnet.scriptHash,
-      });
-    } catch {
-      return;
-    }
-  };
-
-  private fetchHistory: FetchType = async (p: Omit<fetchProps, "testnet">) => {
-    try {
-      return await fetchBELLHistory({
+      return await customFetch({
         ...p,
         testnet:
           storageService.appState.network.pubKeyHash ===
@@ -129,6 +93,7 @@ class ApiController implements IApiController {
     const data = await this.fetch<ApiUTXO[]>({
       path: `/address/${address}/utxo`,
       params: params as Record<string, string>,
+      service: "electrs",
     });
     return data;
   }
@@ -136,6 +101,7 @@ class ApiController implements IApiController {
   async getOrdUtxos(address: string) {
     const data = await this.fetch<ApiOrdUTXO[]>({
       path: `/address/${address}/ords`,
+      service: "electrs",
     });
     return data;
   }
@@ -143,6 +109,7 @@ class ApiController implements IApiController {
   async getFees() {
     const data = await this.fetch<Record<string, number>>({
       path: "/fee-estimates",
+      service: "electrs",
     });
     if (data) {
       return {
@@ -162,6 +129,7 @@ class ApiController implements IApiController {
       },
       json: false,
       body: rawTx,
+      service: "electrs",
     });
     if (data) {
       return {
@@ -173,12 +141,14 @@ class ApiController implements IApiController {
   async getTransactions(address: string): Promise<ITransaction[] | undefined> {
     return await this.fetch<ITransaction[]>({
       path: `/address/${address}/txs`,
+      service: "electrs",
     });
   }
 
   async getInscriptions(address: string): Promise<Inscription[] | undefined> {
     return await this.fetch<Inscription[]>({
       path: `/address/${address}/ords`,
+      service: "electrs",
     });
   }
 
@@ -189,6 +159,7 @@ class ApiController implements IApiController {
     try {
       return await this.fetch<ITransaction[]>({
         path: `/address/${address}/txs/chain/${txid}`,
+        service: "electrs",
       });
     } catch (e) {
       return undefined;
@@ -202,6 +173,7 @@ class ApiController implements IApiController {
     try {
       return await this.fetch<Inscription[]>({
         path: `/address/${address}/ords/chain/${location}`,
+        service: "electrs",
       });
     } catch (e) {
       return undefined;
@@ -211,6 +183,7 @@ class ApiController implements IApiController {
   async getLastBlockBEL() {
     const data = await this.fetch<string>({
       path: "/blocks/tip/height",
+      service: "electrs",
     });
     if (data) {
       return Number(data);
@@ -220,6 +193,7 @@ class ApiController implements IApiController {
   async getBELPrice() {
     const data = await this.fetch<{ price_usd: number }>({
       path: "/last-price",
+      service: "electrs",
     });
     if (!data) {
       return undefined;
@@ -231,14 +205,11 @@ class ApiController implements IApiController {
     };
   }
 
-  async getDiscovery(): Promise<Inscription[] | undefined> {
-    return await this.fetch<Inscription[]>({ path: "/discovery" });
-  }
-
   async getAccountStats(address: string): Promise<IAccountStats | undefined> {
     try {
       return await this.fetch({
         path: `/address/${address}/stats`,
+        service: "electrs",
       });
     } catch {
       return { amount: 0, count: 0, balance: 0 };
@@ -258,12 +229,14 @@ class ApiController implements IApiController {
       path: `/address/${address}/ords?search=${
         inscriptionId ?? inscriptionNumber
       }`,
+      service: "electrs",
     });
   }
 
   async getTokens(address: string): Promise<IToken[] | undefined> {
     return await this.fetch<IToken[]>({
       path: `/address/${address}/tokens`,
+      service: "electrs",
     });
   }
 
@@ -271,6 +244,7 @@ class ApiController implements IApiController {
     return await this.fetch<string>({
       path: "/tx/" + txid + "/hex",
       json: false,
+      service: "electrs",
     });
   }
 
@@ -279,19 +253,22 @@ class ApiController implements IApiController {
       path: "/prev",
       body: JSON.stringify({ locations: outpoints }),
       method: "POST",
+      service: "electrs",
     });
     return result?.values;
   }
 
   async getContentPaginatedInscriptions(address: string, page: number) {
-    return await this.fetchContent<ContentInscriptionResopnse>({
+    return await this.fetch<ContentInscriptionResopnse>({
       path: `/search?account=${address}&page_size=6&page=${page}`,
+      service: "content",
     });
   }
 
   async searchContentInscriptionByInscriptionId(inscriptionId: string) {
-    return await this.fetchContent<ContentDetailedInscription>({
+    return await this.fetch<ContentDetailedInscription>({
       path: `/${inscriptionId}/info`,
+      service: "content",
     });
   }
 
@@ -299,14 +276,16 @@ class ApiController implements IApiController {
     address: string,
     number: number
   ) {
-    return await this.fetchContent<ContentInscriptionResopnse>({
+    return await this.fetch<ContentInscriptionResopnse>({
       path: `/search?account=${address}&page_size=6&page=1&from=${number}&to=${number}`,
+      service: "content",
     });
   }
 
   async getLocationByInscriptionId(inscriptionId: string) {
-    return await this.fetchHistory<{ location: string; owner: string }>({
+    return await this.fetch<{ location: string; owner: string }>({
       path: `/${inscriptionId}/owner`,
+      service: "history",
     });
   }
 }

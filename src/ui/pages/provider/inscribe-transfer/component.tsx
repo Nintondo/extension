@@ -6,7 +6,7 @@ import { ss } from "@/ui/utils";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 
 const InscribeTransfer = () => {
   const { notificationController, apiController } = useControllersState(
@@ -56,7 +56,7 @@ const InscribeTransfer = () => {
   if (loading)
     return (
       <div className="h-full w-full flex justify-center items-center">
-        <Loading type="bubbles" />
+        <TailSpin />
       </div>
     );
 

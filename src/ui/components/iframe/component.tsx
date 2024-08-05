@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import cn from "classnames";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 
 export type IframeProps = {
   preview: string;
@@ -23,7 +23,7 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
             "bg-input-bg flex justify-center items-center inset-0 absolute"
           )}
         >
-          <Loading />
+          <TailSpin />
         </div>
       )}
 

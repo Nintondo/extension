@@ -105,7 +105,8 @@ const buildOptions: BuildOptions = {
     "import.meta.url": '""',
     "process.browser": "false",
   },
-  target: ["es2016"],
+  target: ["chrome58", "firefox57"],
+  treeShaking: true,
   platform: "browser",
   sourcemap: Bun.argv.includes("--sourcemap") || Bun.argv.includes("-s"),
   plugins: [

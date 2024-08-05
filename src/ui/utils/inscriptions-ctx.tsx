@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, {
   useState,
   useCallback,
@@ -120,23 +119,26 @@ export const InscriptionManagerProvider: FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useInscriptionManagerContext = () => {
-  const context = useContext(InscriptionManagerContext);
-  if (!context) {
-    return {
-      inscriptions: undefined,
-      loading: false,
-      setCurrentPage: () => {},
-      currentPage: 1,
-      tokens: [],
-      setSearchInscriptions: () => {},
-      setSearchTokens: () => {},
-      searchInscriptions: undefined,
-      searchTokens: undefined,
-      updateInscriptions: () => {},
-      resetProvider: () => {},
-      updateTokens: () => {},
-    };
-  }
-  return context;
-};
+export const useInscriptionManagerContext =
+  (): InscriptionsManagerContextType => {
+    const context = useContext(InscriptionManagerContext);
+    if (!context) {
+      return {
+        inscriptions: undefined,
+        loading: false,
+        setCurrentPage: () => {},
+        currentPage: 1,
+        tokens: [],
+        setSearchInscriptions: () => {},
+        setSearchTokens: () => {},
+        searchInscriptions: undefined,
+        searchTokens: undefined,
+        resetProvider: () => {},
+        setInscriptions: () => {},
+        setLoading: () => {},
+        updateInscriptions: async () => {},
+        updateTokens: async () => {},
+      };
+    }
+    return context;
+  };

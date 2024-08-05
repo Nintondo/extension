@@ -2,7 +2,7 @@ import type { ConnectedSite } from "@/background/services/permission";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useEffect, useState } from "react";
 import s from "./styles.module.scss";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { t } from "i18next";
 import { ss } from "@/ui/utils";
 

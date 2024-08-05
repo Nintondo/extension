@@ -12,7 +12,7 @@ import { CheckIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
-import ReactLoading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const TransactionList = () => {
@@ -29,7 +29,7 @@ const TransactionList = () => {
   if (!transactions || !lastBlock || !currentAccount || !currentAccount.address)
     return (
       <div className="min-h-[50vh] w-full flex justify-center items-center">
-        <ReactLoading type="spinningBubbles" color="white" />
+        <TailSpin />
       </div>
     );
 

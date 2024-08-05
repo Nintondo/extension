@@ -9,7 +9,7 @@ import SwitchAddressType from "@/ui/components/switch-address-type";
 import SelectWithHint from "@/ui/components/select-hint/component";
 import { t } from "i18next";
 import { AddressType } from "bellhdw";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { useAppState } from "@/ui/states/appState";
 import { ss } from "@/ui/utils";
 
@@ -66,7 +66,7 @@ const RestoreMnemonicOrdinals = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <TailSpin />;
 
   return (
     <div className={s.restoreMnemonic}>

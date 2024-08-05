@@ -8,7 +8,7 @@ import { t } from "i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import { useNavigate } from "react-router-dom";
 
 interface FormType {
@@ -55,7 +55,7 @@ const RestorePrivKey = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <TailSpin />;
 
   return (
     <form className="form" onSubmit={handleSubmit(recoverWallet)}>

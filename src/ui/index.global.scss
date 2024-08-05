@@ -86,10 +86,6 @@ input[type="number"] {
   @apply py-2 pl-5 pr-10 text-base text-text bg-input-bg rounded-xl standard:bg-bg;
 }
 
-.react-loading {
-  display: flex;
-}
-
 .app {
   @apply h-full min-h-screen flex justify-center items-center w-full standard:bg-input-bg standard:rounded-2xl overflow-x-hidden standard:min-h-max standard:pb-6 max-standard:max-w-[355px];
 

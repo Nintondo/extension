@@ -11,7 +11,7 @@ import {
   FC,
 } from "react";
 import toast from "react-hot-toast";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import s from "./styles.module.scss";
 
 interface FormType {
@@ -152,7 +152,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
       <div className="w-full flex justify-center items-center absolute bottom-0 left-0 right-0">
         {loading ? (
           <div className="w-full flex justify-center items-center">
-            <Loading />
+            <TailSpin />
           </div>
         ) : (
           <button

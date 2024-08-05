@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation, useNavigate } from "react-router-dom";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 import {
   CONTENT_URL,
   HTML_PREVIEW_URL,
@@ -160,7 +160,7 @@ const InscriptionDetails = () => {
     return current as T;
   };
 
-  if (inscription === undefined) return <Loading />;
+  if (inscription === undefined) return <TailSpin />;
 
   return (
     <div className="flex flex-col justify-center items-center break-all pb-3 rounded-xl">

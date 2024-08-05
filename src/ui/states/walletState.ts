@@ -1,6 +1,8 @@
 import type { IWalletStateBase } from "@/shared/interfaces";
 import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
+import { immer } from "zustand/middleware/immer";
+import { produce } from "immer";
 
 const proxy = setupStateProxy();
 
@@ -34,70 +36,83 @@ export interface IWalletState extends IWalletStateBase {
   ) => Promise<void>;
 }
 
-export const useWalletState = create<IWalletState>()((set, get) => ({
-  wallets: [],
-  vaultIsEmpty: true,
-  selectedAccount: undefined,
-  selectedWallet: undefined,
+export const useWalletState = create<IWalletState>()(
+  immer((set, get) => ({
+    wallets: [],
+    vaultIsEmpty: true,
+    selectedAccount: undefined,
+    selectedWallet: undefined,
 
-  async updateWalletState(state: Partial<IWalletState>, updateBack = true) {
-    if (updateBack) {
-      await proxy.updateWalletState(state);
-    } else {
-      set(state);
-    }
-  },
-
-  async updateWallet(walletId, payload, updateBack = true) {
-    const { wallets } = get();
-    const newWallets = wallets.map((w) => {
-      if (w.id === walletId) {
-        const updatedWallet = {
-          ...w,
-          ...payload,
-        };
-        return updatedWallet;
+    async updateWalletState(state: Partial<IWalletState>, updateBack = true) {
+      if (updateBack) {
+        await proxy.updateWalletState(state);
+      } else {
+        set((prev) => {
+          return {
+            ...prev,
+            ...state,
+          };
+        });
       }
-      return w;
-    });
-    if (updateBack) {
-      await proxy.updateWalletState({
-        wallets: newWallets,
-      });
-    } else {
-      set({
-        wallets: newWallets,
-      });
-    }
-  },
+    },
 
-  async updateSelectedWallet(payload, updateBack = true) {
-    const { selectedWallet, updateWallet } = get();
-    if (selectedWallet === undefined) return;
-    await updateWallet(selectedWallet, payload, updateBack);
-  },
+    async updateWallet(walletId, payload, updateBack = true) {
+      if (updateBack) {
+        const { wallets } = get();
 
-  async updateAccount(walletId, accountId, payload, updateBack = true) {
-    const { wallets, updateWallet } = get();
+        await proxy.updateWalletState({
+          wallets: produce(wallets, (draft) => {
+            draft[walletId] = {
+              ...draft[walletId],
+              ...payload,
+            };
+          }),
+        });
+      } else {
+        set((state) => {
+          state.wallets[walletId] = {
+            ...state.wallets[walletId],
+            ...payload,
+          };
+        });
+      }
+    },
 
-    const accounts = wallets[walletId]?.accounts;
+    async updateSelectedWallet(payload, updateBack = true) {
+      const { selectedWallet, updateWallet } = get();
+      if (selectedWallet === undefined) return;
+      await updateWallet(selectedWallet, payload, updateBack);
+    },
 
-    if (!accounts) return;
+    async updateAccount(walletId, accountId, payload, updateBack = true) {
+      const { wallets } = get();
 
-    accounts[accountId] = {
-      ...accounts[accountId],
-      ...payload,
-    };
+      if (updateBack) {
+        await proxy.updateWalletState({
+          wallets: produce(wallets, (draft) => {
+            draft[walletId].accounts[accountId] = {
+              ...draft[walletId].accounts[accountId],
+              ...payload,
+            };
+          }),
+        });
+      } else {
+        set(({ wallets }) => {
+          wallets[walletId].accounts[accountId] = {
+            ...wallets[walletId].accounts[accountId],
+            ...payload,
+          };
+        });
+      }
+    },
 
-    await updateWallet(walletId, { accounts }, updateBack);
-  },
-
-  async updateSelectedAccount(payload, updateBack = true) {
-    const { selectedWallet, selectedAccount, updateAccount } = get();
-    if (selectedWallet === undefined || selectedAccount === undefined) return;
-    await updateAccount(selectedWallet, selectedAccount, payload, updateBack);
-  },
-}));
+    async updateSelectedAccount(payload, updateBack = true) {
+      const { selectedWallet, selectedAccount, updateAccount } = get();
+      if (selectedWallet === undefined || selectedAccount === undefined) return;
+      await updateAccount(selectedWallet, selectedAccount, payload, updateBack);
+    },
+  }))
+);
 
 export const useGetCurrentAccount = () => {
   const { selectedWallet, selectedAccount, wallets } = useWalletState();

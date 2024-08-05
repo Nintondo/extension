@@ -1,4 +1,4 @@
-import { Cog6ToothIcon, KeyIcon } from "@heroicons/react/24/solid";
+import { Cog6ToothIcon, KeyIcon } from "@heroicons/react/24/outline";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
 

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import type { ITransaction } from "@/shared/interfaces/api";
 import React, {
   useState,
@@ -140,6 +139,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     trottledUpdate,
     feeRates,
     loading,
+    clearTransactions: () => {
+      setTransactions(undefined);
+    },
   };
 };
 
@@ -154,6 +156,7 @@ interface TransactionManagerContextType {
     fast: number;
     slow: number;
   };
+  clearTransactions: () => void;
 }
 
 const TransactionManagerContext = createContext<
@@ -172,32 +175,23 @@ export const TransactionManagerProvider: FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useTransactionManagerContext = () => {
-  const context = useContext(TransactionManagerContext);
-  if (!context) {
-    return {
-      lastBlock: undefined,
-      transactions: undefined,
-      inscriptions: undefined,
-      currentPrice: undefined,
-      loadMoreTransactions: () => {},
-      loadMoreInscriptions: () => {},
-      trottledUpdate: () => {},
-      loading: false,
-      feeRates: {
-        slow: 0,
-        fast: 0,
-      },
-      resetTransactions: () => {},
-      setCurrentPage: () => {},
-      currentPage: 1,
-      tokens: [],
-      forceUpdateInscriptions: () => {},
-      setSearchInscriptions: () => {},
-      setSearchTokens: () => {},
-      searchInscriptions: undefined,
-      searchTokens: undefined,
-    };
-  }
-  return context;
-};
+export const useTransactionManagerContext =
+  (): TransactionManagerContextType => {
+    const context = useContext(TransactionManagerContext);
+    if (!context) {
+      return {
+        transactions: undefined,
+        currentPrice: undefined,
+        trottledUpdate: () => {},
+        loading: false,
+        feeRates: {
+          slow: 0,
+          fast: 0,
+        },
+        clearTransactions: () => {},
+        lastBlock: 0,
+        loadMoreTransactions: async () => {},
+      };
+    }
+    return context;
+  };

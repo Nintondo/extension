@@ -6,7 +6,7 @@ import { t } from "i18next";
 import MintTransferModal from "./mint-transfer-modal";
 import SendTransferModal from "./send-transfer-modal";
 import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
-import Loading from "react-loading";
+import { TailSpin } from "react-loading-icons";
 
 const TokensComponent = () => {
   const { tokens, searchTokens, updateTokens, loading } =
@@ -32,7 +32,7 @@ const TokensComponent = () => {
   if (loading && !tokens.length)
     return (
       <div>
-        <Loading type="balls" />
+        <TailSpin />
       </div>
     );
 

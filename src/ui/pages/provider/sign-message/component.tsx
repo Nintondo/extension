@@ -1,7 +1,7 @@
 import { useControllersState } from "@/ui/states/controllerState";
 import { useEffect, useState } from "react";
 
-import { KeyIcon } from "@heroicons/react/24/solid";
+import { KeyIcon } from "@heroicons/react/24/outline";
 import Layout from "../layout";
 import { t } from "i18next";
 import { ss } from "@/ui/utils";

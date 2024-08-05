@@ -1,11 +1,11 @@
 import { browserTabsCreate } from "@/shared/utils/browser";
 
-import { GlobeAltIcon } from "@heroicons/react/24/solid";
+import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
 
 import { t } from "i18next";
-import { ArrowsPointingOutIcon } from "@heroicons/react/24/solid";
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 import SettingsLayout from "@/ui/components/settings-layout";
 
 const ICON_SIZE = 8;
