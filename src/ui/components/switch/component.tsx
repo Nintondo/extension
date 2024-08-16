@@ -1,4 +1,4 @@
-import { Switch } from "@headlessui/react";
+import { Field, Label, Switch } from "@headlessui/react";
 import { FC } from "react";
 import cn from "classnames";
 
@@ -18,7 +18,7 @@ const SwitchComponent: FC<Props> = ({
   className,
 }) => {
   return (
-    <Switch.Group>
+    <Field>
       <div
         className={cn(className ?? "flex gap-2 items-center mt-4", {
           "opacity-50": locked,
@@ -39,11 +39,9 @@ const SwitchComponent: FC<Props> = ({
             pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
           />
         </Switch>
-        <Switch.Label className="mr-4 cursor-pointer text-xs">
-          {label}
-        </Switch.Label>
+        <Label className="mr-4 cursor-pointer text-xs">{label}</Label>
       </div>
-    </Switch.Group>
+    </Field>
   );
 };
 

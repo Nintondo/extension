@@ -1,5 +1,5 @@
 .settings {
-  @apply w-full grid grid-cols-2 grid-rows-2;
+  @apply w-full flex flex-col gap-3;
 }
 
 .wrapper {

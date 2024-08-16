@@ -1,4 +1,9 @@
-import { Listbox, Transition } from "@headlessui/react";
+import {
+  Listbox,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from "@headlessui/react";
 import { ChevronUpDownIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 
@@ -9,6 +14,7 @@ interface Props<T extends string> {
   label?: string;
   displayCheckIcon?: boolean;
   className?: string;
+  anchor?: "bottom" | "top";
 }
 
 const Select = <T extends string>({
@@ -18,6 +24,7 @@ const Select = <T extends string>({
   label,
   displayCheckIcon = true,
   className,
+  anchor,
 }: Props<T>) => {
   return (
     <div className={className ?? ""}>
@@ -41,16 +48,20 @@ const Select = <T extends string>({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-bg py-1">
+            <ListboxOptions
+              anchor={{
+                to: anchor,
+                gap: 5,
+              }}
+              className="absolute max-h-60 overflow-auto border border-neutral-800 rounded-xl bg-neutral-900 w-[var(--button-width)]"
+            >
               {values.map((value, valueIdx) => (
-                <Listbox.Option
+                <ListboxOption
                   key={valueIdx}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 ${
                       active ? "bg-input-bg text-text" : "text-text"
-                    } ${
-                      displayCheckIcon ? "pl-10 pr-4" : "flex justify-center"
-                    }`
+                    } ${displayCheckIcon ? "pl-4 pr-4" : "flex justify-center"}`
                   }
                   value={value}
                 >
@@ -70,9 +81,9 @@ const Select = <T extends string>({
                       ) : null}
                     </>
                   )}
-                </Listbox.Option>
+                </ListboxOption>
               ))}
-            </Listbox.Options>
+            </ListboxOptions>
           </Transition>
         </div>
       </Listbox>

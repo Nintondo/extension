@@ -115,7 +115,6 @@
   "new_wallet": {
     "new_mnemonic_label": "New mnemonic",
     "restore_mnemonic_label": "Restore mnemonic",
-    "restore_ordinals_label": "Restore ordinals mnemonic",
     "restore_from_private_key_label": "Restore from private key",
     "restore_from_label": "Restore from",
     "step_1": "Step 1",
@@ -136,7 +135,8 @@
       "private_key": "Private key",
       "recover": "Recover",
       "invalid_private_key_error": "Invalid private key"
-    }
+    },
+    "hd_path": "Hd path"
   },
   "receive": {
     "click_to_copy": "Click to copy",

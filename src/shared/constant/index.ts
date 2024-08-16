@@ -95,3 +95,5 @@ export const DEFAULT_FEES = {
 };
 
 export const DEFAULT_SERVICE_FEE = 1_000_000;
+
+export const DEFAULT_HD_PATH = "m/44'/0'/0'/0";

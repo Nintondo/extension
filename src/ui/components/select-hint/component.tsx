@@ -1,4 +1,10 @@
-import { Combobox, Transition } from "@headlessui/react";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+  Transition,
+} from "@headlessui/react";
 import { FC, Fragment, useEffect, useState } from "react";
 import englishWords from "nintondo-bip39/src/wordlists/english.json";
 import cn from "classnames";
@@ -54,7 +60,7 @@ const SelectWithHint: FC<Props> = ({ selected, setSelected }) => {
     <Combobox value={selected} onChange={setSelected} nullable={true}>
       <div className="relative w-full">
         <div className={s.inputBox}>
-          <Combobox.Input
+          <ComboboxInput
             autoComplete="off"
             className={cn(s.input, {
               [s.error]: unblured && selected !== query,
@@ -71,12 +77,12 @@ const SelectWithHint: FC<Props> = ({ selected, setSelected }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Combobox.Options className={s.optionsBox}>
+          <ComboboxOptions className={s.optionsBox}>
             {filtered.length === 0 && query !== "" ? (
               <></>
             ) : (
               filtered.map((word) => (
-                <Combobox.Option
+                <ComboboxOption
                   key={word}
                   className={({ active }) =>
                     cn(s.options, { [s.optionsActive]: active })
@@ -94,10 +100,10 @@ const SelectWithHint: FC<Props> = ({ selected, setSelected }) => {
                       </span>
                     </>
                   )}
-                </Combobox.Option>
+                </ComboboxOption>
               ))
             )}
-          </Combobox.Options>
+          </ComboboxOptions>
         </Transition>
       </div>
     </Combobox>

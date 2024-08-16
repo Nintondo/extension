@@ -116,7 +116,7 @@ const NewMnemonic = () => {
           <CopyBtn
             label={t("new_wallet.new_mnemonic.copy")}
             value={mnemonicPhrase}
-            className="mx-auto flex items-center gap-1"
+            className="mx-auto flex items-center gap-1 px-4 py-2 text-base bg-neutral-900 border border-neutral-800 rounded-xl"
           />
           <Switch
             label={t("new_wallet.new_mnemonic.i_saved_this_phrase")}

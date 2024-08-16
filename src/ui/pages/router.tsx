@@ -3,9 +3,9 @@ import { createHashRouter, Navigate } from "react-router-dom";
 import Wallet from "@/ui/pages/main/wallet";
 
 import Login from "@/ui/pages/main/login";
-import CreatePassword from "@/ui/pages/main/create-password";
-import CreateNewAccount from "@/ui/pages/main/new-account";
-import SwitchAccount from "@/ui/pages/main/switch-account";
+import CreatePassword from "./main/create-password";
+import CreateNewAccount from "./main/new-account";
+import SwitchAccount from "./main/switch-account";
 import PagesLayout from "@/ui/components/layout";
 import Receive from "./main/receive";
 import SwitchWallet from "./main/switch-wallet";
@@ -14,9 +14,9 @@ import NewMnemonic from "./main/new-wallet/new-mnemonic";
 import RestoreMnemonic from "./main/new-wallet/restore-mnemonic";
 import RestorePrivKey from "./main/new-wallet/restore-priv-key";
 import Settings from "./main/settings";
-import ShowPk from "@/ui/pages/main/switch-account/show-pk";
+import ShowPk from "./main/switch-account/show-pk";
 import ShowMnemonic from "./main/switch-wallet/show-mnemonic";
-import ChangeAddrType from "@/ui/pages/main/settings/change-addr-type";
+import ChangeAddrType from "./main/settings/wallet/change-addr-type";
 import TransactionInfo from "./main/transaction-info";
 import FinalleSend from "./main/send/finalle-send";
 import CreateSend from "./main/send/create-send";
@@ -29,7 +29,6 @@ import Language from "./main/settings/language";
 import InscriptionDetails from "./main/inscriptions/inscription-details";
 import Inscriptions from "./main/inscriptions";
 import SignPsbt from "./provider/sign-psbt";
-import RestoreMnemonicOrdinals from "./main/new-wallet/restore-mnemonic-ordinals";
 import TokensComponent from "./main/tokens/component";
 import InscribeTransfer from "./provider/inscribe-transfer";
 import MultiPsbtSign from "./provider/multi-psbt-sign";
@@ -71,7 +70,6 @@ export const authenticatedRouter = createHashRouter([
       { path: "create-new-wallet", element: <NewWallet /> },
       { path: "new-mnemonic", element: <NewMnemonic /> },
       { path: "restore-mnemonic", element: <RestoreMnemonic /> },
-      { path: "restore-ordinals", element: <RestoreMnemonicOrdinals /> },
       { path: "restore-priv-key", element: <RestorePrivKey /> },
       { path: "show-pk/:accId", element: <ShowPk /> },
       { path: "show-mnemonic/:walletId", element: <ShowMnemonic /> },

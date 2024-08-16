@@ -1,11 +1,14 @@
 import { browserTabsCreate } from "@/shared/utils/browser";
 
-import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
 
 import { t } from "i18next";
-import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowsPointingOutIcon,
+  GlobeAltIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 import SettingsLayout from "@/ui/components/settings-layout";
 
 const ICON_SIZE = 8;
@@ -23,6 +26,11 @@ const WalletSettings = () => {
       icon: <GlobeAltIcon className={ICON_CN} />,
       label: t("components.layout.network_settings"),
       link: "/pages/network-settings",
+    },
+    {
+      icon: <UserIcon className={ICON_CN} />,
+      label: t("settings.address_type"),
+      link: "/pages/change-addr-type",
     },
     {
       icon: <ArrowsPointingOutIcon className={ICON_CN} />,

@@ -1,21 +1,35 @@
 .card {
-  @apply cursor-pointer h-28 flex items-center justify-center flex-col gap-4 px-3 odd:border-r border-b even:border-l last:border-b-0 border-neutral-800;
-
-  &:nth-last-child(2) {
-    @apply border-b-0;
-  }
+  @apply cursor-pointer flex items-center gap-4 px-3 border rounded-xl bg-neutral-950 border-neutral-800 transition-colors text-lg py-3;
 
   &:hover {
-    > * {
-      @apply scale-110;
+    @apply bg-neutral-900 border-orange-400/50;
+
+    .iconContainer {
+      @apply bg-orange-400/90 text-black;
     }
   }
+}
 
-  > div {
-    @apply text-xs text-center font-medium;
-  }
+.label {
+  @apply text-sm font-medium;
+}
+
+.description {
+  @apply text-xs text-neutral-500;
+}
+
+.content {
+  @apply flex gap-1.5 flex-col;
+}
+
+.iconContainer {
+  @apply bg-neutral-900 rounded-lg p-1;
 
   > * {
-    @apply transition-transform;
+    @apply p-1;
   }
+}
+
+.selected {
+  @apply bg-orange-400/5 border-orange-400;
 }

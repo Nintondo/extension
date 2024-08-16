@@ -1,8 +1,8 @@
 import i18n from "@/shared/locales/i18n";
 import { useAppState } from "@/ui/states/appState";
 import s from "./styles.module.scss";
-import cn from "classnames";
 import { ss } from "@/ui/utils";
+import Tile from "@/ui/components/tile";
 
 const Language = () => {
   const { updateAppState } = useAppState(ss(["updateAppState"]));
@@ -21,34 +21,10 @@ const Language = () => {
 
   return (
     <div className={s.languages}>
-      <div className="flex w-10/12 justify-evenly gap-4">
-        <button
-          className={cn(s.langBtn, "btn primary")}
-          onClick={newLanguage("en")}
-        >
-          English
-        </button>
-        <button
-          className={cn(s.langBtn, "btn primary")}
-          onClick={newLanguage("ru")}
-        >
-          Русский
-        </button>
-      </div>
-      <div className="flex w-10/12 justify-evenly gap-4">
-        <button
-          className={cn(s.langBtn, "btn primary")}
-          onClick={newLanguage("ch")}
-        >
-          中國人
-        </button>
-        <button
-          className={cn(s.langBtn, "btn primary")}
-          onClick={newLanguage("kr")}
-        >
-          중국인
-        </button>
-      </div>
+      <Tile label="English" onClick={newLanguage("en")} />
+      <Tile label="Русский" onClick={newLanguage("ru")} />
+      <Tile label="中國人" onClick={newLanguage("ch")} />
+      <Tile label="중국인" onClick={newLanguage("kr")} />
     </div>
   );
 };

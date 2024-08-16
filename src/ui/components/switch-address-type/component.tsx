@@ -1,8 +1,8 @@
 import s from "./styles.module.scss";
 import { ADDRESS_TYPES } from "@/shared/constant";
 import { FC } from "react";
-import cn from "classnames";
 import { AddressType } from "bellhdw";
+import Tile from "../tile";
 
 interface Props {
   handler: (type: AddressType) => void;
@@ -13,18 +13,13 @@ const SwitchAddressType: FC<Props> = ({ handler, selectedType }) => {
   return (
     <div className={s.allTypes}>
       {ADDRESS_TYPES.map((i) => (
-        <div
+        <Tile
           key={i.value}
-          className={cn(s.addressType, {
-            [s.selected]: selectedType === i.value,
-          })}
+          label={i.name.replace(/ \(.*\)$/, "")}
+          description={i.label}
           onClick={() => handler(i.value)}
-        >
-          <div className={s.wrapper}>
-            <p className={s.title}>{i.name.replace(/ \(.*\)$/, "")}</p>
-            <p className={s.value}>{i.label}</p>
-          </div>
-        </div>
+          selected={selectedType === i.value}
+        />
       ))}
     </div>
   );
