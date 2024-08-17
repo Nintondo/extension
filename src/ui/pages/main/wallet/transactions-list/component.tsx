@@ -95,17 +95,18 @@ export default TransactionList;
 
 const getPercent = (lastBlock: number, currentBlock?: number) => {
   if (!currentBlock) return 0;
-  if (lastBlock - currentBlock > 6) {
-    return 100;
-  }
+  if (lastBlock - currentBlock > 6) return 100;
+  if (lastBlock < currentBlock) return 0;
   return Math.floor(((lastBlock - currentBlock) / 6) * 100);
 };
 
 const getConfirmationsCount = (lastBlock: number, currentBlock?: number) => {
-  if (!currentBlock)
+  let confirmations = currentBlock ? Math.max(lastBlock - currentBlock, 0) : 0;
+
+  if (!currentBlock || lastBlock - currentBlock < 6 || lastBlock < currentBlock)
     return (
       <div className="p-0.5 flex items-center justify-center leading-[159%]">
-        0
+        {confirmations}
       </div>
     );
   if (lastBlock - currentBlock < 6) {

@@ -14,6 +14,7 @@ import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Switch from "@/ui/components/switch";
 import { ss } from "@/ui/utils";
+import { ADDRESS_TYPES } from "@/shared/constant";
 
 const NewMnemonic = () => {
   const location = useLocation();
@@ -32,7 +33,7 @@ const NewMnemonic = () => {
     undefined
   );
   const [addressType, setAddressType] = useState<AddressType>(
-    AddressType.P2PKH
+    ADDRESS_TYPES[0].value
   );
 
   const createNewWallet = useCreateNewWallet();

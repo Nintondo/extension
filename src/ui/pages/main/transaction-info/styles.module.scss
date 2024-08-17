@@ -10,14 +10,13 @@
   @apply mb-4;
 
   .transactionP {
-    @apply break-all text-sm font-light block mb-2;
+    @apply break-all text-sm uppercase text-gray-400 font-light block mb-2;
   }
 
   span {
     @apply text-sm block px-4 py-2 bg-input-bg rounded-xl;
   }
 }
-
 
 .summary {
   @apply list-none cursor-pointer text-sm flex gap-2 mt-1;
@@ -28,16 +27,12 @@
 }
 
 .table {
-  &Group {
-    @apply flex gap-2 w-full items-center;
-  }
-
   &First {
-    @apply break-all bg-input-bg rounded-xl px-3 py-2 w-4/5 text-sm text-center select-none cursor-pointer;
+    @apply break-all text-xs select-none cursor-pointer;
   }
 
   &Second {
-    @apply text-sm font-medium;
+    @apply text-sm font-medium pl-1;
   }
 
   &List {
@@ -53,6 +48,6 @@
   }
 }
 
-.active {
-  @apply bg-green-300 text-bg;
+.address {
+  @apply pl-4 text-orange-400 cursor-pointer;
 }

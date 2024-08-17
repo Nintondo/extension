@@ -211,14 +211,15 @@
   },
   "transaction_info": {
     "txid": "TxId",
-    "confirmations_label": "Confirmations:",
+    "confirmations_label": "Confirmations",
     "fee_label": "Fee",
-    "value_label": "Value:",
+    "value_label": "Value",
     "open_in_explorer": "Open in explorer",
     "copied": "Copied",
     "inputs": "Inputs",
     "outputs": "Outputs",
-    "details": "Details"
+    "details": "Details",
+    "your_address": "You"
   },
   "hooks": {
     "transaction": {

@@ -3,80 +3,38 @@ import { payments } from "belcoinjs-lib";
 import Big from "big.js";
 import { AddressType } from "bellhdw/src/hd/types";
 
-export enum TxDirection {
-  out = 0,
-  in = 1,
-}
-
-export const getTxDirection = (
-  transaction: ITransaction,
-  targetAddress: string
-): TxDirection => {
-  const includesIn = transaction.vin
-    .map((i) => i.prevout?.scriptpubkey_address)
-    .includes(targetAddress);
-
-  if (includesIn) {
-    return TxDirection.out;
-  }
-  return TxDirection.in;
-};
-
 export const getTransactionValue = (
   transaction: ITransaction,
   targetAddress: string,
   fixed: number = 2
 ) => {
-  const direction = getTxDirection(transaction, targetAddress);
-  let value: number;
-  switch (direction) {
-    case TxDirection.in:
-      value =
-        transaction.vout.reduce(
-          (acc, cur) =>
-            cur.scriptpubkey_address === targetAddress ? acc + cur.value : acc,
-          0
-        ) /
-        10 ** 8;
-      break;
-    case TxDirection.out:
-      value =
-        (transaction.vin.reduce(
-          (acc, cur) =>
-            cur.prevout?.scriptpubkey_address === targetAddress
-              ? acc - cur.prevout?.value
-              : acc,
-          0
-        ) +
-          transaction.vout.reduce(
-            (acc, cur) =>
-              cur.scriptpubkey_address === targetAddress
-                ? cur.value + acc
-                : acc,
-            0
-          )) /
-        10 ** 8;
-      break;
+  const outputsSum = transaction.vout
+    .filter((i) => i.scriptpubkey_address === targetAddress)
+    .reduce((acc, cur) => acc + cur.value, 0);
+  const inputsSum = transaction.vin
+    .filter((i) => i.prevout?.scriptpubkey_address === targetAddress)
+    .reduce((acc, cur) => acc + cur.prevout!.value, 0);
+
+  const value = Math.abs(outputsSum - inputsSum) / 10 ** 8;
+
+  if (value < 1) return parseFloat(value.toFixed(5)).toString();
+  if (value < 100) {
+    return value.toFixed(fixed + 1);
   }
-
-  // return value;
-
-  if (typeof fixed !== "undefined") {
-    if (value < 100) {
-      return Math.abs(value).toFixed(fixed + 1);
-    }
-    return Math.abs(value).toFixed(fixed);
-  }
-
-  return Math.abs(value);
+  return value.toFixed(fixed);
 };
 
 export const isIncomeTx = (
   transaction: ITransaction,
   targetAddress: string
 ) => {
-  const direction = getTxDirection(transaction, targetAddress);
-  return direction === TxDirection.in;
+  const outputsSum = transaction.vout
+    .filter((i) => i.scriptpubkey_address === targetAddress)
+    .reduce((acc, cur) => acc + cur.value, 0);
+  const inputsSum = transaction.vin
+    .filter((i) => i.prevout?.scriptpubkey_address === targetAddress)
+    .reduce((acc, cur) => acc + cur.prevout!.value, 0);
+  return outputsSum - inputsSum > 0;
 };
 
 export const getScriptForAddress = (

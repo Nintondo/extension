@@ -1,3 +1,7 @@
 .languages {
   @apply w-full gap-3 flex flex-col p-6 h-full;
+
+  > * {
+    @apply min-h-40;
+  }
 }

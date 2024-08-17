@@ -25,12 +25,9 @@ const SwitchWallet = () => {
   const [deleteWalletId, setDeleteWalletId] = useState<number>();
 
   const onDelete = async () => {
-    setDeleteWalletId((prev) => {
-      if (prev === undefined) return undefined;
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      deleteWallet(prev);
-      return undefined;
-    });
+    if (typeof deleteWalletId === "undefined") return;
+    setDeleteWalletId(undefined);
+    await deleteWallet(deleteWalletId);
   };
 
   const onRename = async (name: string) => {

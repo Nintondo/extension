@@ -31,5 +31,5 @@
 }
 
 .input {
-  @apply py-1;
+  @apply py-1 disabled:cursor-not-allowed disabled:opacity-50;
 }

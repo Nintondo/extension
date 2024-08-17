@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ss } from "@/ui/utils";
 import toast from "react-hot-toast";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import { ADDRESS_TYPES } from "@/shared/constant";
 
 const ChangeAddrType = () => {
   const { keyringController, notificationController } = useControllersState(
@@ -46,7 +47,7 @@ const ChangeAddrType = () => {
   return (
     <div className="px-6 h-full w-full">
       <SwitchAddressType
-        selectedType={currentWallet?.addressType ?? AddressType.P2PKH}
+        selectedType={currentWallet?.addressType ?? ADDRESS_TYPES[0].value}
         handler={onSwitchAddress}
       />
     </div>

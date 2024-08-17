@@ -22,7 +22,6 @@ const Advanced = () => {
     try {
       setLoading(true);
       const accounts = await walletController.toggleRootAccount();
-      console.log(accounts);
       const newWallets = wallets.map((i) => {
         if (i.id !== currentWallet?.id) return i;
         return {

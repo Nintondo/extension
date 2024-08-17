@@ -25,16 +25,16 @@ export const ADDRESS_TYPES: {
   hdPath: string;
 }[] = [
   {
-    value: AddressType.P2PKH,
-    label: "P2PKH",
-    name: "Legacy (P2PKH)",
-    hdPath: "m/44'/0'/0'/0",
-  },
-  {
     value: AddressType.P2WPKH,
     label: "P2WPKH",
     name: "Native Segwit (P2WPKH)",
     hdPath: "m/84'/0'/0'/0",
+  },
+  {
+    value: AddressType.P2PKH,
+    label: "P2PKH",
+    name: "Legacy (P2PKH)",
+    hdPath: "m/44'/0'/0'/0",
   },
   {
     value: AddressType.P2TR,
