@@ -1,6 +1,7 @@
-import { Switch } from "@headlessui/react";
+import { Field, Label, Switch } from "@headlessui/react";
 import { FC } from "react";
 import cn from "classnames";
+import s from "./styles.module.scss";
 
 interface Props {
   locked?: boolean;
@@ -8,6 +9,7 @@ interface Props {
   onChange: (value: boolean) => void;
   label: string;
   className?: string;
+  disabled?: boolean;
 }
 
 const SwitchComponent: FC<Props> = ({
@@ -16,34 +18,40 @@ const SwitchComponent: FC<Props> = ({
   value,
   label,
   className,
+  disabled,
 }) => {
   return (
-    <Switch.Group>
+    <Field>
       <div
         className={cn(className ?? "flex gap-2 items-center mt-4", {
           "opacity-50": locked,
         })}
       >
         <Switch
+          disabled={disabled}
           checked={value}
           onChange={(v) => {
             if (locked) return;
             onChange(v);
           }}
-          className={`${value ? "bg-orange-600" : "bg-gray-500"}
-          relative inline-flex h-6 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+          className={cn(
+            { "bg-orange-600": value, "bg-gray-500": !value },
+            s.switch
+          )}
         >
           <span
             aria-hidden="true"
-            className={`${value ? "translate-x-6" : "translate-x-0"}
-            pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+            className={cn(
+              { "translate-x-6": value, "translate-x-0": !value },
+              s.toggle
+            )}
           />
         </Switch>
-        <Switch.Label className="mr-4 cursor-pointer text-xs">
+        <Label className="mr-4 text-xs font-medium cursor-pointer">
           {label}
-        </Switch.Label>
+        </Label>
       </div>
-    </Switch.Group>
+    </Field>
   );
 };
 

@@ -1,12 +1,11 @@
 import { useAppState } from "@/ui/states/appState";
 
 import {
-  UserIcon,
-  ArrowLeftOnRectangleIcon,
   PuzzlePieceIcon,
   LanguageIcon,
   ShieldCheckIcon,
   WalletIcon,
+  ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import Tile from "@/ui/components/tile";
 import { TileProps } from "@/ui/components/tile/component";
@@ -22,11 +21,6 @@ const Settings = () => {
   const { logout } = useAppState(ss(["logout"]));
 
   const items: TileProps[] = [
-    {
-      icon: <UserIcon className={ICON_CN} />,
-      label: t("settings.address_type"),
-      link: "/pages/change-addr-type",
-    },
     {
       icon: <ShieldCheckIcon className={ICON_CN} />,
       label: t("settings.security_settings"),
@@ -48,7 +42,7 @@ const Settings = () => {
       link: "/pages/language",
     },
     {
-      icon: <ArrowLeftOnRectangleIcon className={ICON_CN} />,
+      icon: <ArrowLeftEndOnRectangleIcon className={ICON_CN} />,
       label: t("settings.logout"),
       onClick: logout,
     },

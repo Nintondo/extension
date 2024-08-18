@@ -1,7 +1,7 @@
 .languages {
-    @apply flex justify-center py-8 flex-col items-center gap-4;
+  @apply w-full gap-3 flex flex-col p-6 h-full;
 
-    .langBtn {
-        @apply w-40;
-    }
+  > * {
+    @apply min-h-40;
+  }
 }

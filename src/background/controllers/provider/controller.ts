@@ -22,6 +22,7 @@ type Payload<P extends keyof INintondoProvider> = {
   approvalRes?: any;
 };
 
+// @ts-ignore
 class ProviderController implements IProviderController {
   connect = async () => {
     if (

@@ -11,7 +11,7 @@
 }
 
 .active {
-  color: red;
+  @apply text-orange-400;
 }
 
 .word {
@@ -28,4 +28,8 @@
 
 .step {
   @apply h-full w-full flex flex-col justify-between;
+}
+
+.input {
+  @apply py-1 disabled:cursor-not-allowed disabled:opacity-50;
 }

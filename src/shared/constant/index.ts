@@ -25,16 +25,16 @@ export const ADDRESS_TYPES: {
   hdPath: string;
 }[] = [
   {
-    value: AddressType.P2PKH,
-    label: "P2PKH",
-    name: "Legacy (P2PKH)",
-    hdPath: "m/44'/0'/0'/0",
-  },
-  {
     value: AddressType.P2WPKH,
     label: "P2WPKH",
     name: "Native Segwit (P2WPKH)",
     hdPath: "m/84'/0'/0'/0",
+  },
+  {
+    value: AddressType.P2PKH,
+    label: "P2PKH",
+    name: "Legacy (P2PKH)",
+    hdPath: "m/44'/0'/0'/0",
   },
   {
     value: AddressType.P2TR,
@@ -95,3 +95,5 @@ export const DEFAULT_FEES = {
 };
 
 export const DEFAULT_SERVICE_FEE = 1_000_000;
+
+export const DEFAULT_HD_PATH = "m/44'/0'/0'/0";

@@ -14,6 +14,7 @@ import { t } from "i18next";
 import { AddressType } from "bellhdw";
 import Switch from "@/ui/components/switch";
 import { ss } from "@/ui/utils";
+import { ADDRESS_TYPES } from "@/shared/constant";
 
 const NewMnemonic = () => {
   const location = useLocation();
@@ -32,7 +33,7 @@ const NewMnemonic = () => {
     undefined
   );
   const [addressType, setAddressType] = useState<AddressType>(
-    AddressType.P2PKH
+    ADDRESS_TYPES[0].value
   );
 
   const createNewWallet = useCreateNewWallet();
@@ -73,7 +74,6 @@ const NewMnemonic = () => {
         hideRoot: true,
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
     } catch (e) {
       console.error(e);
       if (e instanceof Error) toast.error(e.message);
@@ -116,7 +116,7 @@ const NewMnemonic = () => {
           <CopyBtn
             label={t("new_wallet.new_mnemonic.copy")}
             value={mnemonicPhrase}
-            className="mx-auto flex items-center gap-1"
+            className="mx-auto flex items-center gap-1 px-4 py-2 text-base bg-neutral-900 border border-neutral-800 rounded-xl"
           />
           <Switch
             label={t("new_wallet.new_mnemonic.i_saved_this_phrase")}

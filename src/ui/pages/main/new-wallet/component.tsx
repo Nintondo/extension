@@ -24,11 +24,6 @@ const NewWallet = () => {
       label: t("new_wallet.restore_from_private_key_label"),
       link: "/pages/restore-priv-key",
     },
-    {
-      icon: <GlobeAltIcon className={ICON_CN} />,
-      label: t("new_wallet.restore_ordinals_label"),
-      link: "/pages/restore-ordinals",
-    },
   ];
   return (
     <div className={s.container}>

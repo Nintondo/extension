@@ -1,7 +1,7 @@
 import s from "./styles.module.scss";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
 import { useWalletState } from "@/ui/states/walletState";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import cn from "classnames";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -13,11 +13,32 @@ import { TailSpin } from "react-loading-icons";
 import Switch from "@/ui/components/switch";
 import { useAppState } from "@/ui/states/appState";
 import { ss } from "@/ui/utils";
+import { ADDRESS_TYPES, DEFAULT_HD_PATH } from "@/shared/constant";
+import Select from "@/ui/components/select";
+
+const selectOptions = [
+  {
+    label: "Default",
+    value: DEFAULT_HD_PATH,
+    lecacyDerivation: false,
+  },
+  {
+    label: "Ordinals",
+    value: "m/44'/3'/0'/0/0",
+    lecacyDerivation: true,
+    isLegacySwitchLocked: true,
+  },
+  {
+    label: "Custom",
+    value: "",
+  },
+];
 
 const RestoreMnemonic = () => {
   const [step, setStep] = useState(1);
   const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
-  const [addressType, setAddressType] = useState(AddressType.P2PKH);
+  const [addressType, setAddressType] = useState(ADDRESS_TYPES[0].value);
+  const [hdPath, setHdPath] = useState<string | undefined>(DEFAULT_HD_PATH);
   const [mnemonicPhrase, setMnemonicPhrase] = useState<(string | undefined)[]>(
     new Array(12).fill("")
   );
@@ -57,7 +78,6 @@ const RestoreMnemonic = () => {
         hideRoot: !showRootAcc,
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
     } catch (e) {
       console.error(e);
@@ -68,9 +88,13 @@ const RestoreMnemonic = () => {
     }
   };
 
-  const onSwitch = () => {
-    setShowRootAcc((p) => !p);
-  };
+  const selectedOption = useMemo(() => {
+    const v = selectOptions.find((i) => i.value === hdPath)?.label;
+
+    if (v) return { name: v };
+
+    return { name: selectOptions[selectOptions.length - 1].label };
+  }, [hdPath]);
 
   if (loading) return <TailSpin />;
 
@@ -93,14 +117,6 @@ const RestoreMnemonic = () => {
               </div>
             ))}
           </div>
-          <div className="w-full flex justify-center">
-            <Switch
-              label={t("new_wallet.restore_mnemonic.show_root_acc")}
-              value={showRootAcc}
-              onChange={onSwitch}
-              className="flex gap-2 items-center"
-            />
-          </div>
           <div>
             <button className="bottom-btn" onClick={onNextStep}>
               {t("new_wallet.continue")}
@@ -113,7 +129,56 @@ const RestoreMnemonic = () => {
             handler={setAddressType}
             selectedType={addressType}
           />
-          <div>
+
+          <div className="w-full flex flex-col gap-2">
+            <h5 className="uppercase text-sm">{t("new_wallet.hd_path")}</h5>
+            <div className="flex w-full gap-2 text-sm">
+              <input
+                disabled={selectedOption.name !== "Custom"}
+                className={cn("input w-full mt-1", s.input)}
+                placeholder={t("new_wallet.hd_path")}
+                value={hdPath ?? ""}
+                onChange={(e) =>
+                  e.target.value.length
+                    ? setHdPath(e.target.value)
+                    : setHdPath(undefined)
+                }
+              />
+              <Select
+                anchor="top"
+                selected={selectedOption}
+                setSelected={({ name }) => {
+                  const v = selectOptions.find((i) => i.label === name);
+
+                  if (typeof v !== "undefined") {
+                    if (v.lecacyDerivation) {
+                      setShowRootAcc(true);
+                    } else if (v.lecacyDerivation === false) {
+                      setShowRootAcc(false);
+                    }
+                    setHdPath(v.value);
+                  }
+                }}
+                values={selectOptions.map((i) => ({
+                  name: i.label,
+                }))}
+                className="w-28"
+              />
+            </div>
+          </div>
+
+          <Switch
+            label={t("new_wallet.restore_mnemonic.show_root_acc")}
+            value={showRootAcc}
+            onChange={() => setShowRootAcc((p) => !p)}
+            className="flex gap-2 items-center"
+            disabled={
+              selectOptions.find((i) => i.value === hdPath)
+                ?.isLegacySwitchLocked === true
+            }
+          />
+
+          <div className="h-11">
             <button onClick={onRestore} className="bottom-btn">
               {t("new_wallet.continue")}
             </button>

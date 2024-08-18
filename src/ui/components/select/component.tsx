@@ -1,4 +1,10 @@
-import { Listbox, Transition } from "@headlessui/react";
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from "@headlessui/react";
 import { ChevronUpDownIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 
@@ -9,6 +15,7 @@ interface Props<T extends string> {
   label?: string;
   displayCheckIcon?: boolean;
   className?: string;
+  anchor?: "bottom" | "top";
 }
 
 const Select = <T extends string>({
@@ -18,15 +25,16 @@ const Select = <T extends string>({
   label,
   displayCheckIcon = true,
   className,
+  anchor,
 }: Props<T>) => {
   return (
-    <div className={className ?? ""}>
+    <div className={className}>
       {label !== undefined ? (
         <label className="input-span">{label}</label>
       ) : undefined}
       <Listbox value={selected} onChange={setSelected}>
         <div className={`relative mt-1 w-full`}>
-          <Listbox.Button className="relative w-full cursor-default rounded-xl bg-input-bg py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <ListboxButton className="relative w-full cursor-default rounded-xl bg-input-bg py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
             <span className="block truncate">{selected.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
@@ -34,23 +42,27 @@ const Select = <T extends string>({
                 aria-hidden="true"
               />
             </span>
-          </Listbox.Button>
+          </ListboxButton>
           <Transition
             as={Fragment}
             leave="transition ease-in duration-100"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-bg py-1">
+            <ListboxOptions
+              anchor={{
+                to: anchor,
+                gap: 5,
+              }}
+              className="absolute max-h-60 overflow-auto border border-neutral-800 rounded-xl bg-neutral-900 w-[var(--button-width)]"
+            >
               {values.map((value, valueIdx) => (
-                <Listbox.Option
+                <ListboxOption
                   key={valueIdx}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 ${
                       active ? "bg-input-bg text-text" : "text-text"
-                    } ${
-                      displayCheckIcon ? "pl-10 pr-4" : "flex justify-center"
-                    }`
+                    } ${displayCheckIcon ? "pl-4 pr-4" : "flex justify-center"}`
                   }
                   value={value}
                 >
@@ -70,9 +82,9 @@ const Select = <T extends string>({
                       ) : null}
                     </>
                   )}
-                </Listbox.Option>
+                </ListboxOption>
               ))}
-            </Listbox.Options>
+            </ListboxOptions>
           </Transition>
         </div>
       </Listbox>

@@ -34,10 +34,22 @@ export function useCreateBellsTxCallback() {
     )
       throw new Error("Failed to get current wallet or account");
     const fromAddress = currentAccount.address;
-    const utxos = await apiController.getUtxos(fromAddress, {
-      amount: toAmount,
+    let utxos = await apiController.getUtxos(fromAddress, {
+      amount:
+        toAmount + (receiverToPayFee ? 0 : gptFeeCalculate(2, 2, feeRate)),
     });
+
+    if ((utxos?.length ?? 0) > 5) {
+      utxos = await apiController.getUtxos(fromAddress, {
+        amount: toAmount + gptFeeCalculate(1 + utxos!.length, 2, feeRate),
+      });
+    }
+
     if (!utxos) return;
+
+    if (utxos.length > 1000)
+      throw new Error(t("hooks.transaction.too_many_utxos"));
+
     const safeBalance = (utxos ?? []).reduce((pre, cur) => pre + cur.value, 0);
     if (safeBalance < toAmount) {
       throw new Error(

@@ -4,7 +4,7 @@ import cn from "classnames";
 import {
   ChevronLeftIcon,
   PlusCircleIcon,
-  ArrowsUpDownIcon
+  ArrowsUpDownIcon,
 } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 import { useGetCurrentAccount, useWalletState } from "@/ui/states/walletState";
@@ -36,106 +36,103 @@ export default function PagesLayout() {
   const currentAccount = useGetCurrentAccount();
 
   const defaultTitles = useMemo(
-    () => [
-      {
-        route: "/pages/change-addr-type",
-        title: t("components.layout.change_address_type"),
-      },
-      {
-        route: "/pages/create-new-account",
-        title: t("components.layout.create_new_account"),
-      },
-      {
-        route: "/pages/change-password",
-        title: t("components.layout.change_password"),
-      },
-      {
-        backAction: () => {
-          navigate("/home");
+    () =>
+      [
+        {
+          route: "/pages/change-addr-type",
+          title: t("components.layout.change_address_type"),
         },
-        route: "/pages/finalle-send/@",
-        title: t("components.layout.send"),
-      },
-      {
-        route: "/pages/security",
-        title: t("components.layout.security"),
-      },
-      {
-        route: "/pages/receive",
-        title: currentAccount?.name ?? "Account",
-      },
-      {
-        route: "/pages/switch-wallet",
-        title: t("components.layout.switch_wallet"),
-        action: {
-          icon: <PlusCircleIcon className="w-8 h-8" />,
-          link: "/pages/create-new-wallet",
+        {
+          route: "/pages/create-new-account",
+          title: t("components.layout.create_new_account"),
         },
-      },
-      {
-        route: "/pages/restore-mnemonic",
-        title: t("components.layout.restore_from_mnemonic"),
-      },
-      {
-        route: "/pages/restore-ordinals",
-        title: t("components.layout.restore_from_mnemonic"),
-      },
-      {
-        route: "/pages/restore-priv-key",
-        title: t("components.layout.restore_from_private_key"),
-      },
-      {
-        route: "/pages/send",
-        title: t("components.layout.send"),
-      },
-      {
-        route: "/pages/transaction-info/@",
-        title: t("components.layout.transaction_info"),
-      },
-      {
-        route: "/pages/settings",
-        title: t("components.layout.settings"),
-      },
-      {
-        route: "/pages/advanced",
-        title: t("components.layout.advanced"),
-      },
-      {
-        route: "/pages/show-mnemonic/@",
-        title: t("components.layout.show_mnemonic"),
-      },
-      {
-        route: "/pages/show-pk/@",
-        title: t("components.layout.show_private_key"),
-      },
-      {
-        route: "/pages/discover",
-        title: t("components.layout.discover"),
-      },
-      {
-        route: "/pages/connected-sites",
-        title: t("components.layout.connected_sites"),
-      },
-      {
-        route: "/pages/language",
-        title: t("components.layout.change_language"),
-      },
-      {
-        route: "/pages/wallet-settings",
-        title: t("components.layout.wallet_settings"),
-      },
-      {
-        route: "/pages/network-settings",
-        title: t("components.layout.network_settings"),
-      },
-      {
-        route: "/pages/create-send",
-        title: t("components.layout.send"),
-        backAction: () => {
-          navigate("/home");
+        {
+          route: "/pages/change-password",
+          title: t("components.layout.change_password"),
         },
-      },
-    ] as IRouteTitle[],
+        {
+          backAction: () => {
+            navigate("/home");
+          },
+          route: "/pages/finalle-send/@",
+          title: t("components.layout.send"),
+        },
+        {
+          route: "/pages/security",
+          title: t("components.layout.security"),
+        },
+        {
+          route: "/pages/receive",
+          title: currentAccount?.name ?? "Account",
+        },
+        {
+          route: "/pages/switch-wallet",
+          title: t("components.layout.switch_wallet"),
+          action: {
+            icon: <PlusCircleIcon className="w-8 h-8" />,
+            link: "/pages/create-new-wallet",
+          },
+        },
+        {
+          route: "/pages/restore-mnemonic",
+          title: t("components.layout.restore_from_mnemonic"),
+        },
+        {
+          route: "/pages/restore-priv-key",
+          title: t("components.layout.restore_from_private_key"),
+        },
+        {
+          route: "/pages/send",
+          title: t("components.layout.send"),
+        },
+        {
+          route: "/pages/transaction-info/@",
+          title: t("components.layout.transaction_info"),
+        },
+        {
+          route: "/pages/settings",
+          title: t("components.layout.settings"),
+        },
+        {
+          route: "/pages/advanced",
+          title: t("components.layout.advanced"),
+        },
+        {
+          route: "/pages/show-mnemonic/@",
+          title: t("components.layout.show_mnemonic"),
+        },
+        {
+          route: "/pages/show-pk/@",
+          title: t("components.layout.show_private_key"),
+        },
+        {
+          route: "/pages/discover",
+          title: t("components.layout.discover"),
+        },
+        {
+          route: "/pages/connected-sites",
+          title: t("components.layout.connected_sites"),
+        },
+        {
+          route: "/pages/language",
+          title: t("components.layout.change_language"),
+        },
+        {
+          route: "/pages/wallet-settings",
+          title: t("components.layout.wallet_settings"),
+        },
+        {
+          route: "/pages/network-settings",
+          title: t("components.layout.network_settings"),
+        },
+        {
+          route: "/pages/create-send",
+          title: t("components.layout.send"),
+          backAction: () => {
+            navigate("/home");
+          },
+        },
+      ] as IRouteTitle[],
     [currentAccount?.name, navigate]
   );
 
@@ -171,7 +168,7 @@ export default function PagesLayout() {
           route: "/pages/inscription-details",
           title:
             t("inscription_details.title") +
-            ` #${currentRoute.state?.inscription_number}`,
+            ` #${currentRoute.state?.inscription_number ?? ""}`,
         },
         {
           route: "/pages/switch-account",
@@ -191,16 +188,25 @@ export default function PagesLayout() {
         },
         {
           route: /\/pages\/(inscriptions|bel-20)/,
-          title: <div className="flex items-center gap-2 cursor-pointer" onClick={() => {
-            if (currentRoute.pathname === "/pages/inscriptions") {
-              navigate("/pages/bel-20");
-            } else {
-              navigate("/pages/inscriptions");
-            }
-          }}>
-            <span>{currentRoute.pathname === "/pages/inscriptions" ? "Inscriptions" : "BEL-20"}</span>
-            <ArrowsUpDownIcon className="w-4 h-4" />
-          </div>,
+          title: (
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => {
+                if (currentRoute.pathname === "/pages/inscriptions") {
+                  navigate("/pages/bel-20");
+                } else {
+                  navigate("/pages/inscriptions");
+                }
+              }}
+            >
+              <span>
+                {currentRoute.pathname === "/pages/inscriptions"
+                  ? "Inscriptions"
+                  : "BEL-20"}
+              </span>
+              <ArrowsUpDownIcon className="w-4 h-4" />
+            </div>
+          ),
           action: {
             icon: <SearchInscriptions />,
           },

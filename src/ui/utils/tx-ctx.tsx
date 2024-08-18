@@ -25,17 +25,14 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [transactions, setTransactions] = useState<ITransaction[] | undefined>(
     undefined
   );
-
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
-  const [transactionTxIds, setTransactionTxIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const updateTransactions = useUpdateFunction(
     setTransactions,
     apiController.getTransactions,
-    transactions,
     "txid"
   );
 
@@ -54,7 +51,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
       setLoading(true);
       if (force) {
         setTransactions(undefined);
-        setTransactionTxIds([]);
       }
       await Promise.all([
         updateAccountBalance(),
@@ -75,24 +71,16 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const loadMoreTransactions = useCallback(async () => {
     if (!currentAccount || !currentAccount.address || !transactions) return;
-    if (
-      transactions.length < 50 ||
-      transactionTxIds.includes(transactions[transactions.length - 1]?.txid)
-    )
-      return;
+    if (transactions.length < 50) return;
     const additionalTransactions = await apiController.getPaginatedTransactions(
       currentAccount.address,
       transactions[transactions.length - 1]?.txid
     );
-    setTransactionTxIds([
-      ...transactionTxIds,
-      transactions[transactions.length - 1]?.txid,
-    ]);
     if (!additionalTransactions) return;
     if (additionalTransactions.length > 0) {
       setTransactions((prev) => [...(prev ?? []), ...additionalTransactions]);
     }
-  }, [transactions, apiController, transactionTxIds, currentAccount]);
+  }, [transactions, apiController, currentAccount]);
 
   useEffect(() => {
     if (!currentAccount?.address) return;
@@ -114,7 +102,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     if (!currentAccount?.address) return;
     const interval1 = setInterval(async () => {
       await updateAccountBalance();
-    }, 2000);
+    }, 3000);
     const interval2 = setInterval(async () => {
       await Promise.all([
         updateTransactions(currentAccount.address!),

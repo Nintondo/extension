@@ -1,5 +1,5 @@
 .allTypes {
-  @apply w-full h-full grid grid-rows-2 grid-cols-2 gap-3 pt-8 max-h-60;
+  @apply w-full flex flex-col gap-3 pt-8;
 }
 
 .addressType {

@@ -29,26 +29,6 @@ const TransactionInfo = () => {
     });
   };
 
-  const filteredInput = useMemo(() => {
-    const txValues: Record<string, number> = {};
-
-    tx.vin.forEach((i) => {
-      const address = i.prevout?.scriptpubkey_address;
-      if (address) {
-        if (txValues[address]) {
-          txValues[address] += i.prevout?.value || 0;
-        } else {
-          txValues[address] = i.prevout?.value || 0;
-        }
-      }
-    });
-
-    return Object.entries(txValues).map((i) => ({
-      scriptpubkey_address: i[0],
-      value: i[1],
-    }));
-  }, [tx]);
-
   return (
     <div className={s.transactionInfoDiv}>
       {transaction ? (
@@ -95,7 +75,12 @@ const TransactionInfo = () => {
                 <TableItem
                   label={t("transaction_info.inputs")}
                   currentAddress={currentAccount?.address}
-                  items={filteredInput}
+                  items={tx.vin
+                    .filter((i) => typeof i.prevout !== "undefined")
+                    .map((i) => ({
+                      scriptpubkey_address: i.prevout!.scriptpubkey_address,
+                      value: i.prevout!.value,
+                    }))}
                 />
                 <TableItem
                   label={t("transaction_info.outputs")}
@@ -141,24 +126,28 @@ const TableItem: FC<ITableItem> = ({ items, currentAddress, label }) => {
       <h3>{label}:</h3>
       <div className={s.tableList}>
         {items.map((i, idx) => (
-          <div key={`${currentId}${idx}`} className={s.tableGroup}>
+          <div
+            key={`${currentId}${idx}`}
+            className="border border-neutral-900 py-2 bg-neutral-950 rounded-xl px-3"
+          >
+            <div className={s.tableGroup}>
+              <span>#{idx}</span>
+              <span className={s.tableSecond}>
+                {(i.value / 10 ** 8).toFixed(8)} BEL
+              </span>
+            </div>
+
             <div
-              className={cn(
-                {
-                  [s.active]: i.scriptpubkey_address === currentAddress,
-                },
-                s.tableFirst
-              )}
+              className={cn(s.address)}
               onClick={async () => {
                 await navigator.clipboard.writeText(i.scriptpubkey_address);
                 toast.success(t("transaction_info.copied"));
               }}
               title={i.scriptpubkey_address}
             >
-              {shortAddress(i.scriptpubkey_address, addressLength(i.value))}
-            </div>
-            <div className={s.tableSecond}>
-              {(i.value / 10 ** 8).toFixed(2)}
+              {i.scriptpubkey_address === currentAddress
+                ? t("transaction_info.your_address")
+                : shortAddress(i.scriptpubkey_address, addressLength(i.value))}
             </div>
           </div>
         ))}

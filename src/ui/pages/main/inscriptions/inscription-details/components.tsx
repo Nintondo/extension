@@ -87,12 +87,14 @@ const InscriptionDetails = () => {
   }));
 
   const convertToCompletedInscription = useCallback(
-    async (
-      inscriptionId: string
-    ): Promise<CompletedInscription | undefined> => {
+    async ({
+      inscription_id,
+    }: {
+      inscription_id: string;
+    }): Promise<CompletedInscription | undefined> => {
       const [data, location] = await Promise.all([
-        apiController.searchContentInscriptionByInscriptionId(inscriptionId),
-        apiController.getLocationByInscriptionId(inscriptionId),
+        apiController.searchContentInscriptionByInscriptionId(inscription_id),
+        apiController.getLocationByInscriptionId(inscription_id),
       ]);
       if (!data || !location) return;
       const parsedLocation = parseLocation(location.location);
@@ -102,17 +104,17 @@ const InscriptionDetails = () => {
       return {
         content_length: data.file_size,
         content_type: data.file_type,
-        inscription_id: inscriptionId,
+        inscription_id: inscription_id,
         inscription_number: data.number,
-        content: inscriptionId,
-        preview: inscriptionId,
+        content: inscription_id,
+        preview: inscription_id,
         value: value ? value[0] : 0,
         owner: location.owner,
         txid: parsedLocation.txid,
         vout: parsedLocation.vout,
         offset: parsedLocation.offset,
         outpoint: `${parsedLocation.txid}i${parsedLocation.vout}`,
-        genesis: inscriptionId,
+        genesis: inscription_id,
         status: {
           block_hash: "",
           block_height: data.creation_block,
@@ -126,10 +128,18 @@ const InscriptionDetails = () => {
 
   useEffect(() => {
     if (!location.state) return navigate(-1);
+    if (location.state?.txid) {
+      setInscription(location.state);
+      return;
+    }
     convertToCompletedInscription(location.state)
       .then((completeInscription) => {
         if (completeInscription) {
           setInscription(completeInscription);
+          navigate(location.pathname, {
+            state: completeInscription,
+            replace: true,
+          });
         } else {
           navigate(-1);
         }

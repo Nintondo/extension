@@ -40,7 +40,9 @@ const InscriptionCard: FC<Props> = ({ inscriptionId }) => {
       <div
         className="cursor-pointer flex flex-col justify-center align-center relative"
         onClick={() => {
-          navigate("/pages/inscription-details", { state: inscriptionId });
+          navigate("/pages/inscription-details", {
+            state: { inscription_id: inscriptionId },
+          });
         }}
       >
         <div className="rounded-xl w-full bg-slate-950 bg-opacity-50">
