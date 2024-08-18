@@ -78,7 +78,6 @@ const RestoreMnemonic = () => {
         hideRoot: !showRootAcc,
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
       navigate("/home");
     } catch (e) {
       console.error(e);

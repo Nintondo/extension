@@ -45,7 +45,6 @@ const RestorePrivKey = () => {
         restoreFrom: selectedWayToRestore.name,
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
       navigate("/");
     } catch (e) {
       console.error(e);

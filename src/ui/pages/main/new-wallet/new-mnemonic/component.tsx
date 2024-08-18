@@ -74,7 +74,6 @@ const NewMnemonic = () => {
         hideRoot: true,
         network,
       });
-      await updateWalletState({ vaultIsEmpty: false });
     } catch (e) {
       console.error(e);
       if (e instanceof Error) toast.error(e.message);

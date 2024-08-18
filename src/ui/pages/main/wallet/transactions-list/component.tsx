@@ -11,8 +11,8 @@ import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
-import { TailSpin } from "react-loading-icons";
+import { useEffect, useState } from "react";
+import LoadingIcons, { TailSpin } from "react-loading-icons";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const TransactionList = () => {
@@ -20,10 +20,13 @@ const TransactionList = () => {
     useTransactionManagerContext();
   const currentAccount = useGetCurrentAccount();
   const { ref, inView } = useInView();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (inView) loadMoreTransactions();
+    if (inView) {
+      setLoading(true);
+      loadMoreTransactions().then(() => setLoading(false));
+    }
   }, [inView, loadMoreTransactions]);
 
   if (!transactions || !lastBlock || !currentAccount || !currentAccount.address)
@@ -86,7 +89,9 @@ const TransactionList = () => {
           </div>
         </Link>
       ))}
-      <div ref={ref}></div>
+      <div ref={ref} className="w-full py-1 ">
+        {loading && <LoadingIcons.TailSpin className="w-6 h-6 mx-auto" />}
+      </div>
     </div>
   );
 };

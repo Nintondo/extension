@@ -48,12 +48,12 @@ export const useCreateNewWallet = () => {
     );
   const clearSelected = useClearSelectedAccountStats();
   const navigate = useNavigate();
+  const { clearTransactions } = useTransactionManagerContext();
 
   return async (props: INewWalletProps) => {
     const wallet = await walletController.createNewWallet(props);
     const keyring = await keyringController.serializeKeyringById(wallet.id);
-    let newWallets = [...wallets, wallet];
-    newWallets = (await clearSelected(newWallets))!;
+    let newWallets = (await clearSelected([...wallets, wallet]))!;
 
     await walletController.saveWallets({
       phrases: [{ id: wallet.id, phrase: props.payload, data: keyring }],
@@ -64,7 +64,9 @@ export const useCreateNewWallet = () => {
       wallets: newWallets,
       selectedAccount: 0,
       selectedWallet: newWallets.length - 1,
+      vaultIsEmpty: false,
     });
+    clearTransactions();
 
     await notificationController.changedAccount();
     navigate("/");

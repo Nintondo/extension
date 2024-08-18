@@ -87,7 +87,7 @@ input[type="number"] {
 }
 
 .app {
-  @apply h-full min-h-screen flex justify-center items-center w-full standard:bg-input-bg standard:rounded-2xl overflow-x-hidden standard:min-h-max standard:pb-6 max-standard:max-w-[355px];
+  @apply h-full min-h-screen flex justify-center items-center w-full standard:bg-input-bg standard:rounded-2xl overflow-x-hidden standard:min-h-max standard:pb-6 max-standard:max-w-full;
 
   .main-route {
     @apply w-full flex justify-center;

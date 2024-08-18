@@ -28,7 +28,7 @@ module.exports = {
         "light-orange": "#ff863a"
       },
       screens: {
-        "standard": "355px",
+        "standard": "455px",
         "sm": "640px",
         "md": "768px",
         "lg": "1024px",

@@ -67,7 +67,6 @@ export function arrayDifference<T>(arr1: T[], arr2: T[]): T[] {
 export const useUpdateFunction = <T>(
   onUpdate: Dispatch<SetStateAction<T[] | undefined>>,
   retrieveFn: (address: string) => Promise<T[] | undefined>,
-  currentValue: T[] | undefined,
   compareKey: keyof T
 ) => {
   return useCallback(
@@ -75,24 +74,19 @@ export const useUpdateFunction = <T>(
       const receivedItems = await retrieveFn(address);
       if (receivedItems === undefined) return;
 
-      const currentItemsKeys = currentValue?.map((f) => f[compareKey]);
-      const receivedItemsKeys = receivedItems?.map((f) => f[compareKey]);
-      const difference = arrayDifference(
-        receivedItemsKeys,
-        currentItemsKeys ?? []
-      );
+      onUpdate((prev) => {
+        if ((prev?.length ?? 0) < 50 || force || !prev) return receivedItems;
 
-      if (!force && (currentValue ?? []).length > 0 && difference.length) {
-        onUpdate([
-          ...difference.map(
-            (f) => receivedItems.find((item) => item[compareKey] === f)!
-          ),
-          ...(currentValue ?? []),
-        ]);
-      } else if ((currentValue ?? []).length < 50 || force) {
-        onUpdate(receivedItems ?? []);
-      }
+        const currentItemsKeys = prev.map((f) => f[compareKey]);
+        const receivedItemsKeys = receivedItems?.map((f) => f[compareKey]);
+        const difference = arrayDifference(receivedItemsKeys, currentItemsKeys);
+
+        return [
+          ...receivedItems.filter((f) => difference.includes(f[compareKey])),
+          ...prev,
+        ];
+      });
     },
-    [onUpdate, retrieveFn, compareKey, currentValue]
+    [onUpdate, retrieveFn, compareKey]
   );
 };
