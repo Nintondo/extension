@@ -62,7 +62,7 @@ class KeyringService {
     hideRoot,
     restoreFrom,
     hdPath,
-    passphrase = undefined,
+    passphrase,
     network,
   }: INewWalletProps) {
     let keyring: HDPrivateKey | HDSimpleKey;
