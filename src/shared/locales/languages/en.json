@@ -136,7 +136,8 @@
       "recover": "Recover",
       "invalid_private_key_error": "Invalid private key"
     },
-    "hd_path": "Hd path"
+    "hd_path": "Hd path",
+    "passphrase": "Passphrase"
   },
   "receive": {
     "click_to_copy": "Click to copy",

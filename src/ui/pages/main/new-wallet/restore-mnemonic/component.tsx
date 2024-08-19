@@ -1,6 +1,5 @@
 import s from "./styles.module.scss";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
-import { useWalletState } from "@/ui/states/walletState";
 import { useMemo, useState } from "react";
 import cn from "classnames";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,6 @@ import toast from "react-hot-toast";
 import SwitchAddressType from "@/ui/components/switch-address-type";
 import SelectWithHint from "@/ui/components/select-hint/component";
 import { t } from "i18next";
-import { AddressType } from "bellhdw";
 import { TailSpin } from "react-loading-icons";
 import Switch from "@/ui/components/switch";
 import { useAppState } from "@/ui/states/appState";
@@ -21,12 +19,14 @@ const selectOptions = [
     label: "Default",
     value: DEFAULT_HD_PATH,
     lecacyDerivation: false,
+    passphrase: "bells",
   },
   {
     label: "Ordinals",
     value: "m/44'/3'/0'/0/0",
     lecacyDerivation: true,
     isLegacySwitchLocked: true,
+    passphrase: "",
   },
   {
     label: "Custom",
@@ -36,9 +36,11 @@ const selectOptions = [
 
 const RestoreMnemonic = () => {
   const [step, setStep] = useState(1);
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
   const [addressType, setAddressType] = useState(ADDRESS_TYPES[0].value);
   const [hdPath, setHdPath] = useState<string | undefined>(DEFAULT_HD_PATH);
+  const [passphrase, setPassphrase] = useState(
+    selectOptions[0].passphrase ?? ""
+  );
   const [mnemonicPhrase, setMnemonicPhrase] = useState<(string | undefined)[]>(
     new Array(12).fill("")
   );
@@ -77,6 +79,8 @@ const RestoreMnemonic = () => {
         addressType,
         hideRoot: !showRootAcc,
         network,
+        hdPath,
+        passphrase,
       });
       navigate("/home");
     } catch (e) {
@@ -131,11 +135,10 @@ const RestoreMnemonic = () => {
           />
 
           <div className="w-full flex flex-col gap-2">
-            <h5 className="uppercase text-sm">{t("new_wallet.hd_path")}</h5>
             <div className="flex w-full gap-2 text-sm">
               <input
                 disabled={selectedOption.name !== "Custom"}
-                className={cn("input w-full mt-1", s.input)}
+                className={cn("input w-full mt-1 py-1", s.input)}
                 placeholder={t("new_wallet.hd_path")}
                 value={hdPath ?? ""}
                 onChange={(e) =>
@@ -157,6 +160,7 @@ const RestoreMnemonic = () => {
                       setShowRootAcc(false);
                     }
                     setHdPath(v.value);
+                    setPassphrase(v.passphrase ?? "");
                   }
                 }}
                 values={selectOptions.map((i) => ({
@@ -165,6 +169,14 @@ const RestoreMnemonic = () => {
                 className="w-28"
               />
             </div>
+
+            <input
+              disabled={selectedOption.name !== "Custom"}
+              className={cn(s.input, "input w-full py-2")}
+              placeholder={t("new_wallet.passphrase")}
+              value={passphrase}
+              onChange={(e) => setPassphrase(e.target.value)}
+            />
           </div>
 
           <Switch
