@@ -10,6 +10,15 @@ export interface ApiOrdUTXO extends ApiUTXO {
   rawTx?: string;
 }
 
+export interface OrdUTXO {
+  txid: string;
+  value: number;
+  hex: string;
+  vout: number;
+  inscription_id: string;
+  offset: number;
+}
+
 export interface Inscription extends ApiOrdUTXO {
   preview: string;
   content: string;
@@ -43,4 +52,11 @@ export interface ContentDetailedInscription {
   created: number;
   creation_block: number;
   invalid_token_reason: any;
+}
+
+export interface FindInscriptionsByOutpointResponseItem {
+  number: number;
+  owner: string;
+  height: number;
+  genesis: string;
 }

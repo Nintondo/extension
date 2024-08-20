@@ -3,7 +3,7 @@ import { keyringService } from "../services";
 import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
 import type { IPrivateWallet } from "@/shared/interfaces";
 import type { AddressType } from "bellhdw";
-import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import { OrdUTXO } from "@/shared/interfaces/inscriptions";
 import { ApiUTXO } from "@/shared/interfaces/api";
 
 export interface IKeyringController {
@@ -35,7 +35,7 @@ export interface IKeyringController {
   createSendMultiOrd(
     toAddress: string,
     feeRate: number,
-    ordUtxos: ApiOrdUTXO[],
+    ordUtxos: OrdUTXO[],
     utxos: ApiUTXO[],
     network: Network
   ): Promise<string>;
@@ -133,7 +133,7 @@ class KeyringController implements IKeyringController {
   async createSendMultiOrd(
     toAddress: string,
     feeRate: number,
-    ordUtxos: ApiOrdUTXO[],
+    ordUtxos: OrdUTXO[],
     utxos: ApiUTXO[],
     network: Network
   ): Promise<string> {

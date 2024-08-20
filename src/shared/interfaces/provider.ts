@@ -1,5 +1,3 @@
-import { Inscription } from "./inscriptions";
-
 export interface IField {
   input: boolean;
   label: string;
@@ -9,7 +7,7 @@ export interface IField {
 
 export interface IFieldValue {
   text?: string;
-  inscriptions?: Inscription[];
+  inscriptions?: string[];
   value?: string;
   anyonecanpay?: boolean;
 }

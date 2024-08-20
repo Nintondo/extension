@@ -144,15 +144,16 @@ export const useDecodePsbtInputs = () => {
         totalInputValue += locationValue[outpoint];
 
         if (psbt.data.inputs[i].sighashType === 131) {
-          const foundInscriptions = await apiController.getInscription({
-            address: currentAccount!.address!,
-            inscriptionId: outpoint.split("i")[0] + "i" + txInput.index,
-          });
+          const foundInscriptions =
+            await apiController.findInscriptionsByOutpoint({
+              address: currentAccount!.address!,
+              outpoint: outpoint.replace(":", "i"),
+            });
 
           if (foundInscriptions && foundInscriptions.length) {
             value = {
               anyonecanpay: true,
-              inscriptions: foundInscriptions,
+              inscriptions: foundInscriptions.map((i) => i.genesis),
               value: `${toFixed(inputValue)} BEL`,
             };
           } else {

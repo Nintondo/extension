@@ -1,10 +1,10 @@
 import { useGetCurrentAccount, useWalletState } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
 import { tidoshisToAmount } from "@/shared/utils/transactions";
-import { Psbt } from "belcoinjs-lib";
+import { Psbt, Transaction } from "belcoinjs-lib";
 import type { Hex } from "@/background/services/keyring/types";
 import { t } from "i18next";
-import { Inscription } from "@/shared/interfaces/inscriptions";
+import { Inscription, OrdUTXO } from "@/shared/interfaces/inscriptions";
 import { ITransfer } from "@/shared/interfaces/token";
 import toast from "react-hot-toast";
 import { gptFeeCalculate, ss } from "../utils";
@@ -135,17 +135,22 @@ export const useSendTransferTokens = () => {
       hex: true,
     });
     if (!utxos) return;
-    const inscriptions: Inscription[] = [];
+    const inscriptions: OrdUTXO[] = [];
     for (const transferToken of txIds) {
-      const foundInscriptons = await apiController.getInscription({
-        inscriptionId: transferToken.inscription_id,
-        address: currentAccount.address,
-      });
-      if (!foundInscriptons) return;
-      const txid = foundInscriptons[0].txid;
+      const hex = await apiController.getTransactionHex(
+        transferToken.inscription_id.split("i")[0]
+      );
+      if (!hex) return;
+      const tx = Transaction.fromHex(hex);
+      const vout = Number(transferToken.inscription_id.split("i")[1]);
+
       inscriptions.push({
-        ...foundInscriptons[0],
-        hex: await apiController.getTransactionHex(txid),
+        inscription_id: transferToken.inscription_id,
+        offset: 0,
+        txid: tx.getId(),
+        value: tx.outs[vout].value,
+        vout,
+        hex,
       });
     }
     const tx = await keyringController.createSendMultiOrd(

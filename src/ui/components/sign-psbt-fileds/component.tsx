@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import { IField } from "@/shared/interfaces/provider";
-import { PREVIEW_URL, TESTNET_HTML_PREVIEW_URL } from "@/shared/constant";
+import { PREVIEW_URL, TESTNET_PREVIEW_URL } from "@/shared/constant";
 import { t } from "i18next";
 import cn from "classnames";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
@@ -62,10 +62,8 @@ const SignPsbtFileds: FC<SignPsbtFiledsProps> = ({
                   >
                     <img
                       src={`${
-                        isTestnet(network)
-                          ? TESTNET_HTML_PREVIEW_URL
-                          : PREVIEW_URL
-                      }/${k.inscription_id}`}
+                        isTestnet(network) ? TESTNET_PREVIEW_URL : PREVIEW_URL
+                      }/${k}`}
                       className="object-cover w-full rounded-xl"
                     />
                     <p className="text-xs">

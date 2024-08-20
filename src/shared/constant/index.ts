@@ -72,7 +72,7 @@ export const HTML_PREVIEW_URL =
 export const CONTENT_URL =
   process.env.CONTENT_URL ?? "https://content.nintondo.io/api/pub";
 export const HISTORY_URL =
-  process.env.HISTORY_URL ?? "https://history.nintondo.io/api/pub";
+  process.env.HISTORY_URL ?? "https://history.nintondo.io/pub";
 
 export const NINTONDO_URL = process.env.NINTONDO_URL ?? "https://nintondo.io";
 

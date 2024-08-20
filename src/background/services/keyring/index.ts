@@ -12,7 +12,7 @@ import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
 import { INewWalletProps } from "@/shared/interfaces";
-import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import { ApiOrdUTXO, OrdUTXO } from "@/shared/interfaces/inscriptions";
 import { ApiUTXO } from "@/shared/interfaces/api";
 
 export const KEYRING_SDK_TYPES = {
@@ -314,7 +314,7 @@ class KeyringService {
   async sendMultiOrd(
     toAddress: string,
     feeRate: number,
-    ordUtxos: ApiOrdUTXO[],
+    ordUtxos: OrdUTXO[],
     utxos: ApiUTXO[],
     network: Network
   ) {

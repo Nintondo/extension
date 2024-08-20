@@ -4,10 +4,9 @@ import type {
   ITransaction,
 } from "@/shared/interfaces/api";
 import {
-  ApiOrdUTXO,
   ContentDetailedInscription,
   ContentInscriptionResopnse,
-  Inscription,
+  FindInscriptionsByOutpointResponseItem,
 } from "@/shared/interfaces/inscriptions";
 import { IToken } from "@/shared/interfaces/token";
 import { customFetch, fetchProps } from "@/shared/utils";
@@ -25,31 +24,16 @@ export interface IApiController {
     address: string,
     params?: UtxoQueryParams
   ): Promise<ApiUTXO[] | undefined>;
-  getOrdUtxos(address: string): Promise<ApiOrdUTXO[] | undefined>;
   pushTx(rawTx: string): Promise<{ txid: string } | undefined>;
   getTransactions(address: string): Promise<ITransaction[] | undefined>;
   getPaginatedTransactions(
     address: string,
     txid: string
   ): Promise<ITransaction[] | undefined>;
-  getPaginatedInscriptions(
-    address: string,
-    location: string
-  ): Promise<Inscription[] | undefined>;
   getBELPrice(): Promise<{ bellscoin?: { usd: number } } | undefined>;
   getLastBlockBEL(): Promise<number | undefined>;
   getFees(): Promise<{ fast: number; slow: number } | undefined>;
-  getInscriptions(address: string): Promise<Inscription[] | undefined>;
   getAccountStats(address: string): Promise<IAccountStats | undefined>;
-  getInscription({
-    inscriptionNumber,
-    inscriptionId,
-    address,
-  }: {
-    inscriptionNumber?: number;
-    inscriptionId?: string;
-    address: string;
-  }): Promise<Inscription[] | undefined>;
   getTokens(address: string): Promise<IToken[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
@@ -67,6 +51,10 @@ export interface IApiController {
   getLocationByInscriptionId(
     inscriptionId: string
   ): Promise<{ location: string; owner: string } | undefined>;
+  findInscriptionsByOutpoint(data: {
+    outpoint: string;
+    address: string;
+  }): Promise<FindInscriptionsByOutpointResponseItem[] | undefined>;
 }
 
 type FetchType = <T>(
@@ -93,14 +81,6 @@ class ApiController implements IApiController {
     const data = await this.fetch<ApiUTXO[]>({
       path: `/address/${address}/utxo`,
       params: params as Record<string, string>,
-      service: "electrs",
-    });
-    return data;
-  }
-
-  async getOrdUtxos(address: string) {
-    const data = await this.fetch<ApiOrdUTXO[]>({
-      path: `/address/${address}/ords`,
       service: "electrs",
     });
     return data;
@@ -145,13 +125,6 @@ class ApiController implements IApiController {
     });
   }
 
-  async getInscriptions(address: string): Promise<Inscription[] | undefined> {
-    return await this.fetch<Inscription[]>({
-      path: `/address/${address}/ords`,
-      service: "electrs",
-    });
-  }
-
   async getPaginatedTransactions(
     address: string,
     txid: string
@@ -159,20 +132,6 @@ class ApiController implements IApiController {
     try {
       return await this.fetch<ITransaction[]>({
         path: `/address/${address}/txs/chain/${txid}`,
-        service: "electrs",
-      });
-    } catch (e) {
-      return undefined;
-    }
-  }
-
-  async getPaginatedInscriptions(
-    address: string,
-    location: string
-  ): Promise<Inscription[] | undefined> {
-    try {
-      return await this.fetch<Inscription[]>({
-        path: `/address/${address}/ords/chain/${location}`,
         service: "electrs",
       });
     } catch (e) {
@@ -214,23 +173,6 @@ class ApiController implements IApiController {
     } catch {
       return { amount: 0, count: 0, balance: 0 };
     }
-  }
-
-  async getInscription({
-    inscriptionNumber,
-    inscriptionId,
-    address,
-  }: {
-    inscriptionNumber?: number;
-    inscriptionId?: string;
-    address: string;
-  }): Promise<Inscription[] | undefined> {
-    return await this.fetch<Inscription[]>({
-      path: `/address/${address}/ords?search=${
-        inscriptionId ?? inscriptionNumber
-      }`,
-      service: "electrs",
-    });
   }
 
   async getTokens(address: string): Promise<IToken[] | undefined> {
@@ -286,6 +228,16 @@ class ApiController implements IApiController {
     return await this.fetch<{ location: string; owner: string }>({
       path: `/${inscriptionId}/owner`,
       service: "history",
+    });
+  }
+
+  async findInscriptionsByOutpoint(data: {
+    outpoint: string;
+    address: string;
+  }) {
+    return await this.fetch<FindInscriptionsByOutpointResponseItem[]>({
+      path: `/find_meta/${data.outpoint}?address=${data.address}`,
+      service: "electrs",
     });
   }
 }
