@@ -39,7 +39,7 @@ export function useCreateBellsTxCallback() {
         toAmount + (receiverToPayFee ? 0 : gptFeeCalculate(2, 2, feeRate)),
     });
 
-    if ((utxos?.length ?? 0) > 5) {
+    if ((utxos?.length ?? 0) > 5 && !receiverToPayFee) {
       utxos = await apiController.getUtxos(fromAddress, {
         amount: toAmount + gptFeeCalculate(1 + utxos!.length, 2, feeRate),
       });
@@ -47,8 +47,9 @@ export function useCreateBellsTxCallback() {
 
     if (!utxos) return;
 
-    if (utxos.length > 1000)
+    if (utxos.length > 500) {
       throw new Error(t("hooks.transaction.too_many_utxos"));
+    }
 
     const safeBalance = (utxos ?? []).reduce((pre, cur) => pre + cur.value, 0);
     if (safeBalance < toAmount) {
@@ -175,7 +176,13 @@ export function usePushBellsTxCallback() {
       const txid = await apiController.pushTx(rawtx);
       return txid;
     } catch (e) {
-      console.error(e);
+      if (e instanceof Error) {
+        if (e.message.includes("too-long-mempool-chain")) {
+          toast.error(t("hooks.transaction.too_long_mempool_chain"));
+        } else {
+          toast.error(e.message);
+        }
+      }
     }
   };
 }

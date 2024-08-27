@@ -114,10 +114,9 @@ export const useCreateNewAccount = () => {
 };
 
 export const useSwitchWallet = () => {
-  const { wallets, updateWalletState, selectedAccount, selectedWallet } =
-    useWalletState(
-      ss(["wallets", "updateWalletState", "selectedAccount", "selectedWallet"])
-    );
+  const { wallets, updateWalletState, selectedWallet } = useWalletState(
+    ss(["wallets", "updateWalletState", "selectedAccount", "selectedWallet"])
+  );
   const { walletController, notificationController } = useControllersState(
     ss(["walletController", "notificationController"])
   );
@@ -139,7 +138,7 @@ export const useSwitchWallet = () => {
       });
     }
 
-    if (selectedAccount !== undefined && selectedWallet !== undefined) {
+    if (selectedWallet !== key) {
       clearTransactions();
       newWallets = (await clearSelected(newWallets))!;
     }

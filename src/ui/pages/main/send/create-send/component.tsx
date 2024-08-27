@@ -79,11 +79,11 @@ const CreateSend = () => {
 
       const data = !inscriptionTransaction
         ? await createTx(
-          address,
-          Number((Number(amount) * 10 ** 8).toFixed(0)),
-          feeRate,
-          includeFeeInAmount
-        )
+            address,
+            Number((Number(amount) * 10 ** 8).toFixed(0)),
+            feeRate,
+            includeFeeInAmount
+          )
         : await createOrdTx(address, feeRate, inscription!);
       if (!data) return;
       const { fee, rawtx } = data;
@@ -116,25 +116,36 @@ const CreateSend = () => {
   };
 
   useEffect(() => {
-    if (!currentAccount || !currentAccount.address || typeof currentAccount.balance === "undefined")
+    if (
+      !currentAccount ||
+      !currentAccount.address ||
+      typeof currentAccount.balance === "undefined"
+    )
       return;
 
     if (location.state && location.state.toAddress) {
-      setFormData({
-        address: location.state.toAddress,
-        amount: location.state.amount,
-        feeAmount: location.state.inputedFee,
-        includeFeeInAmount: location.state.includeFeeInAmount,
+      setFormData((prev) => {
+        if (prev.address === "") {
+          if (location.state.save) {
+            setIsSaveAddress(true);
+          }
+          if (currentAccount.balance! / 10 ** 8 <= location.state.amount)
+            setIncludeFeeLocked(true);
+
+          if (location.state && location.state.inscription_id) {
+            setInscription(location.state);
+            setInscriptionTransaction(true);
+          }
+
+          return {
+            address: location.state.toAddress,
+            amount: location.state.amount,
+            feeAmount: location.state.inputedFee,
+            includeFeeInAmount: location.state.includeFeeInAmount,
+          };
+        }
+        return prev;
       });
-      if (location.state.save) {
-        setIsSaveAddress(true);
-      }
-      if (currentAccount?.balance / 10 ** 8 <= location.state.amount)
-        setIncludeFeeLocked(true);
-    }
-    if (location.state && location.state.inscription_id) {
-      setInscription(location.state);
-      setInscriptionTransaction(true);
     }
   }, [location.state, setFormData, currentAccount]);
 

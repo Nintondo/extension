@@ -14,6 +14,7 @@ const isSignApproval = (type: string) => {
     "InscribeTransfer",
     "multiPsbtSign",
     "switchNetwork",
+    "CreateTx",
   ];
   return SIGN_APPROVALS.includes(type);
 };
