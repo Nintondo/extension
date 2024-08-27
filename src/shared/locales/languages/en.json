@@ -227,7 +227,8 @@
       "insufficient_balance_0": "Insufficient balance. Non-Inscription balance",
       "insufficient_balance_1": "BEL) is lower than",
       "insufficient_balance_2": "BEL",
-      "too_many_utxos": "Too many UTXOs. You must consolidate them in order to send"
+      "too_many_utxos": "Too many UTXOs. You must consolidate them or use smaller amount to send",
+      "too_long_mempool_chain": "Too long mempool chain. You must wait until it's confirmed"
     },
     "wallet": {
       "last_wallet_error": "You cannot delete your last wallet"

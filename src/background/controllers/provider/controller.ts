@@ -4,7 +4,7 @@ import "reflect-metadata/lite";
 import permission from "@/background/services/permission";
 import apiController from "../apiController";
 import { INintondoProvider, NetworkType } from "nintondo-sdk";
-import { isTestnet } from "@/ui/utils";
+import { gptFeeCalculate, isTestnet } from "@/ui/utils";
 import { ethErrors } from "eth-rpc-errors";
 import walletController from "../walletController";
 
@@ -139,9 +139,29 @@ class ProviderController implements IProviderController {
       throw ethErrors.provider.chainDisconnected("Account not found");
 
     const network = storageService.appState.network;
+
+    let utxos = await apiController.getUtxos(
+      storageService.currentAccount.address,
+      {
+        amount: payload.amount + gptFeeCalculate(2, 2, payload.feeRate),
+      }
+    );
+
+    if ((utxos?.length ?? 0) > 5) {
+      utxos = await apiController.getUtxos(
+        storageService.currentAccount.address,
+        {
+          amount:
+            payload.amount + gptFeeCalculate(utxos!.length, 2, payload.feeRate),
+        }
+      );
+    }
+
+    if (!utxos?.length) throw new Error("Not enough utxos");
+
     const tx = await keyringService.sendBEL({
       ...payload,
-      utxos: payload.utxos as unknown as any[],
+      utxos,
       network,
     });
     const psbt = Psbt.fromHex(tx);
