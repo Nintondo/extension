@@ -1,6 +1,6 @@
 {
   "name": "nintondo-extension",
-  "version": "0.2.6.3",
+  "version": "0.2.6.4",
   "private": true,
   "scripts": {
     "dev": "bun build.ts --watch",
@@ -37,7 +37,6 @@
     "belcoinjs-lib": "^0.1.2",
     "bellhdw": "^0.5.40",
     "bells-inscriber": "^0.2.1",
-    "big.js": "6.2.1",
     "classnames": "2.5.1",
     "eth-rpc-errors": "4.0.3",
     "events": "^3.3.0",
@@ -60,8 +59,7 @@
     "zustand": "4.5.4"
   },
   "devDependencies": {
-    "@types/big.js": "^6.2.2",
-    "@types/chrome": "^0.0.269",
+    "@types/chrome": "^0.0.270",
     "@types/koa-compose": "^3.2.8",
     "@types/node": "^22.1.0",
     "@types/react": "^18.2.47",

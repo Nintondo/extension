@@ -1,6 +1,5 @@
 import type { ITransaction } from "@/shared/interfaces/api";
 import { payments } from "belcoinjs-lib";
-import Big from "big.js";
 import { AddressType } from "bellhdw/src/hd/types";
 
 export const getTransactionValue = (
@@ -76,13 +75,8 @@ export function shortAddress(address?: string, len = 5) {
   return address.slice(0, len) + "..." + address.slice(address.length - len);
 }
 
-export const satoshisToBTC = (amount: number) => {
-  return amount / 100_000_000;
-};
-
-export function tidoshisToAmount(val: number) {
-  const num = new Big(val);
-  return num.div(100_000_000).toFixed(8);
+export function satoshisToAmount(val: number) {
+  return parseFloat((val / 10 ** 8).toFixed(8));
 }
 
 export function toFixed(x: number): string {

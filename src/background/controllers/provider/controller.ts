@@ -147,7 +147,7 @@ class ProviderController implements IProviderController {
       }
     );
 
-    if ((utxos?.length ?? 0) > 5) {
+    if ((utxos?.length ?? 0) > 5 && !payload.receiverToPayFee) {
       utxos = await apiController.getUtxos(
         storageService.currentAccount.address,
         {

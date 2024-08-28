@@ -30,7 +30,7 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
       <iframe
         id="frame"
         onClick={(e) => e.preventDefault()}
-        className={cn(SIZES[size])}
+        className={cn(SIZES[size], "bg-white")}
         src={preview}
         sandbox="allow-scripts"
         scrolling="no"
@@ -43,6 +43,3 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
 };
 
 export default Iframe;
-// export default memo(Iframe, (p, n) => {
-//   return p.preview === n.preview;
-// });

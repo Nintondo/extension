@@ -1,6 +1,6 @@
 import { useGetCurrentAccount, useWalletState } from "../states/walletState";
 import { useControllersState } from "../states/controllerState";
-import { tidoshisToAmount } from "@/shared/utils/transactions";
+import { satoshisToAmount } from "@/shared/utils/transactions";
 import { Psbt, Transaction } from "belcoinjs-lib";
 import type { Hex } from "@/background/services/keyring/types";
 import { t } from "i18next";
@@ -54,9 +54,9 @@ export function useCreateBellsTxCallback() {
     const safeBalance = (utxos ?? []).reduce((pre, cur) => pre + cur.value, 0);
     if (safeBalance < toAmount) {
       throw new Error(
-        `${t("hooks.transaction.insufficient_balance_0")} (${tidoshisToAmount(
+        `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
           safeBalance
-        )} ${t("hooks.transaction.insufficient_balance_1")} ${tidoshisToAmount(
+        )} ${t("hooks.transaction.insufficient_balance_1")} ${satoshisToAmount(
           toAmount
         )} ${t("hooks.transaction.insufficient_balance_2")}`
       );
