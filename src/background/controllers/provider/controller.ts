@@ -143,9 +143,15 @@ class ProviderController implements IProviderController {
     let utxos = await apiController.getUtxos(
       storageService.currentAccount.address,
       {
-        amount: payload.amount + gptFeeCalculate(2, 2, payload.feeRate),
+        amount:
+          payload.amount +
+          (payload.receiverToPayFee
+            ? 0
+            : gptFeeCalculate(2, 2, payload.feeRate)),
       }
     );
+
+    if ((utxos?.length ?? 0) > 500) throw new Error("Consolidate utxos");
 
     if ((utxos?.length ?? 0) > 5 && !payload.receiverToPayFee) {
       utxos = await apiController.getUtxos(

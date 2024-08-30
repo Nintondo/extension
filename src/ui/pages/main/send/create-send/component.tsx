@@ -123,26 +123,28 @@ const CreateSend = () => {
     )
       return;
 
-    if (location.state && location.state.toAddress) {
+    if (location.state) {
       setFormData((prev) => {
         if (prev.address === "") {
-          if (location.state.save) {
-            setIsSaveAddress(true);
-          }
-          if (currentAccount.balance! / 10 ** 8 <= location.state.amount)
-            setIncludeFeeLocked(true);
+          if (location.state.toAddress) {
+            if (location.state.save) {
+              setIsSaveAddress(true);
+            }
+            if (currentAccount.balance! / 10 ** 8 <= location.state.amount)
+              setIncludeFeeLocked(true);
 
-          if (location.state && location.state.inscription_id) {
+            return {
+              address: location.state.toAddress,
+              amount: location.state.amount,
+              feeAmount: location.state.inputedFee,
+              includeFeeInAmount: location.state.includeFeeInAmount,
+            };
+          }
+
+          if (location.state.inscription_id) {
             setInscription(location.state);
             setInscriptionTransaction(true);
           }
-
-          return {
-            address: location.state.toAddress,
-            amount: location.state.amount,
-            feeAmount: location.state.inputedFee,
-            includeFeeInAmount: location.state.includeFeeInAmount,
-          };
         }
         return prev;
       });
