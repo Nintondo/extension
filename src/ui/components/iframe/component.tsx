@@ -30,7 +30,7 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
       <iframe
         id="frame"
         onClick={(e) => e.preventDefault()}
-        className={cn(SIZES[size], "bg-white")}
+        className={SIZES[size]}
         src={preview}
         sandbox="allow-scripts"
         scrolling="no"
