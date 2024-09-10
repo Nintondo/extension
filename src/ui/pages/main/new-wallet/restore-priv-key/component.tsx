@@ -2,7 +2,6 @@ import PasswordInput from "@/ui/components/password-input";
 import Select from "@/ui/components/select";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
 import { useAppState } from "@/ui/states/appState";
-import { useWalletState } from "@/ui/states/walletState";
 import { ss } from "@/ui/utils";
 import { t } from "i18next";
 import { useState } from "react";
@@ -32,7 +31,6 @@ const RestorePrivKey = () => {
 
   const createNewWallet = useCreateNewWallet();
   const navigate = useNavigate();
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
   const [loading, setLoading] = useState<boolean>(false);
   const { network } = useAppState(ss(["network"]));
 

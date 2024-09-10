@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import s from "./styles.module.scss";
-import { useWalletState } from "@/ui/states/walletState";
 import { TailSpin } from "react-loading-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useControllersState } from "@/ui/states/controllerState";
@@ -22,7 +21,6 @@ const NewMnemonic = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [savedPhrase, setSavedPhrase] = useState(false);
-  const { updateWalletState } = useWalletState(ss(["updateWalletState"]));
   const { updateAppState, network } = useAppState(
     ss(["updateAppState", "network"])
   );
