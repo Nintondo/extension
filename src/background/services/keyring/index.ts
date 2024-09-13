@@ -400,9 +400,14 @@ class KeyringService {
       );
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
 
-    if (inputs === undefined) {
-      throw new Error("No inputs to sign were provided");
-    }
+    if (inputs === undefined)
+      inputs = psbt.txInputs.map((_, i) => ({
+        publicKey: this.exportPublicKey(
+          storageService.currentAccount!.address!
+        ),
+        index: i,
+        sighashTypes: undefined,
+      }));
 
     if (
       keyring.addressType === AddressType.P2TR ||
