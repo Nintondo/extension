@@ -1,4 +1,5 @@
-const browser = chrome;
+import type { StorageInterface } from "@/background/services/storage/types";
+import browser from "webextension-polyfill";
 
 export async function browserWindowsGetCurrent(params?: any) {
   return await browser.windows.getCurrent(params);
@@ -12,7 +13,7 @@ export async function browserWindowsCreate(
 
 export async function browserWindowsUpdate(
   windowId: number,
-  updateInfo: chrome.windows.UpdateInfo
+  updateInfo: browser.Windows.UpdateUpdateInfoType
 ) {
   return await browser.windows.update(windowId, updateInfo);
 }
@@ -25,8 +26,10 @@ export async function browserStorageLocalGet<T>(val: any): Promise<T> {
   return (await browser.storage.local.get(val)) as T;
 }
 
-export async function browserStorageLocalSet<T extends object>(val: T) {
-  return await browser.storage.local.set(val);
+export async function browserStorageLocalSet(val: StorageInterface) {
+  return await browser.storage.local.set(
+    val as unknown as Record<string, unknown>
+  );
 }
 
 export async function browserTabsGetCurrent() {

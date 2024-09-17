@@ -399,6 +399,7 @@ class KeyringService {
         "Error when trying to get the current account or current account address or wallet"
       );
     const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
+
     if (inputs === undefined)
       inputs = psbt.txInputs.map((_, i) => ({
         publicKey: this.exportPublicKey(
@@ -407,6 +408,41 @@ class KeyringService {
         index: i,
         sighashTypes: undefined,
       }));
+
+    if (
+      keyring.addressType === AddressType.P2TR ||
+      keyring.addressType === AddressType.M44_P2TR
+    ) {
+      inputs.forEach((input) => {
+        const psbt_input = psbt.data.inputs[input.index];
+        const isNotSigned = !(
+          psbt_input.finalScriptSig || psbt_input.finalScriptWitness
+        );
+        const isP2TR =
+          keyring.addressType === AddressType.P2TR ||
+          keyring.addressType === AddressType.M44_P2TR;
+        const lostInternalPubkey = !psbt_input.tapInternalKey;
+        if (isNotSigned && isP2TR && lostInternalPubkey) {
+          const tapInternalKey = toXOnly(
+            Buffer.from(
+              this.exportPublicKey(storageService.currentAccount!.address!),
+              "hex"
+            )
+          );
+          const { output } = payments.p2tr({
+            internalPubkey: tapInternalKey,
+            network: storageService.appState.network,
+          });
+          if (
+            psbt_input.witnessUtxo?.script.toString("hex") ==
+            output?.toString("hex")
+          ) {
+            psbt_input.tapInternalKey = tapInternalKey;
+          }
+        }
+      });
+    }
+
     try {
       keyring.signInputsWithoutFinalizing(
         psbt,
