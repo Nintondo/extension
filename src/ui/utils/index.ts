@@ -1,5 +1,6 @@
 import { Network, networks } from "belcoinjs-lib";
 import { Dispatch, SetStateAction, useCallback } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 export const isNotification = (): boolean => {
   return window.location.pathname.includes("notification.html");
@@ -55,9 +56,9 @@ export function isTestnet(network: Network) {
 export function ss<T extends Record<string, any>, K extends keyof T = keyof T>(
   keys: K[]
 ) {
-  return (state: T) => {
+  return useShallow((state: T) => {
     return Object.fromEntries(keys.map((i) => [i, state[i]])) as Pick<T, K>;
-  };
+  });
 }
 
 export function arrayDifference<T>(arr1: T[], arr2: T[]): T[] {
