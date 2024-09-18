@@ -10,6 +10,7 @@ import AddressBookModal from "../../send/create-send/address-book-modal";
 import cn from "classnames";
 import toast from "react-hot-toast";
 import { useSendTransferTokens } from "@/ui/hooks/transactions";
+import { nFormatter } from "../../../../utils/formatter";
 
 interface Props {
   selectedSendToken: IToken | undefined;
@@ -20,14 +21,6 @@ interface FormType {
   address: string;
   txIds: ITransfer[];
   feeRate: number;
-}
-
-function formatAmount(amount: number) {
-  if (amount >= 1e12) return (amount / 1e12).toFixed(1) + "T";
-  if (amount >= 1e9) return (amount / 1e9).toFixed(1) + "B";
-  if (amount >= 1e6) return (amount / 1e6).toFixed(1) + "M";
-  if (amount >= 1e3) return (amount / 1e3).toFixed(1) + "K";
-  return amount.toString();
 }
 
 const SendTransferModal: FC<Props> = ({
@@ -129,7 +122,7 @@ const SendTransferModal: FC<Props> = ({
                 <span className="text-xs text-gray-100">
                   ${selectedSendToken.tick.toUpperCase()}
                 </span>
-                <span>{formatAmount(tx.amount)}</span>
+                <span>{nFormatter(tx.amount)}</span>
               </div>
             ))}
           </div>

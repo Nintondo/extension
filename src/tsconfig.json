@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["DOM", "ESNext", "DOM.Iterable"],
+    "lib": ["DOM", "ESNext", "DOM.Iterable", "ES2023", "ES2023.Array", "ES2023.Collection"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
