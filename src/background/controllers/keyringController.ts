@@ -39,6 +39,7 @@ export interface IKeyringController {
     utxos: ApiUTXO[],
     network: Network
   ): Promise<string>;
+  signPsbtBase64(psbtBase64: string): Promise<string>;
 }
 
 class KeyringController implements IKeyringController {
@@ -86,6 +87,15 @@ class KeyringController implements IKeyringController {
     keyringService.signPsbt(psbt);
     (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
     return psbt.toHex();
+  }
+
+  async signPsbtBase64(
+    psbtBase64: string,
+    disableTweakSigner?: boolean
+  ): Promise<string> {
+    const psbt = Psbt.fromBase64(psbtBase64);
+    keyringService.signPsbt(psbt, disableTweakSigner);
+    return psbt.toBase64();
   }
 
   async signAllInputs(txHex: string) {

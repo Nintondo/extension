@@ -122,7 +122,7 @@ class KeyringService {
     return this.keyrings[index].serialize();
   }
 
-  signPsbt(psbt: Psbt) {
+  signPsbt(psbt: Psbt, disableTweakSigner?: boolean) {
     if (storageService.currentWallet?.id === undefined)
       throw new Error("Internal error: Current wallet is not defined");
     if (storageService.currentAccount?.address === undefined)
@@ -162,6 +162,7 @@ class KeyringService {
         index,
         publicKey,
         sighashTypes: v.sighashType ? [v.sighashType] : undefined,
+        disableTweakSigner,
       }))
     );
   }
