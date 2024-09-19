@@ -36,7 +36,7 @@
     "bel-ord-utils": "^0.2.8",
     "belcoinjs-lib": "^0.1.2",
     "bellhdw": "^0.5.41",
-    "bells-inscriber": "^0.2.2",
+    "bells-inscriber": "^0.2.3",
     "classnames": "2.5.1",
     "eth-rpc-errors": "4.0.3",
     "events": "^3.3.0",
