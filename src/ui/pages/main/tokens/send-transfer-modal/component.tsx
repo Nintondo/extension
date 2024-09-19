@@ -38,7 +38,7 @@ const SendTransferModal: FC<Props> = ({
 
   const sendTransferTokens = useSendTransferTokens();
 
-  const send = async ({ address, txIds, feeRate }: FormType) => {
+  const send = async ({ address, txIds: transfers, feeRate }: FormType) => {
     try {
       setLoading(true);
       if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
@@ -47,10 +47,10 @@ const SendTransferModal: FC<Props> = ({
       if (address.trim().length <= 0) {
         return toast.error(t("send.create_send.address_error"));
       }
-      if (txIds.length <= 0) {
+      if (transfers.length <= 0) {
         return toast.error(t("inscriptions.0_selected_inscriptions_error"));
       }
-      await sendTransferTokens(address, txIds, feeRate);
+      await sendTransferTokens(address, transfers, feeRate);
       setSelectedSendToken(undefined);
     } catch (e) {
       toast.error((e as Error).message);

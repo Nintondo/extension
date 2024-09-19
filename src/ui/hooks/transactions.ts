@@ -130,7 +130,7 @@ export const useSendTransferTokens = () => {
 
   return async (toAddress: string, txIds: ITransfer[], feeRate: number) => {
     if (!currentAccount || !currentAccount.address) return;
-    const fee = gptFeeCalculate(1, txIds.length + 1, feeRate);
+    const fee = gptFeeCalculate(txIds.length + 1, txIds.length + 1, feeRate);
     const utxos = await apiController.getUtxos(currentAccount.address, {
       amount: fee,
       hex: true,

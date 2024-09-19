@@ -29,9 +29,6 @@ export interface IKeyringController {
   ): Promise<string[]>;
   exportPublicKey(address: string): Promise<string>;
   serializeKeyringById(index: number): Promise<any>;
-  signAllInputs(
-    txHex: string
-  ): Promise<{ psbtHex: string; signatures: (string | undefined)[] }>;
   createSendMultiOrd(
     toAddress: string,
     feeRate: number,
@@ -96,12 +93,6 @@ class KeyringController implements IKeyringController {
     const psbt = Psbt.fromBase64(psbtBase64);
     keyringService.signPsbt(psbt, disableTweakSigner);
     return psbt.toBase64();
-  }
-
-  async signAllInputs(txHex: string) {
-    const psbt = Psbt.fromHex(txHex);
-    const signatures = keyringService.signAllPsbtInputs(psbt);
-    return { psbtHex: psbt.toHex(), signatures };
   }
 
   async signMessage(msgParams: { from: string; data: string }) {

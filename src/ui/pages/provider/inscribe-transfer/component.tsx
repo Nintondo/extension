@@ -21,6 +21,7 @@ const InscribeTransfer = () => {
     tick: "",
     transferable_balance: 0,
     transfers: [],
+    transfers_count: 0,
   });
 
   useEffect(() => {
