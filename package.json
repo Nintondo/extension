@@ -33,7 +33,7 @@
     "@headlessui/react": "2.1.2",
     "@heroicons/react": "2.1.5",
     "@noble/hashes": "1.4.0",
-    "bel-ord-utils": "^0.2.9",
+    "bel-ord-utils": "^0.2.10",
     "belcoinjs-lib": "^0.1.2",
     "bellhdw": "^0.5.42",
     "bells-inscriber": "^0.2.4",
