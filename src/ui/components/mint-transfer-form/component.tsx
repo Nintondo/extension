@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loading-icons";
 import s from "./styles.module.scss";
+import { nFormatter } from "../../utils/formatter";
 
 interface FormType {
   amount: string;
@@ -127,7 +128,11 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
                 <div>{`${t("components.token_card.balance")}: `}</div>
                 <span className="flex items-center gap-1">
                   <span className="text-sm font-medium">
-                    {`${selectedMintToken?.balance ?? "-"}`}
+                    {`${
+                      typeof selectedMintToken?.balance !== "undefined"
+                        ? nFormatter(selectedMintToken.balance)
+                        : "-"
+                    }`}
                   </span>
 
                   <span className="text-xs">{selectedMintToken?.tick}</span>

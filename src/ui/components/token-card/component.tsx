@@ -4,6 +4,7 @@ import { t } from "i18next";
 import { FC, useState } from "react";
 import Modal from "../modal";
 import { shortAddress } from "@/shared/utils/transactions";
+import { nFormatter } from "../../utils/formatter";
 
 interface Props {
   token: IToken;
@@ -27,8 +28,14 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
             {token.tick.toUpperCase()}
           </span>
           <div>
-            {t("components.token_card.balance")}:{" "}
-            <span className="font-medium">{token.balance}</span>
+            <span>{t("components.token_card.balance")}</span>:{" "}
+            <span className="font-medium">{nFormatter(token.balance)}</span>
+          </div>
+          <div>
+            <span>{t("components.token_card.transferable_balance")}</span>:{" "}
+            <span className="font-medium">
+              {nFormatter(token.transferable_balance)}
+            </span>
           </div>
         </div>
         <ChevronRightIcon className="w-5 h-5" />
@@ -46,7 +53,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
                 {t("components.token_card.balance")}:
               </label>
               <span id="token_balance" className="text-lg font-medium">
-                {token.balance}
+                {nFormatter(token.balance)}
               </span>
             </div>
             <div className="h-9 bg-white bg-opacity-20 w-[1px]"></div>
@@ -55,7 +62,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
                 {t("components.token_card.transferable_balance")}:
               </label>
               <span id="transfer_balance" className="text-lg font-medium">
-                {token.transferable_balance}
+                {nFormatter(token.transferable_balance)}
               </span>
             </div>
           </div>
@@ -73,7 +80,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
                       className="flex gap-3 justify-between items-center py-2 px-4 w-full rounded-xl bg-input-light"
                     >
                       <span className="text-sm font-medium">
-                        {transfer.amount}
+                        {nFormatter(transfer.amount)}
                       </span>
                       <span className="text-xs text-gray-400">
                         {shortAddress(transfer.inscription_id, 9)}
@@ -97,7 +104,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
               {t("components.token_card.send")}
             </button>
             <button
-              disabled={token.balance <= 0}
+              disabled={token.balance === 0}
               className={"btn primary w-full"}
               onClick={() => {
                 openMintModal(token);

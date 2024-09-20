@@ -122,7 +122,7 @@ class KeyringService {
     return this.keyrings[index].serialize();
   }
 
-  signPsbt(psbt: Psbt) {
+  signPsbt(psbt: Psbt, disableTweakSigner?: boolean) {
     if (storageService.currentWallet?.id === undefined)
       throw new Error("Internal error: Current wallet is not defined");
     if (storageService.currentAccount?.address === undefined)
@@ -138,7 +138,6 @@ class KeyringService {
         keyring.addressType === AddressType.P2TR ||
         keyring.addressType === AddressType.M44_P2TR;
       const lostInternalPubkey = !v.tapInternalKey;
-      // Special measures taken for compatibility with certain applications.
       if (isNotSigned && isP2TR && lostInternalPubkey) {
         const tapInternalKey = toXOnly(
           Buffer.from(
@@ -162,20 +161,9 @@ class KeyringService {
         index,
         publicKey,
         sighashTypes: v.sighashType ? [v.sighashType] : undefined,
+        disableTweakSigner,
       }))
     );
-  }
-
-  signAllPsbtInputs(psbt: Psbt) {
-    if (storageService.currentWallet?.id === undefined)
-      throw new Error("Internal error: Current wallet is not defined");
-    if (storageService.currentAccount?.address === undefined)
-      throw new Error("Internal error: Current account is not defined");
-    const keyring = this.getKeyringByIndex(storageService.currentWallet.id);
-    return keyring.signAllInputsInPsbt(
-      psbt,
-      storageService.currentAccount.address
-    ).signatures;
   }
 
   signMessage(msgParams: { from: string; data: string }) {
@@ -325,7 +313,7 @@ class KeyringService {
       feeRate,
       signPsbtHex: async (psbtHex: string) => {
         const psbt = Psbt.fromHex(psbtHex);
-        this.signAllPsbtInputs(psbt);
+        this.signPsbtWithoutFinalizing(psbt);
         return psbt.toHex();
       },
       toAddress,
@@ -351,6 +339,7 @@ class KeyringService {
         })),
       ],
       network,
+      publicKey: this.exportPublicKey(storageService.currentAccount!.address!),
     });
   }
 
@@ -453,6 +442,7 @@ class KeyringService {
               ? (f as any).publicKey
               : this.exportPublicKey((f as any).address),
           sighashTypes: f.sighashTypes,
+          disableTweakSigner: f.disableTweakSigner,
         }))
       );
     } catch (e) {

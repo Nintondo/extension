@@ -24,4 +24,5 @@ export interface IToken {
   balance: number;
   transferable_balance: number;
   transfers: ITransfer[];
+  transfers_count: number;
 }

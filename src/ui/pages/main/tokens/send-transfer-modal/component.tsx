@@ -10,6 +10,7 @@ import AddressBookModal from "../../send/create-send/address-book-modal";
 import cn from "classnames";
 import toast from "react-hot-toast";
 import { useSendTransferTokens } from "@/ui/hooks/transactions";
+import { nFormatter } from "../../../../utils/formatter";
 
 interface Props {
   selectedSendToken: IToken | undefined;
@@ -20,14 +21,6 @@ interface FormType {
   address: string;
   txIds: ITransfer[];
   feeRate: number;
-}
-
-function formatAmount(amount: number) {
-  if (amount >= 1e12) return (amount / 1e12).toFixed(1) + "T";
-  if (amount >= 1e9) return (amount / 1e9).toFixed(1) + "B";
-  if (amount >= 1e6) return (amount / 1e6).toFixed(1) + "M";
-  if (amount >= 1e3) return (amount / 1e3).toFixed(1) + "K";
-  return amount.toString();
 }
 
 const SendTransferModal: FC<Props> = ({
@@ -45,7 +38,7 @@ const SendTransferModal: FC<Props> = ({
 
   const sendTransferTokens = useSendTransferTokens();
 
-  const send = async ({ address, txIds, feeRate }: FormType) => {
+  const send = async ({ address, txIds: transfers, feeRate }: FormType) => {
     try {
       setLoading(true);
       if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
@@ -54,10 +47,10 @@ const SendTransferModal: FC<Props> = ({
       if (address.trim().length <= 0) {
         return toast.error(t("send.create_send.address_error"));
       }
-      if (txIds.length <= 0) {
+      if (transfers.length <= 0) {
         return toast.error(t("inscriptions.0_selected_inscriptions_error"));
       }
-      await sendTransferTokens(address, txIds, feeRate);
+      await sendTransferTokens(address, transfers, feeRate);
       setSelectedSendToken(undefined);
     } catch (e) {
       toast.error((e as Error).message);
@@ -129,7 +122,7 @@ const SendTransferModal: FC<Props> = ({
                 <span className="text-xs text-gray-100">
                   ${selectedSendToken.tick.toUpperCase()}
                 </span>
-                <span>{formatAmount(tx.amount)}</span>
+                <span>{nFormatter(tx.amount)}</span>
               </div>
             ))}
           </div>
