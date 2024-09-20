@@ -11,7 +11,6 @@ import {
 import { IToken } from "@/shared/interfaces/token";
 import { customFetch, fetchProps } from "@/shared/utils";
 import { storageService } from "../services";
-import { networks } from "belcoinjs-lib";
 import { DEFAULT_FEES } from "@/shared/constant";
 
 export interface UtxoQueryParams {
@@ -58,19 +57,15 @@ export interface IApiController {
 }
 
 type FetchType = <T>(
-  props: Omit<fetchProps, "testnet">
+  props: Omit<fetchProps, "network">
 ) => Promise<T | undefined>;
 
 class ApiController implements IApiController {
-  private fetch: FetchType = async (p: Omit<fetchProps, "testnet">) => {
+  private fetch: FetchType = async (p: Omit<fetchProps, "network">) => {
     try {
       return await customFetch({
         ...p,
-        testnet:
-          storageService.appState.network.pubKeyHash ===
-            networks.testnet.pubKeyHash &&
-          storageService.appState.network.scriptHash ===
-            networks.testnet.scriptHash,
+        network: storageService.appState.network,
       });
     } catch {
       return;

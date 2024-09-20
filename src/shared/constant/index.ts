@@ -1,3 +1,4 @@
+import { isTestnet } from "@/ui/utils";
 import { Network, networks } from "belcoinjs-lib";
 import { AddressType } from "bellhdw/src/hd/types";
 
@@ -55,38 +56,31 @@ export const EVENTS = {
   },
 };
 
-export const COIN_NAME = "BELL";
-export const COIN_SYMBOL = "BELL";
-
-export const SATS_DOMAIN = ".sats";
-
-export const CHANNEL = "chrome";
-
-export const NINTONDO_API_URL =
+const NINTONDO_API_URL =
   process.env.API_URL ?? "https://electrs.nintondo.io/api";
 
-export const PREVIEW_URL =
-  process.env.PREVIEW_URL ?? "https://content.nintondo.io/api/pub/preview";
-export const HTML_PREVIEW_URL =
-  process.env.PREVIEW_URL ?? "https://content.nintondo.io/api/pub/html";
-export const CONTENT_URL =
+const CONTENT_URL =
   process.env.CONTENT_URL ?? "https://content.nintondo.io/api/pub";
-export const HISTORY_URL =
+const HISTORY_URL =
   process.env.HISTORY_URL ?? "https://history.nintondo.io/pub";
 
-export const NINTONDO_URL = process.env.NINTONDO_URL ?? "https://nintondo.io";
+export const NINTONDO_URL = "https://nintondo.io";
 
-export const TESTNET_NINTONDO_API_URL =
+const TESTNET_NINTONDO_API_URL =
   process.env.TESTNET_API_URL ?? "https://testnet.nintondo.io/electrs";
-
-export const TESTNET_PREVIEW_URL =
-  process.env.TESTNET_PREVIEW_URL ??
-  "https://testnet.nintondo.io/api/pub/preview";
-export const TESTNET_HTML_PREVIEW_URL =
-  process.env.TESTNET_HTML_URL ?? "https://testnet.nintondo.io/api/pub/html";
-export const TESTNET_CONTENT_URL =
+const TESTNET_CONTENT_URL =
   process.env.TESTNET_CONTENT_URL ?? "https://testnet.nintondo.io/api/pub";
-export const TESTNET_HISTORY_URL =
+
+export const getContentUrl = (network: Network) =>
+  isTestnet(network) ? TESTNET_CONTENT_URL : CONTENT_URL;
+
+export const getApiUrl = (network: Network) =>
+  isTestnet(network) ? TESTNET_NINTONDO_API_URL : NINTONDO_API_URL;
+
+export const getHistoryUrl = (network: Network) =>
+  isTestnet(network) ? TESTNET_HISTORY_URL : HISTORY_URL;
+
+const TESTNET_HISTORY_URL =
   process.env.TESTNET_HISTORY_URL ?? "https://testnet.nintondo.io/history/pub";
 
 export const DEFAULT_FEES = {

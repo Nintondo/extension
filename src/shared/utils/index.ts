@@ -1,12 +1,6 @@
-import {
-  CONTENT_URL,
-  HISTORY_URL,
-  NINTONDO_API_URL,
-  TESTNET_CONTENT_URL,
-  TESTNET_HISTORY_URL,
-  TESTNET_NINTONDO_API_URL,
-} from "@/shared/constant";
+import { Network } from "belcoinjs-lib";
 import browser from "./browser";
+import { getApiUrl, getContentUrl, getHistoryUrl } from "../constant";
 
 export const t = (name: string) => browser.i18n.getMessage(name);
 
@@ -21,29 +15,29 @@ export interface fetchProps extends RequestInit {
   params?: Record<string, string>;
   error?: boolean;
   json?: boolean;
-  testnet: boolean;
+  network: Network;
   service: "electrs" | "content" | "history";
 }
 
-const getBaseUrl = (service: fetchProps["service"], testnet: boolean) => {
+const getBaseUrl = (service: fetchProps["service"], testnet: Network) => {
   switch (service) {
     case "electrs":
-      return testnet ? TESTNET_NINTONDO_API_URL : NINTONDO_API_URL;
+      return getApiUrl(testnet);
     case "content":
-      return testnet ? TESTNET_CONTENT_URL : CONTENT_URL;
+      return getContentUrl(testnet);
     case "history":
-      return testnet ? TESTNET_HISTORY_URL : HISTORY_URL;
+      return getHistoryUrl(testnet);
   }
 };
 
 export const customFetch = async <T>({
   path,
   json = true,
-  testnet,
+  network,
   service,
   ...props
 }: fetchProps): Promise<T | undefined> => {
-  const url = `${getBaseUrl(service, testnet)}${path}`;
+  const url = `${getBaseUrl(service, network)}${path}`;
   const params = props.params
     ? Object.entries(props.params)
         .map((k) => `${k[0]}=${k[1]}`)

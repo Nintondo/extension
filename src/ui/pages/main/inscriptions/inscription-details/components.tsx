@@ -1,23 +1,16 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { CompletedInscription } from "@/shared/interfaces/inscriptions";
 import { useCallback, useEffect, useState } from "react";
 import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loading-icons";
-import {
-  CONTENT_URL,
-  HTML_PREVIEW_URL,
-  PREVIEW_URL,
-  TESTNET_CONTENT_URL,
-  TESTNET_HTML_PREVIEW_URL,
-} from "@/shared/constant";
 import s from "./styles.module.scss";
 import Iframe from "@/ui/components/iframe";
 import { useAppState } from "@/ui/states/appState";
-import { isTestnet, ss } from "@/ui/utils";
+import { ss } from "@/ui/utils";
 import { useControllersState } from "@/ui/states/controllerState";
 import { parseLocation } from "@/shared/utils";
+import { getContentUrl } from "@/shared/constant";
 
 type PathOf<T> = T extends object
   ? {
@@ -178,9 +171,9 @@ const InscriptionDetails = () => {
       <div className="px-4">
         <div className="flex justify-center w-[318px] h-[318px] rounded-xl overflow-hidden">
           <Iframe
-            preview={`${
-              isTestnet(network) ? TESTNET_HTML_PREVIEW_URL : HTML_PREVIEW_URL
-            }/${inscription.inscription_id}`}
+            preview={`${getContentUrl(network)}/html/${
+              inscription.inscription_id
+            }`}
             size="big"
           />
         </div>
@@ -197,15 +190,9 @@ const InscriptionDetails = () => {
               <div
                 onClick={async () => {
                   await openContent(
-                    `${
-                      f.key === "content"
-                        ? isTestnet(network)
-                          ? CONTENT_URL
-                          : TESTNET_CONTENT_URL
-                        : isTestnet(network)
-                        ? TESTNET_HTML_PREVIEW_URL
-                        : PREVIEW_URL
-                    }/content/${inscription.inscription_id}`
+                    `${getContentUrl(network)}/${
+                      f.key === "content" ? "content" : "preview"
+                    }/${inscription.inscription_id}`
                   );
                 }}
                 className="text-orange-400 cursor-pointer text-sm font-medium"

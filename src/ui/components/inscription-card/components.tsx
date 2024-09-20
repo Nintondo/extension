@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { shortAddress } from "@/shared/utils/transactions";
-import { PREVIEW_URL, TESTNET_PREVIEW_URL } from "@/shared/constant";
 import { useAppState } from "@/ui/states/appState";
-import { isTestnet, ss } from "@/ui/utils";
+import { ss } from "@/ui/utils";
+import { getContentUrl } from "@/shared/constant";
 
 interface Props {
   inscriptionId: string;
@@ -48,9 +48,7 @@ const InscriptionCard: FC<Props> = ({ inscriptionId }) => {
         <div className="rounded-xl w-full bg-slate-950 bg-opacity-50">
           <img
             ref={imageRef}
-            src={`${
-              isTestnet(network) ? TESTNET_PREVIEW_URL : PREVIEW_URL
-            }/${inscriptionId}`}
+            src={`${getContentUrl(network)}/preview/${inscriptionId}`}
             alt="content"
             className="object-cover rounded-xl h-38 w-38"
             style={{

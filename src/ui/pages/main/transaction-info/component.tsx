@@ -10,8 +10,8 @@ import cn from "classnames";
 import { shortAddress } from "@/shared/utils/transactions";
 import toast from "react-hot-toast";
 import { t } from "i18next";
-import { NINTONDO_URL } from "@/shared/constant";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
+import { NINTONDO_URL } from "@/shared/constant";
 
 const TransactionInfo = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);

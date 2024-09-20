@@ -1,12 +1,12 @@
 import { FC } from "react";
 
 import { IField } from "@/shared/interfaces/provider";
-import { PREVIEW_URL, TESTNET_PREVIEW_URL } from "@/shared/constant";
 import { t } from "i18next";
 import cn from "classnames";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useAppState } from "@/ui/states/appState";
-import { isTestnet, ss } from "@/ui/utils";
+import { ss } from "@/ui/utils";
+import { getContentUrl } from "@/shared/constant";
 
 interface SignPsbtFiledsProps {
   fields: IField[];
@@ -47,8 +47,6 @@ const SignPsbtFileds: FC<SignPsbtFiledsProps> = ({
             className={cn(
               "rounded-xl px-5 py-2 break-all w-full flex justify-center border-2 bg-input-bg",
               {
-                // "border-lime-800": !f.input && f.important,
-                // "border-light-orange": f.input && f.important,
                 "border-input-bg": true,
               }
             )}
@@ -61,9 +59,7 @@ const SignPsbtFileds: FC<SignPsbtFiledsProps> = ({
                     className="flex flex-col items-center justify-center p-2"
                   >
                     <img
-                      src={`${
-                        isTestnet(network) ? TESTNET_PREVIEW_URL : PREVIEW_URL
-                      }/${k}`}
+                      src={`${getContentUrl(network)}/preview/${k}`}
                       className="object-cover w-full rounded-xl"
                     />
                     <p className="text-xs">
