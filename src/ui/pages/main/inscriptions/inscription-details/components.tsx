@@ -9,6 +9,7 @@ import {
   CONTENT_URL,
   HTML_PREVIEW_URL,
   PREVIEW_URL,
+  TESTNET_CONTENT_URL,
   TESTNET_HTML_PREVIEW_URL,
 } from "@/shared/constant";
 import s from "./styles.module.scss";
@@ -198,7 +199,9 @@ const InscriptionDetails = () => {
                   await openContent(
                     `${
                       f.key === "content"
-                        ? CONTENT_URL
+                        ? isTestnet(network)
+                          ? CONTENT_URL
+                          : TESTNET_CONTENT_URL
                         : isTestnet(network)
                         ? TESTNET_HTML_PREVIEW_URL
                         : PREVIEW_URL
