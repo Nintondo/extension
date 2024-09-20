@@ -86,12 +86,10 @@ class ProviderController implements IProviderController {
   @Reflect.metadata("CONNECTED", true)
   calculateFee = async ({
     data: {
-      params: [hex, feeRate],
+      params: [base64, feeRate],
     },
   }: Payload<"calculateFee">) => {
-    const psbt = Psbt.fromHex(hex);
-    (psbt as any).__CACHE.__UNSAFE_SIGN_NONSEGWIT = true;
-
+    const psbt = Psbt.fromBase64(base64);
     keyringService.signPsbt(psbt);
     let txSize = psbt.extractTransaction(true).toBuffer().length;
     psbt.data.inputs.forEach((v) => {
