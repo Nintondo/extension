@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import { IField } from "@/shared/interfaces/provider";
+import { IField } from "@/shared/types/provider";
 import { t } from "i18next";
 import cn from "classnames";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";

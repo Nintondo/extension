@@ -6,7 +6,7 @@ import type {
   IWallet,
   IWalletController,
   SaveWalletsPayload,
-} from "@/shared/interfaces";
+} from "@/shared/types";
 import keyringService from "@/background/services/keyring";
 import { excludeKeysFromObj } from "@/shared/utils";
 import * as bip39 from "nintondo-bip39";
@@ -126,13 +126,18 @@ class WalletController implements IWalletController {
     const updatedWallets: IWallet[] = [];
     for (const wallet of storageService.walletState.wallets) {
       const keyring = keyringService.getKeyringByIndex(wallet.id);
-      updatedWallets.push({ ...wallet, accounts: keyring.getAccounts().map((f, i) => ({ ...wallet.accounts[i], address: f })) });
+      updatedWallets.push({
+        ...wallet,
+        accounts: keyring
+          .getAccounts()
+          .map((f, i) => ({ ...wallet.accounts[i], address: f })),
+      });
     }
     await storageService.updateAppState({ network });
     await storageService.updateWalletState({ wallets: updatedWallets });
-    sessionService.broadcastEvent("networkChanged",
-      { network: isTestnet(network) ? "testnet" : "mainnet", }
-    )
+    sessionService.broadcastEvent("networkChanged", {
+      network: isTestnet(network) ? "testnet" : "mainnet",
+    });
   }
 }
 

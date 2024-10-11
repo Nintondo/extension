@@ -6,7 +6,7 @@ import type {
   Approval,
   ApprovalData,
   OpenNotificationProps,
-} from "@/shared/interfaces/notification";
+} from "@/shared/types/notification";
 
 // something need user approval in window
 // should only open one window, unfocus will close the current notification

@@ -1,10 +1,10 @@
 import { Network, Psbt } from "belcoinjs-lib";
 import { keyringService } from "../services";
 import type { Hex, SendBEL, SendOrd } from "../services/keyring/types";
-import type { IPrivateWallet } from "@/shared/interfaces";
+import type { IPrivateWallet } from "@/shared/types";
 import type { AddressType } from "bellhdw";
-import { OrdUTXO } from "@/shared/interfaces/inscriptions";
-import { ApiUTXO } from "@/shared/interfaces/api";
+import { OrdUTXO } from "@/shared/types/inscriptions";
+import { ApiUTXO } from "@/shared/types/api";
 
 export interface IKeyringController {
   init(password: string): Promise<IPrivateWallet[]>;

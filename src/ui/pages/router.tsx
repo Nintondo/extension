@@ -26,10 +26,9 @@ import SignMessage from "./provider/sign-message";
 import CreateTx from "./provider/create-tx/component";
 import ConnectedSites from "./main/settings/connected-sites";
 import Language from "./main/settings/language";
-import InscriptionDetails from "./main/inscriptions/inscription-details";
-import Inscriptions from "./main/inscriptions";
+import InscriptionDetails from "./main/ordinals/inscriptions/inscription-details";
+import Inscriptions from "./main/ordinals/inscriptions";
 import SignPsbt from "./provider/sign-psbt";
-import TokensComponent from "./main/tokens/component";
 import InscribeTransfer from "./provider/inscribe-transfer";
 import MultiPsbtSign from "./provider/multi-psbt-sign";
 import ChangePassword from "./main/settings/security/change-password";
@@ -39,6 +38,8 @@ import WalletSettings from "./main/settings/wallet/component";
 import NetworkSettings from "./main/settings/wallet/network/component";
 import Home from "./main/home";
 import SwitchNetwork from "./provider/switch-network";
+import TokensComponent from "./main/ordinals/tokens";
+import RunesComponent from "./main/ordinals/runes";
 
 export const guestRouter = createHashRouter([
   {
@@ -86,10 +87,8 @@ export const authenticatedRouter = createHashRouter([
       { path: "inscriptions", element: <Inscriptions /> },
       { path: "wallet-settings", element: <WalletSettings /> },
       { path: "network-settings", element: <NetworkSettings /> },
-      {
-        path: "bel-20",
-        element: <TokensComponent />,
-      },
+      { path: "bel-20", element: <TokensComponent /> },
+      { path: "runes", element: <RunesComponent /> },
     ],
   },
   {

@@ -1,4 +1,4 @@
-import { IToken } from "@/shared/interfaces/token";
+import { Token } from "@/shared/types/token";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { t } from "i18next";
 import { FC, useState } from "react";
@@ -7,9 +7,9 @@ import { shortAddress } from "@/shared/utils/transactions";
 import { nFormatter } from "../../utils/formatter";
 
 interface Props {
-  token: IToken;
-  openMintModal: (token: IToken) => void;
-  openSendModal: (token: IToken) => void;
+  token: Token;
+  openMintModal: (token: Token) => void;
+  openSendModal: (token: Token) => void;
 }
 
 const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { KeyIcon } from "@heroicons/react/24/outline";
 import Layout from "../layout";
-import type { CreateTxProps } from "@/shared/interfaces/notification";
+import type { CreateTxProps } from "@/shared/types/notification";
 import { t } from "i18next";
 import { ss } from "@/ui/utils";
 

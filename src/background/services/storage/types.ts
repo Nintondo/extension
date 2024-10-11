@@ -1,6 +1,6 @@
 import { Network } from "belcoinjs-lib";
 import type { ConnectedSite } from "../permission";
-import type { IWallet } from "@/shared/interfaces";
+import type { IWallet } from "@/shared/types";
 
 interface StorageAccountItem {
   id: number;

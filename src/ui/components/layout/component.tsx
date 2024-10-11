@@ -1,11 +1,7 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import s from "./styles.module.scss";
 import cn from "classnames";
-import {
-  ChevronLeftIcon,
-  PlusCircleIcon,
-  ArrowsUpDownIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 import { useGetCurrentAccount, useWalletState } from "@/ui/states/walletState";
 import { useControllersState } from "@/ui/states/controllerState";
@@ -24,6 +20,25 @@ interface IRouteTitle {
   };
   backAction?: () => void;
   disableBack?: boolean;
+}
+
+interface OrdinalsButtonProps {
+  currentPathname: string;
+}
+
+function OrdinalsButton({ currentPathname }: OrdinalsButtonProps) {
+  const ordinalsType = (() => {
+    if (currentPathname.includes("inscriptions")) {
+      return "Inscriptions";
+    } else if (currentPathname.includes("tokens")) {
+      return "BEL-20";
+    } else if (currentPathname.includes("runes")) {
+      return "Runes";
+    } else {
+      throw new Error("Invalid search mode");
+    }
+  })();
+  return <span className={cn("")}>{ordinalsType}</span>;
 }
 
 export default function PagesLayout() {
@@ -187,26 +202,8 @@ export default function PagesLayout() {
           },
         },
         {
-          route: /\/pages\/(inscriptions|bel-20)/,
-          title: (
-            <div
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => {
-                if (currentRoute.pathname === "/pages/inscriptions") {
-                  navigate("/pages/bel-20");
-                } else {
-                  navigate("/pages/inscriptions");
-                }
-              }}
-            >
-              <span>
-                {currentRoute.pathname === "/pages/inscriptions"
-                  ? "Inscriptions"
-                  : "BEL-20"}
-              </span>
-              <ArrowsUpDownIcon className="w-4 h-4" />
-            </div>
-          ),
+          route: /\/pages\/(inscriptions|bel-20|runes)/,
+          title: <OrdinalsButton currentPathname={currentRoute.pathname} />,
           action: {
             icon: <SearchInscriptions />,
           },

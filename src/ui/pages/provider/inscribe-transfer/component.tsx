@@ -1,4 +1,4 @@
-import { IToken } from "@/shared/interfaces/token";
+import { Token } from "@/shared/types/token";
 import MintTransferForm from "@/ui/components/mint-transfer-form";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
@@ -16,7 +16,7 @@ const InscribeTransfer = () => {
   const { trottledUpdate } = useTransactionManagerContext();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [token, setToken] = useState<IToken>({
+  const [token, setToken] = useState<Token>({
     balance: 0,
     tick: "",
     transferable_balance: 0,

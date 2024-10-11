@@ -1,9 +1,9 @@
 import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
 import { Message } from "@/shared/utils/message";
-import type { IWalletController } from "@/shared/interfaces";
-import type { IStateController } from "@/shared/interfaces/stateController";
-import type { INotificationController } from "@/shared/interfaces/notification";
+import type { IWalletController } from "@/shared/types";
+import type { IStateController } from "@/shared/types/stateController";
+import type { INotificationController } from "@/shared/types/notification";
 import type { IApiController } from "@/background/controllers/apiController";
 import type { IKeyringController } from "@/background/controllers/keyringController";
 

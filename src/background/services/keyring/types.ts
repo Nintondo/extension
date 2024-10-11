@@ -1,5 +1,5 @@
-import type { ApiUTXO } from "@/shared/interfaces/api";
-import { ApiOrdUTXO } from "@/shared/interfaces/inscriptions";
+import type { ApiUTXO } from "@/shared/types/api";
+import { ApiOrdUTXO } from "@/shared/types/inscriptions";
 import { Network } from "belcoinjs-lib";
 
 export type Json = any;

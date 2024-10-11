@@ -10,7 +10,7 @@ import {
 import {
   CreateNotificationProps,
   OpenNotificationProps,
-} from "@/shared/interfaces/notification";
+} from "@/shared/types/notification";
 import { IS_WINDOWS } from "@/shared/constant";
 
 export const event = new EventEmitter();

@@ -7,22 +7,22 @@
 //   amt?: number;
 // }
 
-export interface ITransferToken {
+export interface TransferToken {
   p: "bel-20";
   op: "transfer";
   tick: string;
   amt: string;
 }
 
-export interface ITransfer {
+export interface Transfer {
   inscription_id: string;
   amount: number;
 }
 
-export interface IToken {
+export interface Token {
   tick: string;
   balance: number;
   transferable_balance: number;
-  transfers: ITransfer[];
+  transfers: Transfer[];
   transfers_count: number;
 }

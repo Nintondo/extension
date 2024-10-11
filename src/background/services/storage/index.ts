@@ -3,9 +3,9 @@ import {
   browserStorageLocalSet,
 } from "@/shared/utils/browser";
 import * as encryptorUtils from "nintondo-browser-passworder";
-import type { IAccount, IPrivateWallet, IWallet } from "@/shared/interfaces";
+import type { IAccount, IPrivateWallet, IWallet } from "@/shared/types";
 import type { DecryptedSecrets, StorageInterface } from "./types";
-import type { IAppStateBase, IWalletStateBase } from "@/shared/interfaces";
+import type { IAppStateBase, IWalletStateBase } from "@/shared/types";
 import { emptyAppState, emptyWalletState } from "./utils";
 import { keyringService, permissionService, storageService } from "..";
 import { excludeKeysFromObj, pickKeysFromObj } from "@/shared/utils";

@@ -1,4 +1,4 @@
-import { ITransferToken } from "@/shared/interfaces/token";
+import { TransferToken } from "@/shared/types/token";
 import { inscribe } from "bells-inscriber";
 import { useControllersState } from "../states/controllerState";
 import toast from "react-hot-toast";
@@ -27,7 +27,7 @@ export const useInscribeTransferToken = () => {
     }));
   };
 
-  return async (data: ITransferToken, feeRate: number) => {
+  return async (data: TransferToken, feeRate: number) => {
     if (!currentAccount || !currentAccount.address) return;
 
     const txs = await inscribe({

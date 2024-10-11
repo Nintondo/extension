@@ -1,4 +1,4 @@
-import { IToken } from "@/shared/interfaces/token";
+import { Token } from "@/shared/types/token";
 import { useInscribeTransferToken } from "@/ui/hooks/inscriber";
 import FeeInput from "@/ui/pages/main/send/create-send/fee-input";
 import { normalizeAmount } from "@/ui/utils";
@@ -21,8 +21,8 @@ interface FormType {
 }
 
 interface MintTransferModalProps {
-  setSelectedMintToken: (token: IToken | undefined) => void;
-  selectedMintToken: IToken | undefined;
+  setSelectedMintToken: (token: Token | undefined) => void;
+  selectedMintToken: Token | undefined;
   mintedHandler?: (mintedAmount: number) => void;
 }
 

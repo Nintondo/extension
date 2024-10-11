@@ -5,7 +5,7 @@ import Pagination from "@/ui/components/pagination";
 import { t } from "i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
-import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
+import { useOrdinalsManagerContext } from "@/ui/utils/ordinals-ctx";
 import { TailSpin } from "react-loading-icons";
 
 const Inscriptions = () => {
@@ -16,7 +16,7 @@ const Inscriptions = () => {
     loading: managerLoading,
     searchInscriptions,
     updateInscriptions,
-  } = useInscriptionManagerContext();
+  } = useOrdinalsManagerContext();
   const currentAccount = useGetCurrentAccount();
 
   const changePage = async (page: number) => {

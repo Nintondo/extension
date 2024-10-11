@@ -1,4 +1,4 @@
-import type { INewWalletProps, IWallet } from "@/shared/interfaces";
+import type { INewWalletProps, IWallet } from "@/shared/types";
 import { useControllersState } from "../states/controllerState";
 import { useWalletState } from "../states/walletState";
 import toast from "react-hot-toast";

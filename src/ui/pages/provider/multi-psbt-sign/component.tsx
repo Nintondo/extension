@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { KeyIcon } from "@heroicons/react/24/outline";
 import Layout from "../layout";
 import { TailSpin } from "react-loading-icons";
-import { IField } from "@/shared/interfaces/provider";
+import { IField } from "@/shared/types/provider";
 import { useDecodePsbtInputs as useGetPsbtFields } from "@/ui/hooks/provider";
 import { t } from "i18next";
 import Modal from "@/ui/components/modal";

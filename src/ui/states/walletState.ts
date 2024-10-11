@@ -1,4 +1,4 @@
-import type { IWalletStateBase } from "@/shared/interfaces";
+import type { IWalletStateBase } from "@/shared/types";
 import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
 import { immer } from "zustand/middleware/immer";

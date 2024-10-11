@@ -11,9 +11,9 @@ import {
 import { SimpleKey, HDPrivateKey, AddressType } from "bellhdw";
 import HDSimpleKey from "bellhdw/src/hd/simple";
 import type { Keyring } from "bellhdw/src/hd/types";
-import { INewWalletProps } from "@/shared/interfaces";
-import { ApiOrdUTXO, OrdUTXO } from "@/shared/interfaces/inscriptions";
-import { ApiUTXO } from "@/shared/interfaces/api";
+import { INewWalletProps } from "@/shared/types";
+import { ApiOrdUTXO, OrdUTXO } from "@/shared/types/inscriptions";
+import { ApiUTXO } from "@/shared/types/api";
 
 export const KEYRING_SDK_TYPES = {
   SimpleKey,

@@ -1,4 +1,4 @@
-import type { INotificationController } from "@/shared/interfaces/notification";
+import type { INotificationController } from "@/shared/types/notification";
 import {
   notificationService,
   permissionService,

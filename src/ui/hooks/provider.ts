@@ -7,7 +7,7 @@ import {
   IFieldValue,
   LocationValue,
   SignPsbtOptions,
-} from "@/shared/interfaces/provider";
+} from "@/shared/types/provider";
 import { Psbt } from "belcoinjs-lib";
 import { toFixed } from "@/shared/utils/transactions";
 import { useGetCurrentAccount } from "../states/walletState";

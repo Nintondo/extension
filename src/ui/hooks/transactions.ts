@@ -4,8 +4,8 @@ import { satoshisToAmount } from "@/shared/utils/transactions";
 import { Psbt, Transaction } from "belcoinjs-lib";
 import type { Hex } from "@/background/services/keyring/types";
 import { t } from "i18next";
-import { Inscription, OrdUTXO } from "@/shared/interfaces/inscriptions";
-import { ITransfer } from "@/shared/interfaces/token";
+import { Inscription, OrdUTXO } from "@/shared/types/inscriptions";
+import { Transfer } from "@/shared/types/token";
 import toast from "react-hot-toast";
 import { gptFeeCalculate, ss } from "../utils";
 import { useAppState } from "../states/appState";
@@ -128,7 +128,7 @@ export const useSendTransferTokens = () => {
   const currentAccount = useGetCurrentAccount();
   const { network } = useAppState(ss(["network"]));
 
-  return async (toAddress: string, txIds: ITransfer[], feeRate: number) => {
+  return async (toAddress: string, txIds: Transfer[], feeRate: number) => {
     if (!currentAccount || !currentAccount.address) return;
     const fee = gptFeeCalculate(txIds.length + 1, txIds.length + 1, feeRate);
     const utxos = await apiController.getUtxos(currentAccount.address, {

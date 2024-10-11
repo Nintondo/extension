@@ -1,25 +1,25 @@
-import { IToken, ITransfer } from "@/shared/interfaces/token";
+import { Token, Transfer } from "@/shared/types/token";
 import Modal from "@/ui/components/modal";
 import { t } from "i18next";
 import { FC, useId, useState } from "react";
 import s from "./styles.module.scss";
-import FeeInput from "../../send/create-send/fee-input";
 import { TailSpin } from "react-loading-icons";
-import AddressInput from "../../send/create-send/address-input";
-import AddressBookModal from "../../send/create-send/address-book-modal";
 import cn from "classnames";
 import toast from "react-hot-toast";
 import { useSendTransferTokens } from "@/ui/hooks/transactions";
-import { nFormatter } from "../../../../utils/formatter";
+import AddressInput from "../../../send/create-send/address-input";
+import { nFormatter } from "@/ui/utils/formatter";
+import FeeInput from "../../../send/create-send/fee-input";
+import AddressBookModal from "../../../send/create-send/address-book-modal";
 
 interface Props {
-  selectedSendToken: IToken | undefined;
-  setSelectedSendToken: (token: IToken | undefined) => void;
+  selectedSendToken: Token | undefined;
+  setSelectedSendToken: (token: Token | undefined) => void;
 }
 
 interface FormType {
   address: string;
-  txIds: ITransfer[];
+  txIds: Transfer[];
   feeRate: number;
 }
 
@@ -59,7 +59,7 @@ const SendTransferModal: FC<Props> = ({
     }
   };
 
-  const selectedTransfer = (tx: ITransfer) => {
+  const selectedTransfer = (tx: Transfer) => {
     if (formData.txIds.includes(tx)) {
       setFormData((prev) => ({
         ...prev,

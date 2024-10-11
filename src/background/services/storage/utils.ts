@@ -1,4 +1,4 @@
-import type { IAppStateBase, IWalletStateBase } from "@/shared/interfaces";
+import type { IAppStateBase, IWalletStateBase } from "@/shared/types";
 import { networks } from "belcoinjs-lib";
 
 export function emptyWalletState(): IWalletStateBase {

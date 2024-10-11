@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { setupStateProxy } from "../utils/setup";
-import type { IAppStateBase } from "@/shared/interfaces";
+import type { IAppStateBase } from "@/shared/types";
 import { networks } from "belcoinjs-lib";
 import { immer } from "zustand/middleware/immer";
 

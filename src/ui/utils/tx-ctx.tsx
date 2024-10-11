@@ -1,4 +1,4 @@
-import type { ITransaction } from "@/shared/interfaces/api";
+import type { ITransaction } from "@/shared/types/api";
 import React, {
   useState,
   useEffect,

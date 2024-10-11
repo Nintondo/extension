@@ -1,4 +1,4 @@
-import type { ITransaction } from "@/shared/interfaces/api";
+import type { ITransaction } from "@/shared/types/api";
 import { payments } from "belcoinjs-lib";
 import { AddressType } from "bellhdw/src/hd/types";
 

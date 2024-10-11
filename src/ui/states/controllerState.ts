@@ -1,8 +1,8 @@
 import type { IApiController } from "@/background/controllers/apiController";
 import type { IKeyringController } from "@/background/controllers/keyringController";
-import type { IWalletController } from "@/shared/interfaces";
-import type { INotificationController } from "@/shared/interfaces/notification";
-import type { IStateController } from "@/shared/interfaces/stateController";
+import type { IWalletController } from "@/shared/types";
+import type { INotificationController } from "@/shared/types/notification";
+import type { IStateController } from "@/shared/types/stateController";
 import { create } from "zustand";
 
 export interface IControllerState {

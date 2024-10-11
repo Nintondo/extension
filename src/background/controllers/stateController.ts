@@ -1,5 +1,5 @@
-import type { IAppStateBase } from "@/shared/interfaces";
-import type { IStateController } from "@/shared/interfaces/stateController";
+import type { IAppStateBase } from "@/shared/types";
+import type { IStateController } from "@/shared/types/stateController";
 import { storageService } from "../services";
 import type { IWalletState } from "@/ui/states/walletState";
 

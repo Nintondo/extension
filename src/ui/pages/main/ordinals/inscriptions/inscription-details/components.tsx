@@ -1,4 +1,4 @@
-import { CompletedInscription } from "@/shared/interfaces/inscriptions";
+import { CompletedInscription } from "@/shared/types/inscriptions";
 import { useCallback, useEffect, useState } from "react";
 import { t } from "i18next";
 import { browserTabsCreate } from "@/shared/utils/browser";

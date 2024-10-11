@@ -2,7 +2,7 @@ import s from "./styles.module.scss";
 import { TailSpin } from "react-loading-icons";
 import { browserTabsCreate } from "@/shared/utils/browser";
 import { useLocation } from "react-router-dom";
-import { ITransaction } from "@/shared/interfaces/api";
+import { ITransaction } from "@/shared/types/api";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import { FC, useId, useState } from "react";
 import Modal from "@/ui/components/modal";

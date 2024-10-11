@@ -1,12 +1,12 @@
-import { IToken } from "@/shared/interfaces/token";
+import { Token } from "@/shared/types/token";
 import MintTransferForm from "@/ui/components/mint-transfer-form";
 import Modal from "@/ui/components/modal";
 import { t } from "i18next";
 import { FC } from "react";
 
 interface Props {
-  selectedMintToken: IToken | undefined;
-  setSelectedMintToken: (token: IToken | undefined) => void;
+  selectedMintToken: Token | undefined;
+  setSelectedMintToken: (token: Token | undefined) => void;
 }
 
 const MintTransferModal: FC<Props> = ({

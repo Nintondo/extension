@@ -19,7 +19,7 @@ import AddressBookModal from "./address-book-modal";
 import AddressInput from "./address-input";
 import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
-import { Inscription } from "@/shared/interfaces/inscriptions";
+import { Inscription } from "@/shared/types/inscriptions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 interface FormType {

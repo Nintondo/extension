@@ -2,27 +2,45 @@ import { useDebounce } from "@/ui/hooks/debounce";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { ss } from "@/ui/utils";
-import { useInscriptionManagerContext } from "@/ui/utils/inscriptions-ctx";
+import { useOrdinalsManagerContext } from "@/ui/utils/ordinals-ctx";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { t } from "i18next";
 import { useCallback, useState } from "react";
 import { useLocation } from "react-router";
+
+enum SearchMode {
+  Inscriptions,
+  Tokens,
+  Runes,
+}
 
 const SearchInscriptions = () => {
   const { apiController } = useControllersState(ss(["apiController"]));
   const currentAccount = useGetCurrentAccount();
   const currentRoute = useLocation();
 
-  const { setCurrentPage, tokens, setSearchInscriptions, setSearchTokens } =
-    useInscriptionManagerContext();
+  const {
+    setCurrentPage,
+    tokens,
+    setSearchInscriptions,
+    setSearchTokens,
+    setSearchRunes,
+    runes,
+  } = useOrdinalsManagerContext();
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const type: "inscriptions" | "tokens" = currentRoute.pathname.includes(
-    "inscriptions"
-  )
-    ? "inscriptions"
-    : "tokens";
+  const type: SearchMode = (() => {
+    if (currentRoute.pathname.includes("inscriptions")) {
+      return SearchMode.Inscriptions;
+    } else if (currentRoute.pathname.includes("tokens")) {
+      return SearchMode.Tokens;
+    } else if (currentRoute.pathname.includes("runes")) {
+      return SearchMode.Runes;
+    } else {
+      throw new Error("Invalid search mode");
+    }
+  })();
 
   const searchInscription = useCallback(
     async (search: string) => {
@@ -63,10 +81,26 @@ const SearchInscriptions = () => {
     [setCurrentPage, tokens, setSearchTokens]
   );
 
+  const searchRunes = useCallback(
+    async (search: string) => {
+      if (!search || !search.trim().length) {
+        setSearchRunes(undefined);
+        return;
+      }
+      setSearchRunes(
+        runes.filter((f) =>
+          f.runeBalance.rune.includes(search.trim().toLowerCase())
+        )
+      );
+    },
+    [runes, setSearchRunes]
+  );
+
   const tokenDebounce = useDebounce<string, typeof searchToken>(
     searchToken,
     10
   );
+  const runeDebounce = useDebounce<string, typeof searchToken>(searchRunes, 10);
   const inscriptionDebounce = useDebounce<string, typeof searchInscription>(
     searchInscription,
     200
@@ -79,16 +113,27 @@ const SearchInscriptions = () => {
           className="input w-full h-8"
           type="text"
           placeholder={
-            type === "inscriptions"
+            type === SearchMode.Inscriptions
               ? t("inscriptions.inscription_search_placeholder")
-              : t("inscriptions.token_search_placeholder")
+              : type === SearchMode.Tokens
+              ? t("inscriptions.token_search_placeholder")
+              : t("inscriptions.rune_search_placeholder")
           }
           onChange={async (e) => {
-            if (typeof e.target.value === "string") {
-              if (type === "inscriptions") {
-                await inscriptionDebounce(e.target.value);
-              } else {
-                await tokenDebounce(e.target.value);
+            const searchValue = e.target.value;
+            if (searchValue) {
+              switch (type) {
+                case SearchMode.Inscriptions:
+                  await inscriptionDebounce(searchValue);
+                  break;
+                case SearchMode.Tokens:
+                  await tokenDebounce(searchValue);
+                  break;
+                case SearchMode.Runes:
+                  await runeDebounce(searchValue);
+                  break;
+                default:
+                  throw new Error("Invalid search mode");
               }
             }
           }}
@@ -97,6 +142,8 @@ const SearchInscriptions = () => {
           onClick={() => {
             setOpen(false);
             setSearchInscriptions(undefined);
+            setSearchTokens(undefined);
+            setSearchRunes(undefined);
           }}
           className="w-6 h-6 cursor-pointer"
         />

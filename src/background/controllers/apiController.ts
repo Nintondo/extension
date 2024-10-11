@@ -1,14 +1,10 @@
-import type {
-  ApiUTXO,
-  IAccountStats,
-  ITransaction,
-} from "@/shared/interfaces/api";
+import type { ApiUTXO, IAccountStats, ITransaction } from "@/shared/types/api";
 import {
   ContentDetailedInscription,
   ContentInscriptionResopnse,
   FindInscriptionsByOutpointResponseItem,
-} from "@/shared/interfaces/inscriptions";
-import { IToken } from "@/shared/interfaces/token";
+} from "@/shared/types/inscriptions";
+import { Token } from "@/shared/types/token";
 import { customFetch, fetchProps } from "@/shared/utils";
 import { storageService } from "../services";
 import { DEFAULT_FEES } from "@/shared/constant";
@@ -33,7 +29,7 @@ export interface IApiController {
   getLastBlockBEL(): Promise<number | undefined>;
   getFees(): Promise<{ fast: number; slow: number } | undefined>;
   getAccountStats(address: string): Promise<IAccountStats | undefined>;
-  getTokens(address: string): Promise<IToken[] | undefined>;
+  getTokens(address: string): Promise<Token[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
   getContentPaginatedInscriptions(
@@ -170,8 +166,8 @@ class ApiController implements IApiController {
     }
   }
 
-  async getTokens(address: string): Promise<IToken[] | undefined> {
-    return await this.fetch<IToken[]>({
+  async getTokens(address: string): Promise<Token[] | undefined> {
+    return await this.fetch<Token[]>({
       path: `/address/${address}/tokens`,
       service: "electrs",
     });
