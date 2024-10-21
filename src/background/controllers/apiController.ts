@@ -221,8 +221,8 @@ class ApiController implements IApiController {
 
   async getLocationByInscriptionId(inscriptionId: string) {
     return await this.fetch<{ location: string; owner: string }>({
-      path: `/${inscriptionId}/owner`,
-      service: "history",
+      path: `/location/${inscriptionId}`,
+      service: "electrs",
     });
   }
 
