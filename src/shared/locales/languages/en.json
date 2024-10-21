@@ -91,7 +91,11 @@
     "old_password": "Old password",
     "new_password": "New password",
     "confirm_password": "Confirm password",
-    "change_password": "Change password"
+    "change_password": "Change password",
+    "errors": {
+      "incorrect_password": "Incorrect password",
+      "passwords_do_not_match": "Passwords do not match"
+    }
   },
   "connected_sites": {
     "no_sites_message": "You didn't connect any sites yet"

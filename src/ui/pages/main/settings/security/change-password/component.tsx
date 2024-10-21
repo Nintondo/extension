@@ -47,20 +47,19 @@ const ChangePassword = () => {
     oldPassword,
     password,
   }: FormType) => {
-    if (
-      appPassword === oldPassword &&
-      password === confirmPassword &&
-      password !== appPassword
-    ) {
-      await walletController.saveWallets({
-        newPassword: password,
-      });
-      await updateAppState({ password });
-      await logout();
-    } else {
-      reset();
-      toast.error("Try again");
+    if (appPassword !== oldPassword) {
+      toast.error(t("change_password.errors.incorrect_password"));
+      return;
     }
+    if (password !== confirmPassword) {
+      toast.error(t("change_password.errors.passwords_do_not_match"));
+      return;
+    }
+    await walletController.saveWallets({
+      newPassword: password,
+    });
+    await updateAppState({ password });
+    await logout();
   };
 
   return (

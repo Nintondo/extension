@@ -57,7 +57,11 @@
     "old_password": "Старый пароль",
     "new_password": "Новый пароль",
     "confirm_password": "Подтвердить пароль",
-    "change_password": "Сменить пароль"
+    "change_password": "Сменить пароль",
+    "errors": {
+      "incorrect_password": "Неверный пароль",
+      "passwords_do_not_match": "Пароли не совпадают"
+    }
   },
   "connected_sites": {
     "no_sites_message": "Вы еще не подключили ни одного сайта"
