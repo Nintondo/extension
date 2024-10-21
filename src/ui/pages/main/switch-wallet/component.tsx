@@ -52,7 +52,7 @@ const SwitchWallet = () => {
         element.scrollIntoView();
       }
     }
-  }, [currentWallet, wallets]);
+  }, []);
 
   return (
     <div className={s.switchWalletDiv}>
