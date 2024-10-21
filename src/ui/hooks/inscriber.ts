@@ -30,20 +30,27 @@ export const useInscribeTransferToken = () => {
   return async (data: ITransferToken, feeRate: number) => {
     if (!currentAccount || !currentAccount.address) return;
 
-    const txs = await inscribe({
-      toAddress: currentAccount.address,
-      fromAddress: currentAccount.address,
-      data: Buffer.from(JSON.stringify(data)),
-      feeRate,
-      contentType: "application/json; charset=utf-8",
-      publicKey: Buffer.from(
-        await keyringController.exportPublicKey(currentAccount.address),
-        "hex"
-      ),
-      signPsbt: keyringController.signPsbtBase64,
-      getUtxos,
-      network,
-    });
+    let txs: string[] | undefined;
+
+    try {
+      txs = await inscribe({
+        toAddress: currentAccount.address,
+        fromAddress: currentAccount.address,
+        data: Buffer.from(JSON.stringify(data)),
+        feeRate,
+        contentType: "application/json; charset=utf-8",
+        publicKey: Buffer.from(
+          await keyringController.exportPublicKey(currentAccount.address),
+          "hex"
+        ),
+        signPsbt: keyringController.signPsbtBase64,
+        getUtxos,
+        network,
+      });
+    } catch (e) {
+      if (e instanceof Error) toast.error(e.message);
+      throw e;
+    }
 
     const txIds: string[] = [];
     try {
