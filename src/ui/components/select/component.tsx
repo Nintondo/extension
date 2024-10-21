@@ -69,7 +69,7 @@ const Select = <T extends string>({
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
+                        className={`block truncate pl-7 ${
                           selected ? "font-medium" : "font-normal"
                         }`}
                       >

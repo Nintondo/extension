@@ -1,8 +1,10 @@
 import PasswordInput from "@/ui/components/password-input";
 import Select from "@/ui/components/select";
+import SwitchAddressType from "@/ui/components/switch-address-type";
 import { useCreateNewWallet } from "@/ui/hooks/wallet";
 import { useAppState } from "@/ui/states/appState";
 import { ss } from "@/ui/utils";
+import { AddressType } from "bellhdw";
 import { t } from "i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,6 +22,10 @@ const waysToRestore: { name: "wif" | "hex" }[] = [
 ];
 
 const RestorePrivKey = () => {
+  const [addressType, setAddressType] = useState<AddressType>(
+    AddressType.P2WPKH
+  );
+  const [step, setStep] = useState(1);
   const { register, handleSubmit } = useForm<FormType>({
     defaultValues: {
       privKey: "",
@@ -42,6 +48,7 @@ const RestorePrivKey = () => {
         walletType: "simple",
         restoreFrom: selectedWayToRestore.name,
         network,
+        addressType,
       });
       navigate("/");
     } catch (e) {
@@ -52,28 +59,54 @@ const RestorePrivKey = () => {
     }
   };
 
+  const onNextStep = () => {
+    setStep(2);
+  };
+
   if (loading) return <TailSpin className="animate-spin" />;
 
   return (
-    <form className="form" onSubmit={handleSubmit(recoverWallet)}>
-      <div className="flex flex-col gap-4">
-        <PasswordInput
-          label={t("new_wallet.restore_private.private_key")}
-          register={register}
-          name="privKey"
-        />
-        <Select<"wif" | "hex">
-          label={t("new_wallet.restore_from_label")}
-          values={waysToRestore}
-          selected={selectedWayToRestore}
-          setSelected={(name) => {
-            setSelectedWayToRestore(name);
-          }}
-        />
-      </div>
-      <button className="bottom-btn" type="submit">
-        {t("new_wallet.restore_private.recover")}
-      </button>
+    <form className="form h-full py-4" onSubmit={handleSubmit(recoverWallet)}>
+      {step === 1 ? (
+        <>
+          <div className="flex flex-col gap-4">
+            <PasswordInput
+              label={t("new_wallet.restore_private.private_key")}
+              register={register}
+              name="privKey"
+            />
+            <Select<"wif" | "hex">
+              label={t("new_wallet.restore_from_label")}
+              values={waysToRestore}
+              selected={selectedWayToRestore}
+              setSelected={(name) => {
+                setSelectedWayToRestore(name);
+              }}
+            />
+          </div>
+
+          <button
+            className="bottom-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              onNextStep();
+            }}
+          >
+            {t("new_wallet.continue")}
+          </button>
+        </>
+      ) : (
+        <>
+          <SwitchAddressType
+            handler={setAddressType}
+            selectedType={addressType}
+          />
+
+          <button className="bottom-btn" type="submit">
+            {t("new_wallet.restore_private.recover")}
+          </button>
+        </>
+      )}
     </form>
   );
 };
