@@ -38,7 +38,7 @@ const PasswordInput = <T extends FieldValues>({
               ),
             },
             maxLength: {
-              value: 250,
+              value: 70,
               message: t(
                 "components.password_input.should_be_less_than_250_symbols"
               ),
