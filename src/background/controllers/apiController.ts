@@ -79,7 +79,9 @@ class ApiController implements IApiController {
       params: params as Record<string, string>,
       service: "electrs",
     });
-    return data;
+    if (Array.isArray(data)) {
+      return data;
+    }
   }
 
   async getFees() {

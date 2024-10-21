@@ -111,10 +111,22 @@ export function useCreateOrdTx() {
     )
       throw new Error("Failed to get current wallet or account");
     const fromAddress = currentAccount?.address;
+
+    const fee = gptFeeCalculate(3, 2, feeRate);
+
     const utxos = await apiController.getUtxos(fromAddress, {
-      amount: gptFeeCalculate(3, 2, feeRate),
+      amount: fee,
     });
-    if (!utxos) return;
+    if (!utxos) throw new Error("Insufficient balance");
+    if (!utxos) {
+      throw new Error(
+        `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
+          currentAccount.balance ?? 0
+        )} ${t("hooks.transaction.insufficient_balance_1")} ${satoshisToAmount(
+          fee
+        )} ${t("hooks.transaction.insufficient_balance_2")}`
+      );
+    }
 
     const psbtHex = await keyringController.sendOrd({
       to: toAddress,
