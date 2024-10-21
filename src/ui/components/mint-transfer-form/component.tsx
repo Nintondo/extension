@@ -40,6 +40,15 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
   const inscribeTransferToken = useInscribeTransferToken();
 
   const onAmountChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (selectedMintToken) {
+      if (Number(e.target.value) > selectedMintToken.balance) {
+        return setFormData((prev) => ({
+          ...prev,
+          amount: selectedMintToken.balance.toString(),
+        }));
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       amount: normalizeAmount(e.target.value),
