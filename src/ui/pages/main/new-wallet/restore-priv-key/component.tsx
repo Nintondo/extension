@@ -52,7 +52,7 @@ const RestorePrivKey = () => {
     }
   };
 
-  if (loading) return <TailSpin />;
+  if (loading) return <TailSpin className="animate-spin" />;
 
   return (
     <form className="form" onSubmit={handleSubmit(recoverWallet)}>

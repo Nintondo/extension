@@ -157,7 +157,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
       <div className="w-full flex justify-center items-center absolute bottom-0 left-0 right-0">
         {loading ? (
           <div className="w-full flex justify-center items-center">
-            <TailSpin />
+            <TailSpin className="animate-spin" />
           </div>
         ) : (
           <button

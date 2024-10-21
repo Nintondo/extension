@@ -41,7 +41,7 @@ const NewAccount = () => {
   };
 
   if (loading) {
-    return <TailSpin />;
+    return <TailSpin className="animate-spin" />;
   }
 
   return (

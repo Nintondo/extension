@@ -142,7 +142,7 @@ const SendTransferModal: FC<Props> = ({
       <div className="w-full flex justify-center items-center">
         {loading ? (
           <div className="w-full flex justify-center items-center">
-            <TailSpin />
+            <TailSpin className="animate-spin" />
           </div>
         ) : (
           <button

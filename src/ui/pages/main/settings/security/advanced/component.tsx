@@ -56,7 +56,7 @@ const Advanced = () => {
     }
   };
 
-  if (loading) return <TailSpin />;
+  if (loading) return <TailSpin className="animate-spin" />;
 
   return (
     <div className={s.wrapper}>

@@ -23,7 +23,7 @@ const Iframe: FC<IframeProps> = ({ preview, size }) => {
             "bg-input-bg flex justify-center items-center inset-0 absolute"
           )}
         >
-          <TailSpin />
+          <TailSpin className="animate-spin" />
         </div>
       )}
 

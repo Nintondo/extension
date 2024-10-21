@@ -32,7 +32,7 @@ const TransactionList = () => {
   if (!transactions || !lastBlock || !currentAccount || !currentAccount.address)
     return (
       <div className="min-h-[50vh] w-full flex justify-center items-center">
-        <TailSpin />
+        <TailSpin className="animate-spin" />
       </div>
     );
 

@@ -57,7 +57,7 @@ const InscribeTransfer = () => {
   if (loading)
     return (
       <div className="h-full w-full flex justify-center items-center">
-        <TailSpin />
+        <TailSpin className="animate-spin" />
       </div>
     );
 

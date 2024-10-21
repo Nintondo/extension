@@ -39,7 +39,7 @@ const Home = () => {
 
   if (!currentWallet) return <Navigate to={"/pages/create-new-wallet"} />;
 
-  return <TailSpin />;
+  return <TailSpin className="animate-spin" />;
 };
 
 export default Home;

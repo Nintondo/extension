@@ -32,7 +32,7 @@ const Inscriptions = () => {
     (currentAccount?.inscriptionCounter === undefined && managerLoading) ||
     !inscriptions
   )
-    return <TailSpin />;
+    return <TailSpin className="animate-spin" />;
 
   return (
     <div className={s.inscriptionDiv}>

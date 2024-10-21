@@ -32,7 +32,7 @@ const TokensComponent = () => {
   if (loading && !tokens.length)
     return (
       <div>
-        <TailSpin />
+        <TailSpin className="animate-spin" />
       </div>
     );
 

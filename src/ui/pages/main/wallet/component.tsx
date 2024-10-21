@@ -20,7 +20,7 @@ const Wallet = () => {
     }
   }, [trottledUpdate, location]);
 
-  if (!currentAccount) return <TailSpin />;
+  if (!currentAccount) return <TailSpin className="animate-spin" />;
 
   return (
     <div className={s.walletDiv}>

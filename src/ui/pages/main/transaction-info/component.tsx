@@ -95,7 +95,7 @@ const TransactionInfo = () => {
           </button>
         </>
       ) : (
-        <TailSpin />
+        <TailSpin className="animate-spin" />
       )}
     </div>
   );

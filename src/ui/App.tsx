@@ -107,7 +107,11 @@ export default function App() {
         nintondo
       </div>
       <div className="app">
-        {isReady ? <RouterProvider router={router} /> : <TailSpin />}
+        {isReady ? (
+          <RouterProvider router={router} />
+        ) : (
+          <TailSpin className="animate-spin" />
+        )}
         <Toaster
           position="top-center"
           toastOptions={{

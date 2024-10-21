@@ -61,10 +61,6 @@ export function ss<T extends Record<string, any>, K extends keyof T = keyof T>(
   });
 }
 
-export function arrayDifference<T>(arr1: T[], arr2: T[]): T[] {
-  return arr1.filter((item) => !arr2.includes(item));
-}
-
 export const useUpdateFunction = <T>(
   onUpdate: Dispatch<SetStateAction<T[] | undefined>>,
   retrieveFn: (address: string) => Promise<T[] | undefined>,
@@ -76,15 +72,25 @@ export const useUpdateFunction = <T>(
       if (receivedItems === undefined) return;
 
       onUpdate((prev) => {
-        if ((prev?.length ?? 0) < 50 || force || !prev) return receivedItems;
+        if ((prev?.length ?? 0) < 50 || force) return receivedItems;
 
-        const currentItemsKeys = prev.map((f) => f[compareKey]);
-        const receivedItemsKeys = receivedItems?.map((f) => f[compareKey]);
-        const difference = arrayDifference(receivedItemsKeys, currentItemsKeys);
+        const currentItemsKeys = new Set(prev!.map((f) => f[compareKey]));
+        const receivedItemsKeys = new Set(
+          receivedItems?.map((f) => f[compareKey])
+        );
+        const intersection = currentItemsKeys.intersection(receivedItemsKeys);
 
         return [
-          ...receivedItems.filter((f) => difference.includes(f[compareKey])),
-          ...prev,
+          ...receivedItems.filter((f) => intersection.has(f[compareKey])),
+          ...prev?.map((i) => {
+            if (intersection.has(i[compareKey])) {
+              return receivedItems.find(
+                (f) => f[compareKey] === i[compareKey]
+              )!;
+            } else {
+              return i;
+            }
+          })!,
         ];
       });
     },
