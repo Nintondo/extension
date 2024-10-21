@@ -18,6 +18,8 @@ import PortMessage from "@/shared/utils/message/portMessage";
 import { ss } from "./utils";
 import { useInscriptionManagerContext } from "./utils/inscriptions-ctx";
 import { TailSpin } from "react-loading-icons";
+import { NINTONDO_URL } from "@/shared/constant";
+import { browserTabsCreate } from "@/shared/utils/browser";
 
 export default function App() {
   const [router, setRouter] = useState<Router>(authenticatedRouter);
@@ -101,9 +103,19 @@ export default function App() {
     resetProvider();
   }, [selectedAccount, selectedWallet, resetProvider]);
 
+  const onOpenNintondo = async () => {
+    await browserTabsCreate({
+      url: NINTONDO_URL,
+      active: true,
+    });
+  };
+
   return (
     <div>
-      <div className="uppercase text-center hidden standard:block font-medium text-xl mb-6 select-none">
+      <div
+        onClick={onOpenNintondo}
+        className="uppercase text-center hidden standard:block font-medium text-xl mb-6 select-none cursor-pointer hover:underline"
+      >
         nintondo
       </div>
       <div className="app">

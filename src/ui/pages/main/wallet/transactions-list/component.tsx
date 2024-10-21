@@ -15,6 +15,14 @@ import { useEffect, useState } from "react";
 import LoadingIcons, { TailSpin } from "react-loading-icons";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 
+const formatDate = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 const TransactionList = () => {
   const { lastBlock, transactions, loadMoreTransactions } =
     useTransactionManagerContext();
@@ -43,52 +51,92 @@ const TransactionList = () => {
 
   return (
     <div className={s.transactionsDiv}>
-      {transactions.map((t, index) => (
-        <Link
-          className={s.transaction}
-          key={index}
-          to={`/pages/transaction-info/${t.txid}`}
-          state={{
-            transaction: t,
-            lastBlock,
-          }}
-        >
-          <div className="flex gap-3 items-center">
-            <div
-              className={cn(
-                "rounded-full w-6 h-6 text-bg flex items-center justify-center relative",
-                {
-                  "bg-gradient-to-r from-green-400 to-emerald-600":
-                    getPercent(lastBlock, t.status.block_height) === 100,
-                  "bg-gradient-to-r from-gray-200 to-gray-500":
-                    getPercent(lastBlock, t.status.block_height) < 100,
-                }
-              )}
-            >
-              <Circle
-                className={cn("absolute -inset-1", {
-                  hidden: getPercent(lastBlock, t.status.block_height) === 100,
-                })}
-                percent={getPercent(lastBlock, t.status.block_height)}
-                strokeWidth={3}
-              />
-              <div className="absolute inset-0">
-                {getConfirmationsCount(lastBlock, t.status.block_height)}
-              </div>
+      {Object.entries(
+        Object.groupBy(transactions, (i) => {
+          if (!i.status.block_time) {
+            return "0";
+          }
+          const date = new Date(i.status.block_time * 1000);
+
+          date.setHours(0, 0, 0, 0);
+
+          return String(date.getTime());
+        })
+      ).map(([key, txs], index) => {
+        const isMempool = key === "0";
+        const date = isMempool ? "Unconfirmed" : formatDate(Number(key));
+
+        if (!txs) return;
+
+        return (
+          <div className="w-full">
+            <div className="my-2 px-4 py-1.5 rounded-xl border border-neutral-700 font-medium uppercase sticky top-0 bg-neutral-900/50 backdrop-blur-sm z-10 w-max">
+              {date}
             </div>
-            <div>{shortAddress(t.txid)}</div>
-          </div>
-          <div
-            className={cn(s.value, {
-              "text-green-500": isIncomeTx(t, currentAccount.address ?? ""),
-              "text-red-500": !isIncomeTx(t, currentAccount.address ?? ""),
+
+            {txs.map((t) => {
+              return (
+                <Link
+                  className={s.transaction}
+                  key={index}
+                  to={`/pages/transaction-info/${t.txid}`}
+                  state={{
+                    transaction: t,
+                    lastBlock,
+                  }}
+                >
+                  <div className="flex gap-3 items-center">
+                    <div
+                      className={cn(
+                        "rounded-full w-6 h-6 text-bg flex items-center justify-center relative",
+                        {
+                          "bg-gradient-to-r from-green-400 to-emerald-600":
+                            getPercent(lastBlock, t.status.block_height) ===
+                            100,
+                          "bg-gradient-to-r from-gray-200 to-gray-500":
+                            getPercent(lastBlock, t.status.block_height) < 100,
+                        }
+                      )}
+                    >
+                      <Circle
+                        className={cn("absolute -inset-1", {
+                          hidden:
+                            getPercent(lastBlock, t.status.block_height) ===
+                            100,
+                        })}
+                        percent={getPercent(lastBlock, t.status.block_height)}
+                        strokeWidth={3}
+                      />
+                      <div className="absolute inset-0">
+                        {getConfirmationsCount(
+                          lastBlock,
+                          t.status.block_height
+                        )}
+                      </div>
+                    </div>
+                    <div>{shortAddress(t.txid)}</div>
+                  </div>
+                  <div
+                    className={cn(s.value, {
+                      "text-green-500": isIncomeTx(
+                        t,
+                        currentAccount.address ?? ""
+                      ),
+                      "text-red-500": !isIncomeTx(
+                        t,
+                        currentAccount.address ?? ""
+                      ),
+                    })}
+                  >
+                    {isIncomeTx(t, currentAccount.address ?? "") ? "+ " : "- "}
+                    {getTransactionValue(t, currentAccount.address ?? "")} BEL
+                  </div>
+                </Link>
+              );
             })}
-          >
-            {isIncomeTx(t, currentAccount.address ?? "") ? "+ " : "- "}
-            {getTransactionValue(t, currentAccount.address ?? "")} BEL
           </div>
-        </Link>
-      ))}
+        );
+      })}
       <div ref={ref} className="w-full py-1 ">
         {loading && <LoadingIcons.TailSpin className="w-6 h-6 mx-auto" />}
       </div>
