@@ -17,7 +17,7 @@ import FeeInput from "./fee-input";
 import Switch from "@/ui/components/switch";
 import AddressBookModal from "./address-book-modal";
 import AddressInput from "./address-input";
-import { gptFeeCalculate, normalizeAmount } from "@/ui/utils";
+import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
@@ -55,38 +55,36 @@ const CreateSend = () => {
 
   const send = async ({
     address,
-    amount,
+    amount: amountStr,
     feeAmount: feeRate,
     includeFeeInAmount,
   }: FormType) => {
     try {
       setLoading(true);
-      if (Number(amount) < 0.00000001 && !inscriptionTransaction) {
+      const balance = currentAccount?.balance ?? 0;
+      const amount = parseFloat(amountStr);
+
+      if (amount < 0.00000001 && !inscriptionTransaction) {
         return toast.error(t("send.create_send.minimum_amount_error"));
       }
       if (address.trim().length <= 0) {
         return toast.error(t("send.create_send.address_error"));
       }
-      if (Number(amount) > (currentAccount?.balance ?? 0) / 10 ** 8) {
-        return toast.error(t("send.create_send.not_enough_money_error"));
+      if (feeRate % 1 !== 0) {
+        return toast.error(t("send.create_send.fee_is_text_error"));
       }
       if (typeof feeRate !== "number" || !feeRate || feeRate < 1) {
         return toast.error(t("send.create_send.not_enough_fee_error"));
       }
-      if (feeRate % 1 !== 0) {
-        return toast.error(t("send.create_send.fee_is_text_error"));
-      }
-      if (
-        includeFeeInAmount &&
-        gptFeeCalculate(1, 1, feeRate) < Number(amount)
-      ) {
-        return toast.error(t("send.create_send.fee_exceeds_amount_error"));
+
+      if (amount > balance / 10 ** 8) {
+        return toast.error(t("send.create_send.not_enough_money_error"));
       }
 
       const data = !inscriptionTransaction
         ? await createTx(
             address,
-            Number((Number(amount) * 10 ** 8).toFixed(0)),
+            Number((amount * 10 ** 8).toFixed(0)),
             feeRate,
             includeFeeInAmount
           )
@@ -98,7 +96,7 @@ const CreateSend = () => {
         state: {
           toAddress: address,
           amount: !inscriptionTransaction
-            ? normalizeAmount(amount)
+            ? normalizeAmount(amountStr)
             : inscription!.inscription_id,
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",

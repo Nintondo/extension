@@ -25,7 +25,7 @@ export function useCreateBellsTxCallback() {
     toAmount: number,
     feeRate: number,
     receiverToPayFee = false
-  ) => {
+  ): Promise<{ rawtx: string; fee: number } | undefined> => {
     if (
       selectedWallet === undefined ||
       selectedAccount === undefined ||
@@ -34,25 +34,37 @@ export function useCreateBellsTxCallback() {
     )
       throw new Error("Failed to get current wallet or account");
     const fromAddress = currentAccount.address;
+
+    let fee = gptFeeCalculate(2, 2, feeRate);
+
     let utxos = await apiController.getUtxos(fromAddress, {
-      amount:
-        toAmount + (receiverToPayFee ? 0 : gptFeeCalculate(2, 2, feeRate)),
+      amount: toAmount + (receiverToPayFee ? 0 : fee),
     });
 
     if ((utxos?.length ?? 0) > 5 && !receiverToPayFee) {
+      fee = gptFeeCalculate(utxos!.length, 2, feeRate);
       utxos = await apiController.getUtxos(fromAddress, {
-        amount: toAmount + gptFeeCalculate(1 + utxos!.length, 2, feeRate),
+        amount: toAmount + fee,
       });
     }
 
-    if (!utxos) return;
+    if (!Array.isArray(utxos)) {
+      toast.error(t("send.create_send.not_enough_money_error"));
+      return;
+    }
 
     if (utxos.length > 500) {
       throw new Error(t("hooks.transaction.too_many_utxos"));
     }
 
-    const safeBalance = (utxos ?? []).reduce((pre, cur) => pre + cur.value, 0);
-    if (safeBalance < toAmount) {
+    const safeBalance = utxos.reduce((pre, cur) => pre + cur.value, 0);
+
+    if (receiverToPayFee && fee < toAmount) {
+      toast.error(t("send.create_send.fee_exceeds_amount_error"));
+      return;
+    }
+
+    if (safeBalance < toAmount + fee) {
       throw new Error(
         `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
           safeBalance
