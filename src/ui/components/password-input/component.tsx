@@ -37,6 +37,12 @@ const PasswordInput = <T extends FieldValues>({
                 "components.password_input.should_be_more_than_1_symbol"
               ),
             },
+            maxLength: {
+              value: 250,
+              message: t(
+                "components.password_input.should_be_less_than_250_symbols"
+              ),
+            },
             required: true,
           })}
           type={hidden ? "password" : "text"}

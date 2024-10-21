@@ -38,7 +38,8 @@
       "continue": "Продолжить"
     },
     "password_input": {
-      "should_be_more_than_1_symbol": "Должен быть более 1 символа"
+      "should_be_more_than_1_symbol": "Должен быть более 1 символа",
+      "should_be_less_than_250_symbols": "Должен быть менее 250 символов"
     },
     "rename": {
       "enter_new_name": "Введите новое имя",
