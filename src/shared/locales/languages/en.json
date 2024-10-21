@@ -155,7 +155,8 @@
       "inscription_id": "Inscription Id"
     },
     "create_send": {
-      "minimum_amount_error": "Minimum amount is 0.0001 BEL",
+      "minimum_amount_error": "Minimum amount is 0.00000001 BEL",
+      "fee_exceeds_amount_error": "Fee exceeds amount",
       "address_error": "Insert receiver's address",
       "not_enough_money_error": "There's not enough money in your account",
       "not_enough_fee_error": "Increase the fee",

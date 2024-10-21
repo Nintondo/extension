@@ -17,7 +17,7 @@ import FeeInput from "./fee-input";
 import Switch from "@/ui/components/switch";
 import AddressBookModal from "./address-book-modal";
 import AddressInput from "./address-input";
-import { normalizeAmount } from "@/ui/utils";
+import { gptFeeCalculate, normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
@@ -61,7 +61,7 @@ const CreateSend = () => {
   }: FormType) => {
     try {
       setLoading(true);
-      if (Number(amount) < 0.00001 && !inscriptionTransaction) {
+      if (Number(amount) < 0.00000001 && !inscriptionTransaction) {
         return toast.error(t("send.create_send.minimum_amount_error"));
       }
       if (address.trim().length <= 0) {
@@ -75,6 +75,12 @@ const CreateSend = () => {
       }
       if (feeRate % 1 !== 0) {
         return toast.error(t("send.create_send.fee_is_text_error"));
+      }
+      if (
+        includeFeeInAmount &&
+        gptFeeCalculate(1, 1, feeRate) < Number(amount)
+      ) {
+        return toast.error(t("send.create_send.fee_exceeds_amount_error"));
       }
 
       const data = !inscriptionTransaction
