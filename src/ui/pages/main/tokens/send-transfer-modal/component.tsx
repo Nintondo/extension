@@ -23,15 +23,17 @@ interface FormType {
   feeRate: number;
 }
 
+const DEFAULT_FORM = {
+  address: "",
+  txIds: [],
+  feeRate: 10,
+};
+
 const SendTransferModal: FC<Props> = ({
   selectedSendToken,
   setSelectedSendToken,
 }) => {
-  const [formData, setFormData] = useState<FormType>({
-    address: "",
-    txIds: [],
-    feeRate: 10,
-  });
+  const [formData, setFormData] = useState<FormType>(DEFAULT_FORM);
   const formId = useId();
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpenModal, setOpenModal] = useState<boolean>(false);
@@ -55,11 +57,12 @@ const SendTransferModal: FC<Props> = ({
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
+      setFormData(DEFAULT_FORM);
       setLoading(false);
     }
   };
 
-  const selectedTransfer = (tx: ITransfer) => {
+  const selectTransfer = (tx: ITransfer) => {
     if (formData.txIds.includes(tx)) {
       setFormData((prev) => ({
         ...prev,
@@ -110,7 +113,7 @@ const SendTransferModal: FC<Props> = ({
             {selectedSendToken?.transfers.map((tx, i) => (
               <div
                 onClick={() => {
-                  selectedTransfer(tx);
+                  selectTransfer(tx);
                 }}
                 key={i}
                 className={cn(

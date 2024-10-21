@@ -46,8 +46,14 @@ export const useInscribeTransferToken = () => {
     });
 
     const txIds: string[] = [];
-    for (const i of txs) {
-      txIds.push((await apiController.pushTx(i))?.txid ?? "");
+    try {
+      for (const i of txs) {
+        txIds.push((await apiController.pushTx(i))?.txid ?? "");
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error(e.message);
+      }
     }
     if (!txIds.filter((f) => f.length !== 64 || f.includes("RPC error")).length)
       toast.success(t("inscriptions.transfer_inscribed"));

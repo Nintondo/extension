@@ -174,9 +174,12 @@ export const useSendTransferTokens = () => {
       network
     );
     const result = await apiController.pushTx(tx);
-    if (result?.txid !== undefined)
+    if (result.txid !== undefined)
       toast.success(t("inscriptions.success_send_transfer"));
-    else toast.error(t("inscriptions.failed_send_transfer"));
+    else
+      toast.error(
+        t("inscriptions.failed_send_transfer") + `\n ${result.error}`
+      );
   };
 };
 
@@ -185,8 +188,7 @@ export function usePushBellsTxCallback() {
 
   return async (rawtx: string) => {
     try {
-      const txid = await apiController.pushTx(rawtx);
-      return txid;
+      return await apiController.pushTx(rawtx);
     } catch (e) {
       if (e instanceof Error) {
         if (e.message.includes("too-long-mempool-chain")) {

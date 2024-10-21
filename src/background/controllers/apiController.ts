@@ -12,6 +12,7 @@ import { IToken } from "@/shared/interfaces/token";
 import { customFetch, fetchProps } from "@/shared/utils";
 import { storageService } from "../services";
 import { DEFAULT_FEES } from "@/shared/constant";
+import { isValidTXID } from "@/ui/utils";
 
 export interface UtxoQueryParams {
   hex?: boolean;
@@ -23,7 +24,7 @@ export interface IApiController {
     address: string,
     params?: UtxoQueryParams
   ): Promise<ApiUTXO[] | undefined>;
-  pushTx(rawTx: string): Promise<{ txid: string } | undefined>;
+  pushTx(rawTx: string): Promise<{ txid?: string; error?: string }>;
   getTransactions(address: string): Promise<ITransaction[] | undefined>;
   getPaginatedTransactions(
     address: string,
@@ -106,9 +107,13 @@ class ApiController implements IApiController {
       body: rawTx,
       service: "electrs",
     });
-    if (data) {
+    if (isValidTXID(data) && data) {
       return {
         txid: data,
+      };
+    } else {
+      return {
+        error: data,
       };
     }
   }

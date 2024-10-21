@@ -97,3 +97,9 @@ export const useUpdateFunction = <T>(
     [onUpdate, retrieveFn, compareKey]
   );
 };
+
+export function isValidTXID(txid: string | undefined): boolean {
+  if (typeof txid === "undefined") return false;
+  const regex = /^[a-fA-F0-9]{64}$/;
+  return regex.test(txid);
+}
