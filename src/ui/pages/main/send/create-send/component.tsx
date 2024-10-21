@@ -98,7 +98,7 @@ const CreateSend = () => {
         state: {
           toAddress: address,
           amount: !inscriptionTransaction
-            ? Number(amount)
+            ? normalizeAmount(amount)
             : inscription!.inscription_id,
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",
