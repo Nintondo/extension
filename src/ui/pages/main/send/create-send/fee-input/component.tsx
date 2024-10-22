@@ -13,6 +13,8 @@ interface Props {
   value?: number;
 }
 
+const MAX_FEE = 200_000;
+
 const FeeInput: FC<Props> = ({ onChange, value }) => {
   const { feeRates } = useTransactionManagerContext();
   const [selected, setSelected] = useState<number>(
@@ -64,6 +66,7 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
             onChange(value);
           }}
           onlyInt
+          max={MAX_FEE}
         />
       )}
     </div>

@@ -27,7 +27,7 @@ const ChangePassword = () => {
       label: t("change_password.confirm_password"),
     },
   ];
-  const { register, handleSubmit, reset } = useForm<FormType>({
+  const { register, handleSubmit } = useForm<FormType>({
     defaultValues: {
       oldPassword: "",
       password: "",
@@ -63,7 +63,19 @@ const ChangePassword = () => {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit(executeChangePassword)}>
+    <form
+      className="form"
+      onSubmit={handleSubmit(executeChangePassword, (errors) => {
+        if (Object.values(errors).some((i) => i.message)) {
+          const message = Object.values(errors).find(
+            (i) => typeof i.message !== "undefined"
+          )?.message;
+          if (message) {
+            toast.error(message);
+          }
+        }
+      })}
+    >
       {formFields.map((i) => (
         <PasswordInput key={i.name} register={register} {...i} />
       ))}

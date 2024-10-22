@@ -48,7 +48,7 @@
     },
     "password_input": {
       "should_be_more_than_1_symbol": "Should be more than 1 symbol",
-      "should_be_less_than_250_symbols": "Should be less than 250 symbols"
+      "should_be_less_than_70_symbols": "Should be less than 70 symbols"
     },
     "rename": {
       "enter_new_name": "Enter new name",
