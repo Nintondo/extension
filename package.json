@@ -1,6 +1,6 @@
 {
   "name": "nintondo-extension",
-  "version": "0.2.7",
+  "version": "0.2.8-rc1",
   "private": true,
   "scripts": {
     "dev": "bun build.ts --watch",
