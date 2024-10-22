@@ -81,14 +81,21 @@ const CreateSend = () => {
         return toast.error(t("send.create_send.not_enough_money_error"));
       }
 
-      const data = !inscriptionTransaction
-        ? await createTx(
-            address,
-            Number((amount * 10 ** 8).toFixed(0)),
-            feeRate,
-            includeFeeInAmount
-          )
-        : await createOrdTx(address, feeRate, inscription!);
+      let data;
+
+      try {
+        data = !inscriptionTransaction
+          ? await createTx(
+              address,
+              Number((amount * 10 ** 8).toFixed(0)),
+              feeRate,
+              includeFeeInAmount
+            )
+          : await createOrdTx(address, feeRate, inscription!);
+      } catch (e) {
+        if (e instanceof Error) toast.error(e.message);
+      }
+
       if (!data) return;
       const { fee, rawtx } = data;
 
