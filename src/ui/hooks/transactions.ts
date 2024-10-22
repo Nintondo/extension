@@ -117,7 +117,6 @@ export function useCreateOrdTx() {
     const utxos = await apiController.getUtxos(fromAddress, {
       amount: fee,
     });
-    if (!utxos) throw new Error("Insufficient balance");
     if (!utxos) {
       throw new Error(
         `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
@@ -159,7 +158,15 @@ export const useSendTransferTokens = () => {
       amount: fee,
       hex: true,
     });
-    if (!utxos) return;
+    if (!utxos) {
+      throw new Error(
+        `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
+          currentAccount.balance ?? 0
+        )} ${t("hooks.transaction.insufficient_balance_1")} ${satoshisToAmount(
+          fee
+        )} ${t("hooks.transaction.insufficient_balance_2")}`
+      );
+    }
     const inscriptions: OrdUTXO[] = [];
     for (const transferToken of txIds) {
       const hex = await apiController.getTransactionHex(

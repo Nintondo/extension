@@ -76,7 +76,7 @@ const Receive = () => {
 
   return (
     <div className={s.receive}>
-      <div className="flex items-center flex-col gap-3 p-3 h-3/4 justify-center">
+      <div className={s.container}>
         <div title={t("receive.click_to_copy")} onClick={onCopy} ref={ref} />
         <div
           className="text-center opacity-80 text-xs text-ellipsis w-full break-all line-clamp-1"
