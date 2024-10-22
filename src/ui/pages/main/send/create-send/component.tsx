@@ -63,7 +63,6 @@ const CreateSend = () => {
       setLoading(true);
       const balance = currentAccount?.balance ?? 0;
       const amount = parseFloat(amountStr);
-      const totalAmount = amount + (!includeFeeInAmount ? feeRate : 0);
 
       if (amount < 0.00000001 && !inscriptionTransaction) {
         return toast.error(t("send.create_send.minimum_amount_error"));
@@ -77,7 +76,7 @@ const CreateSend = () => {
       if (typeof feeRate !== "number" || !feeRate || feeRate < 1) {
         return toast.error(t("send.create_send.not_enough_fee_error"));
       }
-      if (totalAmount > balance / 10 ** 8) {
+      if (amount > balance / 10 ** 8) {
         return toast.error(t("send.create_send.not_enough_money_error"));
       }
 
