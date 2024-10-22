@@ -55,22 +55,22 @@ const TransactionList = () => {
 
           return String(date.getTime());
         })
-      ).map(([key, txs], index) => {
+      ).map(([key, txs]) => {
         const isMempool = key === "0";
 
         if (!txs) return;
 
         return (
-          <div className="w-full">
+          <div className="w-full" key={key}>
             <div className="my-2 px-4 py-1.5 rounded-xl border border-neutral-700 font-medium uppercase sticky top-0 bg-neutral-900/50 backdrop-blur-sm z-10 w-max">
               {isMempool ? "Unconfirmed" : <DateComponent date={Number(key)} />}
             </div>
 
-            {txs.map((t) => {
+            {txs.map((t, txidx) => {
               return (
                 <Link
                   className={s.transaction}
-                  key={index}
+                  key={key + ":" + txidx}
                   to={`/pages/transaction-info/${t.txid}`}
                   state={{
                     transaction: t,
