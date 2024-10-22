@@ -25,7 +25,7 @@ export function useCreateBellsTxCallback() {
     toAmount: number,
     feeRate: number,
     receiverToPayFee = false
-  ) => {
+  ): Promise<{ rawtx: string; fee: number } | undefined> => {
     if (
       selectedWallet === undefined ||
       selectedAccount === undefined ||
@@ -34,30 +34,46 @@ export function useCreateBellsTxCallback() {
     )
       throw new Error("Failed to get current wallet or account");
     const fromAddress = currentAccount.address;
+
+    let fee = gptFeeCalculate(2, 2, feeRate);
+
+    let totalAmount = toAmount + (receiverToPayFee ? 0 : fee);
+
     let utxos = await apiController.getUtxos(fromAddress, {
-      amount:
-        toAmount + (receiverToPayFee ? 0 : gptFeeCalculate(2, 2, feeRate)),
+      amount: totalAmount,
     });
 
     if ((utxos?.length ?? 0) > 5 && !receiverToPayFee) {
+      fee = gptFeeCalculate(utxos!.length, 2, feeRate);
+      totalAmount = toAmount + (receiverToPayFee ? 0 : fee);
+
       utxos = await apiController.getUtxos(fromAddress, {
-        amount: toAmount + gptFeeCalculate(1 + utxos!.length, 2, feeRate),
+        amount: totalAmount,
       });
     }
 
-    if (!utxos) return;
+    if (!Array.isArray(utxos)) {
+      toast.error(t("send.create_send.not_enough_money_error"));
+      return;
+    }
 
     if (utxos.length > 500) {
       throw new Error(t("hooks.transaction.too_many_utxos"));
     }
 
-    const safeBalance = (utxos ?? []).reduce((pre, cur) => pre + cur.value, 0);
-    if (safeBalance < toAmount) {
+    const safeBalance = utxos.reduce((pre, cur) => pre + cur.value, 0);
+
+    if (receiverToPayFee && fee > toAmount) {
+      toast.error(t("send.create_send.fee_exceeds_amount_error"));
+      return;
+    }
+
+    if (safeBalance < totalAmount) {
       throw new Error(
         `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
           safeBalance
         )} ${t("hooks.transaction.insufficient_balance_1")} ${satoshisToAmount(
-          toAmount
+          totalAmount
         )} ${t("hooks.transaction.insufficient_balance_2")}`
       );
     }
@@ -99,10 +115,21 @@ export function useCreateOrdTx() {
     )
       throw new Error("Failed to get current wallet or account");
     const fromAddress = currentAccount?.address;
+
+    const fee = gptFeeCalculate(3, 2, feeRate);
+
     const utxos = await apiController.getUtxos(fromAddress, {
-      amount: gptFeeCalculate(3, 2, feeRate),
+      amount: fee,
     });
-    if (!utxos) return;
+    if (!utxos) {
+      throw new Error(
+        `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
+          currentAccount.balance ?? 0
+        )} ${t("hooks.transaction.insufficient_balance_1")} ${satoshisToAmount(
+          fee
+        )} ${t("hooks.transaction.insufficient_balance_2")}`
+      );
+    }
 
     const psbtHex = await keyringController.sendOrd({
       to: toAddress,
@@ -135,7 +162,15 @@ export const useSendTransferTokens = () => {
       amount: fee,
       hex: true,
     });
-    if (!utxos) return;
+    if (!utxos) {
+      throw new Error(
+        `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
+          currentAccount.balance ?? 0
+        )} ${t("hooks.transaction.insufficient_balance_1")} ${satoshisToAmount(
+          fee
+        )} ${t("hooks.transaction.insufficient_balance_2")}`
+      );
+    }
     const inscriptions: OrdUTXO[] = [];
     for (const transferToken of txIds) {
       const hex = await apiController.getTransactionHex(
@@ -162,9 +197,12 @@ export const useSendTransferTokens = () => {
       network
     );
     const result = await apiController.pushTx(tx);
-    if (result?.txid !== undefined)
+    if (result.txid !== undefined)
       toast.success(t("inscriptions.success_send_transfer"));
-    else toast.error(t("inscriptions.failed_send_transfer"));
+    else
+      toast.error(
+        t("inscriptions.failed_send_transfer") + `\n ${result.error}`
+      );
   };
 };
 
@@ -173,8 +211,7 @@ export function usePushBellsTxCallback() {
 
   return async (rawtx: string) => {
     try {
-      const txid = await apiController.pushTx(rawtx);
-      return txid;
+      return await apiController.pushTx(rawtx);
     } catch (e) {
       if (e instanceof Error) {
         if (e.message.includes("too-long-mempool-chain")) {

@@ -27,7 +27,7 @@ const ChangePassword = () => {
       label: t("change_password.confirm_password"),
     },
   ];
-  const { register, handleSubmit, reset } = useForm<FormType>({
+  const { register, handleSubmit } = useForm<FormType>({
     defaultValues: {
       oldPassword: "",
       password: "",
@@ -47,24 +47,35 @@ const ChangePassword = () => {
     oldPassword,
     password,
   }: FormType) => {
-    if (
-      appPassword === oldPassword &&
-      password === confirmPassword &&
-      password !== appPassword
-    ) {
-      await walletController.saveWallets({
-        newPassword: password,
-      });
-      await updateAppState({ password });
-      await logout();
-    } else {
-      reset();
-      toast.error("Try again");
+    if (appPassword !== oldPassword) {
+      toast.error(t("change_password.errors.incorrect_password"));
+      return;
     }
+    if (password !== confirmPassword) {
+      toast.error(t("change_password.errors.passwords_do_not_match"));
+      return;
+    }
+    await walletController.saveWallets({
+      newPassword: password,
+    });
+    await updateAppState({ password });
+    await logout();
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit(executeChangePassword)}>
+    <form
+      className="form"
+      onSubmit={handleSubmit(executeChangePassword, (errors) => {
+        if (Object.values(errors).some((i) => i.message)) {
+          const message = Object.values(errors).find(
+            (i) => typeof i.message !== "undefined"
+          )?.message;
+          if (message) {
+            toast.error(message);
+          }
+        }
+      })}
+    >
       {formFields.map((i) => (
         <PasswordInput key={i.name} register={register} {...i} />
       ))}

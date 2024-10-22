@@ -42,7 +42,7 @@ const Layout: FC<Props> = ({
   if (!origin) {
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <TailSpin />
+        <TailSpin className="animate-spin" />
       </div>
     );
   }

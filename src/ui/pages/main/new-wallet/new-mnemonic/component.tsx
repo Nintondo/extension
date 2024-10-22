@@ -85,7 +85,7 @@ const NewMnemonic = () => {
   };
 
   if (!mnemonicPhrase || loading) {
-    return <TailSpin />;
+    return <TailSpin className="animate-spin" />;
   }
 
   return (

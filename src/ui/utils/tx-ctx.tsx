@@ -83,6 +83,13 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   }, [transactions, apiController, currentAccount]);
 
   useEffect(() => {
+    if (currentAccount?.address) {
+      setTransactions(undefined);
+      updateTransactions(currentAccount.address, true);
+    }
+  }, [currentAccount?.address]);
+
+  useEffect(() => {
     if (!currentAccount?.address) return;
     if (currentPrice) return;
 
@@ -127,8 +134,9 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     trottledUpdate,
     feeRates,
     loading,
-    clearTransactions: () => {
-      setTransactions(undefined);
+    clearTransactions: async () => {
+      if (currentAccount.address)
+        await updateTransactions(currentAccount.address, true);
     },
   };
 };
@@ -144,7 +152,7 @@ interface TransactionManagerContextType {
     fast: number;
     slow: number;
   };
-  clearTransactions: () => void;
+  clearTransactions: () => Promise<void>;
 }
 
 const TransactionManagerContext = createContext<
@@ -176,7 +184,7 @@ export const useTransactionManagerContext =
           slow: 0,
           fast: 0,
         },
-        clearTransactions: () => {},
+        clearTransactions: async () => {},
         lastBlock: 0,
         loadMoreTransactions: async () => {},
       };

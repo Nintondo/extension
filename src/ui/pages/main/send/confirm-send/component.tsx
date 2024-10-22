@@ -19,14 +19,16 @@ const ConfirmSend = () => {
   const confirmSend = async () => {
     setLoading(true);
     try {
-      const txId = (await pushTx(location.state.hex))?.txid;
-      if (!txId) throw new Error("Failed pushing transaction");
+      const data = await pushTx(location.state.hex);
+      if (!data || !data.txid) {
+        throw new Error(data?.error ?? "Failed pushing transaction");
+      }
 
       setTimeout(() => {
         trottledUpdate();
       }, 100);
 
-      navigate(`/pages/finalle-send/${txId}`);
+      navigate(`/pages/finalle-send/${data.txid}`);
 
       if (location.state.save) {
         await updateAddressBook(location.state.toAddress);
@@ -49,7 +51,8 @@ const ConfirmSend = () => {
     },
     {
       label: t(
-        `send.confirm_send.${location.state.inscriptionTransaction ? "inscription_id" : "amount"
+        `send.confirm_send.${
+          location.state.inscriptionTransaction ? "inscription_id" : "amount"
         }`
       ),
       value:
@@ -58,10 +61,11 @@ const ConfirmSend = () => {
     },
     {
       label: t("send.confirm_send.fee"),
-      value: `${location.state.feeAmount / 10 ** 8} BEL (${location.state.includeFeeInAmount
-        ? t("send.confirm_send.included")
-        : t("send.confirm_send.not_included")
-        })`,
+      value: `${location.state.feeAmount / 10 ** 8} BEL (${
+        location.state.includeFeeInAmount
+          ? t("send.confirm_send.included")
+          : t("send.confirm_send.not_included")
+      })`,
     },
   ];
 

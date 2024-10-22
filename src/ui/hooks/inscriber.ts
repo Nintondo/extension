@@ -3,7 +3,7 @@ import { inscribe } from "bells-inscriber";
 import { useControllersState } from "../states/controllerState";
 import toast from "react-hot-toast";
 import { t } from "i18next";
-import { ss } from "../utils";
+import { isValidTXID, ss } from "../utils";
 import { useAppState } from "../states/appState";
 import { useGetCurrentAccount } from "../states/walletState";
 import { ApiUTXO } from "bells-inscriber/lib/types";
@@ -46,10 +46,12 @@ export const useInscribeTransferToken = () => {
     });
 
     const txIds: string[] = [];
+
     for (const i of txs) {
       txIds.push((await apiController.pushTx(i))?.txid ?? "");
     }
-    if (!txIds.filter((f) => f.length !== 64 || f.includes("RPC error")).length)
+
+    if (txIds.every(isValidTXID))
       toast.success(t("inscriptions.transfer_inscribed"));
     else toast.error(t("inscriptions.failed_inscribe_transfer"));
   };

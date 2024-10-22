@@ -55,36 +55,46 @@ const CreateSend = () => {
 
   const send = async ({
     address,
-    amount,
+    amount: amountStr,
     feeAmount: feeRate,
     includeFeeInAmount,
   }: FormType) => {
     try {
       setLoading(true);
-      if (Number(amount) < 0.00001 && !inscriptionTransaction) {
+      const balance = currentAccount?.balance ?? 0;
+      const amount = parseFloat(amountStr);
+
+      if (amount < 0.00000001 && !inscriptionTransaction) {
         return toast.error(t("send.create_send.minimum_amount_error"));
       }
       if (address.trim().length <= 0) {
         return toast.error(t("send.create_send.address_error"));
       }
-      if (Number(amount) > (currentAccount?.balance ?? 0) / 10 ** 8) {
-        return toast.error(t("send.create_send.not_enough_money_error"));
+      if (feeRate % 1 !== 0) {
+        return toast.error(t("send.create_send.fee_is_text_error"));
       }
       if (typeof feeRate !== "number" || !feeRate || feeRate < 1) {
         return toast.error(t("send.create_send.not_enough_fee_error"));
       }
-      if (feeRate % 1 !== 0) {
-        return toast.error(t("send.create_send.fee_is_text_error"));
+      if (amount > balance / 10 ** 8) {
+        return toast.error(t("send.create_send.not_enough_money_error"));
       }
 
-      const data = !inscriptionTransaction
-        ? await createTx(
-            address,
-            Number((Number(amount) * 10 ** 8).toFixed(0)),
-            feeRate,
-            includeFeeInAmount
-          )
-        : await createOrdTx(address, feeRate, inscription!);
+      let data;
+
+      try {
+        data = !inscriptionTransaction
+          ? await createTx(
+              address,
+              Number((amount * 10 ** 8).toFixed(0)),
+              feeRate,
+              includeFeeInAmount
+            )
+          : await createOrdTx(address, feeRate, inscription!);
+      } catch (e) {
+        if (e instanceof Error) toast.error(e.message);
+      }
+
       if (!data) return;
       const { fee, rawtx } = data;
 
@@ -92,7 +102,7 @@ const CreateSend = () => {
         state: {
           toAddress: address,
           amount: !inscriptionTransaction
-            ? Number(amount)
+            ? normalizeAmount(amountStr)
             : inscription!.inscription_id,
           includeFeeInAmount,
           fromAddress: currentAccount?.address ?? "",

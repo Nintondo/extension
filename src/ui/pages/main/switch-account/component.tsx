@@ -47,7 +47,7 @@ const SwitchAccount = () => {
         element.scrollIntoView();
       }
     }
-  }, [currentAccount, currentWallet]);
+  }, []);
 
   return (
     <div className={s.switchAccDiv}>

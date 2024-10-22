@@ -5,7 +5,7 @@ import CopyBtn from "@/ui/components/copy-btn";
 import toast from "react-hot-toast";
 import { t } from "i18next";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
-import cn from 'classnames';
+import cn from "classnames";
 
 const qrCode = new QRCode({
   width: 250,
@@ -20,15 +20,15 @@ const qrCode = new QRCode({
       colorStops: [
         {
           color: "#ced4da",
-          offset: 0
+          offset: 0,
         },
         {
           color: "#e9ecef",
-          offset: 50
-        }
+          offset: 50,
+        },
       ],
       type: "linear",
-    }
+    },
   },
   backgroundOptions: {
     color: "#ffffff00",
@@ -76,9 +76,12 @@ const Receive = () => {
 
   return (
     <div className={s.receive}>
-      <div className="flex items-center flex-col gap-3 p-3 h-3/4 justify-center">
+      <div className={s.container}>
         <div title={t("receive.click_to_copy")} onClick={onCopy} ref={ref} />
-        <div className="text-center opacity-80 text-xs">
+        <div
+          className="text-center opacity-80 text-xs text-ellipsis w-full break-all line-clamp-1"
+          title={currentAccount?.address}
+        >
           {currentAccount?.address}
         </div>
       </div>

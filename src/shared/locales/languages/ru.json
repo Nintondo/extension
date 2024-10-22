@@ -38,7 +38,8 @@
       "continue": "Продолжить"
     },
     "password_input": {
-      "should_be_more_than_1_symbol": "Должен быть более 1 символа"
+      "should_be_more_than_1_symbol": "Должен быть более 1 символа",
+      "should_be_less_than_70_symbols": "Должен быть менее 70 символов"
     },
     "rename": {
       "enter_new_name": "Введите новое имя",
@@ -56,7 +57,11 @@
     "old_password": "Старый пароль",
     "new_password": "Новый пароль",
     "confirm_password": "Подтвердить пароль",
-    "change_password": "Сменить пароль"
+    "change_password": "Сменить пароль",
+    "errors": {
+      "incorrect_password": "Неверный пароль",
+      "passwords_do_not_match": "Пароли не совпадают"
+    }
   },
   "connected_sites": {
     "no_sites_message": "Вы еще не подключили ни одного сайта"
@@ -115,7 +120,8 @@
       "confirm": "Подтвердить"
     },
     "create_send": {
-      "minimum_amount_error": "Минимальная сумма - 0.0001 BEL",
+      "minimum_amount_error": "Минимальная сумма - 0.00000001 BEL",
+      "fee_exceeds_amount_error": "Сбор превышает сумму",
       "address_error": "Введите адрес получателя",
       "not_enough_money_error": "На вашем счету недостаточно средств",
       "not_enough_fee_error": "Увеличьте сбор",

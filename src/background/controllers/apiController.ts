@@ -12,6 +12,7 @@ import { IToken } from "@/shared/interfaces/token";
 import { customFetch, fetchProps } from "@/shared/utils";
 import { storageService } from "../services";
 import { DEFAULT_FEES } from "@/shared/constant";
+import { isValidTXID } from "@/ui/utils";
 
 export interface UtxoQueryParams {
   hex?: boolean;
@@ -23,7 +24,7 @@ export interface IApiController {
     address: string,
     params?: UtxoQueryParams
   ): Promise<ApiUTXO[] | undefined>;
-  pushTx(rawTx: string): Promise<{ txid: string } | undefined>;
+  pushTx(rawTx: string): Promise<{ txid?: string; error?: string }>;
   getTransactions(address: string): Promise<ITransaction[] | undefined>;
   getPaginatedTransactions(
     address: string,
@@ -35,6 +36,7 @@ export interface IApiController {
   getAccountStats(address: string): Promise<IAccountStats | undefined>;
   getTokens(address: string): Promise<IToken[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
+  getTransaction(txid: string): Promise<ITransaction | undefined>;
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
   getContentPaginatedInscriptions(
     address: string,
@@ -78,7 +80,9 @@ class ApiController implements IApiController {
       params: params as Record<string, string>,
       service: "electrs",
     });
-    return data;
+    if (Array.isArray(data)) {
+      return data;
+    }
   }
 
   async getFees() {
@@ -106,9 +110,13 @@ class ApiController implements IApiController {
       body: rawTx,
       service: "electrs",
     });
-    if (data) {
+    if (isValidTXID(data) && data) {
       return {
         txid: data,
+      };
+    } else {
+      return {
+        error: data,
       };
     }
   }
@@ -177,6 +185,13 @@ class ApiController implements IApiController {
     });
   }
 
+  async getTransaction(txid: string) {
+    return await this.fetch<ITransaction>({
+      path: "/tx/" + txid,
+      service: "electrs",
+    });
+  }
+
   async getTransactionHex(txid: string) {
     return await this.fetch<string>({
       path: "/tx/" + txid + "/hex",
@@ -221,8 +236,8 @@ class ApiController implements IApiController {
 
   async getLocationByInscriptionId(inscriptionId: string) {
     return await this.fetch<{ location: string; owner: string }>({
-      path: `/${inscriptionId}/owner`,
-      service: "history",
+      path: `/location/${inscriptionId}`,
+      service: "electrs",
     });
   }
 

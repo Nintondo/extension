@@ -47,7 +47,8 @@
       "continue": "Continue"
     },
     "password_input": {
-      "should_be_more_than_1_symbol": "Should be more than 1 symbol"
+      "should_be_more_than_1_symbol": "Should be more than 1 symbol",
+      "should_be_less_than_70_symbols": "Should be less than 70 symbols"
     },
     "rename": {
       "enter_new_name": "Enter new name",
@@ -90,7 +91,11 @@
     "old_password": "Old password",
     "new_password": "New password",
     "confirm_password": "Confirm password",
-    "change_password": "Change password"
+    "change_password": "Change password",
+    "errors": {
+      "incorrect_password": "Incorrect password",
+      "passwords_do_not_match": "Passwords do not match"
+    }
   },
   "connected_sites": {
     "no_sites_message": "You didn't connect any sites yet"
@@ -155,7 +160,8 @@
       "inscription_id": "Inscription Id"
     },
     "create_send": {
-      "minimum_amount_error": "Minimum amount is 0.0001 BEL",
+      "minimum_amount_error": "Minimum amount is 0.00000001 BEL",
+      "fee_exceeds_amount_error": "Fee exceeds amount",
       "address_error": "Insert receiver's address",
       "not_enough_money_error": "There's not enough money in your account",
       "not_enough_fee_error": "Increase the fee",

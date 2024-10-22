@@ -11,31 +11,34 @@ import { useTransactionManagerContext } from "../utils/tx-ctx";
 import { produce } from "immer";
 import { excludeKeysFromObj } from "@/shared/utils";
 
-const useClearSelectedAccountStats = () => {
+export const useClearSelectedAccountStats = () => {
   const { wallets, updateWalletState } = useWalletState(
     ss(["wallets", "updateWalletState", "selectedAccount", "selectedWallet"])
   );
 
-  return async (curWallets?: IWallet[]) => {
-    if (!curWallets) curWallets = [...wallets];
+  return useCallback(
+    async (curWallets?: IWallet[]) => {
+      if (!curWallets) curWallets = [...wallets];
 
-    const newWallets = curWallets.map((i) => ({
-      ...i,
-      accounts: i.accounts.map((i) =>
-        excludeKeysFromObj(i, [
-          "balance",
-          "inscriptionBalance",
-          "inscriptionCounter",
-        ])
-      ),
-    }));
+      const newWallets = curWallets.map((i) => ({
+        ...i,
+        accounts: i.accounts.map((i) =>
+          excludeKeysFromObj(i, [
+            "balance",
+            "inscriptionBalance",
+            "inscriptionCounter",
+          ])
+        ),
+      }));
 
-    if (curWallets !== undefined) {
-      return newWallets;
-    } else {
-      await updateWalletState({ wallets: newWallets });
-    }
-  };
+      if (curWallets !== undefined) {
+        return newWallets;
+      } else {
+        await updateWalletState({ wallets: newWallets });
+      }
+    },
+    [wallets, updateWalletState]
+  );
 };
 
 export const useCreateNewWallet = () => {
@@ -66,7 +69,7 @@ export const useCreateNewWallet = () => {
       selectedWallet: newWallets.length - 1,
       vaultIsEmpty: false,
     });
-    clearTransactions();
+    await clearTransactions();
 
     await notificationController.changedAccount();
     navigate("/");
@@ -139,7 +142,7 @@ export const useSwitchWallet = () => {
     }
 
     if (selectedWallet !== key) {
-      clearTransactions();
+      await clearTransactions();
       newWallets = (await clearSelected(newWallets))!;
     }
     await updateWalletState({
@@ -165,14 +168,14 @@ export const useSwitchAccount = () => {
 
   return async (id: number) => {
     if (selectedAccount !== id) {
-      clearTransactions();
+      await clearTransactions();
       await clearSelected();
+      await updateWalletState({
+        selectedAccount: id,
+      });
+      await notificationController.changedAccount();
     }
-    await updateWalletState({
-      selectedAccount: id,
-    });
 
-    await notificationController.changedAccount();
     navigate("/");
   };
 };

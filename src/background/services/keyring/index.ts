@@ -30,6 +30,8 @@ class KeyringService {
   async init(password: string) {
     const { wallets, network } = await storageService.importWallets(password);
     for (const i of wallets) {
+      if (typeof i.data === "undefined") continue;
+
       const params = {
         addressType:
           i.data.addressType === undefined ? i.data.addressType : i.addressType,
