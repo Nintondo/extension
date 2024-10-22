@@ -76,22 +76,21 @@ export const useUpdateFunction = <T>(
 
         const currentItemsKeys = new Set(prev!.map((f) => f[compareKey]));
         const receivedItemsKeys = new Set(
-          receivedItems?.map((f) => f[compareKey])
+          receivedItems.map((f) => f[compareKey])
         );
         const intersection = currentItemsKeys.intersection(receivedItemsKeys);
+        const difference = currentItemsKeys.difference(receivedItemsKeys);
 
         return [
-          ...receivedItems.filter((f) => intersection.has(f[compareKey])),
-          ...prev?.map((i) => {
-            if (intersection.has(i[compareKey])) {
-              return receivedItems.find(
-                (f) => f[compareKey] === i[compareKey]
-              )!;
-            } else {
-              return i;
-            }
-          })!,
-        ];
+          ...receivedItems.filter((f) => difference.has(f[compareKey])),
+          ...prev!,
+        ].map((i) => {
+          if (intersection.has(i[compareKey])) {
+            return receivedItems.find((f) => f[compareKey] === i[compareKey])!;
+          } else {
+            return i;
+          }
+        });
       });
     },
     [onUpdate, retrieveFn, compareKey]
