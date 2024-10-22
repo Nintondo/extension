@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import LoadingIcons, { TailSpin } from "react-loading-icons";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import DateComponent from "@/ui/components/date";
+import { Circle } from "rc-progress";
 
 const TransactionList = () => {
   const { lastBlock, transactions, loadMoreTransactions, currentPrice } =
@@ -71,8 +72,8 @@ const TransactionList = () => {
                 t,
                 currentAccount.address ?? ""
               );
-              const isConfirmed =
-                getPercent(lastBlock, t.status.block_height) === 100;
+              const percent = getPercent(lastBlock, t.status.block_height);
+              const isConfirmed = percent === 100;
 
               return (
                 <Link
@@ -88,12 +89,10 @@ const TransactionList = () => {
                       className={cn(
                         "rounded-full size-9 text-bg flex items-center justify-center relative",
                         {
-                          "bg-gradient-to-r from-green-400/75 to-emerald-600/75":
-                            isConfirmed && isIncome,
-                          "bg-gradient-to-r from-red-400/75 to-red-600/75":
-                            isConfirmed && !isIncome,
-                          "bg-gradient-to-r from-orange-400/75 to-orange-600/75":
-                            getPercent(lastBlock, t.status.block_height) < 100,
+                          "bg-gradient-to-r from-green-500/75 to-emerald-600/75":
+                            isConfirmed,
+                          "bg-gradient-to-r from-gray-500/75 to-gray-600/75":
+                            !isConfirmed,
                         }
                       )}
                     >
@@ -101,17 +100,32 @@ const TransactionList = () => {
                         className={cn(
                           "absolute inset-0 flex items-center justify-center",
                           {
-                            "text-green-200": isIncome,
-                            "text-red-200": !isIncome,
-                            "text-yellow-200": !isConfirmed,
+                            "text-green-200": isConfirmed,
+                            "text-white": !isConfirmed,
                           }
                         )}
                       >
-                        {!isIncome ? (
-                          <ArrowUpIcon className="size-5" />
-                        ) : (
-                          <ArrowDownIcon className="size-5" />
-                        )}
+                        <Circle
+                          className={cn("absolute inset-0", {
+                            hidden: percent === 100 || percent === 0,
+                          })}
+                          percent={percent}
+                          strokeWidth={4}
+                          trailWidth={3}
+                          trailColor="rgb(107, 114, 128)"
+                          strokeColor={"white"}
+                        />
+                        {isConfirmed ? (
+                          !isIncome ? (
+                            <ArrowUpIcon className="size-5" />
+                          ) : (
+                            <ArrowDownIcon className="size-5" />
+                          )
+                        ) : t.status.confirmed ? (
+                          <span className="text-base font-medium leading-3">
+                            {lastBlock - t.status.block_height + 1}
+                          </span>
+                        ) : undefined}
                       </div>
                     </div>
                     <div className="font-mono text-opacity-80 pt-1">
@@ -122,8 +136,8 @@ const TransactionList = () => {
                     <div
                       className={cn(s.value, {
                         "text-green-500": isIncome && isConfirmed,
-                        "text-red-500": !isIncome && isConfirmed,
-                        "text-yellow-500": !isConfirmed,
+                        "text-red-400": !isIncome && isConfirmed,
+                        "text-gray-400": !isConfirmed,
                       })}
                     >
                       {isIncome ? "+ " : "- "}
@@ -148,9 +162,13 @@ const TransactionList = () => {
 
 export default TransactionList;
 
+const REQUIRED_CONFIRMATIONS = 6;
+
 const getPercent = (lastBlock: number, currentBlock?: number) => {
   if (!currentBlock) return 0;
-  if (lastBlock - currentBlock > 3) return 100;
+  if (lastBlock - currentBlock + 1 > REQUIRED_CONFIRMATIONS) return 100;
   if (lastBlock < currentBlock) return 0;
-  return Math.floor(((lastBlock - currentBlock) / 3) * 100);
+  return Math.floor(
+    ((lastBlock - currentBlock + 1) / REQUIRED_CONFIRMATIONS) * 100
+  );
 };

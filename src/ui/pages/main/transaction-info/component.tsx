@@ -60,7 +60,9 @@ const TransactionInfo = () => {
                 {t("transaction_info.confirmations_label")}
               </p>
               <span>
-                {tx.status.confirmed ? lastBlock - tx.status.block_height : 0}
+                {tx.status.confirmed
+                  ? lastBlock - tx.status.block_height + 1
+                  : "Unconfirmed"}
               </span>
             </div>
             <div className={s.group}>

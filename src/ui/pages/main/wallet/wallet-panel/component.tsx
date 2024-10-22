@@ -35,7 +35,7 @@ const WalletPanel = () => {
   return (
     <div className="flex justify-between mt-2 items-center mb-4">
       <Link
-        className="flex gap-3 items-center select-none cursor-pointer"
+        className="flex gap-2 items-center select-none cursor-pointer"
         to={"/pages/switch-wallet"}
       >
         <div
@@ -44,13 +44,8 @@ const WalletPanel = () => {
             backgroundImage: generateGradient(
               currentAccount?.address ?? "account"
             ),
-            textShadow: "0 0 4px rgba(0, 0, 0, 0.7)",
           }}
-        >
-          {currentWallet?.name
-            ? currentWallet?.name.split(/.*?/u)[0].toUpperCase()
-            : "W"}
-        </div>
+        />
         <div className="flex gap-2 items-center">
           <div className={s.change}>
             {(currentWallet?.name.length ?? 0) > 9
