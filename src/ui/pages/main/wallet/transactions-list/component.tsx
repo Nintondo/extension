@@ -5,10 +5,9 @@ import {
   getTransactionValue,
 } from "@/shared/utils/transactions";
 import { t } from "i18next";
-import { Circle } from "rc-progress";
 import { Link } from "react-router-dom";
 import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
@@ -17,7 +16,7 @@ import { useGetCurrentAccount } from "@/ui/states/walletState";
 import DateComponent from "@/ui/components/date";
 
 const TransactionList = () => {
-  const { lastBlock, transactions, loadMoreTransactions } =
+  const { lastBlock, transactions, loadMoreTransactions, currentPrice } =
     useTransactionManagerContext();
   const currentAccount = useGetCurrentAccount();
   const { ref, inView } = useInView();
@@ -67,6 +66,14 @@ const TransactionList = () => {
             </div>
 
             {txs.map((t, txidx) => {
+              const isIncome = isIncomeTx(t, currentAccount.address ?? "");
+              const value = getTransactionValue(
+                t,
+                currentAccount.address ?? ""
+              );
+              const isConfirmed =
+                getPercent(lastBlock, t.status.block_height) === 100;
+
               return (
                 <Link
                   className={s.transaction}
@@ -79,48 +86,52 @@ const TransactionList = () => {
                   <div className="flex gap-3 items-center">
                     <div
                       className={cn(
-                        "rounded-full w-6 h-6 text-bg flex items-center justify-center relative",
+                        "rounded-full size-9 text-bg flex items-center justify-center relative",
                         {
-                          "bg-gradient-to-r from-green-400 to-emerald-600":
-                            getPercent(lastBlock, t.status.block_height) ===
-                            100,
-                          "bg-gradient-to-r from-gray-200 to-gray-500":
+                          "bg-gradient-to-r from-green-400/75 to-emerald-600/75":
+                            isConfirmed && isIncome,
+                          "bg-gradient-to-r from-red-400/75 to-red-600/75":
+                            isConfirmed && !isIncome,
+                          "bg-gradient-to-r from-orange-400/75 to-orange-600/75":
                             getPercent(lastBlock, t.status.block_height) < 100,
                         }
                       )}
                     >
-                      <Circle
-                        className={cn("absolute -inset-1", {
-                          hidden:
-                            getPercent(lastBlock, t.status.block_height) ===
-                            100,
-                        })}
-                        percent={getPercent(lastBlock, t.status.block_height)}
-                        strokeWidth={3}
-                      />
-                      <div className="absolute inset-0">
-                        {getConfirmationsCount(
-                          lastBlock,
-                          t.status.block_height
+                      <div
+                        className={cn(
+                          "absolute inset-0 flex items-center justify-center",
+                          {
+                            "text-green-200": isIncome,
+                            "text-red-200": !isIncome,
+                            "text-yellow-200": !isConfirmed,
+                          }
+                        )}
+                      >
+                        {!isIncome ? (
+                          <ArrowUpIcon className="size-5" />
+                        ) : (
+                          <ArrowDownIcon className="size-5" />
                         )}
                       </div>
                     </div>
-                    <div>{shortAddress(t.txid)}</div>
+                    <div className="font-mono text-opacity-80 pt-1">
+                      {shortAddress(t.txid)}
+                    </div>
                   </div>
-                  <div
-                    className={cn(s.value, {
-                      "text-green-500": isIncomeTx(
-                        t,
-                        currentAccount.address ?? ""
-                      ),
-                      "text-red-500": !isIncomeTx(
-                        t,
-                        currentAccount.address ?? ""
-                      ),
-                    })}
-                  >
-                    {isIncomeTx(t, currentAccount.address ?? "") ? "+ " : "- "}
-                    {getTransactionValue(t, currentAccount.address ?? "")} BEL
+                  <div>
+                    <div
+                      className={cn(s.value, {
+                        "text-green-500": isIncome && isConfirmed,
+                        "text-red-500": !isIncome && isConfirmed,
+                        "text-yellow-500": !isConfirmed,
+                      })}
+                    >
+                      {isIncome ? "+ " : "- "}
+                      {value} BEL
+                    </div>
+                    <div className="text-xs text-gray-400 text-right">
+                      {parseFloat((currentPrice! * Number(value)).toFixed(6))} $
+                    </div>
                   </div>
                 </Link>
               );
@@ -139,26 +150,7 @@ export default TransactionList;
 
 const getPercent = (lastBlock: number, currentBlock?: number) => {
   if (!currentBlock) return 0;
-  if (lastBlock - currentBlock > 6) return 100;
+  if (lastBlock - currentBlock > 3) return 100;
   if (lastBlock < currentBlock) return 0;
-  return Math.floor(((lastBlock - currentBlock) / 6) * 100);
-};
-
-const getConfirmationsCount = (lastBlock: number, currentBlock?: number) => {
-  let confirmations = currentBlock ? Math.max(lastBlock - currentBlock, 0) : 0;
-
-  if (!currentBlock || lastBlock - currentBlock < 6 || lastBlock < currentBlock)
-    return (
-      <div className="p-0.5 flex items-center justify-center leading-[159%]">
-        {confirmations}
-      </div>
-    );
-  if (lastBlock - currentBlock < 6) {
-    return (
-      <div className="p-0.5 flex items-center justify-center leading-[159%]">
-        {lastBlock - currentBlock}
-      </div>
-    );
-  }
-  return <CheckIcon className="w-6 h-6 p-0.5" />;
+  return Math.floor(((lastBlock - currentBlock) / 3) * 100);
 };
