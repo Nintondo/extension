@@ -37,14 +37,18 @@ export function useCreateBellsTxCallback() {
 
     let fee = gptFeeCalculate(2, 2, feeRate);
 
+    let totalAmount = toAmount + (receiverToPayFee ? 0 : fee);
+
     let utxos = await apiController.getUtxos(fromAddress, {
-      amount: toAmount + (receiverToPayFee ? 0 : fee),
+      amount: totalAmount,
     });
 
     if ((utxos?.length ?? 0) > 5 && !receiverToPayFee) {
       fee = gptFeeCalculate(utxos!.length, 2, feeRate);
+      totalAmount = toAmount + (receiverToPayFee ? 0 : fee);
+
       utxos = await apiController.getUtxos(fromAddress, {
-        amount: toAmount + fee,
+        amount: totalAmount,
       });
     }
 
@@ -64,12 +68,12 @@ export function useCreateBellsTxCallback() {
       return;
     }
 
-    if (safeBalance < toAmount + fee) {
+    if (safeBalance < totalAmount) {
       throw new Error(
         `${t("hooks.transaction.insufficient_balance_0")} (${satoshisToAmount(
           safeBalance
         )} ${t("hooks.transaction.insufficient_balance_1")} ${satoshisToAmount(
-          toAmount
+          totalAmount
         )} ${t("hooks.transaction.insufficient_balance_2")}`
       );
     }
