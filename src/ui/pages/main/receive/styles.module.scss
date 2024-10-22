@@ -15,7 +15,7 @@
 .container {
   @apply flex items-center flex-col gap-3 p-3 h-3/4 justify-center;
 
-  @media screen and (min-width: 351px) {
+  @media screen and (min-width: 420px) {
     @apply h-full;
   }
 }
