@@ -59,7 +59,7 @@ export function useCreateBellsTxCallback() {
 
     const safeBalance = utxos.reduce((pre, cur) => pre + cur.value, 0);
 
-    if (receiverToPayFee && fee < toAmount) {
+    if (receiverToPayFee && fee > toAmount) {
       toast.error(t("send.create_send.fee_exceeds_amount_error"));
       return;
     }
