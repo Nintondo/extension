@@ -36,6 +36,7 @@ export interface IApiController {
   getAccountStats(address: string): Promise<IAccountStats | undefined>;
   getTokens(address: string): Promise<IToken[] | undefined>;
   getTransactionHex(txid: string): Promise<string | undefined>;
+  getTransaction(txid: string): Promise<ITransaction | undefined>;
   getUtxoValues(outpoints: string[]): Promise<number[] | undefined>;
   getContentPaginatedInscriptions(
     address: string,
@@ -180,6 +181,13 @@ class ApiController implements IApiController {
   async getTokens(address: string): Promise<IToken[] | undefined> {
     return await this.fetch<IToken[]>({
       path: `/address/${address}/tokens`,
+      service: "electrs",
+    });
+  }
+
+  async getTransaction(txid: string) {
+    return await this.fetch<ITransaction>({
+      path: "/tx/" + txid,
       service: "electrs",
     });
   }

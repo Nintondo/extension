@@ -74,7 +74,6 @@ const TransactionList = () => {
                   to={`/pages/transaction-info/${t.txid}`}
                   state={{
                     transaction: t,
-                    lastBlock,
                   }}
                 >
                   <div className="flex gap-3 items-center">
