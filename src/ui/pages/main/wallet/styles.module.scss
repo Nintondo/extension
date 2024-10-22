@@ -65,7 +65,7 @@
 }
 
 .accountsIcon {
-  @apply w-8 h-8 rounded-xl p-1 border border-text transition-colors hover:bg-text hover:text-bg cursor-pointer;
+  @apply size-9 rounded-xl p-1 border border-neutral-700 bg-neutral-950 transition-colors hover:bg-text hover:text-bg cursor-pointer;
 }
 
 .change {
