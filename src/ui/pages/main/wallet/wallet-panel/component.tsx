@@ -25,7 +25,7 @@ const stringToColor = (str: string) => {
 const generateGradient = (str: string) => {
   const color1 = stringToColor(str);
   const color2 = stringToColor(str.split("").reverse().join(""));
-  return `linear-gradient(45deg, ${color1}, ${color2})`;
+  return `linear-gradient(45deg, ${color1}bb, ${color2}bb)`;
 };
 
 const WalletPanel = () => {
@@ -44,7 +44,7 @@ const WalletPanel = () => {
             backgroundImage: generateGradient(
               currentAccount?.address ?? "account"
             ),
-            textShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
+            textShadow: "0 0 4px rgba(0, 0, 0, 0.7)",
           }}
         >
           {currentWallet?.name

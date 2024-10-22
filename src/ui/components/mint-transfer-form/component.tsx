@@ -1,19 +1,13 @@
 import { IToken } from "@/shared/interfaces/token";
 import { useInscribeTransferToken } from "@/ui/hooks/inscriber";
 import FeeInput from "@/ui/pages/main/send/create-send/fee-input";
-import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
-import {
-  useState,
-  useId,
-  ChangeEventHandler,
-  MouseEventHandler,
-  FC,
-} from "react";
+import { useState, useId, MouseEventHandler, FC } from "react";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loading-icons";
 import s from "./styles.module.scss";
 import { nFormatter } from "../../utils/formatter";
+import { Controller, useForm } from "react-hook-form";
 
 interface FormType {
   amount: string;
@@ -31,36 +25,20 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
   selectedMintToken,
   mintedHandler,
 }) => {
-  const [formData, setFormData] = useState<FormType>({
-    amount: "",
-    feeRate: 10,
-  });
   const formId = useId();
   const [loading, setLoading] = useState<boolean>(false);
   const inscribeTransferToken = useInscribeTransferToken();
-
-  const onAmountChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (selectedMintToken) {
-      if (Number(e.target.value) > selectedMintToken.balance) {
-        return setFormData((prev) => ({
-          ...prev,
-          amount: selectedMintToken.balance.toString(),
-        }));
-      }
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      amount: normalizeAmount(e.target.value),
-    }));
-  };
+  const { register, control, handleSubmit, setValue, reset } =
+    useForm<FormType>({
+      defaultValues: {
+        amount: "",
+        feeRate: 10,
+      },
+    });
 
   const onMaxClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    setFormData((prev) => ({
-      ...prev,
-      amount: (selectedMintToken?.balance ?? "").toString(),
-    }));
+    setValue("amount", selectedMintToken?.balance.toString() ?? "");
   };
 
   const inscribe = async ({ amount, feeRate }: FormType) => {
@@ -91,14 +69,11 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
           tick: selectedMintToken?.tick,
           amt: amount,
         },
-        formData.feeRate as number
+        feeRate
       );
       setSelectedMintToken(undefined);
       if (mintedHandler) mintedHandler(Number(amount));
-      setFormData({
-        amount: "",
-        feeRate: 10,
-      });
+      reset();
     } catch (e) {
       if (e instanceof Error) toast.error(e.message);
       else throw e;
@@ -112,10 +87,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
       <form
         id={formId}
         className={"w-full flex flex-col gap-6 px-1 py-6 items-start h-full"}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          await inscribe(formData);
-        }}
+        onSubmit={handleSubmit(inscribe)}
       >
         <div className="form-field">
           <span className="input-span">{t("send.create_send.amount")}</span>
@@ -123,10 +95,9 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
             <div className="flex gap-2 w-full">
               <input
                 type="number"
+                {...register("amount", { required: true })}
                 placeholder={t("inscriptions.amount_to_mint")}
                 className="input w-full"
-                value={formData.amount}
-                onChange={onAmountChange}
               />
               <button className={s.maxAmount} onClick={onMaxClick}>
                 {t("send.create_send.max_amount")}
@@ -152,11 +123,13 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         </div>
         <div className="form-field">
           <span className="input-span">{t("send.create_send.fee_label")}</span>
-          <FeeInput
-            onChange={(v) =>
-              setFormData((prev) => ({ ...prev, feeRate: v ?? 0 }))
-            }
-            value={formData.feeRate}
+          <Controller
+            name="feeRate"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FeeInput onChange={onChange} value={value} />
+            )}
+            rules={{ required: true }}
           />
         </div>
       </form>
