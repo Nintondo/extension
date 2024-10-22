@@ -38,6 +38,7 @@
     "bellhdw": "^0.5.43",
     "bells-inscriber": "^0.2.5",
     "classnames": "2.5.1",
+    "dayjs": "^1.11.13",
     "eth-rpc-errors": "4.0.3",
     "events": "^3.3.0",
     "i18next": "23.12.2",

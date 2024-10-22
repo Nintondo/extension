@@ -14,14 +14,7 @@ import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
 import LoadingIcons, { TailSpin } from "react-loading-icons";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
-
-const formatDate = (timestamp: number) => {
-  const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
+import DateComponent from "@/ui/components/date";
 
 const TransactionList = () => {
   const { lastBlock, transactions, loadMoreTransactions } =
@@ -64,14 +57,13 @@ const TransactionList = () => {
         })
       ).map(([key, txs], index) => {
         const isMempool = key === "0";
-        const date = isMempool ? "Unconfirmed" : formatDate(Number(key));
 
         if (!txs) return;
 
         return (
           <div className="w-full">
             <div className="my-2 px-4 py-1.5 rounded-xl border border-neutral-700 font-medium uppercase sticky top-0 bg-neutral-900/50 backdrop-blur-sm z-10 w-max">
-              {date}
+              {isMempool ? "Unconfirmed" : <DateComponent date={Number(key)} />}
             </div>
 
             {txs.map((t) => {
