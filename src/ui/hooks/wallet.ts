@@ -51,7 +51,6 @@ export const useCreateNewWallet = () => {
     );
   const clearSelected = useClearSelectedAccountStats();
   const navigate = useNavigate();
-  const { clearTransactions } = useTransactionManagerContext();
 
   return async (props: INewWalletProps) => {
     const wallet = await walletController.createNewWallet(props);
@@ -69,8 +68,6 @@ export const useCreateNewWallet = () => {
       selectedWallet: newWallets.length - 1,
       vaultIsEmpty: false,
     });
-    await clearTransactions();
-
     await notificationController.changedAccount();
     navigate("/");
   };
@@ -123,7 +120,6 @@ export const useSwitchWallet = () => {
   const { walletController, notificationController } = useControllersState(
     ss(["walletController", "notificationController"])
   );
-  const { clearTransactions } = useTransactionManagerContext();
   const clearSelected = useClearSelectedAccountStats();
   const navigate = useNavigate();
 
@@ -142,7 +138,6 @@ export const useSwitchWallet = () => {
     }
 
     if (selectedWallet !== key) {
-      await clearTransactions();
       newWallets = (await clearSelected(newWallets))!;
     }
     await updateWalletState({
@@ -164,11 +159,9 @@ export const useSwitchAccount = () => {
   const { notificationController } = useControllersState(
     ss(["notificationController"])
   );
-  const { clearTransactions } = useTransactionManagerContext();
 
   return async (id: number) => {
     if (selectedAccount !== id) {
-      await clearTransactions();
       await clearSelected();
       await updateWalletState({
         selectedAccount: id,

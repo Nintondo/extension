@@ -21,6 +21,7 @@ import { normalizeAmount } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
+import SplitWarn from "@/ui/components/split-warn";
 
 interface FormType {
   address: string;
@@ -193,6 +194,7 @@ const CreateSend = () => {
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
+      <SplitWarn message="Some of your coins are locked in UTXOs with inscriptions. Use the Splitter service to unlock and access your coins." />
       <form
         id={formId}
         className={cn("form", s.send)}

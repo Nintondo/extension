@@ -5,7 +5,6 @@ import { AddressType } from "bellhdw";
 import { useNavigate } from "react-router-dom";
 import { ss } from "@/ui/utils";
 import toast from "react-hot-toast";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { ADDRESS_TYPES } from "@/shared/constant";
 
 const ChangeAddrType = () => {
@@ -18,7 +17,6 @@ const ChangeAddrType = () => {
     );
   const currentWallet = useGetCurrentWallet();
   const navigate = useNavigate();
-  const { trottledUpdate } = useTransactionManagerContext();
 
   const onSwitchAddress = async (type: AddressType) => {
     if (
@@ -39,7 +37,6 @@ const ChangeAddrType = () => {
         id: idx,
       })),
     });
-    trottledUpdate(true);
     await notificationController.changedAccount();
     navigate("/");
   };

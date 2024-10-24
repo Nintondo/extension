@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useUpdateAddressBook } from "@/ui/hooks/app";
 import { t } from "i18next";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import { useUpdateCurrentAccountBalance } from "@/ui/hooks/wallet";
 
 const ConfirmSend = () => {
   const location = useLocation();
@@ -14,7 +14,7 @@ const ConfirmSend = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const updateAddressBook = useUpdateAddressBook();
-  const { trottledUpdate } = useTransactionManagerContext();
+  const updateBalance = useUpdateCurrentAccountBalance();
 
   const confirmSend = async () => {
     setLoading(true);
@@ -25,7 +25,7 @@ const ConfirmSend = () => {
       }
 
       setTimeout(() => {
-        trottledUpdate();
+        updateBalance();
       }, 100);
 
       navigate(`/pages/finalle-send/${data.txid}`);

@@ -139,7 +139,7 @@ const InscriptionDetails = () => {
         }
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, [location, navigate, convertToCompletedInscription]);
 

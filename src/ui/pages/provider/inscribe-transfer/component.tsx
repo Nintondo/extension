@@ -3,7 +3,6 @@ import MintTransferForm from "@/ui/components/mint-transfer-form";
 import { useControllersState } from "@/ui/states/controllerState";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import { ss } from "@/ui/utils";
-import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { TailSpin } from "react-loading-icons";
@@ -13,7 +12,6 @@ const InscribeTransfer = () => {
     ss(["notificationController", "apiController"])
   );
   const currentAccount = useGetCurrentAccount();
-  const { trottledUpdate } = useTransactionManagerContext();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<IToken>({
@@ -28,7 +26,6 @@ const InscribeTransfer = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       setLoading(true);
-      trottledUpdate();
       if (!currentAccount?.address) return;
       const approval = await notificationController.getApproval();
       if (!approval) {
@@ -47,12 +44,7 @@ const InscribeTransfer = () => {
       } else await notificationController.rejectApproval();
       setLoading(false);
     })();
-  }, [
-    notificationController,
-    apiController,
-    currentAccount?.address,
-    trottledUpdate,
-  ]);
+  }, [notificationController, apiController, currentAccount?.address]);
 
   if (loading)
     return (

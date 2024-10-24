@@ -50,6 +50,9 @@ function setupProxy<T>(type: AvailableType): T {
       },
     }
   );
+  Object.defineProperty(wallet, "__isProxy", {
+    get: () => true,
+  });
   return wallet as T;
 }
 

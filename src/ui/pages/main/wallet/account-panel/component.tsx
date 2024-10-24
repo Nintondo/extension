@@ -15,6 +15,7 @@ import {
   useGetCurrentAccount,
   useGetCurrentWallet,
 } from "@/ui/states/walletState";
+import SplitWarn from "@/ui/components/split-warn";
 
 const AccountPanel = () => {
   const { currentPrice } = useTransactionManagerContext();
@@ -49,6 +50,7 @@ const AccountPanel = () => {
             <span className="text-xl pb-0.5 text-slate-300">BEL</span>
           </div>
         </div>
+
         {currentAccount?.balance !== undefined ? (
           currentPrice !== undefined ? (
             <div className="text-gray-500 text-sm">
@@ -57,6 +59,12 @@ const AccountPanel = () => {
           ) : undefined
         ) : undefined}
       </div>
+
+      <SplitWarn
+        extraWidth
+        message="Some of your coins are locked in UTXOs with inscriptions!"
+      />
+
       <div className="flex gap-3 items-center">
         {currentWallet?.type === "root" ? (
           <Link to={"/pages/switch-account"}>

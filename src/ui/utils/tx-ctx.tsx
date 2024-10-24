@@ -9,13 +9,16 @@ import React, {
 } from "react";
 import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
-import { useDebounceCall } from "../hooks/debounce";
 import { useGetCurrentAccount } from "../states/walletState";
 import { ss, useUpdateFunction } from ".";
 
+const isProxy = (obj: any) => {
+  return "__isProxy" in obj;
+};
+
 const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
-  const [lastBlock, setLastBlock] = useState<number>(0);
+  const [lastBlock, setLastBlock] = useState<number>();
   const { apiController } = useControllersState(ss(["apiController"]));
   const [feeRates, setFeeRates] = useState<{
     fast: number;
@@ -27,8 +30,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   );
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
-
-  const [loading, setLoading] = useState<boolean>(false);
 
   const updateTransactions = useUpdateFunction(
     setTransactions,
@@ -44,30 +45,6 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const updateFeeRates = useCallback(async () => {
     setFeeRates(await apiController.getFees());
   }, [apiController]);
-
-  const updateAll = useCallback(
-    async (force = false) => {
-      if (!currentAccount?.address) return;
-      setLoading(true);
-      if (force) {
-        setTransactions(undefined);
-      }
-      await Promise.all([
-        updateAccountBalance(),
-        updateTransactions(currentAccount.address, force),
-        updateFeeRates(),
-      ]);
-      setLoading(false);
-    },
-    [
-      updateAccountBalance,
-      updateTransactions,
-      updateFeeRates,
-      currentAccount?.address,
-    ]
-  );
-
-  const trottledUpdate = useDebounceCall(updateAll, 300);
 
   const loadMoreTransactions = useCallback(async () => {
     if (!currentAccount || !currentAccount.address || !transactions) return;
@@ -85,13 +62,13 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   useEffect(() => {
     if (currentAccount?.address) {
       setTransactions(undefined);
+      updateAccountBalance();
       updateTransactions(currentAccount.address, true);
     }
   }, [currentAccount?.address]);
 
   useEffect(() => {
-    if (!currentAccount?.address) return;
-    if (currentPrice) return;
+    if (currentPrice || !isProxy(apiController)) return;
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
@@ -103,7 +80,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
         setCurrentPrice(data.bellscoin.usd);
       }
     })();
-  }, [updateLastBlock, apiController, currentAccount?.address, currentPrice]);
+  }, [updateLastBlock, apiController.getBELPrice, currentPrice]);
 
   useEffect(() => {
     if (!currentAccount?.address) return;
@@ -131,28 +108,19 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     transactions,
     currentPrice,
     loadMoreTransactions,
-    trottledUpdate,
     feeRates,
-    loading,
-    clearTransactions: async () => {
-      if (currentAccount.address)
-        await updateTransactions(currentAccount.address, true);
-    },
   };
 };
 
 interface TransactionManagerContextType {
-  lastBlock: number;
+  lastBlock?: number;
   transactions: ITransaction[] | undefined;
   currentPrice: number | undefined;
   loadMoreTransactions: () => Promise<void>;
-  trottledUpdate: (force?: boolean) => void;
-  loading: boolean;
   feeRates?: {
     fast: number;
     slow: number;
   };
-  clearTransactions: () => Promise<void>;
 }
 
 const TransactionManagerContext = createContext<
@@ -178,13 +146,10 @@ export const useTransactionManagerContext =
       return {
         transactions: undefined,
         currentPrice: undefined,
-        trottledUpdate: () => {},
-        loading: false,
         feeRates: {
           slow: 0,
           fast: 0,
         },
-        clearTransactions: async () => {},
         lastBlock: 0,
         loadMoreTransactions: async () => {},
       };
