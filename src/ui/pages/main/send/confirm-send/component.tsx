@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { useUpdateAddressBook } from "@/ui/hooks/app";
 import { t } from "i18next";
 import { useUpdateCurrentAccountBalance } from "@/ui/hooks/wallet";
+import { useTransactionManagerContext } from "@/ui/utils/tx-ctx";
+import { useGetCurrentAccount } from "@/ui/states/walletState";
 
 const ConfirmSend = () => {
   const location = useLocation();
@@ -15,6 +17,8 @@ const ConfirmSend = () => {
   const navigate = useNavigate();
   const updateAddressBook = useUpdateAddressBook();
   const updateBalance = useUpdateCurrentAccountBalance();
+  const { updateTransactions } = useTransactionManagerContext();
+  const currentAccount = useGetCurrentAccount();
 
   const confirmSend = async () => {
     setLoading(true);
@@ -26,6 +30,9 @@ const ConfirmSend = () => {
 
       setTimeout(() => {
         updateBalance();
+        if (currentAccount?.address) {
+          updateTransactions(currentAccount.address);
+        }
       }, 100);
 
       navigate(`/pages/finalle-send/${data.txid}`);

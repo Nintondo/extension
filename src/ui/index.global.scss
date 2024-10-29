@@ -71,7 +71,7 @@ input[type="number"] {
 }
 
 .bottom-btn {
-  @apply flex text-xs gap-2 items-center uppercase tracking-widest justify-center h-11 font-light text-gray-100 font-mono mx-auto py-3 border-t border-neutral-700 fixed standard:relative bottom-0 right-0 left-0 transition-colors w-full text-center disabled:cursor-wait;
+  @apply flex text-xs gap-2 items-center uppercase tracking-widest justify-center h-11 font-light text-gray-100 font-mono mx-auto py-3 border-t border-neutral-700 fixed standard:relative bottom-0 right-0 left-0 transition-colors w-full text-center disabled:cursor-wait bg-bg;
 }
 
 .primary {

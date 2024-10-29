@@ -79,7 +79,7 @@ export const useUpdateFunction = <T>(
           receivedItems.map((f) => f[compareKey])
         );
         const intersection = currentItemsKeys.intersection(receivedItemsKeys);
-        const difference = currentItemsKeys.difference(receivedItemsKeys);
+        const difference = receivedItemsKeys.difference(currentItemsKeys);
 
         return [
           ...receivedItems.filter((f) => difference.has(f[compareKey])),

@@ -101,6 +101,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentAccount?.address]);
 
+  useEffect(() => {
+    updateFeeRates();
+  }, [updateFeeRates]);
+
   if (!currentAccount) return undefined;
 
   return {
@@ -109,6 +113,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     currentPrice,
     loadMoreTransactions,
     feeRates,
+    updateTransactions,
   };
 };
 
@@ -121,6 +126,7 @@ interface TransactionManagerContextType {
     fast: number;
     slow: number;
   };
+  updateTransactions: (address: string, reset?: boolean) => Promise<void>;
 }
 
 const TransactionManagerContext = createContext<
@@ -152,6 +158,7 @@ export const useTransactionManagerContext =
         },
         lastBlock: 0,
         loadMoreTransactions: async () => {},
+        updateTransactions: async () => {},
       };
     }
     return context;

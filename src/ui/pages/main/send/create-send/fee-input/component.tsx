@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { FC, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import s from "./styles.module.scss";
 import { t } from "i18next";
 import { useAppState } from "@/ui/states/appState";
@@ -28,23 +28,34 @@ const FeeInput: FC<Props> = ({ onChange, value }) => {
     }
   };
 
-  const cards = [
-    {
-      title: t("send.create_send.fee_input.slow"),
-      description: `${feeRates?.slow ?? "~"} sat/Vb`,
-      value: feeRates?.slow ?? DEFAULT_FEES.slow,
-    },
-    {
-      title: t("send.create_send.fee_input.fast"),
-      description: `${feeRates?.fast ?? "~"} sat/Vb`,
-      value: feeRates?.fast ?? DEFAULT_FEES.fast,
-    },
-    {
-      title: t("send.create_send.fee_input.custom"),
-      description: "",
-      value: 3,
-    },
-  ];
+  const cards = useMemo(
+    () => [
+      {
+        title: t("send.create_send.fee_input.slow"),
+        description: `${feeRates?.slow ?? DEFAULT_FEES.slow} sat/Vb`,
+        value: feeRates?.slow ?? DEFAULT_FEES.slow,
+      },
+      {
+        title: t("send.create_send.fee_input.fast"),
+        description: `${feeRates?.fast ?? DEFAULT_FEES.fast} sat/Vb`,
+        value: feeRates?.fast ?? DEFAULT_FEES.fast,
+      },
+      {
+        title: t("send.create_send.fee_input.custom"),
+        description: "",
+        value: 3,
+      },
+    ],
+    [feeRates]
+  );
+
+  useEffect(() => {
+    setSelected((prev) => {
+      if (prev === 3) return prev;
+      if (cards.some((i) => i.value === prev)) return prev;
+      return feeRates?.slow ?? DEFAULT_FEES.slow;
+    });
+  }, [feeRates, cards]);
 
   return (
     <div className={s.container}>

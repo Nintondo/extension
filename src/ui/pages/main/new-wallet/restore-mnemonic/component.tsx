@@ -65,7 +65,7 @@ const RestoreMnemonic = () => {
   };
 
   const onNextStep = () => {
-    if (mnemonicPhrase.findIndex((f) => f === undefined) !== -1)
+    if (mnemonicPhrase.some((f) => !f))
       toast.error(t("new_wallet.restore_mnemonic.incomplete_phrase_error"));
     else setStep(2);
   };

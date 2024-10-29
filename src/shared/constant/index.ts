@@ -56,8 +56,7 @@ export const EVENTS = {
   },
 };
 
-const NINTONDO_API_URL =
-  process.env.API_URL ?? "https://electrs.nintondo.io/api";
+const NINTONDO_API_URL = process.env.API_URL ?? "https://api.nintondo.io/api";
 
 const CONTENT_URL =
   process.env.CONTENT_URL ?? "https://content.nintondo.io/api/pub";
@@ -85,8 +84,8 @@ const TESTNET_HISTORY_URL =
   process.env.TESTNET_HISTORY_URL ?? "https://testnet.nintondo.io/history/pub";
 
 export const DEFAULT_FEES = {
-  fast: 5000,
-  slow: 2000,
+  fast: 500,
+  slow: 20,
 };
 
 export const DEFAULT_SERVICE_FEE = 1_000_000;
