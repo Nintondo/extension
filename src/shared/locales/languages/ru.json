@@ -122,7 +122,7 @@
     "create_send": {
       "minimum_amount_error": "Минимальная сумма - 0.00000001 BEL",
       "fee_exceeds_amount_error": "Сбор превышает сумму",
-      "address_error": "Введите адрес получателя",
+      "address_error": "Неверный адрес получателя",
       "not_enough_money_error": "На вашем счету недостаточно средств",
       "not_enough_fee_error": "Увеличьте сбор",
       "fee_is_text_error": "Сбор должен быть числом",

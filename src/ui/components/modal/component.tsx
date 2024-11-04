@@ -9,9 +9,17 @@ interface Props {
   open: boolean;
   onClose: () => void;
   className?: string;
+  panelClassName?: string;
 }
 
-const Modal: FC<Props> = ({ title, children, open, onClose, className }) => {
+const Modal: FC<Props> = ({
+  title,
+  children,
+  open,
+  onClose,
+  className,
+  panelClassName,
+}) => {
   const closeRef = useRef(null);
 
   useEffect(() => {
@@ -56,7 +64,12 @@ const Modal: FC<Props> = ({ title, children, open, onClose, className }) => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-full"
             >
-              <Dialog.Panel className="relative w-full max-w-md transform overflow-hidden rounded-t-2xl bg-bg px-3 py-5 text-left align-middle shadow-xl transition-all standard:rounded-2xl standard:p-5">
+              <Dialog.Panel
+                className={
+                  panelClassName ??
+                  "relative w-full max-w-md transform overflow-hidden rounded-t-2xl bg-bg px-3 py-5 text-left align-middle shadow-xl transition-all standard:rounded-2xl standard:p-5"
+                }
+              >
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-text text-center"

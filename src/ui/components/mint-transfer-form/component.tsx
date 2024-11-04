@@ -75,8 +75,14 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
       if (mintedHandler) mintedHandler(Number(amount));
       reset();
     } catch (e) {
-      if (e instanceof Error) toast.error(e.message);
-      else throw e;
+      const error = e as Error;
+      if ("message" in error) {
+        if (error.message === "No input #0") {
+          toast.error(t("hooks.transaction.insufficient_balance_0"));
+        } else {
+          toast.error(error.message);
+        }
+      } else throw e;
     } finally {
       setLoading(false);
     }
@@ -142,13 +148,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
             <TailSpin className="animate-spin" />
           </div>
         ) : (
-          <button
-            type="submit"
-            className={
-              "text-center text-base py-3 border-t border-neutral-700 w-full"
-            }
-            form={formId}
-          >
+          <button type="submit" className={"bottom-btn"} form={formId}>
             {t("inscriptions.inscribe")}
           </button>
         )}

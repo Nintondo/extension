@@ -213,11 +213,12 @@ export function usePushBellsTxCallback() {
     try {
       return await apiController.pushTx(rawtx);
     } catch (e) {
-      if (e instanceof Error) {
-        if (e.message.includes("too-long-mempool-chain")) {
+      const error = e as Error;
+      if ("message" in error) {
+        if (error.message.includes("too-long-mempool-chain")) {
           toast.error(t("hooks.transaction.too_long_mempool_chain"));
         } else {
-          toast.error(e.message);
+          toast.error(error.message);
         }
       }
     }

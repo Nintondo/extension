@@ -17,11 +17,12 @@ import FeeInput from "./fee-input";
 import Switch from "@/ui/components/switch";
 import AddressBookModal from "./address-book-modal";
 import AddressInput from "./address-input";
-import { normalizeAmount } from "@/ui/utils";
+import { getAddressType, normalizeAmount, ss } from "@/ui/utils";
 import { t } from "i18next";
 import { Inscription } from "@/shared/interfaces/inscriptions";
 import { useGetCurrentAccount } from "@/ui/states/walletState";
 import SplitWarn from "@/ui/components/split-warn";
+import { useAppState } from "@/ui/states/appState";
 
 interface FormType {
   address: string;
@@ -53,6 +54,7 @@ const CreateSend = () => {
   const [inscriptionTransaction, setInscriptionTransaction] =
     useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const { network } = useAppState(ss(["network"]));
 
   const send = async ({
     address,
@@ -65,7 +67,14 @@ const CreateSend = () => {
       const balance = currentAccount?.balance ?? 0;
       const amount = parseFloat(amountStr);
 
-      if (amount < 0.00000001 && !inscriptionTransaction) {
+      if (typeof getAddressType(address, network) === "undefined") {
+        return toast.error(t("send.create_send.address_error"));
+      }
+
+      if (
+        (Number.isNaN(amount) || amount < 0.00000001) &&
+        !inscriptionTransaction
+      ) {
         return toast.error(t("send.create_send.minimum_amount_error"));
       }
       if (address.trim().length <= 0) {
@@ -93,7 +102,11 @@ const CreateSend = () => {
             )
           : await createOrdTx(address, feeRate, inscription!);
       } catch (e) {
-        if (e instanceof Error) toast.error(e.message);
+        const error = e as Error;
+        if ("message" in error) {
+          toast.error(error.message);
+        } else {
+        }
       }
 
       if (!data) return;

@@ -64,8 +64,8 @@ const AddressInput: FC<Props> = ({ address, onChange, onOpenModal }) => {
           )}
         </div>
       </Combobox>
-      <button
-        className="bg-input-bg px-2 rounded-xl"
+      <div
+        className="bg-input-bg px-2 rounded-xl cursor-pointer flex items-center justify-center"
         title={t("send.create_send.address_input.address_book")}
         onClick={(e) => {
           e.preventDefault();
@@ -73,7 +73,7 @@ const AddressInput: FC<Props> = ({ address, onChange, onOpenModal }) => {
         }}
       >
         <BookOpenIcon className="w-5 h-5" />
-      </button>
+      </div>
     </div>
   );
 };

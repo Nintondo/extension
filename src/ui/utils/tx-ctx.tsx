@@ -102,8 +102,10 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   }, [currentAccount?.address]);
 
   useEffect(() => {
+    if (!isProxy(apiController)) return;
+
     updateFeeRates();
-  }, [updateFeeRates]);
+  }, [updateFeeRates, apiController]);
 
   if (!currentAccount) return undefined;
 

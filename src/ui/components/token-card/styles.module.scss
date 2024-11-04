@@ -1,0 +1,7 @@
+.btn {
+  @apply w-full font-medium text-sm text-center border-t border-neutral-800 py-3 first:border-r last:border-l bg-bg;
+
+  &Container {
+    @apply flex items-center w-full h-max fixed bottom-0 left-0;
+  }
+}

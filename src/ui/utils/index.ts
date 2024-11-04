@@ -1,4 +1,5 @@
-import { Network, networks } from "belcoinjs-lib";
+import { address, Network, networks } from "belcoinjs-lib";
+import { AddressType } from "bellhdw";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -101,4 +102,21 @@ export function isValidTXID(txid: string | undefined): boolean {
   if (typeof txid === "undefined") return false;
   const regex = /^[a-fA-F0-9]{64}$/;
   return regex.test(txid);
+}
+
+export function getAddressType(
+  addressStr: string,
+  network: Network
+): AddressType.P2WPKH | AddressType.P2PKH | AddressType.P2TR | undefined {
+  try {
+    const version = address.fromBase58Check(addressStr).version;
+    if (version === network.pubKeyHash) return 0;
+    if (version === network.scriptHash) return;
+  } catch {
+    try {
+      const version = address.fromBech32(addressStr).version;
+      if (version === 0x00) return 1;
+      if (version === 0x01) return 2;
+    } catch {}
+  }
 }
