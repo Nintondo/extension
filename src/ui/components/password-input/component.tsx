@@ -43,7 +43,10 @@ const PasswordInput = <T extends FieldValues>({
                 "components.password_input.should_be_less_than_70_symbols"
               ),
             },
-            required: true,
+            required: {
+              value: true,
+              message: t("components.password_input.required"),
+            },
           })}
           type={hidden ? "password" : "text"}
           className={"input w-full"}
