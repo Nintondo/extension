@@ -3,7 +3,6 @@ import { FieldValues, Path, UseFormRegister } from "react-hook-form";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import s from "./styles.module.scss";
-import cn from "classnames";
 
 const PasswordInput = <T extends FieldValues>({
   label,

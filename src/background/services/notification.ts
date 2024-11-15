@@ -111,7 +111,7 @@ class NotificationService extends Events {
           this.notifiWindowId = winId;
         }
       })
-      .catch((e) => console.error(e));
+      .catch(console.error);
   };
 }
 

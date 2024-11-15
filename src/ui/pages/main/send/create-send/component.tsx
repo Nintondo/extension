@@ -106,6 +106,7 @@ const CreateSend = () => {
         if ("message" in error) {
           toast.error(error.message);
         } else {
+          console.error(e);
         }
       }
 

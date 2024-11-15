@@ -10,7 +10,7 @@ import React, {
 import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
 import { useGetCurrentAccount } from "../states/walletState";
-import { ss, useUpdateFunction } from ".";
+import { ss } from ".";
 
 const isProxy = (obj: any) => {
   return "__isProxy" in obj;
@@ -31,10 +31,32 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const [currentPrice, setCurrentPrice] = useState<number | undefined>();
   const updateAccountBalance = useUpdateCurrentAccountBalance();
 
-  const updateTransactions = useUpdateFunction(
-    setTransactions,
-    apiController.getTransactions,
-    "txid"
+  const updateTransactions = useCallback(
+    async (address: string, force = false) => {
+      const receivedItems = await apiController.getTransactions(address);
+      if (receivedItems === undefined) return;
+
+      setTransactions((prev) => {
+        if ((prev?.length ?? 0) < 50 || force) return receivedItems;
+
+        const currentItemsKeys = new Set(prev!.map((f) => f.txid));
+        const receivedItemsKeys = new Set(receivedItems.map((f) => f.txid));
+        const intersection = currentItemsKeys.intersection(receivedItemsKeys);
+        const difference = receivedItemsKeys.difference(currentItemsKeys);
+
+        return [
+          ...receivedItems.filter((f) => difference.has(f.txid)),
+          ...prev!,
+        ].map((i) => {
+          if (intersection.has(i.txid)) {
+            return receivedItems.find((f) => f.txid === i.txid)!;
+          } else {
+            return i;
+          }
+        });
+      });
+    },
+    [apiController]
   );
 
   const updateLastBlock = useCallback(async () => {
@@ -44,6 +66,13 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
 
   const updateFeeRates = useCallback(async () => {
     setFeeRates(await apiController.getFees());
+  }, [apiController]);
+
+  const updatePrice = useCallback(async () => {
+    const data = await apiController.getBELPrice();
+    if (data?.bellscoin) {
+      setCurrentPrice(data.bellscoin.usd);
+    }
   }, [apiController]);
 
   const loadMoreTransactions = useCallback(async () => {
@@ -62,50 +91,49 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   useEffect(() => {
     if (currentAccount?.address) {
       setTransactions(undefined);
-      updateAccountBalance();
-      updateTransactions(currentAccount.address, true);
+      updateTransactions(currentAccount.address, true).catch(console.error);
     }
-  }, [currentAccount?.address]);
+  }, [currentAccount?.address, updateTransactions]);
 
   useEffect(() => {
-    if (currentPrice || !isProxy(apiController)) return;
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    (async () => {
-      const [data] = await Promise.all([
-        apiController.getBELPrice(),
-        updateLastBlock(),
-      ]);
-      if (data?.bellscoin) {
-        setCurrentPrice(data.bellscoin.usd);
-      }
-    })();
-  }, [updateLastBlock, apiController.getBELPrice, currentPrice]);
+    updateAccountBalance().catch(console.error);
+    const interval = setInterval(async () => {
+      updateAccountBalance().catch(console.error);
+    }, 4000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [updateAccountBalance]);
 
   useEffect(() => {
     if (!currentAccount?.address) return;
-    const interval1 = setInterval(async () => {
-      await updateAccountBalance();
-    }, 3000);
+
     const interval2 = setInterval(async () => {
       await Promise.all([
         updateTransactions(currentAccount.address!),
         updateLastBlock(),
         updateFeeRates(),
+        updatePrice(),
       ]);
     }, 10000);
     return () => {
-      clearInterval(interval1);
       clearInterval(interval2);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentAccount?.address]);
+  }, [
+    currentAccount?.address,
+    updateFeeRates,
+    updateLastBlock,
+    updatePrice,
+    updateTransactions,
+  ]);
 
   useEffect(() => {
     if (!isProxy(apiController)) return;
 
-    updateFeeRates();
-  }, [updateFeeRates, apiController]);
+    updateFeeRates().catch(console.error);
+    updateLastBlock().catch(console.error);
+    updatePrice().catch(console.error);
+  }, [apiController, updateFeeRates, updateLastBlock, updatePrice]);
 
   if (!currentAccount) return undefined;
 

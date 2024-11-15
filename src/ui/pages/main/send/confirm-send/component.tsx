@@ -29,9 +29,9 @@ const ConfirmSend = () => {
       }
 
       setTimeout(() => {
-        updateBalance();
+        updateBalance().catch(console.error);
         if (currentAccount?.address) {
-          updateTransactions(currentAccount.address);
+          updateTransactions(currentAccount.address).catch(console.error);
         }
       }, 100);
 

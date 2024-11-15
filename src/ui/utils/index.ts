@@ -57,46 +57,11 @@ export function isTestnet(network: Network) {
 export function ss<T extends Record<string, any>, K extends keyof T = keyof T>(
   keys: K[]
 ) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useShallow((state: T) => {
     return Object.fromEntries(keys.map((i) => [i, state[i]])) as Pick<T, K>;
   });
 }
-
-export const useUpdateFunction = <T>(
-  onUpdate: Dispatch<SetStateAction<T[] | undefined>>,
-  retrieveFn: (address: string) => Promise<T[] | undefined>,
-  compareKey: keyof T
-) => {
-  return useCallback(
-    async (address: string, force = false) => {
-      const receivedItems = await retrieveFn(address);
-      if (receivedItems === undefined) return;
-
-      onUpdate((prev) => {
-        if ((prev?.length ?? 0) < 50 || force) return receivedItems;
-
-        const currentItemsKeys = new Set(prev!.map((f) => f[compareKey]));
-        const receivedItemsKeys = new Set(
-          receivedItems.map((f) => f[compareKey])
-        );
-        const intersection = currentItemsKeys.intersection(receivedItemsKeys);
-        const difference = receivedItemsKeys.difference(currentItemsKeys);
-
-        return [
-          ...receivedItems.filter((f) => difference.has(f[compareKey])),
-          ...prev!,
-        ].map((i) => {
-          if (intersection.has(i[compareKey])) {
-            return receivedItems.find((f) => f[compareKey] === i[compareKey])!;
-          } else {
-            return i;
-          }
-        });
-      });
-    },
-    [onUpdate, retrieveFn, compareKey]
-  );
-};
 
 export function isValidTXID(txid: string | undefined): boolean {
   if (typeof txid === "undefined") return false;
@@ -117,6 +82,8 @@ export function getAddressType(
       const version = address.fromBech32(addressStr).version;
       if (version === 0x00) return 1;
       if (version === 0x01) return 2;
-    } catch {}
+    } catch {
+      return;
+    }
   }
 }

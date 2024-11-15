@@ -26,7 +26,9 @@ const TransactionList = () => {
   useEffect(() => {
     if (inView) {
       setLoading(true);
-      loadMoreTransactions().then(() => setLoading(false));
+      loadMoreTransactions()
+        .then(() => setLoading(false))
+        .catch(console.error);
     }
   }, [inView, loadMoreTransactions]);
 
