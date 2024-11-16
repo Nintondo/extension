@@ -9,7 +9,8 @@
     "firefox": "bun build.ts --firefox",
     "both": "rm -rf dist && bun build.ts --firefox && bun build.ts",
     "release": "rm -rf dist && bun build.ts --firefox -c && bun build.ts -c",
-    "sourcemap": "bun build.ts --sourcemap"
+    "sourcemap": "bun build.ts --sourcemap",
+    "test": "bun build.ts --watch --no-interaction"
   },
   "eslintConfig": {
     "extends": [
