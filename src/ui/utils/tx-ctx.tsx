@@ -11,6 +11,7 @@ import { useControllersState } from "../states/controllerState";
 import { useUpdateCurrentAccountBalance } from "../hooks/wallet";
 import { useGetCurrentAccount } from "../states/walletState";
 import { ss } from ".";
+import { useAppState } from "../states/appState";
 
 const isProxy = (obj: any) => {
   return "__isProxy" in obj;
@@ -20,6 +21,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
   const currentAccount = useGetCurrentAccount();
   const [lastBlock, setLastBlock] = useState<number>();
   const { apiController } = useControllersState(ss(["apiController"]));
+  const { network } = useAppState(ss(["network"]));
   const [feeRates, setFeeRates] = useState<{
     fast: number;
     slow: number;
@@ -133,7 +135,7 @@ const useTransactionManager = (): TransactionManagerContextType | undefined => {
     updateFeeRates().catch(console.error);
     updateLastBlock().catch(console.error);
     updatePrice().catch(console.error);
-  }, [apiController, updateFeeRates, updateLastBlock, updatePrice]);
+  }, [apiController, updateFeeRates, updateLastBlock, updatePrice, network]);
 
   if (!currentAccount) return undefined;
 
