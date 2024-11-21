@@ -80,7 +80,11 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
         if (error.message === "No input #0") {
           toast.error(t("hooks.transaction.insufficient_balance_0"));
         } else {
-          toast.error(error.message);
+          if (error.message.includes("has no matching Script")) {
+            toast.error(t("send.create_send.address_error"));
+          } else {
+            toast.error(error.message);
+          }
         }
       } else throw e;
     } finally {
