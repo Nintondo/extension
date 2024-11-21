@@ -138,9 +138,7 @@ const InscriptionDetails = () => {
           navigate(-1);
         }
       })
-      .catch((e) => {
-        console.error(e);
-      });
+      .catch(console.error);
   }, [location, navigate, convertToCompletedInscription]);
 
   const openContent = async (link: string) => {

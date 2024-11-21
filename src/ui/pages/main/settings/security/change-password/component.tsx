@@ -66,13 +66,11 @@ const ChangePassword = () => {
     <form
       className="form"
       onSubmit={handleSubmit(executeChangePassword, (errors) => {
-        if (Object.values(errors).some((i) => i.message)) {
-          const message = Object.values(errors).find(
-            (i) => typeof i.message !== "undefined"
-          )?.message;
-          if (message) {
-            toast.error(message);
-          }
+        const message = Object.values(errors).find(
+          (i) => typeof i.message !== "undefined"
+        )?.message;
+        if (message) {
+          toast.error(message);
         }
       })}
     >

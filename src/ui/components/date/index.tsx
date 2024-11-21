@@ -16,14 +16,14 @@ interface Props {
 const locales = {
   en: "en",
   ru: "ru",
-  zh: "zh-cn",
+  ch: "zh-cn",
   kr: "ko",
 };
 
 const todayLocale = {
   en: "Today",
   ru: "Сегодня",
-  zh: "今天",
+  ch: "今天",
   kr: "오늘",
 };
 

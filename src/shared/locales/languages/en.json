@@ -48,7 +48,8 @@
     },
     "password_input": {
       "should_be_more_than_1_symbol": "Should be more than 1 symbol",
-      "should_be_less_than_70_symbols": "Should be less than 70 symbols"
+      "should_be_less_than_70_symbols": "Should be less than 70 symbols",
+      "required": "The password is required"
     },
     "rename": {
       "enter_new_name": "Enter new name",
@@ -162,7 +163,7 @@
     "create_send": {
       "minimum_amount_error": "Minimum amount is 0.00000001 BEL",
       "fee_exceeds_amount_error": "Fee exceeds amount",
-      "address_error": "Insert receiver's address",
+      "address_error": "Invalid receiver's address",
       "not_enough_money_error": "There's not enough money in your account",
       "not_enough_fee_error": "Increase the fee",
       "fee_is_text_error": "Fee should be integer",
@@ -278,7 +279,6 @@
     "failed_inscribe_transfer": "Failed to create transfer",
     "failed_inscribe_transfer2": "These transactions will be pushed later",
     "choose_transfer": "Choose transfers to send",
-    "total_amount": "Total amount",
     "0_selected_inscriptions_error": "0 selected inscriptions",
     "success_send_transfer": "Successfully sended transfer(s)",
     "failed_send_transfer": "Failed to send transfer(s)",
@@ -289,7 +289,8 @@
     "minimum_transfer_count": "Minimum transfer amount is 1",
     "minimum_amount_error": "Minimum token amount is 1",
     "input_amount_first": "Input amount first",
-    "tick_is_not_set": "Tick is not defined"
+    "tick_is_not_set": "Tick is not defined",
+    "select_all": "Select all"
   },
   "provider": {
     "sign_tx": "Sign transaction",

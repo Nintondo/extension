@@ -1,5 +1,5 @@
 .gridContainer {
-  @apply grid grid-cols-3 text-base w-full gap-2 overflow-y-auto max-h-52;
+  @apply grid grid-cols-3 text-base w-full gap-x-3 gap-y-2 overflow-y-auto max-h-60;
 }
 
 .selectedTransfer {

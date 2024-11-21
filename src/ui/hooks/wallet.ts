@@ -1,13 +1,12 @@
 import type { INewWalletProps, IWallet } from "@/shared/interfaces";
 import { useControllersState } from "../states/controllerState";
-import { useWalletState } from "../states/walletState";
+import { useGetCurrentAccount, useWalletState } from "../states/walletState";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
 import { Network } from "belcoinjs-lib";
 import { ss } from "../utils";
 import { useCallback } from "react";
-import { useTransactionManagerContext } from "../utils/tx-ctx";
 import { produce } from "immer";
 import { excludeKeysFromObj } from "@/shared/utils";
 
@@ -55,7 +54,7 @@ export const useCreateNewWallet = () => {
   return async (props: INewWalletProps) => {
     const wallet = await walletController.createNewWallet(props);
     const keyring = await keyringController.serializeKeyringById(wallet.id);
-    let newWallets = (await clearSelected([...wallets, wallet]))!;
+    const newWallets = (await clearSelected([...wallets, wallet]))!;
 
     await walletController.saveWallets({
       phrases: [{ id: wallet.id, phrase: props.payload, data: keyring }],
@@ -176,42 +175,31 @@ export const useSwitchAccount = () => {
 export const useUpdateCurrentAccountBalance = () => {
   const { apiController } = useControllersState(ss(["apiController"]));
 
-  const { updateSelectedAccount, wallets, selectedAccount, selectedWallet } =
-    useWalletState(
-      ss([
-        "updateSelectedAccount",
-        "selectedAccount",
-        "selectedWallet",
-        "wallets",
-      ])
-    );
+  const { updateSelectedAccount } = useWalletState(
+    ss([
+      "updateSelectedAccount",
+      "selectedAccount",
+      "selectedWallet",
+      "wallets",
+    ])
+  );
+  const currentAccount = useGetCurrentAccount();
 
   return useCallback(async () => {
-    if (selectedWallet === undefined || selectedAccount === undefined) return;
-
-    const currentAccount = wallets[selectedWallet].accounts[selectedAccount];
     if (currentAccount?.address === undefined) return;
 
-    const { count, amount, balance } = (await apiController.getAccountStats(
-      currentAccount!.address!
+    const res = (await apiController.getAccountStats(
+      currentAccount.address
     )) ?? { amount: 0, count: 0, balance: 0 };
-    if (
-      currentAccount.balance !== balance ||
-      currentAccount.inscriptionBalance !== amount / 10 ** 8
-    ) {
-      await updateSelectedAccount({
-        balance: balance,
-        inscriptionCounter: count,
-        inscriptionBalance: amount / 10 ** 8,
-      });
-    }
-  }, [
-    apiController,
-    updateSelectedAccount,
-    selectedAccount,
-    selectedWallet,
-    wallets,
-  ]);
+
+    if (!res) return;
+
+    await updateSelectedAccount({
+      balance: res.balance,
+      inscriptionCounter: res.count,
+      inscriptionBalance: res.amount / 10 ** 8,
+    });
+  }, [apiController, updateSelectedAccount, currentAccount?.address]);
 };
 
 export const useDeleteWallet = () => {

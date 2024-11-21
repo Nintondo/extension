@@ -3,7 +3,6 @@ import { FieldValues, Path, UseFormRegister } from "react-hook-form";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import s from "./styles.module.scss";
-import cn from "classnames";
 
 const PasswordInput = <T extends FieldValues>({
   label,
@@ -44,7 +43,10 @@ const PasswordInput = <T extends FieldValues>({
                 "components.password_input.should_be_less_than_70_symbols"
               ),
             },
-            required: true,
+            required: {
+              value: true,
+              message: t("components.password_input.required"),
+            },
           })}
           type={hidden ? "password" : "text"}
           className={"input w-full"}

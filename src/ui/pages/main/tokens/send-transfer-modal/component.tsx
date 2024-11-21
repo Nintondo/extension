@@ -11,6 +11,7 @@ import cn from "classnames";
 import toast from "react-hot-toast";
 import { useSendTransferTokens } from "@/ui/hooks/transactions";
 import { nFormatter } from "../../../../utils/formatter";
+import Switch from "@/ui/components/switch";
 
 interface Props {
   selectedSendToken: IToken | undefined;
@@ -84,10 +85,11 @@ const SendTransferModal: FC<Props> = ({
         setFormData({ address: "", txIds: [], feeRate: 10 });
       }}
       title={t("inscriptions.send_token_modal_title")}
+      panelClassName="relative w-full max-w-md transform overflow-hidden rounded-t-2xl bg-bg px-2 pt-5 text-left align-middle shadow-xl transition-all standard:rounded-2xl standard:p-5 pb-8"
     >
       <form
         id={formId}
-        className={"w-full flex flex-col gap-6 px-1 py-6 items-start h-full"}
+        className={"w-full flex flex-col gap-4 px-1 py-6 items-start h-full"}
         onSubmit={async (e) => {
           e.preventDefault();
           await send(formData);
@@ -103,11 +105,25 @@ const SendTransferModal: FC<Props> = ({
         </div>
 
         <div className="form-field">
-          <div className="flex justify-center">
-            <span className="font-medium text-base">
-              {t("inscriptions.total_amount")}:{" "}
-              {formData.txIds.reduce((acc, tx) => acc + tx.amount, 0)}
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-gray-400">
+              {formData.txIds.reduce((acc, tx) => acc + tx.amount, 0)}{" "}
+              {selectedSendToken?.tick}
             </span>
+
+            <Switch
+              label={t("inscriptions.select_all")}
+              className="flex gap-2 items-center"
+              onChange={(v) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  txIds: v ? selectedSendToken?.transfers ?? [] : [],
+                }));
+              }}
+              value={
+                formData.txIds.length === selectedSendToken?.transfers.length
+              }
+            />
           </div>
           <div className={s.gridContainer}>
             {selectedSendToken?.transfers.map((tx, i) => (
@@ -117,13 +133,13 @@ const SendTransferModal: FC<Props> = ({
                 }}
                 key={i}
                 className={cn(
-                  "flex flex-col items-center justify-center bg-input-bg rounded-xl w-24 transition-colors py-2 cursor-pointer border-2",
+                  "flex flex-col items-center justify-center bg-input-bg rounded-xl transition-colors py-1.5 cursor-pointer border-2",
                   { [s.selectedTransfer]: formData.txIds.includes(tx) },
                   { [s.transfer]: !formData.txIds.includes(tx) }
                 )}
               >
                 <span className="text-xs text-gray-100">
-                  ${selectedSendToken.tick.toUpperCase()}
+                  {selectedSendToken.tick.toUpperCase()}
                 </span>
                 <span>{nFormatter(tx.amount)}</span>
               </div>
@@ -148,11 +164,7 @@ const SendTransferModal: FC<Props> = ({
             <TailSpin className="animate-spin" />
           </div>
         ) : (
-          <button
-            type="submit"
-            className={"btn primary mx-4 standard:m-6"}
-            form={formId}
-          >
+          <button type="submit" className={"bottom-btn"} form={formId}>
             {t("components.layout.send")}
           </button>
         )}

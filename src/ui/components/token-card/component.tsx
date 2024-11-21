@@ -5,6 +5,7 @@ import { FC, useState } from "react";
 import Modal from "../modal";
 import { shortAddress } from "@/shared/utils/transactions";
 import { nFormatter } from "../../utils/formatter";
+import s from "./styles.module.scss";
 
 interface Props {
   token: IToken;
@@ -45,6 +46,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
         open={open}
         onClose={() => setOpen(false)}
         title={token.tick.toUpperCase()}
+        panelClassName="relative w-full max-w-md transform overflow-hidden rounded-t-2xl bg-bg px-2 pt-5 text-left align-middle shadow-xl transition-all standard:rounded-2xl standard:p-5 pb-10"
       >
         <div className="flex flex-col gap-3 pt-3">
           <div className="flex gap-1 items-center">
@@ -67,7 +69,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
             </div>
           </div>
 
-          <div className="pb-3">
+          <div className="pb-2 max-h-[60vh] overflow-y-auto">
             {token.transfers.length ? (
               <>
                 <h3 className="mb-3 text-sm font-light text-center uppercase">
@@ -91,29 +93,29 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
               </>
             ) : undefined}
           </div>
+        </div>
 
-          <div className="flex gap-3 items-center w-full">
-            <button
-              disabled={!token.transfers.length}
-              className={"btn primary w-full"}
-              onClick={() => {
-                openSendModal(token);
-                setOpen(false);
-              }}
-            >
-              {t("components.token_card.send")}
-            </button>
-            <button
-              disabled={token.balance === 0}
-              className={"btn primary w-full"}
-              onClick={() => {
-                openMintModal(token);
-                setOpen(false);
-              }}
-            >
-              {t("components.token_card.create_transfer")}
-            </button>
-          </div>
+        <div className={s.btnContainer}>
+          <button
+            disabled={!token.transfers.length}
+            className={s.btn}
+            onClick={() => {
+              openSendModal(token);
+              setOpen(false);
+            }}
+          >
+            {t("components.token_card.send")}
+          </button>
+          <button
+            disabled={Number(token.balance) === 0}
+            className={s.btn}
+            onClick={() => {
+              openMintModal(token);
+              setOpen(false);
+            }}
+          >
+            {t("components.token_card.create_transfer")}
+          </button>
         </div>
       </Modal>
     </>

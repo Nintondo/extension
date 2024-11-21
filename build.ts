@@ -15,6 +15,8 @@ async function readJsonFile(path: string) {
 
 const chrome = !Bun.argv.includes("--firefox");
 
+const isNoInteraction = Bun.argv.includes("--no-interaction");
+
 const baseManifestPath = "./configs/manifests/base.json";
 const chromeManifestPath = "./configs/manifests/chrome.json";
 const firefoxManifestPath = "./configs/manifests/firefox.json";
@@ -168,7 +170,7 @@ const makeArchive = () => {
   });
 };
 
-if (isDev) {
+if (isDev && !isNoInteraction) {
   console.log("");
   const ctx = await context(buildOptions);
   await ctx.watch();

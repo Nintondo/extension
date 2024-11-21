@@ -123,16 +123,23 @@ class WalletController implements IWalletController {
 
   async switchNetwork(network: Network) {
     keyringService.switchNetwork(network);
-    const updatedWallets: IWallet[] = [];
-    for (const wallet of storageService.walletState.wallets) {
-      const keyring = keyringService.getKeyringByIndex(wallet.id);
-      updatedWallets.push({ ...wallet, accounts: keyring.getAccounts().map((f, i) => ({ ...wallet.accounts[i], address: f })) });
-    }
+    const updatedWallets: IWallet[] = storageService.walletState.wallets.map(
+      (wallet) => {
+        const keyring = keyringService.getKeyringByIndex(wallet.id);
+        return {
+          ...wallet,
+          accounts: keyring
+            .getAccounts()
+            .map((f, i) => ({ ...wallet.accounts[i], address: f })),
+        };
+      }
+    );
+
     await storageService.updateAppState({ network });
     await storageService.updateWalletState({ wallets: updatedWallets });
-    sessionService.broadcastEvent("networkChanged",
-      { network: isTestnet(network) ? "testnet" : "mainnet", }
-    )
+    sessionService.broadcastEvent("networkChanged", {
+      network: isTestnet(network) ? "testnet" : "mainnet",
+    });
   }
 }
 

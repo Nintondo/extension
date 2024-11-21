@@ -24,7 +24,7 @@ const Language = () => {
       <Tile label="English" onClick={newLanguage("en")} />
       <Tile label="Русский" onClick={newLanguage("ru")} />
       <Tile label="中國人" onClick={newLanguage("ch")} />
-      <Tile label="중국인" onClick={newLanguage("kn")} />
+      <Tile label="중국인" onClick={newLanguage("kr")} />
     </div>
   );
 };

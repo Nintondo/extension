@@ -73,8 +73,12 @@ const NewMnemonic = () => {
         network,
       });
     } catch (e) {
-      console.error(e);
-      if (e instanceof Error) toast.error(e.message);
+      const error = e as Error;
+      if ("message" in error) {
+        toast.error(error.message);
+      } else {
+        console.error(e);
+      }
     }
     setLoading(false);
     navigate("/");

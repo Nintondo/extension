@@ -40,7 +40,7 @@ export default function InputNumber({
             : parseFloat(value);
         if (v <= max && v >= min) {
           setTextValue(value);
-          onChange && onChange(v);
+          if (onChange) onChange(v);
         } else if (value === "") {
           setTextValue(value);
         }

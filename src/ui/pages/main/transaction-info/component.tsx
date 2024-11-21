@@ -38,12 +38,9 @@ const TransactionInfo = () => {
 
   useEffect(() => {
     if (!state?.transaction && txId) {
-      (async () => {
-        const tx = await apiController.getTransaction(txId!);
-        setTx(tx);
-      })();
+      apiController.getTransaction(txId).then(setTx).catch(console.error);
     }
-  }, [state?.transaction, txId]);
+  }, [state?.transaction, txId, apiController]);
 
   return (
     <div className={s.transactionInfoDiv}>

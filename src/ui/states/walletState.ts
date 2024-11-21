@@ -87,6 +87,15 @@ export const useWalletState = create<IWalletState>()(
     async updateAccount(walletId, accountId, payload, updateBack = true) {
       const { wallets } = get();
 
+      const isEqual = Object.keys(payload).every((key) => {
+        const acc = wallets[walletId].accounts[accountId];
+        return (
+          payload[key as keyof typeof payload] === acc[key as keyof typeof acc]
+        );
+      });
+
+      if (isEqual) return;
+
       if (updateBack) {
         await proxy.updateWalletState({
           wallets: produce(wallets, (draft) => {

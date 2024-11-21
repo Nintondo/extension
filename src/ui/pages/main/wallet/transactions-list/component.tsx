@@ -16,6 +16,20 @@ import { useGetCurrentAccount } from "@/ui/states/walletState";
 import DateComponent from "@/ui/components/date";
 import { Circle } from "rc-progress";
 
+export function groupBy<T, K extends keyof any>(
+  array: T[],
+  key: (item: T) => K
+): Record<K, T[]> {
+  return array.reduce((result, currentItem) => {
+    const groupKey = key(currentItem);
+    if (!result[groupKey]) {
+      result[groupKey] = [];
+    }
+    result[groupKey].push(currentItem);
+    return result;
+  }, {} as Record<K, T[]>);
+}
+
 const TransactionList = () => {
   const { lastBlock, transactions, loadMoreTransactions, currentPrice } =
     useTransactionManagerContext();
@@ -26,7 +40,9 @@ const TransactionList = () => {
   useEffect(() => {
     if (inView) {
       setLoading(true);
-      loadMoreTransactions().then(() => setLoading(false));
+      loadMoreTransactions()
+        .then(() => setLoading(false))
+        .catch(console.error);
     }
   }, [inView, loadMoreTransactions]);
 
@@ -45,7 +61,7 @@ const TransactionList = () => {
   return (
     <div className={s.transactionsDiv}>
       {Object.entries(
-        Object.groupBy(transactions, (i) => {
+        groupBy(transactions, (i) => {
           if (!i.status.block_time) {
             return "0";
           }
