@@ -107,7 +107,7 @@ const TokenCard: FC<Props> = ({ token, openMintModal, openSendModal }) => {
             {t("components.token_card.send")}
           </button>
           <button
-            disabled={token.balance === 0}
+            disabled={Number(token.balance) === 0}
             className={s.btn}
             onClick={() => {
               openMintModal(token);

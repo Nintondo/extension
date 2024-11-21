@@ -1,4 +1,4 @@
-export function nFormatter(num: number) {
+export function nFormatter(num: number | string) {
   const lookup = [
     { value: 1, symbol: "" },
     { value: 1e6, symbol: "M" },
@@ -9,8 +9,9 @@ export function nFormatter(num: number) {
   lookup.reverse();
   const regexp = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
   const item =
-    lookup.find((item) => num >= item.value) ?? lookup[lookup.length - 1];
-  const v = parseFloat((num / item.value).toFixed(8))
+    lookup.find((item) => Number(num) >= item.value) ??
+    lookup[lookup.length - 1];
+  const v = parseFloat((Number(num) / item.value).toFixed(8))
     .toString()
     .replace(regexp, "");
 

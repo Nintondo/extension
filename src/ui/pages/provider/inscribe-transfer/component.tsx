@@ -15,9 +15,9 @@ const InscribeTransfer = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<IToken>({
-    balance: 0,
+    balance: "0",
     tick: "",
-    transferable_balance: 0,
+    transferable_balance: "0",
     transfers: [],
     transfers_count: 0,
   });
@@ -38,7 +38,7 @@ const InscribeTransfer = () => {
         const token = userTokens.find(
           (f) => f.tick === tick.toLowerCase().trim()
         );
-        if (token && token.balance > 0) {
+        if (token && Number(token.balance) > 0) {
           setToken(token);
         } else await notificationController.rejectApproval();
       } else await notificationController.rejectApproval();

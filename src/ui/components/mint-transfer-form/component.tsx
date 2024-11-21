@@ -49,7 +49,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
       }
       if (
         selectedMintToken?.balance &&
-        Number(amount) > selectedMintToken?.balance
+        Number(amount) > Number(selectedMintToken.balance)
       ) {
         return toast.error(t("inscriptions.amount_exceeds_balance"));
       }

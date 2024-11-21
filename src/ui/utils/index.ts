@@ -1,6 +1,5 @@
 import { address, Network, networks } from "belcoinjs-lib";
 import { AddressType } from "bellhdw";
-import { Dispatch, SetStateAction, useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export const isNotification = (): boolean => {

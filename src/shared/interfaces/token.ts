@@ -21,8 +21,8 @@ export interface ITransfer {
 
 export interface IToken {
   tick: string;
-  balance: number;
-  transferable_balance: number;
+  balance: string;
+  transferable_balance: string;
   transfers: ITransfer[];
   transfers_count: number;
 }
