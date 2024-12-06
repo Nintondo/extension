@@ -43,7 +43,7 @@
     "rename": {
       "enter_new_name": "새 이름 입력",
       "minimum_length": "최소 길이는 1입니다",
-      "maximum_length": "최대 길이는 16입니다",
+      "maximum_length": "최대 길이는 10입니다",
       "name_is_required": "이름이 필요합니다",
       "save": "저장",
       "rename": "이름 변경"
@@ -71,7 +71,7 @@
     "login": "로그인"
   },
   "new_account": {
-    "max_length_error": "이름의 최대 길이는 16입니다",
+    "max_length_error": "이름의 최대 길이는 10입니다",
     "name_taken_error": "이 계정의 이름은 이미 사용 중입니다",
     "account_created_message": "새 계정 생성",
     "enter_name_label": "이름 입력:",

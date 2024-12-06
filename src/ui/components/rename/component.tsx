@@ -59,7 +59,7 @@ const Rename: FC<Props> = ({ handler, active, onClose, currentName }) => {
                 message: t("components.rename.enter_new_name"),
               },
               maxLength: {
-                value: 16,
+                value: 10,
                 message: t("components.rename.maximum_length"),
               },
               required: t("components.rename.name_is_required"),

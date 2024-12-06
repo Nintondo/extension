@@ -41,7 +41,9 @@ const Card: FC<Props> = ({
     >
       <div className={s.wrapper}>
         <div className={cn(s.name)}>
-          {isRoot ? t("components.card.root_account") : name}
+          {isRoot
+            ? t("components.card.root_account")
+            : name.toLocaleLowerCase()}
         </div>
         <div className={s.right}>
           {address ? <div className={s.address}>{address}</div> : undefined}
