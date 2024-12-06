@@ -148,3 +148,7 @@ setInterval(async () => {
     }
   }
 }, 5000);
+
+chrome.sidePanel
+  .setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));

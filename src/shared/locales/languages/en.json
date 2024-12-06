@@ -44,7 +44,8 @@
     "check_password": {
       "incorrect_password_error": "Incorrect password",
       "password": "Password",
-      "continue": "Continue"
+      "continue": "Continue",
+      "warning": "The next screen will display sensitive data, such as your private key. Ensure you're in a secure environment before proceeding."
     },
     "password_input": {
       "should_be_more_than_1_symbol": "Should be more than 1 symbol",
