@@ -43,7 +43,7 @@
     "rename": {
       "enter_new_name": "새 이름 입력",
       "minimum_length": "최소 길이는 1입니다",
-      "maximum_length": "최대 길이는 16입니다",
+      "maximum_length": "최대 길이는 10입니다",
       "name_is_required": "이름이 필요합니다",
       "save": "저장",
       "rename": "이름 변경"
@@ -71,7 +71,7 @@
     "login": "로그인"
   },
   "new_account": {
-    "max_length_error": "이름의 최대 길이는 16입니다",
+    "max_length_error": "이름의 최대 길이는 10입니다",
     "name_taken_error": "이 계정의 이름은 이미 사용 중입니다",
     "account_created_message": "새 계정 생성",
     "enter_name_label": "이름 입력:",
@@ -115,7 +115,7 @@
       "confirm": "확인"
     },
     "create_send": {
-      "minimum_amount_error": "최소 금액은 0.00000001 BEL입니다",
+      "minimum_amount_error": "최소 금액은 0.00001 BEL입니다",
       "address_error": "수신자의 주소 입력",
       "not_enough_money_error": "계정에 잔액이 부족합니다",
       "not_enough_fee_error": "수수료를 늘려주세요",

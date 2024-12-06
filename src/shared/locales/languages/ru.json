@@ -35,7 +35,8 @@
     "check_password": {
       "incorrect_password_error": "Неверный пароль",
       "password": "Пароль",
-      "continue": "Продолжить"
+      "continue": "Продолжить",
+      "warning": "На следующем экране отобразятся конфиденциальные данные, такие как ваш личный ключ. Прежде чем продолжить, убедитесь, что вы находитесь в безопасной среде."
     },
     "password_input": {
       "should_be_more_than_1_symbol": "Должен быть более 1 символа",
@@ -45,7 +46,7 @@
     "rename": {
       "enter_new_name": "Введите новое имя",
       "minimum_length": "Минимальная длина - 1",
-      "maximum_length": "Максимальная длина - 16",
+      "maximum_length": "Максимальная длина - 10",
       "name_is_required": "Требуется имя",
       "save": "Сохранить",
       "rename": "Переименовать"
@@ -77,7 +78,7 @@
     "login": "Войти"
   },
   "new_account": {
-    "max_length_error": "Максимальная длина имени - 16",
+    "max_length_error": "Максимальная длина имени - 10",
     "name_taken_error": "Имя для этого аккаунта уже занято",
     "account_created_message": "Новый аккаунт создан",
     "enter_name_label": "Введите имя:",
@@ -121,7 +122,7 @@
       "confirm": "Подтвердить"
     },
     "create_send": {
-      "minimum_amount_error": "Минимальная сумма - 0.00000001 BEL",
+      "minimum_amount_error": "Минимальная сумма - 0.00001 BEL",
       "fee_exceeds_amount_error": "Сбор превышает сумму",
       "address_error": "Неверный адрес получателя",
       "not_enough_money_error": "На вашем счету недостаточно средств",

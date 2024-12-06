@@ -44,7 +44,8 @@
     "check_password": {
       "incorrect_password_error": "Incorrect password",
       "password": "Password",
-      "continue": "Continue"
+      "continue": "Continue",
+      "warning": "The next screen will display sensitive data, such as your private key. Ensure you're in a secure environment before proceeding."
     },
     "password_input": {
       "should_be_more_than_1_symbol": "Should be more than 1 symbol",
@@ -54,7 +55,7 @@
     "rename": {
       "enter_new_name": "Enter new name",
       "minimum_length": "Miniumum length is 1",
-      "maximum_length": "Maximum length is 16",
+      "maximum_length": "Maximum length is 10",
       "name_is_required": "Name is required",
       "save": "Save",
       "rename": "Rename"
@@ -112,7 +113,7 @@
     "welcome_back": "Welcome back"
   },
   "new_account": {
-    "max_length_error": "Maximum name length is 16",
+    "max_length_error": "Maximum name length is 10",
     "name_taken_error": "Name for this account is already taken",
     "account_created_message": "Created new account",
     "enter_name_label": "Enter the name:",
@@ -161,7 +162,7 @@
       "inscription_id": "Inscription Id"
     },
     "create_send": {
-      "minimum_amount_error": "Minimum amount is 0.00000001 BEL",
+      "minimum_amount_error": "Minimum amount is 0.00001 BEL",
       "fee_exceeds_amount_error": "Fee exceeds amount",
       "address_error": "Invalid receiver's address",
       "not_enough_money_error": "There's not enough money in your account",

@@ -52,8 +52,7 @@ const CheckPassword: FC<Props> = ({ handler }) => {
           <ExclamationTriangleIcon className="w-6 h-6 text-red-400" />
         </div>
         <span className="text-sm text-gray-200">
-          The next screen will display sensitive data, such as your private key.
-          Ensure you{"'"}re in a secure environment before proceeding.
+          {t("components.check_password.warning")}
         </span>
       </div>
     </form>

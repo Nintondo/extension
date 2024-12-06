@@ -12,6 +12,8 @@ import toast from "react-hot-toast";
 import { useSendTransferTokens } from "@/ui/hooks/transactions";
 import { nFormatter } from "../../../../utils/formatter";
 import Switch from "@/ui/components/switch";
+import { getAddressType, ss } from "@/ui/utils";
+import { useAppState } from "@/ui/states/appState";
 
 interface Props {
   selectedSendToken: IToken | undefined;
@@ -38,17 +40,18 @@ const SendTransferModal: FC<Props> = ({
   const formId = useId();
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpenModal, setOpenModal] = useState<boolean>(false);
+  const { network } = useAppState(ss(["network"]));
 
   const sendTransferTokens = useSendTransferTokens();
 
   const send = async ({ address, txIds: transfers, feeRate }: FormType) => {
     try {
       setLoading(true);
+      if (typeof getAddressType(address, network) === "undefined") {
+        return toast.error(t("send.create_send.address_error"));
+      }
       if (typeof feeRate !== "number" || !feeRate || feeRate % 1 !== 0) {
         return toast.error(t("send.create_send.fee_is_text_error"));
-      }
-      if (address.trim().length <= 0) {
-        return toast.error(t("send.create_send.address_error"));
       }
       if (transfers.length <= 0) {
         return toast.error(t("inscriptions.0_selected_inscriptions_error"));

@@ -43,7 +43,7 @@
     "rename": {
       "enter_new_name": "输入新的名称",
       "minimum_length": "最小长度 - 1",
-      "maximum_length": "最大长度 - 16",
+      "maximum_length": "最大长度 - 10",
       "name_is_required": "需要名称",
       "save": "保存",
       "rename": "重命名"
@@ -71,7 +71,7 @@
     "login": "登录"
   },
   "new_account": {
-    "max_length_error": "名称的最大长度 - 16",
+    "max_length_error": "名称的最大长度 - 10",
     "name_taken_error": "此账户的名称已被占用",
     "account_created_message": "新的账户已创建",
     "enter_name_label": "输入名称：",
@@ -115,7 +115,7 @@
       "confirm": "确认"
     },
     "create_send": {
-      "minimum_amount_error": "最小金额 - 0.00000001 BEL",
+      "minimum_amount_error": "最小金额 - 0.00001 BEL",
       "address_error": "请输入收件人地址",
       "not_enough_money_error": "你的账户资金不足",
       "not_enough_fee_error": "请提升费用",
