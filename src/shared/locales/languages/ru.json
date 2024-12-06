@@ -121,7 +121,7 @@
       "confirm": "Подтвердить"
     },
     "create_send": {
-      "minimum_amount_error": "Минимальная сумма - 0.00000001 BEL",
+      "minimum_amount_error": "Минимальная сумма - 0.00001 BEL",
       "fee_exceeds_amount_error": "Сбор превышает сумму",
       "address_error": "Неверный адрес получателя",
       "not_enough_money_error": "На вашем счету недостаточно средств",

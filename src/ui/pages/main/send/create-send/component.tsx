@@ -71,10 +71,7 @@ const CreateSend = () => {
         return toast.error(t("send.create_send.address_error"));
       }
 
-      if (
-        (Number.isNaN(amount) || amount < 0.00000001) &&
-        !inscriptionTransaction
-      ) {
+      if ((Number.isNaN(amount) || amount < 1e-5) && !inscriptionTransaction) {
         return toast.error(t("send.create_send.minimum_amount_error"));
       }
       if (address.trim().length <= 0) {

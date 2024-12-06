@@ -115,7 +115,7 @@
       "confirm": "확인"
     },
     "create_send": {
-      "minimum_amount_error": "최소 금액은 0.00000001 BEL입니다",
+      "minimum_amount_error": "최소 금액은 0.00001 BEL입니다",
       "address_error": "수신자의 주소 입력",
       "not_enough_money_error": "계정에 잔액이 부족합니다",
       "not_enough_fee_error": "수수료를 늘려주세요",
