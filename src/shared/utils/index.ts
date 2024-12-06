@@ -85,14 +85,10 @@ export const parseLocation = (
   vout: number;
   offset: number;
 } => {
-  const parts = location.split("i");
-  const offset = parts[parts.length - 1];
-  parts.pop();
+  const [txid, vout, offset] = location.split("i");
 
-  const vout = parts[parts.length - 1];
-  parts.pop();
   return {
-    txid: parts.join(""),
+    txid,
     vout: Number(vout),
     offset: Number(offset),
   };

@@ -84,7 +84,7 @@ function documentElementCheck() {
  * @returns {boolean} {@code true} if the current domain is blocked
  */
 function blockedDomainCheck() {
-  const blockedDomains: string[] = [];
+  const blockedDomains: string[] = ["content.nintondo.io"];
   const currentUrl = window.location.href;
   let currentRegex;
   for (let i = 0; i < blockedDomains.length; i++) {
