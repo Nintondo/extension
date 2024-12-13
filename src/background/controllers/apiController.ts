@@ -104,7 +104,7 @@ class ApiController implements IApiController {
       path: "/tx",
       method: "POST",
       headers: {
-        "content-type": "text/plain",
+        "Content-Type": "text/plain",
       },
       json: false,
       body: rawTx,
@@ -205,6 +205,9 @@ class ApiController implements IApiController {
       path: "/prev",
       body: JSON.stringify({ locations: outpoints }),
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       service: "electrs",
     });
     return result?.values;
