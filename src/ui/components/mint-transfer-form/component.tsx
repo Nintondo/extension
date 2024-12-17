@@ -38,7 +38,7 @@ const MintTransferModal: FC<MintTransferModalProps> = ({
 
   const onMaxClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    setValue("amount", selectedMintToken?.balance.toString() ?? "");
+    setValue("amount", selectedMintToken?.balance ?? "");
   };
 
   const inscribe = async ({ amount, feeRate }: FormType) => {

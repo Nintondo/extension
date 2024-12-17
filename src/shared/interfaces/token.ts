@@ -16,7 +16,7 @@ export interface ITransferToken {
 
 export interface ITransfer {
   inscription_id: string;
-  amount: number;
+  amount: string;
 }
 
 export interface IToken {

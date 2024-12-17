@@ -1,0 +1,46 @@
+export function SidePanelIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 19 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <line
+        x1="13"
+        y1="1"
+        x2="13"
+        y2="17.2"
+        stroke="#282828"
+        strokeOpacity="0.75"
+        strokeWidth="2"
+      />
+      <line
+        x1="15"
+        y1="1"
+        x2="15"
+        y2="17.2"
+        stroke="#282828"
+        strokeOpacity="0.75"
+        strokeWidth="2"
+      />
+      <rect
+        x="1.9603"
+        y="1"
+        width="15.0794"
+        height="16"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <line
+        x1="11.8484"
+        y1="0.899994"
+        x2="11.8484"
+        y2="17.1"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}

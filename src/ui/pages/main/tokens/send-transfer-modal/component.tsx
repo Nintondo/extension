@@ -110,7 +110,10 @@ const SendTransferModal: FC<Props> = ({
         <div className="form-field">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-gray-400">
-              {formData.txIds.reduce((acc, tx) => acc + tx.amount, 0)}{" "}
+              {formData.txIds.reduce(
+                (acc, tx) => acc + parseFloat(tx.amount),
+                0
+              )}{" "}
               {selectedSendToken?.tick}
             </span>
 
