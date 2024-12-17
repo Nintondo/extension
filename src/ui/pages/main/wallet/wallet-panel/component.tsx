@@ -1,12 +1,13 @@
 import s from "../styles.module.scss";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import cn from "classnames";
 import {
   useGetCurrentAccount,
   useGetCurrentWallet,
 } from "@/ui/states/walletState";
+import { SettingsIcon } from "@/ui/icons/Setting";
+import { SidePanelIcon } from "@/ui/icons/SidePanel";
 
 const stringToColor = (str: string) => {
   let hash = 0;
@@ -31,6 +32,29 @@ const generateGradient = (str: string) => {
 const WalletPanel = () => {
   const currentWallet = useGetCurrentWallet();
   const currentAccount = useGetCurrentAccount();
+
+  const onSidePanelClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const { id: tabId } = tabs[0];
+
+    if (tabId) {
+      await chrome.sidePanel.setOptions({
+        enabled: true,
+        path: "index.html",
+        tabId,
+      });
+      await chrome.sidePanel.setPanelBehavior({
+        openPanelOnActionClick: false,
+      });
+      await chrome.sidePanel.open({
+        tabId,
+      });
+    }
+
+    window.close();
+  };
 
   return (
     <div className="flex justify-between mt-2 items-center mb-4">
@@ -64,8 +88,12 @@ const WalletPanel = () => {
           <img src="/nft.png" alt="nft" className={cn("w-12", s.nftImage)} />
         </Link>
         <div className="w-[1px] bg-white bg-opacity-25 h-5" />
+        <button className="cursor-pointer" onClick={onSidePanelClick}>
+          <SidePanelIcon className="size-5" />
+        </button>
+        <div className="w-[1px] bg-white bg-opacity-25 h-5" />
         <Link to={"/pages/settings"} className="cursor-pointer">
-          <Cog6ToothIcon className="w-6 h-6 hover:rotate-90 transition-transform" />
+          <SettingsIcon className="size-5 hover:rotate-90 transition-transform" />
         </Link>
       </div>
     </div>
