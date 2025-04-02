@@ -1,64 +1,42 @@
-name: Release
+name: Extension
 
 on:
-  push:
-    tags:
-      - "*"
+  workflow_dispatch:
 
 jobs:
-  release:
+  extension:
+
     runs-on: ubuntu-latest
 
     steps:
-      - uses: montudor/action-zip@v1
+    - uses: actions/checkout@v4
+    
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh/
+        touch ~/.ssh/known_hosts
+        ssh-keyscan ${{ secrets.NODE_HOST }} >> ~/.ssh/known_hosts
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        eval $(ssh-agent)
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Zip project
-        run: |
-          zip -qq -r project.zip ./*
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Install dependencies
-        run: bun install
-
-      - name: Build chrome version
-        run: bun chrome
-
-      - name: Zip chrome extension
-        run: |
-          cd dist/chrome
-          zip -qq -r ../../chrome.zip ./*
-          cd ../..
-
-      - name: Build firefox version
-        run: bun firefox
-
-      - name: Zip firefox extension
-        run: |
-          cd dist/firefox
-          zip -qq -r ../../firefox.zip ./*
-          cd ../..
-
-      - name: Upload to Firefox Addons
-        uses: cardinalby/webext-buildtools-firefox-addons-action@v1
-        with:
-          zipFilePath: firefox.zip
-          sourcesZipFilePath: project.zip
-          extensionId: ${{ secrets.FIREFOX_EXTENSION_ID }}
-          jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
-          jwtSecret: ${{ secrets.FF_JWT_SECRET }}
-
-      - name: Upload to Chrome Web Store
-        uses: mnao305/chrome-extension-upload@v5.0.0
-        with:
-          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
-          file-path: chrome.zip
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+    - name: Substitute environment variables
+      env:
+        FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
+        FF_JWT_ISSUER: ${{ secrets.FF_JWT_ISSUER }}
+        FF_JWT_SECRET: ${{ secrets.FF_JWT_SECRET }}
+        CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+        CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+        CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
+      run: |
+        echo "FIREFOX_EXTENSION_ID=${FIREFOX_EXTENSION_ID}" > extension.txt
+        echo "FF_JWT_ISSUER=${FF_JWT_ISSUER}" >> extension.txt
+        echo "FF_JWT_SECRET=${FF_JWT_SECRET}" >> extension.txt
+        echo "CHROME_EXTENSION_ID=${CHROME_EXTENSION_ID}" >> extension.txt
+        echo "CHROME_CLIENT_ID=${CHROME_CLIENT_ID}" >> extension.txt
+        echo "CHROME_REFRESH_TOKEN=${CHROME_REFRESH_TOKEN}" >> extension.txt
+        envsubst < extension.txt > extension_fill.txt 
+        
+    - name: Copy files to the server
+      run: |
+        scp extension_fill.txt ${{ secrets.NODE_USER }}@${{ secrets.NODE_HOST }}:/opt
